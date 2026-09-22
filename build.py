@@ -21,7 +21,7 @@ import sys
 import yaml
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from engine.patterns import CENTRED, PATTERNS, e, p_title, topic_data  # noqa: E402
+from engine.patterns import CENTRED, PATTERNS, e, p_title, topic_data, wordmark  # noqa: E402
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 ENGINE = os.path.join(ROOT, "engine")
@@ -172,10 +172,10 @@ def render_topic(t, spec, site):
     css = fonts_css() + "".join(read(ENGINE, "css", f) for f in CSS_FILES)
     js = "".join(read(ENGINE, "js", f) for f in JS_FILES)
     data = json.dumps(topic_data(t), ensure_ascii=False).replace("</", "<\\/")
-    page_title = f'{t["title"]} · MRCP {spec["title"]}'
+    page_title = f'{t["title"]} · {site["title"]}'
     for k, v in {
         "{{PAGE_TITLE}}": e(page_title), "{{DESCRIPTION}}": e(t["description"]), "{{AUTHOR}}": e(site["author"]),
-        "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{ICONS}}": read(ENGINE, "icons.svg"),
+        "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{SITE}}": e(site["title"]), "{{WORDMARK}}": wordmark(site["title"]), "{{ICONS}}": read(ENGINE, "icons.svg"),
         "{{SLIDES}}": "\n".join(slides), "{{DATA}}": data, "{{CSS}}": css, "{{JS}}": js,
     }.items():
         shell = shell.replace(k, v)
@@ -199,7 +199,7 @@ def render_index(site, specs):
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(site["title"])}</title><meta name="description" content="Interactive MRCP revision pages, one per topic.">
 <style>{css}</style></head>
-<body><main class="index"><h1>{e(site["title"])}</h1>{"".join(rows)}
+<body><main class="index"><h1 class="wordmark" aria-label="{e(site["title"])}">{wordmark(site["title"])}</h1>{"".join(rows)}
 <p class="credits"><span>Created by {e(site["author"])}</span><span>{e(site["disclaimer"])}</span><span>Last updated {today}</span></p>
 </main></body></html>"""
 

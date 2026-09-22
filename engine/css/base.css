@@ -17,6 +17,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* ---------- top bar ---------- */
 .topbar{display:flex;align-items:center;gap:14px;min-height:clamp(48px,4.4cqw,56px);padding-inline:var(--pad);background:var(--surface);border-bottom:1px solid var(--border);z-index:5}
+.wordmark{font-family:var(--sans);font-weight:800;font-size:clamp(15px,1.45cqw,19px);letter-spacing:-.015em;color:var(--ink);white-space:nowrap}
+.wm-us{color:var(--primary)}
+.brand-sep{align-self:center;width:1px;height:22px;background:var(--border-strong)}
 .brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap;min-width:0}
 .brand b{font-family:var(--serif);font-size:clamp(16px,1.5cqw,19px)}
 .brand-sub{font-size:var(--fs-label);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
@@ -26,7 +29,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .icon-btn:hover{background:var(--surface-2)}
 .progress{height:4px;background:var(--surface-2)}
 .progress>div{height:100%;width:0;background:var(--primary);transition:width .5s var(--ease)}
-@container (max-width:600px){.brand-sub,.part-label{display:none}.topbar{justify-content:space-between}}
+@container (max-width:600px){.brand-sub,.part-label{display:none}.score-pill{margin-left:auto}}
+@container (max-width:420px){.brand,.brand-sep{display:none}}
 
 /* ---------- slides ---------- */
 .slide{display:none}

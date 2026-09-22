@@ -2,8 +2,9 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--text);font:18px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
 .index{max-width:880px;margin:0 auto;padding:56px 16px 40px}
-.index h1{font:600 clamp(2.2rem,5vw,3.4rem)/1.1 var(--serif);color:var(--ink);margin:0 0 36px;padding-bottom:20px;position:relative}
+.index h1{font:800 clamp(2.2rem,5vw,3.4rem)/1.1 var(--sans);letter-spacing:-.02em;color:var(--ink);margin:0 0 36px;padding-bottom:20px;position:relative}
 .index h1::after{content:"";position:absolute;left:0;bottom:0;width:180px;height:7px;border-radius:8px;background:var(--rule)}
+.wm-us{color:var(--primary)}
 .spec-block{margin-bottom:32px}
 .spec-block h2{font:600 1.5rem/1.2 var(--serif);color:var(--ink);margin:0 0 12px}
 .topics{list-style:none;margin:0;padding:0;display:grid;gap:10px}

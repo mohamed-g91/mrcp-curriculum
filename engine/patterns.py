@@ -20,6 +20,11 @@ def icon(name):
     return ICON.format(name)
 
 
+def wordmark(name):
+    """The brand name, with its underscore in the brand blue (mrcp_Gafar)."""
+    return e(name).replace("_", '<span class="wm-us">_</span>')
+
+
 def stem_html(text, cls="clue-mark", lit=False):
     """Escape a stem and turn [[phrase]] or [[type|phrase]] into highlighted marks."""
     out, pos = [], 0

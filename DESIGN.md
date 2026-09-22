@@ -23,6 +23,7 @@ A clinical look with conviction: one primary blue, one colour per concept family
 | Concept families | One family per concept group, each with a background, ink, border and solid shade (coral = categorical, green = ranked, purple = numerical, grey = neutral) |
 | Family use | A concept keeps its colour, label and letter on every slide, card, bucket, choice and flow box. Labels come from the topic's `concepts`, never retyped |
 | Spectrum line | A coral → green → purple gradient, used only on the spectrum, where each colour stands for a family |
+| Brand | The wordmark **mrcp_Gafar** (site title in `curriculum.yaml`): Inter 800, underscore in the primary blue. It opens the top bar on every page (so it is on camera in every video), heads the home page, and ends every page title ("Types of data · mrcp_Gafar") |
 | Title rule | A single-colour gradient under the page title and the home page heading: primary blue fading to transparent |
 | Headings | Serif (Source Serif 4), weight 600. On the stage: title 80 px, slide heading 44 px |
 | Body text | Sans-serif (Inter). On the stage: 20 px body, 23 px stems, 16 px small text; contrast at least 4.5:1 |
