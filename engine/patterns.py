@@ -122,6 +122,31 @@ def p_question_flow(slide, topic):
             f'<div class="qf-chart"{data_path}>{"".join(parts)}</div></div></div>')
 
 
+def _tree_res(topic, key, cls="tree-res"):
+    c = concept(topic, key)
+    return (f'<div class="{cls} f-{c["family"]}" data-type="{e(key)}"><span class="tree-dot">{e(c["letter"])}</span>'
+            f'<b class="tree-label">{e(c["label"])}</b></div>')
+
+
+def p_decision_tree(slide, topic):
+    """Top-down yes/no tree: No gives the answer to the side, Yes opens the next question below."""
+    steps = slide["steps"]
+    levels = []
+    for i, st in enumerate(steps):
+        levels.append(
+            f'<div class="tree-level" data-step="{i}">'
+            f'<div class="tree-q"><span class="tree-n">{i + 1}</span><b>{e(st["q"])}</b></div>'
+            f'<div class="tree-row"><span class="tree-pad"></span>'
+            f'<button class="tree-a yes" type="button" data-a="yes" aria-pressed="false">Yes</button>'
+            f'<div class="tree-side"><button class="tree-a no" type="button" data-a="no" aria-pressed="false">No</button>'
+            f'<span class="tree-link" aria-hidden="true"></span>{_tree_res(topic, st["no"])}</div></div></div>')
+    end = concept(topic, slide["end"])
+    levels.append(
+        f'<div class="tree-level tree-end" data-step="{len(steps)}"><div class="tree-row tree-res f-{end["family"]}" data-type="{e(slide["end"])}">'
+        f'<span class="tree-pad"></span><span class="tree-dot">{e(end["letter"])}</span><b class="tree-label">{e(end["label"])}</b></div></div>')
+    return heading(slide) + f'<div class="center-body"><div class="tree">{"".join(levels)}</div></div>'
+
+
 def p_clue_stem(slide, topic):
     stops = []
     for key, clues in slide["clues"].items():
@@ -195,6 +220,7 @@ PATTERNS = {
     "hook": p_hook,
     "spectrum": p_spectrum,
     "question-flow": p_question_flow,
+    "decision-tree": p_decision_tree,
     "clue-stem": p_clue_stem,
     "reveal-cards": p_reveal_cards,
     "sort": p_sort,
@@ -203,7 +229,7 @@ PATTERNS = {
 }
 
 # patterns whose slides are centred in the space under the heading
-CENTRED = {"hook", "question-flow", "reveal-cards", "end"}
+CENTRED = {"hook", "question-flow", "decision-tree", "reveal-cards", "end"}
 
 
 def topic_data(topic):

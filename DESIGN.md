@@ -47,6 +47,7 @@ Each slide is one pattern, named in the topic's YAML (`pattern:`). Pick the one 
 | Tap-to-reveal circles (`spectrum`) | A set of types or categories on a spectrum | Taps a circle; its examples appear beneath, one by one |
 | Zoom circle (`spectrum` with `open: zoom`) | A spectrum whose examples deserve the whole slide | Taps a circle; the rest of the slide fades back and the circle grows out of its dot into a large centred circle holding its letter, its name (large serif, family ink) and its examples as soft pills (white, thin family border, family dot, dark ink; popping in one by one; sized as a share of the circle so they scale with it), over a fine dot texture that shows only near the rim and a thin dashed inner ring. Tapping outside, or Esc, shrinks it back into its dot; tapping another dot swaps to that one |
 | Sequential question flow (`question-flow`) | A short yes/no decision (2–4 questions) | Answers each question in turn; the next unlocks and the "No" result appears. Boxes show their question or name only |
+| Decision tree (`decision-tree`) | A short yes/no decision taught top-down (2–4 questions) | The first question sits at the top with Yes and No pills beneath. No draws a coral line to the side and the answer grows out of it as a family circle with its letter and name; Yes draws a green line down and opens the next question. The other answer re-routes the branch, tapping a chosen answer again undoes it, a click anywhere else starts again. Space for the whole tree is kept from the start on the stage, so nothing moves |
 | Worked flow (`question-flow` with `path` and `stem`) | Solving the hook with the flow | Taps each question; only the branch taken lights, and the answer it lands on stands out |
 | Linked highlight (`clue-stem`) | Finding clues in a sample stem | Taps a phrase or a circle; the matching pair lights up together |
 | Tap-to-reveal cards (`reveal-cards`) | Pairs of "situation → answer" | Taps a card; the answer appears inside that card only |
@@ -84,7 +85,7 @@ Every interactive element behaves the same way, so learners never have to relear
 - **Fluid below that.** On phones and small windows the page reflows and scrolls, with a sticky top and bottom bar and 16 px side margins.
 - **Sizes are written once.** Engine sizes use `clamp(phone, cqw, stage)`, so they sit at their stage value on the canvas and shrink on phones. Responsive rules use container queries on the page, not media queries.
 - **A teaching slide fits the stage** with its answers open: no vertical scrolling. Shrink cards and spacing rather than letting it scroll. Practice slides (warm-up, end) may scroll.
-- **Short slides are centred:** the heading stays at the top and the content sits in the middle of the space below it (hook, question flows, reveal cards, zoom spectra, end).
+- **Short slides are centred:** the heading stays at the top and the content sits in the middle of the space below it (hook, question flows, decision trees, reveal cards, zoom spectra, end).
 - **Question flows** run left to right on the stage and turn vertical on phones.
 - **Bottom bar on phones:** buttons show an icon only, except Next.
 

@@ -122,7 +122,8 @@ async function measure(size, label) {
 // open every reveal on the current slide, one at a time, measuring each state
 const REVEALS = `(() => {
   const s = Deck.slides[Deck.i];
-  return { dots: s.querySelectorAll(".spec-dot").length, cards: s.querySelectorAll(".reveal-item").length, qf: s.querySelectorAll(".qf-q").length };
+  return { dots: s.querySelectorAll(".spec-dot").length, cards: s.querySelectorAll(".reveal-item").length, qf: s.querySelectorAll(".qf-q").length,
+           tree: s.querySelectorAll(".tree-level").length };
 })()`;
 
 async function layoutPass(size) {
@@ -155,6 +156,24 @@ async function layoutPass(size) {
       }
       await measure(size, `slide ${i + 1} flow answered`);
       await shot(`${tag}-open`);
+    }
+    if (r.tree) {
+      // every Yes down to the end, then a No part-way
+      for (let k = 0; k < r.tree - 1; k++) {
+        await js(`Deck.slides[Deck.i].querySelectorAll(".tree-level")[${k}].querySelector(".tree-a.yes").click(), true`);
+        await sleep(300);
+      }
+      await sleep(700);
+      await measure(size, `slide ${i + 1} tree all yes`);
+      const end = await js(`Deck.slides[Deck.i].querySelector(".tree-end").classList.contains("shown")`);
+      if (!end) fail(`${size.name} slide ${i + 1}: the tree did not reach its end`);
+      await shot(`${tag}-yes`);
+      await js(`Deck.slides[Deck.i].querySelectorAll(".tree-level")[1].querySelector(".tree-a.no").click(), true`);
+      await sleep(900);
+      await measure(size, `slide ${i + 1} tree no`);
+      const cut = await js(`(() => { const lv = Deck.slides[Deck.i].querySelectorAll(".tree-level"); return !lv[2].classList.contains("shown") && lv[1].classList.contains("no"); })()`);
+      if (!cut) fail(`${size.name} slide ${i + 1}: a No did not close the branch below it`);
+      await shot(`${tag}-no`);
     }
     await js(`document.body.click(), true`);
   }

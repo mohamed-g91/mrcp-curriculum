@@ -122,6 +122,50 @@ mark.clue-mark.lit{background:var(--hl);color:var(--hl-ink);box-shadow:0 0 0 .15
   .qf-end{width:50%}
 }
 
+/* ---------- decision tree ----------
+   Space for every level is kept from the start, so nothing moves as branches open.
+   The spine runs down the middle: question, Yes, a green line down. No sits to the right of Yes,
+   with a coral line out to the answer. */
+.tree{width:min(100%,860px);margin:0 auto;display:flex;flex-direction:column;align-items:stretch}
+.tree-level{position:relative;display:flex;flex-direction:column;align-items:center;transition:opacity .45s var(--ease),translate .6s var(--ease)}
+.tree-level:not(.shown){opacity:0;translate:0 -10px;pointer-events:none}
+.tree-level+.tree-level{padding-top:clamp(12px,1.4cqw,18px)}
+.tree-level+.tree-level::before{content:"";position:absolute;top:0;left:50%;width:3px;height:clamp(12px,1.4cqw,18px);margin-left:-1.5px;border-radius:2px;background:var(--ok-bd);transform-origin:top;transform:scaleY(0);transition:transform .4s var(--ease)}
+.tree-level.shown::before{transform:scaleY(1)}
+.tree-q{display:inline-flex;align-items:center;gap:12px;min-height:clamp(40px,3.4cqw,44px);padding:4px 22px 4px 6px;border-radius:999px;border:3px solid var(--primary);background:var(--surface);box-shadow:var(--edge),var(--shadow);transition:transform .45s var(--ease)}
+.tree-level.shown .tree-q{animation:treeIn .5s var(--ease) both}
+.tree-n{display:inline-flex;align-items:center;justify-content:center;flex:none;width:clamp(28px,2.5cqw,32px);height:clamp(28px,2.5cqw,32px);border-radius:50%;background:var(--primary);color:var(--on-primary);font-weight:750;font-size:var(--fs-small)}
+.tree-q b{font-size:clamp(18px,1.9cqw,24px);line-height:1.1}
+.tree-row{width:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:clamp(6px,.6cqw,8px)}
+.tree-side{display:flex;align-items:center;justify-self:start;margin-left:12px;min-width:0}
+.tree-a{min-width:clamp(72px,7cqw,92px);height:clamp(34px,2.8cqw,36px);padding:0 18px;border-radius:999px;border:2px solid;background:var(--surface);font-weight:700;font-size:var(--fs-body);box-shadow:var(--edge),0 1px 2px rgba(14,31,53,.08),0 4px 10px rgba(14,31,53,.06);transition:transform .25s var(--ease),background .2s ease,color .2s ease,opacity .25s ease,box-shadow .25s var(--ease)}
+.tree-a:hover{transform:translateY(-2px);box-shadow:var(--edge),var(--shadow)}
+.tree-a.yes{border-color:var(--ok-bd);color:var(--ok-ink)}
+.tree-a.no{border-color:var(--bad-bd);color:var(--bad-ink)}
+.tree-a.yes[aria-pressed="true"]{background:var(--ok-solid);border-color:var(--ok-solid);color:#fff}
+.tree-a.no[aria-pressed="true"]{background:var(--bad-solid);border-color:var(--bad-solid);color:#fff}
+.tree-level.answered .tree-a[aria-pressed="false"]{opacity:.4}
+.tree-link{flex:none;width:clamp(24px,3cqw,40px);height:3px;border-radius:2px;background:var(--bad-bd);transform-origin:left;transform:scaleX(0);transition:transform .35s var(--ease)}
+.tree-level.no .tree-link{transform:scaleX(1)}
+/* answers: a family circle with its letter and a soft ring, the name beside it */
+.tree-res{display:flex;align-items:center;gap:12px;opacity:0;transform:scale(.4);transform-origin:left center;transition:opacity .3s ease,transform .55s var(--ease)}
+.tree-level.no .tree-res,.tree-end.shown .tree-res{opacity:1;transform:none;transition-delay:.18s}
+.tree-dot{display:inline-flex;align-items:center;justify-content:center;flex:none;width:clamp(44px,4.2cqw,54px);height:clamp(44px,4.2cqw,54px);border-radius:50%;background:var(--x-solid);color:#fff;font-weight:750;font-size:clamp(18px,1.9cqw,24px);box-shadow:0 0 0 6px var(--x-bg),0 0 0 7px color-mix(in srgb,var(--x-solid) 30%,transparent),var(--shadow)}
+.tree-label{font-family:var(--serif);font-weight:600;font-size:clamp(20px,2.2cqw,28px);color:var(--x-ink);white-space:nowrap;line-height:1.1}
+.tree-end .tree-row{margin-top:0}
+.tree-end .tree-res{display:grid;grid-template-columns:1fr auto 1fr;gap:0;transform-origin:center top}
+.tree-end .tree-label{justify-self:start;margin-left:18px}
+@keyframes treeIn{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
+@container (max-width:600px){
+  .tree-row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+  .tree-pad,.tree-link{display:none}
+  .tree-side{display:contents}
+  .tree-row .tree-res{flex-basis:100%;justify-content:center;transform-origin:center top;margin-top:4px}
+  .tree-level:not(.no) .tree-side .tree-res{display:none}
+  .tree-end .tree-res{display:flex;gap:12px}
+  .tree-end .tree-label{margin-left:0}
+}
+
 /* ---------- clue stem (linked highlight) ---------- */
 .clue-stem{background:var(--surface);border:1px solid var(--border);border-top:6px solid var(--primary);border-radius:var(--radius-lg);padding:clamp(12px,1.6cqw,20px) clamp(18px,2.6cqw,34px);box-shadow:var(--edge),var(--shadow);margin-bottom:clamp(10px,1.4cqw,18px)}
 .clue-stem p{font-size:var(--fs-stem);line-height:1.95;color:var(--ink)}

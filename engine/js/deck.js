@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("resize", () => Stage.fit());
   buildSpectra();
   buildQuestionFlows();
+  buildTrees();
   buildClueStems();
   buildRevealCards();
   buildSorts();

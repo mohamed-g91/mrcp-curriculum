@@ -28,7 +28,7 @@ ENGINE = os.path.join(ROOT, "engine")
 DIST = os.path.join(ROOT, "dist")
 LOCK = os.path.join(ROOT, "content", "ids.lock")
 CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css"]
-JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "sort.js", "quiz.js", "deck.js"]
+JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "sort.js", "quiz.js", "deck.js"]
 ITEM_ID = re.compile(r"^[a-z]\d{2,3}$")
 INSTRUCTION = re.compile(r"\b(tap|click|drag|press|select)\b", re.I)
 
@@ -89,7 +89,7 @@ def check_topic(t, expected_id):
             refs += [st["concept"] for st in s["stops"] if st.get("concept")]
             if s.get("open", "list") not in ("list", "zoom"):
                 errs.append(f"{where}: open is {s['open']!r}: use list (bullets under the circle) or zoom (a large centred circle)")
-        if p == "question-flow":
+        if p in ("question-flow", "decision-tree"):
             refs += [st["no"] for st in s["steps"]] + [s["end"]]
         if p == "clue-stem":
             refs += list(s["clues"])
