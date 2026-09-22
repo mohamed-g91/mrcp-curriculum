@@ -156,7 +156,8 @@ def fonts_css():
 
 
 def section(slide, part, inner):
-    cls = "slide" + (" slide-center" if slide["pattern"] in CENTRED else "")
+    centred = slide["pattern"] in CENTRED or (slide["pattern"] == "spectrum" and slide.get("open") == "zoom")
+    cls = "slide" + (" slide-center" if centred else "")
     return (f'<section class="{cls} p-{slide["pattern"]}" data-id="{e(slide["id"])}" data-part="{part}" '
             f'aria-label="{e(slide["title"])}">{inner}</section>')
 

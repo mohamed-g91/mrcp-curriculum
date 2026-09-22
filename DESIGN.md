@@ -84,7 +84,7 @@ Every interactive element behaves the same way, so learners never have to relear
 - **Fluid below that.** On phones and small windows the page reflows and scrolls, with a sticky top and bottom bar and 16 px side margins.
 - **Sizes are written once.** Engine sizes use `clamp(phone, cqw, stage)`, so they sit at their stage value on the canvas and shrink on phones. Responsive rules use container queries on the page, not media queries.
 - **A teaching slide fits the stage** with its answers open: no vertical scrolling. Shrink cards and spacing rather than letting it scroll. Practice slides (warm-up, end) may scroll.
-- **Short slides are centred:** the heading stays at the top and the content sits in the middle of the space below it (hook, question flows, reveal cards, end).
+- **Short slides are centred:** the heading stays at the top and the content sits in the middle of the space below it (hook, question flows, reveal cards, zoom spectra, end).
 - **Question flows** run left to right on the stage and turn vertical on phones.
 - **Bottom bar on phones:** buttons show an icon only, except Next.
 

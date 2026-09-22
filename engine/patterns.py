@@ -91,9 +91,11 @@ def p_spectrum(slide, topic):
         html_stops.append(
             f'<div class="spec-stop f-{fam}"><button class="spec-dot" type="button" aria-expanded="false" '
             f'aria-label="Show {e(label)} examples">{e(letter)}</button><b>{e(label)}</b>{body}</div>')
-    zoom = " spec-zoom" if slide.get("open") == "zoom" else ""
-    return (heading(slide) + f'<div class="spec{zoom}" style="--n:{len(stops)}">{groups}'
+    zoom = slide.get("open") == "zoom"
+    spec = (f'<div class="spec{" spec-zoom" if zoom else ""}" style="--n:{len(stops)}">{groups}'
             f'<div class="spec-line">{"".join(html_stops)}</div></div>')
+    # a zoom spectrum never grows, so it sits centred under the heading
+    return heading(slide) + (f'<div class="center-body">{spec}</div>' if zoom else spec)
 
 
 def _result(topic, key, extra=""):
