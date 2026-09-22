@@ -60,11 +60,15 @@ def p_title(slide, topic):
             f'<div class="part-cards">{cards}</div></div>{credits(topic)}')
 
 
-def figure(name):
+def svg(name):
     """An SVG drawing from content/figures, inlined so the page stays one offline file.
-    Drawings colour themselves from the page's tokens (see .pain-scale in patterns.css)."""
+    Drawings colour themselves from the page's tokens (see Figures in patterns.css)."""
     with open(os.path.join(FIGURES, name + ".svg"), encoding="utf-8") as f:
-        return f'<figure class="fig fig-{e(name)}">{f.read().strip()}</figure>'
+        return f.read().strip()
+
+
+def figure(name, cls=""):
+    return f'<figure class="fig fig-{e(name)}{" " + cls if cls else ""}">{svg(name)}</figure>'
 
 
 def p_hook(slide, topic):
@@ -139,15 +143,17 @@ def p_question_flow(slide, topic):
             f'<div class="qf-chart"{data_path}>{"".join(parts)}</div></div></div>')
 
 
-def _tree_final(topic, key, examples):
+def _tree_final(topic, key, examples, charts):
     """The answer at the end of a branch: a solid family card, unlike the step pills.
-    With examples, tapping it zooms them open in a large circle."""
+    With examples, tapping it zooms them open in a large circle. With a chart, the chart
+    for that type of data is drawn beside the card when it appears."""
     c = concept(topic, key)
     ex = examples.get(key)
     tap = (f' role="button" tabindex="0" aria-expanded="false" aria-label="Show {e(c["label"])} examples"' if ex else "")
+    chart = f'<div class="tree-chart f-{c["family"]}">{svg(charts[key])}</div>' if charts.get(key) else ""
     return (f'<div class="tree-final f-{c["family"]}{" zoomable" if ex else ""}" data-type="{e(key)}"{tap}>'
             f'<span class="tree-dot">{e(c["letter"])}</span><b class="tree-label">{e(c["label"])}</b>'
-            f'{_examples_body(ex, hidden=True) if ex else ""}</div>')
+            f'{_examples_body(ex, hidden=True) if ex else ""}</div>{chart}')
 
 
 def p_decision_tree(slide, topic):
@@ -155,25 +161,30 @@ def p_decision_tree(slide, topic):
     question below it, No drops to the final answer. With a stem, the stem sits beside the tree.
     With a path (the right answers) and wrong (why, for each step), a wrong answer says why and goes no further."""
     steps = slide["steps"]
-    examples = slide.get("examples") or {}
+    examples, charts = slide.get("examples") or {}, slide.get("charts") or {}
     path, wrong = slide.get("path"), slide.get("wrong") or []
     levels = []
     for i, st in enumerate(steps):
         why = (f'<div class="feedback bad tree-why" aria-live="polite">{icon("cross")}'
                f'<span><b>Not quite.</b> {e(wrong[i])}</span></div>' if i < len(wrong) else "")
+        # a small picture of what the question means, beside its pill
+        fig = f'<span class="tree-fig">{svg(st["figure"])}</span>' if st.get("figure") else ""
         levels.append(
             f'<div class="tree-level" data-step="{i}">'
-            f'<div class="tree-q"><span class="tree-n">{i + 1}</span><b>{e(st["q"])}</b></div>'
+            f'<div class="tree-q">{fig}<span class="tree-n">{i + 1}</span><b>{e(st["q"])}</b></div>'
             f'<div class="tree-answers">'
             f'<button class="tree-a yes" type="button" data-a="yes" aria-pressed="false">Yes</button>'
             f'<button class="tree-a no" type="button" data-a="no" aria-pressed="false">No</button></div>{why}'
-            f'<div class="tree-out">{_tree_final(topic, st["no"], examples)}</div></div>')
-    levels.append(f'<div class="tree-level tree-end" data-step="{len(steps)}">{_tree_final(topic, slide["end"], examples)}</div>')
+            f'<div class="tree-out">{_tree_final(topic, st["no"], examples, charts)}</div></div>')
+    levels.append(f'<div class="tree-level tree-end" data-step="{len(steps)}">{_tree_final(topic, slide["end"], examples, charts)}</div>')
     data_path = f' data-path="{",".join(path)}"' if path else ""
     tree = f'<div class="tree"{data_path}>{"".join(levels)}</div>'
     if slide.get("stem"):
         stem = f'<div class="stem-card compact"><p class="stem-text">{stem_html(slide["stem"], lit=True)}</p></div>'
-        return heading(slide) + f'<div class="tree-case">{stem}{tree}</div>'
+        # side figures under the stem: the k-th shows once k questions are answered (the last one stays)
+        side = "".join(figure(n, "side-fig") for n in slide.get("side") or [])
+        side = f'<div class="tree-side">{side}</div>' if side else ""
+        return heading(slide) + f'<div class="tree-case"><div class="tree-stem">{stem}{side}</div>{tree}</div>'
     return heading(slide) + tree
 
 

@@ -1,0 +1,6 @@
+<svg class="qicon" viewBox="0 0 80 80" aria-hidden="true">
+  <rect class="i-fill" x="8" y="50" width="18" height="20" rx="3"/>
+  <rect class="i-fill" x="31" y="34" width="18" height="36" rx="3"/>
+  <rect class="i-fill" x="54" y="16" width="18" height="54" rx="3"/>
+  <path class="i-line" d="M10 40 L58 8 M58 8 h-10 M58 8 v10"/>
+</svg>

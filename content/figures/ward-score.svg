@@ -1,0 +1,75 @@
+<svg class="scene-ward" viewBox="0 0 420 400" role="img" aria-label="The patient answers the nurse: 7">
+  <!-- floor shadow -->
+  <ellipse class="sc-shadow" cx="210" cy="384" rx="200" ry="10"/>
+
+  <!-- bed: headboard, legs, wheels, mattress -->
+  <g class="sc-bed">
+    <rect x="14" y="196" width="18" height="178" rx="7"/>
+    <rect x="46" y="296" width="12" height="74" rx="4"/>
+    <rect x="262" y="296" width="12" height="74" rx="4"/>
+    <circle cx="52" cy="374" r="8"/>
+    <circle cx="268" cy="374" r="8"/>
+    <rect x="26" y="270" width="266" height="28" rx="10"/>
+  </g>
+  <ellipse class="sc-pillow" cx="74" cy="258" rx="46" ry="18"/>
+
+  <!-- patient: gown shoulder, head, hair, pained face -->
+  <path class="sc-o" d="M86 262 C92 244 116 238 132 246 L132 268 Z" fill="#9CC3E6"/>
+  <g class="sc-pop" style="--i:0">
+    <circle class="sc-o" cx="78" cy="232" r="27" fill="#E9B88F"/>
+    <path class="sc-o" d="M52 226 C50 202 72 192 92 198 C104 202 108 210 106 218 C96 210 80 210 70 218 C64 222 58 226 52 226 Z" fill="#5A3B28"/>
+    <!-- squeezed eyes and tilted brows -->
+    <path class="sc-f" d="M66 230 l7 3 l-7 3 M92 230 l-7 3 l7 3"/>
+    <path class="sc-f" d="M63 222 l10 3 M95 222 l-10 3"/>
+    <!-- grimace -->
+    <path class="sc-f" d="M68 247 q3 -4 6 0 q3 4 6 0 q3 -4 6 0"/>
+    <!-- sweat drop -->
+    <path d="M104 214 q5 8 0 11 q-5 -3 0 -11 Z" fill="#7FB6E8" stroke="#22303F" stroke-width="1.5"/>
+  </g>
+
+  <!-- blanket over the body -->
+  <path class="sc-o" d="M112 272 C118 240 160 234 200 240 C236 246 268 242 292 250 L296 272 Z" fill="#CFE0F5"/>
+  <path d="M140 262 C170 256 220 258 280 262" fill="none" stroke="#9FBCE0" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- nurse -->
+  <g class="sc-pop" style="--i:1">
+    <!-- legs and shoes -->
+    <rect class="sc-o" x="332" y="262" width="20" height="104" rx="6" fill="#244E86"/>
+    <rect class="sc-o" x="358" y="262" width="20" height="104" rx="6" fill="#244E86"/>
+    <path class="sc-o" d="M328 366 h26 a6 6 0 0 1 0 12 h-26 Z" fill="#F4F6F9"/>
+    <path class="sc-o" d="M356 366 h26 a6 6 0 0 1 0 12 h-26 Z" fill="#F4F6F9"/>
+    <!-- scrubs top -->
+    <path class="sc-o" d="M326 162 C334 150 376 150 384 162 L392 270 L318 270 Z" fill="#3A7BC8"/>
+    <path d="M343 158 L355 180 L367 158" fill="none" stroke="#22303F" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="364" y="210" width="16" height="14" rx="3" fill="#2F66A8"/>
+    <!-- stethoscope -->
+    <path d="M338 160 C334 196 346 212 356 212 C366 212 376 196 372 160" fill="none" stroke="#3C4A5C" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="356" cy="216" r="6" fill="#B9C3CF" stroke="#3C4A5C" stroke-width="2.5"/>
+    <!-- neck and head -->
+    <rect class="sc-o" x="347" y="140" width="16" height="16" rx="4" fill="#8D5A3B"/>
+    <circle class="sc-o" cx="355" cy="118" r="27" fill="#8D5A3B"/>
+    <!-- hair with a bun -->
+    <circle class="sc-o" cx="376" cy="96" r="12" fill="#221812"/>
+    <path class="sc-o" d="M328 118 C324 90 346 80 362 86 C378 90 384 104 382 116 C372 104 352 100 338 108 C334 112 330 116 328 118 Z" fill="#221812"/>
+    <!-- kind face, looking at the patient -->
+    <circle cx="343" cy="120" r="3.2" fill="#22303F"/>
+    <circle cx="361" cy="120" r="3.2" fill="#22303F"/>
+    <path class="sc-f" d="M343 132 q7 6 14 0"/>
+    <!-- arm holding the clipboard -->
+    <path d="M332 170 C318 196 314 214 322 226" fill="none" stroke="#22303F" stroke-width="17" stroke-linecap="round"/>
+    <path d="M332 170 C318 196 314 214 322 226" fill="none" stroke="#3A7BC8" stroke-width="12" stroke-linecap="round"/>
+    <g transform="rotate(-8 318 214)">
+      <rect class="sc-o" x="292" y="184" width="46" height="60" rx="5" fill="#C9A27A"/>
+      <rect x="298" y="192" width="34" height="46" rx="2" fill="#FFFFFF"/>
+      <rect x="306" y="180" width="18" height="9" rx="3" fill="#8A96A6" stroke="#22303F" stroke-width="2"/>
+      <path d="M303 202 h24 M303 211 h24 M303 220 h16" stroke="#B3BECB" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <circle class="sc-o" cx="324" cy="226" r="8" fill="#8D5A3B"/>
+  </g>
+
+  <!-- speech bubble: the patient gives a score -->
+  <g class="sc-pop" style="--i:2">
+    <path class="sc-bubble" d="M54 132 h64 a14 14 0 0 1 14 14 v24 a14 14 0 0 1 -14 14 h-30 l-10 16 l-4 -16 h-20 a14 14 0 0 1 -14 -14 v-24 a14 14 0 0 1 14 -14 Z"/>
+    <text class="sc-bubble-t sc-score" x="86" y="170">7</text>
+  </g>
+</svg>

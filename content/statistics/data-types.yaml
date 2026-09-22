@@ -55,10 +55,16 @@ learn:
     pattern: decision-tree
     title: Three quick questions
     steps:
-      - { q: "Ordered?",    no: nominal }
-      - { q: "Equal gaps?", no: ordinal }
-      - { q: "Fractions?",  no: discrete }
+      - { q: "Ordered?",    no: nominal,  figure: q-ordered }
+      - { q: "Equal gaps?", no: ordinal,  figure: q-gaps }
+      - { q: "Fractions?",  no: discrete, figure: q-fractions }
     end: continuous
+    # the chart each type of data is drawn with, beside the answer
+    charts: &tree-charts
+      nominal: chart-nominal
+      ordinal: chart-ordinal
+      discrete: chart-discrete
+      continuous: chart-continuous
     # tapping a final answer zooms its examples open (the same examples as the spectrum)
     examples: &tree-examples
       nominal:
@@ -94,6 +100,8 @@ learn:
       - { q: "Fractions?",  no: discrete }
     end: continuous
     examples: *tree-examples
+    # under the stem: the patient gives a score, then (from "Equal gaps?") a ruler against the pain score
+    side: [ward-score, pain-gaps]
     # the right answers for the pain score, and why each wrong answer is wrong
     path: [yes, no]
     wrong:

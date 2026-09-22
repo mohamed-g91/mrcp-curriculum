@@ -85,9 +85,11 @@ def check_topic(t, expected_id):
             warns.append(f"{where}: title reads like an instruction ({s['title']!r})")
         refs = []
         p = s["pattern"]
-        for key in ("figure", "scene"):
-            if s.get(key) and not os.path.exists(os.path.join(ROOT, "content", "figures", s[key] + ".svg")):
-                errs.append(f"{where}: no drawing at content/figures/{s[key]}.svg")
+        drawings = [s.get("figure"), s.get("scene")] + list((s.get("charts") or {}).values()) + list(s.get("side") or [])
+        drawings += [st.get("figure") for st in s.get("steps") or []]
+        for name in filter(None, drawings):
+            if not os.path.exists(os.path.join(ROOT, "content", "figures", name + ".svg")):
+                errs.append(f"{where}: no drawing at content/figures/{name}.svg")
         if p == "spectrum":
             refs += [st["concept"] for st in s["stops"] if st.get("concept")]
             if s.get("open", "list") not in ("list", "zoom"):
@@ -96,9 +98,9 @@ def check_topic(t, expected_id):
             refs += [st["no"] for st in s["steps"]] + [s["end"]]
         if p == "decision-tree":
             ends = {st["no"] for st in s["steps"]} | {s["end"]}
-            for k in s.get("examples") or {}:
+            for k in list(s.get("examples") or {}) + list(s.get("charts") or {}):
                 if k not in ends:
-                    errs.append(f"{where}: examples for {k!r}, which is not an answer in this tree")
+                    errs.append(f"{where}: examples or a chart for {k!r}, which is not an answer in this tree")
             path = s.get("path") or []
             if any(a not in ("yes", "no") for a in path) or len(path) > len(s["steps"]):
                 errs.append(f"{where}: path must be yes/no answers, one per step at most")

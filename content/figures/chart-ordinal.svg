@@ -1,0 +1,4 @@
+<svg class="chart" viewBox="0 0 260 186" role="img" aria-label="A bar chart of mild, moderate and severe, in order">
+  <path class="ch-axis" d="M16 140 H248"/><rect class="ch-bar" x="24" y="78" width="60" height="62" rx="4"/><text class="ch-lab" x="54.0" y="160">Mild</text><rect class="ch-bar" x="102" y="36" width="60" height="104" rx="4"/><text class="ch-lab" x="132.0" y="160">Moderate</text><rect class="ch-bar" x="180" y="96" width="60" height="44" rx="4"/><text class="ch-lab" x="210.0" y="160">Severe</text>
+  <path class="ch-arrow" d="M30 178 H232 M232 178 l-8 -5 M232 178 l-8 5"/>
+</svg>

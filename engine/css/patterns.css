@@ -314,3 +314,46 @@ a.next-topic:hover{border-color:var(--primary)}
 .scene-ward .sc-pop{transform-box:fill-box;transform-origin:bottom center;animation:pillIn .6s var(--ease) both;animation-delay:calc(.25s + var(--i) * 220ms)}
 @media (prefers-reduced-motion:reduce){.scene-ward .sc-pop{animation:none}}
 @container (max-width:900px){.hook-row{grid-template-columns:minmax(0,1fr)}.hook-row>.fig{order:-1;width:min(70%,300px);margin-inline:auto}}
+
+/* ---------- tree figures: an icon beside each question, a chart beside each answer ---------- */
+.tree-q{position:relative}
+.tree-fig{position:absolute;right:calc(100% + clamp(12px,calc(1.8 * var(--u)),24px));top:50%;width:clamp(44px,calc(5.4 * var(--u)),70px);transform:translateY(-50%)}
+.tree-fig svg{display:block;width:100%;height:auto}
+.qicon .i-fill{fill:color-mix(in srgb,var(--primary) 16%,var(--surface));stroke:var(--primary);stroke-width:2.5}
+.qicon .i-line{fill:none;stroke:var(--primary);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.qicon .i-soft{fill:none;stroke:var(--border-strong);stroke-width:2.5;stroke-linecap:round}
+.qicon .i-dot{fill:var(--primary)}
+.qicon .i-text{fill:var(--muted);font:700 15px var(--sans);text-anchor:middle}
+.qicon .i-big{fill:var(--primary);font-size:22px}
+
+.tree-chart{position:absolute;left:calc(100% + clamp(20px,calc(3 * var(--u)),40px));bottom:0;width:clamp(170px,calc(20 * var(--u)),250px);animation:chartIn .6s var(--ease) .7s both}
+.tree-chart svg{display:block;width:100%;height:auto}
+@keyframes chartIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+.chart .ch-bar,.chart .ch-s1{fill:var(--x-solid)}
+.chart .ch-s2{fill:color-mix(in srgb,var(--x-solid) 68%,var(--surface))}
+.chart .ch-s3{fill:color-mix(in srgb,var(--x-solid) 42%,var(--surface))}
+.chart .ch-s4{fill:color-mix(in srgb,var(--x-solid) 22%,var(--surface))}
+.chart path[class^="ch-s"]{stroke:var(--surface);stroke-width:2}
+.chart .ch-edge{stroke:var(--surface);stroke-width:1.5}
+.chart .ch-axis{stroke:var(--border-strong);stroke-width:2.5;stroke-linecap:round}
+.chart .ch-arrow{fill:none;stroke:var(--x-ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.chart .ch-curve{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chart .ch-lab{fill:var(--muted);font:600 14px var(--sans);text-anchor:middle}
+.chart .ch-lab.ch-left{text-anchor:start;fill:var(--ink);font-size:16px}
+@container (max-width:600px){.tree-fig{display:none}}
+@container (max-width:1099px){.tree-chart{position:static;margin-top:14px;width:min(78%,260px);animation-name:fadeIn}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* a worked tree: figures under the stem that change with the answers */
+.tree-stem{display:flex;flex-direction:column;gap:clamp(12px,calc(2 * var(--u)),24px);min-width:0}
+.tree-side{height:clamp(150px,calc(20.5 * var(--u)),262px)}
+.side-fig{display:none;height:100%;margin:0}
+.side-fig.on{display:flex;justify-content:center;animation:fadeIn .5s ease}
+.side-fig svg{height:100%;width:auto;max-width:100%}
+.gaps .g-lab{fill:var(--muted);font:700 15px var(--sans);letter-spacing:.08em;text-transform:uppercase}
+.gaps .g-line{stroke:var(--border-strong);stroke-width:3;stroke-linecap:round}
+.gaps .g-tick{stroke:var(--border-strong);stroke-width:2.5;stroke-linecap:round}
+.gaps .g-hi{stroke:var(--primary);stroke-width:9;stroke-linecap:round}
+.gaps .g-num{fill:var(--muted);font:600 15px var(--sans);text-anchor:middle}
+.gaps .g-sym{fill:var(--primary);font:700 30px var(--sans);text-anchor:middle}
+.scene-ward .sc-score{font-size:34px}

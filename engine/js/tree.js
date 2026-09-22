@@ -5,14 +5,17 @@
    A final answer with examples opens them in a zoom circle; tapping it again, or anywhere else, closes
    the circle and leaves the tree as it was.
    A worked tree (data-path, the right answers) marks a wrong answer, says why, and goes no further
-   until the right one is chosen. */
+   until the right one is chosen. Side figures beside a worked tree change as the questions are answered. */
 function buildTrees() {
   $$(".tree").forEach(tree => {
     const levels = $$(".tree-level", tree), last = levels.length - 1;
     const zoom = makeZoom(tree.closest(".slide"));
     const path = tree.dataset.path ? tree.dataset.path.split(",") : null;
+    const case_ = tree.closest(".tree-case"), sides = case_ ? $$(".side-fig", case_) : [];
     let ans = [], open = null, miss = null;  // miss: the wrong answer shown, as [step, answer]
     const render = () => {
+      // the side figure under the stem follows the answers: the k-th after k answers, the last one stays
+      sides.forEach((f, k) => f.classList.toggle("on", k === Math.min(ans.length, sides.length - 1)));
       levels.forEach((lv, i) => {
         const shown = i === 0 || ans[i - 1] === "yes";
         lv.classList.toggle("shown", shown);
