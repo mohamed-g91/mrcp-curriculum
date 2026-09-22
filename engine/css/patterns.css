@@ -157,12 +157,17 @@ mark.clue-mark.lit{background:var(--hl);color:var(--hl-ink);box-shadow:0 0 0 .15
 .tree-end .tree-label{justify-self:start;margin-left:18px}
 @keyframes treeIn{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
 @container (max-width:600px){
-  .tree-row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
-  .tree-pad,.tree-link{display:none}
+  /* phones: more air between levels; Yes stays on the spine, the answer drops below the pills */
+  .tree-level+.tree-level{padding-top:30px}
+  .tree-level+.tree-level::before{height:30px}
+  .tree-q{min-height:46px}
+  .tree-row{column-gap:12px;row-gap:18px;margin-top:14px}
+  .tree-link,.tree-end .tree-pad{display:none}
   .tree-side{display:contents}
-  .tree-row .tree-res{flex-basis:100%;justify-content:center;transform-origin:center top;margin-top:4px}
+  .tree-a.no{justify-self:start}
+  .tree-row .tree-res{grid-column:1 / -1;justify-content:center;transform-origin:center top}
   .tree-level:not(.no) .tree-side .tree-res{display:none}
-  .tree-end .tree-res{display:flex;gap:12px}
+  .tree-end .tree-res{display:flex;gap:14px;justify-content:center}
   .tree-end .tree-label{margin-left:0}
 }
 
