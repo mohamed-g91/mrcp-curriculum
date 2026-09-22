@@ -2,3 +2,6 @@
 dist/
 __pycache__/
 *.pyc
+
+# downloaded stock illustrations: kept locally, never published (their licence forbids redistributing collections)
+content/figures/undraw_*
