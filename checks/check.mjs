@@ -1,0 +1,251 @@
+// Automated page check: drives headless Chrome through a built topic page.
+//
+//   node checks/check.mjs dist/statistics/data-types.html [--shots out-dir]
+//
+// For each window size (1280 x 720 stage, 1920 x 1080 recording, 375 x 812 phone) it visits
+// every slide, opens every reveal on it, and checks there is no sideways overflow and, on the
+// stage, no vertical scrolling. Then it solves every case, sorts the warm-up, and fails on any
+// console error or network request. --shots saves a screenshot of every slide and open state.
+import { spawn } from "node:child_process";
+import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+
+const CHROME = process.env.CHROME || "C:/Program Files/Google/Chrome/Application/chrome.exe";
+const PORT = 9333;
+const SIZES = [
+  { name: "stage", width: 1280, height: 720 },
+  { name: "rec", width: 1920, height: 1080 },
+  { name: "phone", width: 375, height: 812, mobile: true },
+];
+
+const args = process.argv.slice(2);
+const page = args.find(a => !a.startsWith("--"));
+const shotsAt = args.indexOf("--shots");
+const shotDir = shotsAt >= 0 ? resolve(args[shotsAt + 1]) : null;
+if (!page) { console.error("usage: node checks/check.mjs <page.html> [--shots dir]"); process.exit(2); }
+if (shotDir) mkdirSync(shotDir, { recursive: true });
+const url = pathToFileURL(resolve(page)).href;
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const problems = [];
+const fail = msg => { problems.push(msg); console.log("  FAIL " + msg); };
+
+// ---------------------------------------------------------------- Chrome and the DevTools protocol
+const profile = mkdtempSync(join(tmpdir(), "mrcp-check-"));
+const chrome = spawn(CHROME, [
+  "--headless=new", `--remote-debugging-port=${PORT}`, `--user-data-dir=${profile}`,
+  "--hide-scrollbars", "--no-first-run", "--no-default-browser-check", "--allow-file-access-from-files", "about:blank",
+], { stdio: "ignore" });
+
+async function connect() {
+  for (let i = 0; i < 50; i++) {
+    try {
+      const targets = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
+      const t = targets.find(x => x.type === "page");
+      if (t) return t.webSocketDebuggerUrl;
+    } catch (e) {}
+    await sleep(200);
+  }
+  throw new Error("Chrome did not start");
+}
+
+const ws = new WebSocket(await connect());
+await new Promise(r => ws.addEventListener("open", r, { once: true }));
+let nextId = 1;
+const pending = new Map();
+const listeners = [];
+ws.addEventListener("message", ev => {
+  const m = JSON.parse(ev.data);
+  if (m.id && pending.has(m.id)) {
+    const { ok, no } = pending.get(m.id); pending.delete(m.id);
+    m.error ? no(new Error(m.error.message)) : ok(m.result);
+  } else if (m.method) listeners.forEach(f => f(m));
+});
+const send = (method, params = {}) => new Promise((ok, no) => {
+  const id = nextId++; pending.set(id, { ok, no }); ws.send(JSON.stringify({ id, method, params }));
+});
+const js = async expr => {
+  const r = await send("Runtime.evaluate", { expression: expr, awaitPromise: true, returnByValue: true });
+  if (r.exceptionDetails) throw new Error(`page error in: ${expr.slice(0, 80)}\n${r.exceptionDetails.exception?.description || r.exceptionDetails.text}`);
+  return r.result.value;
+};
+const shot = async name => {
+  if (!shotDir) return;
+  const { data } = await send("Page.captureScreenshot", { format: "png" });
+  writeFileSync(join(shotDir, name + ".png"), Buffer.from(data, "base64"));
+};
+
+listeners.push(m => {
+  if (m.method === "Runtime.exceptionThrown") fail(`console exception: ${m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text}`);
+  if (m.method === "Runtime.consoleAPICalled" && m.params.type === "error") fail(`console error: ${m.params.args.map(a => a.value).join(" ")}`);
+  if (m.method === "Network.requestWillBeSent") {
+    const u = m.params.request.url;
+    if (!u.startsWith("data:") && !u.startsWith(url.split("#")[0])) fail(`network request: ${u}`);
+  }
+});
+await send("Runtime.enable");
+await send("Page.enable");
+await send("Network.enable");
+
+async function load(size) {
+  await send("Emulation.setDeviceMetricsOverride", { width: size.width, height: size.height, deviceScaleFactor: 1, mobile: !!size.mobile });
+  await send("Page.navigate", { url: url + "#1" });
+  await sleep(700);
+  await js("localStorage.clear(), true");
+  await send("Page.reload", {});
+  await sleep(700);
+}
+
+// ---------------------------------------------------------------- layout checks
+const MEASURE = W => `(() => {
+  const d = document.documentElement, deck = document.getElementById("deck");
+  const fluid = d.classList.contains("fluid");
+  const s = Deck.slides[Deck.i];
+  // anything poking out of the screen sideways
+  const wide = [...s.querySelectorAll("*")].filter(n => { const r = n.getBoundingClientRect(); return r.width && (r.right > ${W} + 1 || r.left < -1); })
+    .slice(0, 3).map(n => n.className || n.tagName);
+  return { id: s.dataset.id, fluid, hscroll: d.scrollWidth > ${W} + 1 || innerWidth > ${W}, wide,
+           vscroll: !fluid && deck.scrollHeight > deck.clientHeight + 1, over: deck.scrollHeight - deck.clientHeight };
+})()`;
+
+async function measure(size, label) {
+  const m = await js(MEASURE(size.width));
+  const where = `${size.name} ${label}`;
+  if (m.hscroll) fail(`${where}: page scrolls sideways`);
+  if (m.wide.length) fail(`${where}: off screen: ${m.wide.join(", ")}`);
+  if (m.vscroll && !/^(warmup|end)$/.test(m.id)) fail(`${where}: slide scrolls by ${m.over}px`);
+  return m;
+}
+
+// open every reveal on the current slide, one at a time, measuring each state
+const REVEALS = `(() => {
+  const s = Deck.slides[Deck.i];
+  return { dots: s.querySelectorAll(".spec-dot").length, cards: s.querySelectorAll(".reveal-item").length, qf: s.querySelectorAll(".qf-q").length };
+})()`;
+
+async function layoutPass(size) {
+  console.log(`\n${size.name} ${size.width}x${size.height}`);
+  await load(size);
+  const n = await js("Deck.slides.length");
+  for (let i = 0; i < n; i++) {
+    await js(`Deck.go(${i}), true`);
+    await sleep(550);
+    const m = await measure(size, `slide ${i + 1}`);
+    const tag = `${size.name}-${String(i + 1).padStart(2, "0")}-${m.id}`;
+    await shot(tag);
+    const r = await js(REVEALS);
+    for (let k = 0; k < r.dots; k++) {
+      await js(`Deck.slides[Deck.i].querySelectorAll(".spec-dot")[${k}].click(), true`);
+      await sleep(k === r.dots - 1 ? 1600 : 250);
+      await measure(size, `slide ${i + 1} circle ${k + 1}`);
+      if (k === 2 || k === r.dots - 1) await shot(`${tag}-open${k + 1}`);
+    }
+    for (let k = 0; k < r.cards; k++) {
+      await js(`Deck.slides[Deck.i].querySelectorAll(".reveal-item")[${k}].click(), true`);
+      await sleep(350);
+      await measure(size, `slide ${i + 1} card ${k + 1}`);
+    }
+    if (r.cards) await shot(`${tag}-open`);
+    if (r.qf) {
+      for (let k = 0; k < r.qf; k++) {
+        await js(`(() => { const q = Deck.slides[Deck.i].querySelectorAll(".qf-q")[${k}]; if (!q.disabled) q.click(); return true; })()`);
+        await sleep(350);
+      }
+      await measure(size, `slide ${i + 1} flow answered`);
+      await shot(`${tag}-open`);
+    }
+    await js(`document.body.click(), true`);
+  }
+}
+
+// ---------------------------------------------------------------- behaviour checks
+async function solvePass() {
+  console.log("\ncases and warm-up");
+  await load(SIZES[0]);
+  await js(`document.querySelector('[data-go="practise"]').click(), true`);
+  await sleep(400);
+  // warm-up: tap each chip, then its right bucket
+  const sorted = await js(`(async () => {
+    const S = TOPIC.sorts.warmup, wait = ms => new Promise(r => setTimeout(r, ms));
+    for (const chip of [...document.querySelectorAll(".pool .chip")]) {
+      const item = S.items[+chip.dataset.i];
+      chip.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+      document.querySelector('.bucket[data-key="' + item.answer + '"]').click();
+      await wait(50);
+    }
+    return { left: document.querySelectorAll(".pool .chip").length, msg: document.querySelector(".sort .feedback").textContent };
+  })()`);
+  if (sorted.left) fail(`warm-up: ${sorted.left} chip(s) could not be placed`);
+  else console.log("  ok   warm-up sorts: " + sorted.msg);
+  // cases: the first practice case gets one wrong answer, then every case is solved
+  const res = await js(`(async () => {
+    const wait = ms => new Promise(r => setTimeout(r, ms)), out = [];
+    const cases = [...document.querySelectorAll(".slide.case")];
+    const all = Object.values(TOPIC.quizzes)[0].cases;
+    for (const [pos, sec] of cases.entries()) {
+      Deck.go(Deck.slides.indexOf(sec)); await wait(80);
+      const c = all.find(x => x.id === sec.dataset.case);
+      if (pos === 1) {
+        const wrong = [...sec.querySelectorAll(".choice")].find(b => b.dataset.key !== c.answer);
+        wrong.click(); await wait(80);
+        out.push({ id: c.id, wrongLit: !!sec.querySelector("mark.lit"), wrongFb: sec.querySelector(".feedback.bad") !== null });
+      }
+      const right = sec.querySelector('.choice[data-key="' + c.answer + '"]');
+      if (!right) { out.push({ id: c.id, missing: true }); continue; }
+      right.click(); await wait(80);
+      out.push({ id: c.id, ok: right.classList.contains("correct"), next: !!sec.querySelector(".case-next"), title: sec.querySelector("h2").textContent,
+                 order: [...sec.querySelectorAll(".choice")].map(b => b.dataset.key).join(",") });
+    }
+    return { out, score: document.getElementById("scorePill").textContent, n: cases.length, total: all.length };
+  })()`);
+  if (res.n !== res.total) fail(`cases: ${res.n} dealt, ${res.total} written`);
+  for (const r of res.out) {
+    if (r.missing) fail(`${r.id}: the answer is not among the options`);
+    else if ("wrongLit" in r) { if (!r.wrongLit || !r.wrongFb) fail(`${r.id}: a wrong answer did not hint and light the clue`); }
+    else if (!r.ok || !r.next) fail(`${r.id}: did not solve cleanly`);
+    else console.log(`  ok   ${r.title.padEnd(15)} ${r.id}  options ${r.order}`);
+  }
+  const want = `Score ${res.total - 2} / ${res.total - 1}`;  // solved example unscored, one wrong on purpose
+  if (res.score !== want) fail(`score reads "${res.score}", expected "${want}"`);
+  else console.log(`  ok   ${res.score}`);
+  const firstIsSolved = await js(`document.querySelector(".slide.case").classList.contains("solved")`);
+  if (!firstIsSolved) fail("the first case is not the solved example");
+  await js(`Deck.go(Deck.slides.length - 1), true`);
+  await sleep(400);
+  await shot("stage-end-scored");
+}
+
+// dark mode: screenshots of every slide on the stage, for a look (layout is the same as light)
+async function darkPass() {
+  if (!shotDir) return;
+  await load(SIZES[0]);
+  await js(`document.getElementById("themeBtn").click(), true`);
+  const n = await js("Deck.slides.length");
+  for (let i = 0; i < n; i++) {
+    await js(`Deck.go(${i}), true`);
+    await sleep(500);
+    const id = await js(`Deck.slides[Deck.i].dataset.id`);
+    await js(`(() => { const d = Deck.slides[Deck.i].querySelector(".spec-dot, .reveal-item"); if (d) d.click(); return true; })()`);
+    await sleep(900);
+    await shot(`dark-${String(i + 1).padStart(2, "0")}-${id}`);
+    await js(`document.body.click(), true`);
+  }
+  await js(`localStorage.removeItem("mrcp-theme"), true`);
+}
+
+try {
+  for (const size of SIZES) await layoutPass(size);
+  await solvePass();
+  await darkPass();
+} catch (e) {
+  fail(e.message);
+} finally {
+  ws.close();
+  chrome.kill();
+  await sleep(300);
+  try { rmSync(profile, { recursive: true, force: true }); } catch (e) {}
+}
+console.log(problems.length ? `\n${problems.length} problem(s).` : "\nAll checks passed.");
+process.exit(problems.length ? 1 : 0);

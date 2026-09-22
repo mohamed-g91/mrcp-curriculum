@@ -1,0 +1,18 @@
+# Every permanent item ID ever built. Maintained by build.py; do not edit by hand.
+stats.data-types.c01
+stats.data-types.c02
+stats.data-types.c03
+stats.data-types.c04
+stats.data-types.c05
+stats.data-types.c06
+stats.data-types.c07
+stats.data-types.c08
+stats.data-types.c09
+stats.data-types.w01
+stats.data-types.w02
+stats.data-types.w03
+stats.data-types.w04
+stats.data-types.w05
+stats.data-types.w06
+stats.data-types.w07
+stats.data-types.w08

@@ -1,0 +1,15 @@
+/* ---------- curriculum home page ---------- */
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--text);font:18px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+.index{max-width:880px;margin:0 auto;padding:56px 16px 40px}
+.index h1{font:600 clamp(2.2rem,5vw,3.4rem)/1.1 var(--serif);color:var(--ink);margin:0 0 36px;padding-bottom:20px;position:relative}
+.index h1::after{content:"";position:absolute;left:0;bottom:0;width:180px;height:7px;border-radius:8px;background:var(--rule)}
+.spec-block{margin-bottom:32px}
+.spec-block h2{font:600 1.5rem/1.2 var(--serif);color:var(--ink);margin:0 0 12px}
+.topics{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.topic{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow)}
+.topic a{color:var(--primary);font-weight:650;text-decoration:none}
+.topic a:hover{text-decoration:underline;text-underline-offset:3px}
+.topic.s-planned{box-shadow:none;background:transparent;color:var(--muted)}
+.status{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.credits{margin-top:40px;padding-top:12px;border-top:1px solid var(--border);font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 16px}

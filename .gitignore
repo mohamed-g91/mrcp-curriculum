@@ -1,0 +1,4 @@
+# built pages: Cloudflare Pages runs build.py itself
+dist/
+__pycache__/
+*.pyc

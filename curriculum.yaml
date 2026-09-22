@@ -1,0 +1,17 @@
+# The curriculum spine: specialties, their topics, and where each topic lives.
+# A topic's content is in content/<specialty>/<slug>.yaml and builds to dist/<specialty>/<slug>.html.
+# Topic IDs are permanent (<prefix>.<slug>). status: planned | draft | reviewed | published
+# video: the YouTube video ID once the video is live.
+
+site:
+  title: MRCP Interactive
+  author: Mohamed Gafar
+  disclaimer: Not affiliated with the Royal College of Physicians
+
+specialties:
+  - id: statistics
+    prefix: stats
+    title: Statistics
+    topics:
+      - { slug: data-types,            title: Types of data,            status: draft,   video: null }
+      - { slug: choose-the-right-test, title: Choosing the right test, status: planned, video: null }

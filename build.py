@@ -1,0 +1,261 @@
+"""Build every topic page and the curriculum home page into dist/.
+
+  python build.py            check the content, then build everything
+  python build.py --check    only check the content
+
+Each topic in curriculum.yaml has a content file, content/<specialty>/<slug>.yaml,
+and builds to dist/<specialty>/<slug>.html: one self-contained offline file with
+the engine's CSS, JavaScript, icons and fonts embedded.
+
+Permanent IDs: every case and practice item ID ever built is listed in
+content/ids.lock. The check fails if a listed ID disappears without being
+retired, or if a retired ID comes back, so IDs are never reused.
+"""
+import base64
+import datetime
+import json
+import os
+import re
+import sys
+
+import yaml
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from engine.patterns import CENTRED, PATTERNS, e, p_title, topic_data  # noqa: E402
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+ENGINE = os.path.join(ROOT, "engine")
+DIST = os.path.join(ROOT, "dist")
+LOCK = os.path.join(ROOT, "content", "ids.lock")
+CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css"]
+JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "sort.js", "quiz.js", "deck.js"]
+ITEM_ID = re.compile(r"^[a-z]\d{2,3}$")
+INSTRUCTION = re.compile(r"\b(tap|click|drag|press|select)\b", re.I)
+
+
+def read(*parts):
+    with open(os.path.join(*parts), encoding="utf-8") as f:
+        return f.read()
+
+
+class Loader(yaml.SafeLoader):
+    """Like safe_load, but only true/false are booleans: yes, no, on and off stay words."""
+
+
+Loader.yaml_implicit_resolvers = {
+    k: [(tag, rx) for tag, rx in v if tag != "tag:yaml.org,2002:bool"]
+    for k, v in yaml.SafeLoader.yaml_implicit_resolvers.items()
+}
+Loader.add_implicit_resolver("tag:yaml.org,2002:bool", re.compile(r"^(?:true|True|TRUE|false|False|FALSE)$"), list("tTfF"))
+
+
+def load_yaml(path):
+    with open(path, encoding="utf-8") as f:
+        return yaml.load(f, Loader=Loader)
+
+
+# ---------------------------------------------------------------- checks
+
+def check_topic(t, expected_id):
+    errs, warns = [], []
+    if t.get("id") != expected_id:
+        errs.append(f"id is {t.get('id')!r}, curriculum.yaml expects {expected_id!r}")
+    for key in ("title", "description", "updated", "concepts", "families", "watch", "practise"):
+        if key not in t:
+            errs.append(f"missing '{key}'")
+    if errs:
+        return errs, warns
+    fams, cons = t["families"], t["concepts"]
+    for k, c in cons.items():
+        if c.get("family") not in fams:
+            errs.append(f"concept {k}: unknown family {c.get('family')!r}")
+    seen = set()
+    for s in t["watch"] + t["practise"]:
+        sid = s.get("id")
+        where = f"slide {sid or '?'}"
+        if not sid:
+            errs.append("a slide has no id")
+        elif sid in seen or sid == "title":
+            errs.append(f"{where}: duplicate id")
+        seen.add(sid)
+        if s.get("pattern") not in PATTERNS:
+            errs.append(f"{where}: unknown pattern {s.get('pattern')!r}")
+            continue
+        if INSTRUCTION.search(s.get("title", "")):
+            warns.append(f"{where}: title reads like an instruction ({s['title']!r})")
+        refs = []
+        p = s["pattern"]
+        if p == "spectrum":
+            refs += [st["concept"] for st in s["stops"] if st.get("concept")]
+        if p == "question-flow":
+            refs += [st["no"] for st in s["steps"]] + [s["end"]]
+        if p == "clue-stem":
+            refs += list(s["clues"])
+        if p == "reveal-cards":
+            refs += [c["concept"] for c in s["cards"] if c.get("concept")]
+        if p == "sort":
+            refs += s["buckets"] + [it["answer"] for it in s["items"]]
+        if p == "stem-quiz":
+            refs += s["options"]
+            for c in s["cases"]:
+                if c["answer"] not in s["options"]:
+                    errs.append(f"{where}: case {c['id']} answer {c['answer']!r} is not an option")
+                if "[[" not in c["stem"]:
+                    errs.append(f"{where}: case {c['id']} has no [[clue]] in its stem")
+                for key in ("question", "hint", "why"):
+                    if not c.get(key):
+                        errs.append(f"{where}: case {c['id']} has no {key}")
+            if not s["cases"] or not s["cases"][0].get("solved"):
+                errs.append(f"{where}: the first case must be the solved example")
+        for r in refs:
+            if r not in cons:
+                errs.append(f"{where}: unknown concept {r!r}")
+    return errs, warns
+
+
+def item_ids(t):
+    """(full id, where) for every permanent item ID in a topic."""
+    out = []
+    for s in t["practise"]:
+        for it in s.get("items", []) + s.get("cases", []):
+            out.append((f"{t['id']}.{it.get('id')}", it.get("id")))
+    return out
+
+
+def check_ids(topics):
+    errs = []
+    locked = set()
+    if os.path.exists(LOCK):
+        locked = {ln.strip() for ln in read(LOCK).splitlines() if ln.strip() and not ln.startswith("#")}
+    current, retired = set(), set()
+    for t in topics:
+        retired |= {f"{t['id']}.{r}" for r in t.get("retired", [])}
+        for full, short in item_ids(t):
+            if not short or not ITEM_ID.match(str(short)):
+                errs.append(f"{t['id']}: bad item id {short!r} (use a letter and 2-3 digits, e.g. c07)")
+            elif full in current:
+                errs.append(f"{full}: used twice")
+            current.add(full)
+    for gone in sorted(locked - current - retired):
+        errs.append(f"{gone}: was published but is missing. Put it back, or add it to the topic's 'retired' list")
+    for back in sorted(current & retired):
+        errs.append(f"{back}: is retired and cannot be reused. Give the item a new ID")
+    return errs, sorted(locked | current)
+
+
+# ---------------------------------------------------------------- build
+
+def fonts_css():
+    b64 = {n: base64.b64encode(open(os.path.join(ENGINE, "fonts", n), "rb").read()).decode("ascii")
+           for n in ("inter.woff2", "serif.woff2")}
+    return ('@font-face{font-family:"Inter";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:100 900;font-display:swap}\n'
+            '@font-face{font-family:"Source Serif 4";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:600;font-display:swap}\n'
+            % (b64["inter.woff2"], b64["serif.woff2"]))
+
+
+def section(slide, part, inner):
+    cls = "slide" + (" slide-center" if slide["pattern"] in CENTRED else "")
+    return (f'<section class="{cls} p-{slide["pattern"]}" data-id="{e(slide["id"])}" data-part="{part}" '
+            f'aria-label="{e(slide["title"])}">{inner}</section>')
+
+
+def render_topic(t, spec, site):
+    slides = [section({"id": "title", "pattern": "title", "title": "Title"}, "", p_title({}, t))]
+    for part, key in (("Watch", "watch"), ("Practise", "practise")):
+        for s in t[key]:
+            inner = PATTERNS[s["pattern"]](s, t)
+            if inner is None:  # dealt in the browser
+                slides.append(f'<div class="case-anchor" data-quiz="{e(s["id"])}" hidden></div>')
+            else:
+                slides.append(section(s, part, inner))
+    shell = read(ENGINE, "shell.html")
+    css = fonts_css() + "".join(read(ENGINE, "css", f) for f in CSS_FILES)
+    js = "".join(read(ENGINE, "js", f) for f in JS_FILES)
+    data = json.dumps(topic_data(t), ensure_ascii=False).replace("</", "<\\/")
+    page_title = f'{t["title"]} · MRCP {spec["title"]}'
+    for k, v in {
+        "{{PAGE_TITLE}}": e(page_title), "{{DESCRIPTION}}": e(t["description"]), "{{AUTHOR}}": e(site["author"]),
+        "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{ICONS}}": read(ENGINE, "icons.svg"),
+        "{{SLIDES}}": "\n".join(slides), "{{DATA}}": data, "{{CSS}}": css, "{{JS}}": js,
+    }.items():
+        shell = shell.replace(k, v)
+    return shell
+
+
+def render_index(site, specs):
+    rows = []
+    for spec in specs:
+        items = []
+        for tp in spec["topics"]:
+            status = tp.get("status", "planned")
+            name = e(tp["title"])
+            link = f'<a href="{spec["id"]}/{tp["slug"]}.html">{name}</a>' if status != "planned" else f"<span>{name}</span>"
+            items.append(f'<li class="topic s-{status}">{link}<span class="status">{status}</span></li>')
+        rows.append(f'<section class="spec-block"><h2>{e(spec["title"])}</h2><ul class="topics">{"".join(items)}</ul></section>')
+    css = fonts_css() + read(ENGINE, "css", "tokens.css") + read(ENGINE, "css", "index.css")
+    d = datetime.date.today()
+    today = f"{d.day} {d.strftime('%B %Y')}"
+    return f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{e(site["title"])}</title><meta name="description" content="Interactive MRCP revision pages, one per topic.">
+<style>{css}</style></head>
+<body><main class="index"><h1>{e(site["title"])}</h1>{"".join(rows)}
+<p class="credits"><span>Created by {e(site["author"])}</span><span>{e(site["disclaimer"])}</span><span>Last updated {today}</span></p>
+</main></body></html>"""
+
+
+def main():
+    only_check = "--check" in sys.argv
+    cur = load_yaml(os.path.join(ROOT, "curriculum.yaml"))
+    site, specs = cur["site"], cur["specialties"]
+    topics, errors, warnings, links = [], [], [], {}
+    for spec in specs:
+        for tp in spec["topics"]:
+            tid = f'{spec["prefix"]}.{tp["slug"]}'
+            if tp.get("status") in ("draft", "reviewed", "published"):
+                links[tid] = f'../{spec["id"]}/{tp["slug"]}.html'
+    for spec in specs:
+        for tp in spec["topics"]:
+            if tp.get("status", "planned") == "planned":
+                continue
+            tid = f'{spec["prefix"]}.{tp["slug"]}'
+            path = os.path.join(ROOT, "content", spec["id"], tp["slug"] + ".yaml")
+            if not os.path.exists(path):
+                errors.append(f"{tid}: no content file at {os.path.relpath(path, ROOT)}")
+                continue
+            t = load_yaml(path)
+            errs, warns = check_topic(t, tid)
+            errors += [f"{tid}: {x}" for x in errs]
+            warnings += [f"{tid}: {x}" for x in warns]
+            t["_site"], t["_links"] = site, links
+            d = t["updated"] if isinstance(t["updated"], datetime.date) else datetime.date.fromisoformat(str(t["updated"]))
+            t["_updated_text"] = f"{d.day} {d.strftime('%B %Y')}"
+            topics.append((spec, tp, t))
+    if not errors:
+        id_errs, lock_ids = check_ids([t for _, _, t in topics])
+        errors += id_errs
+    for w in warnings:
+        print("warning:", w)
+    if errors:
+        for x in errors:
+            print("error:", x)
+        sys.exit(f"{len(errors)} error(s); nothing was built.")
+    print(f"Content OK: {len(topics)} topic(s).")
+    if only_check:
+        return
+    for spec, tp, t in topics:
+        out = os.path.join(DIST, spec["id"], tp["slug"] + ".html")
+        os.makedirs(os.path.dirname(out), exist_ok=True)
+        with open(out, "w", encoding="utf-8", newline="\n") as f:
+            f.write(render_topic(t, spec, site))
+        print(f"Built {os.path.relpath(out, ROOT)} ({os.path.getsize(out):,} bytes)")
+    with open(os.path.join(DIST, "index.html"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(render_index(site, specs))
+    with open(LOCK, "w", encoding="utf-8", newline="\n") as f:
+        f.write("# Every permanent item ID ever built. Maintained by build.py; do not edit by hand.\n")
+        f.write("\n".join(lock_ids) + "\n")
+    print("Built dist/index.html")
+
+
+if __name__ == "__main__":
+    main()

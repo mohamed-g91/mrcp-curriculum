@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="{{DESCRIPTION}}">
+<meta name="author" content="{{AUTHOR}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{PAGE_TITLE}}">
+<meta property="og:description" content="{{DESCRIPTION}}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{PAGE_TITLE}}">
+<meta name="twitter:description" content="{{DESCRIPTION}}">
+<meta name="theme-color" content="#1F4E8C">
+<title>{{PAGE_TITLE}}</title>
+<style>
+{{CSS}}
+</style>
+</head>
+<body>
+{{ICONS}}
+<div class="app" id="app">
+<div class="frame">
+  <header class="topbar">
+    <span class="brand"><b>{{TITLE}}</b><span class="brand-sub">MRCP · {{SPECIALTY}}</span></span>
+    <span class="part-label" id="partLabel"></span>
+    <span class="score-pill" id="scorePill" title="Correct first attempts">Score 0 / 0</span>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch light or dark mode"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></button>
+  </header>
+  <div class="progress" aria-hidden="true"><div id="progressBar"></div></div>
+  <main class="deck" id="deck">
+{{SLIDES}}
+  </main>
+  <nav class="navbar" aria-label="Slide navigation">
+    <div class="nav-left">
+      <button class="btn" id="prevBtn" type="button"><svg class="ico" aria-hidden="true"><use href="#i-left"/></svg><span class="nav-label">Back</span></button>
+      <button class="btn" id="homeBtn" type="button" aria-label="Go to the first slide"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span class="nav-label">Home</span></button>
+    </div>
+    <span class="nav-count" id="navCount">1 / 1</span>
+    <div class="nav-right">
+      <button class="btn primary" id="nextBtn" type="button">Next<svg class="ico" aria-hidden="true"><use href="#i-right"/></svg></button>
+    </div>
+  </nav>
+</div>
+</div>
+<script>const TOPIC = {{DATA}};</script>
+<script>
+{{JS}}
+</script>
+</body>
+</html>

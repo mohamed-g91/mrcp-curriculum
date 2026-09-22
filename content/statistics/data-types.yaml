@@ -1,0 +1,189 @@
+# Types of data: MRCP Part 1 statistics.
+# A 5-minute video deck ("watch") followed by practice on the page ("practise").
+# IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
+
+id: stats.data-types
+title: Types of data
+description: Nominal, ordinal, discrete or continuous? Learn three quick questions that name any variable in an MRCP stem, then practise on nine exam-style stems.
+status: draft
+updated: 2026-09-22
+sources:
+  - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapter 2.
+  - Petrie A, Sabin C. Medical Statistics at a Glance, 4th ed. Chapter 1.
+retired: []
+
+# One label and one colour per concept, everywhere on the page.
+families:
+  cat: Categorical
+  np: Ranked
+  par: Numerical
+
+concepts:
+  nominal:    { label: Nominal / binary, family: cat, letter: N, icon: tag }
+  ordinal:    { label: Ordinal,          family: np,  letter: O, icon: stairs }
+  discrete:   { label: Discrete,         family: par, letter: D, icon: hash }
+  continuous: { label: Continuous,       family: par, letter: C, icon: ruler }
+
+watch:
+  - id: hook
+    pattern: hook
+    title: What type of data is this?
+    stem: In a trial of a new analgesic, 120 adults rated their pain on a scale from 0 to 10, 24 hours after surgery.
+    question: What type of data is the pain score?
+
+  - id: types
+    pattern: spectrum
+    title: Five types of data
+    groups:
+      - { family: cat, span: 2 }
+      - { family: np,  span: 1 }
+      - { family: par, span: 2 }
+    stops:
+      - { label: Nominal, family: cat, letter: N, examples: [Blood group, Ethnicity, Diagnosis] }
+      - { label: Binary,  family: cat, letter: B, examples: [Alive / dead, Smoker yes / no, Test positive / negative] }
+      - concept: ordinal
+        split:
+          - { label: Labels,  family: cat, items: [Mild / moderate / severe, NYHA class I–IV] }
+          - { label: Numbers, family: par, items: [Pain score 0–10, mRS 0–6, GCS 3–15] }
+      - { concept: discrete,   examples: [Number of seizures, Admissions per year, Number of children] }
+      - { concept: continuous, examples: [Blood pressure, Weight, HbA1c, eGFR] }
+
+  - id: questions
+    pattern: question-flow
+    title: Three quick questions
+    steps:
+      - { q: "Ordered?",    no: nominal }
+      - { q: "Equal gaps?", no: ordinal }
+      - { q: "Fractions?",  no: discrete }
+    end: continuous
+
+  - id: identify
+    pattern: clue-stem
+    title: Spot the type in a stem
+    stem: >-
+      In a cohort of 300 adults with heart failure, researchers recorded the
+      [[discrete|number of hospital admissions per year]],
+      [[continuous|blood pressure (mmHg)]] and
+      [[ordinal|breathlessness graded mild / moderate / severe]],
+      and compared the [[nominal|proportion who died (yes / no)]] between treatment groups.
+    clues:
+      nominal:    [yes / no, present / absent, positive / negative, "type A, B or O", proportion who…, "% with…"]
+      ordinal:    [grade, stage, class, score, mild / moderate / severe, rated 1–5]
+      discrete:   [number of…, episodes per year, count of…]
+      continuous: ["a unit: mmHg, kg", "mmol/mol, mL/min", "days, hours"]
+
+  - id: hook-solved
+    pattern: question-flow
+    title: Back to the pain score
+    stem: In a trial of a new analgesic, 120 adults rated their [[pain on a scale from 0 to 10]], 24 hours after surgery.
+    steps:
+      - { q: "Ordered?",    no: nominal }
+      - { q: "Equal gaps?", no: ordinal }
+      - { q: "Fractions?",  no: discrete }
+    end: continuous
+    path: [yes, no]
+
+  - id: why
+    pattern: reveal-cards
+    title: The type picks the test
+    cards:
+      - { concept: nominal, answer: Chi-squared or Fisher's exact }
+      - { concept: ordinal, answer: Rank tests such as Mann-Whitney U }
+      - { family: par,      answer: "t-test if normal, rank test if skewed" }
+    next: { topic: stats.choose-the-right-test, label: Choosing the right test }
+
+practise:
+  - id: warmup
+    pattern: sort
+    title: Sort these variables
+    buckets: [nominal, ordinal, discrete, continuous]
+    retry: "Ask the three questions: ordered? equal gaps? fractions?"
+    done: "Remember: discrete vs continuous rarely changes the test, but spotting ordinal will."
+    items:
+      - { id: w01, label: Blood group,                  answer: nominal,    why: Labels with no order. }
+      - { id: w02, label: Died within 30 days (yes/no), answer: nominal,    why: "Two categories, so binary, which is a type of nominal." }
+      - { id: w03, label: NYHA class I–IV,              answer: ordinal,    why: Ordered categories with unequal gaps. }
+      - { id: w04, label: Cancer stage,                 answer: ordinal,    why: "Ordered, but stage 4 is not 'twice' stage 2." }
+      - { id: w05, label: Asthma exacerbations per year, answer: discrete,  why: "A count, so whole numbers only." }
+      - { id: w06, label: Number of children,           answer: discrete,   why: "A count, so whole numbers only." }
+      - { id: w07, label: Serum sodium (mmol/L),        answer: continuous, why: Measured on a scale with a unit. }
+      - { id: w08, label: Weight (kg),                  answer: continuous, why: "Measured, and can take any value." }
+
+  - id: cases
+    pattern: stem-quiz
+    title: Name the type
+    options: [nominal, ordinal, discrete, continuous]
+    # The first case is the solved example; the rest are dealt in a random order.
+    # [[...]] marks the clue phrase, highlighted only after a wrong answer (or in the solved example).
+    cases:
+      - id: c01
+        solved: true
+        stem: In a trial of a new analgesic, 120 adults rated their [[pain on a scale from 0 to 10]], 24 hours after surgery.
+        question: What type of data is the pain score?
+        answer: ordinal
+        hint: Are the gaps between the scores equal?
+        why: "The scores are ranks: a change from 2 to 3 need not mean the same as a change from 8 to 9."
+        tutor: "Ordered? Yes. Equal gaps? No. So it is ordinal, even though it is written as numbers."
+
+      - id: c02
+        stem: A survey of 400 adults at a chest clinic recorded whether each person [[had smoked in the past year (yes / no)]].
+        question: What type of data is smoking in the past year?
+        answer: nominal
+        hint: How many categories are there, and do they have an order?
+        why: "Two categories with no order: binary, which is a type of nominal."
+
+      - id: c03
+        stem: A falls clinic recorded the [[number of falls in the previous 12 months]] for 250 older adults.
+        question: What type of data is the number of falls?
+        answer: discrete
+        hint: Is it counted or measured?
+        why: "A count: whole numbers only. Nobody has 2.5 falls."
+
+      - id: c04
+        stem: In a cohort of adults with chronic kidney disease, researchers recorded the [[eGFR (mL/min/1.73 m²)]] at one year.
+        question: What type of data is the eGFR?
+        answer: continuous
+        hint: Does it have a unit of measurement?
+        why: "Measured on a scale with a unit, so it can take any value in its range."
+
+      - id: c05
+        stem: A lung cancer registry recorded the [[tumour stage (I–IV)]] of each patient at diagnosis.
+        question: What type of data is the tumour stage?
+        answer: ordinal
+        hint: Do the stages have an order, and are the gaps between them equal?
+        why: "Ordered, but stage IV is not 'twice' stage II: the gaps are not equal."
+
+      - id: c06
+        stem: A diabetes audit recorded each patient's [[ethnicity as White, Black, Asian, Mixed or Other]].
+        question: What type of data is ethnicity?
+        answer: nominal
+        hint: Can these groups be put in a meaningful order?
+        why: Labels with no natural order.
+
+      - id: c07
+        twist: true
+        stem: A study of hip fracture outcomes in 600 adults recorded each patient's [[age in completed years]].
+        question: What type of data is age?
+        answer: continuous
+        hint: Is age counted, or measured and then rounded?
+        why: "Age is measured on a continuous scale; recording it in whole years only rounds it. It is not a count of events."
+
+      - id: c08
+        twist: true
+        stem: Patients arriving after a head injury had their [[Glasgow Coma Scale score (3–15)]] recorded.
+        question: What type of data is the GCS?
+        answer: ordinal
+        hint: It is written as numbers, but are the gaps between scores equal?
+        why: "A score built from ranked responses: a change from 3 to 4 need not mean the same as a change from 14 to 15."
+
+      - id: c09
+        twist: true
+        stem: A diabetes clinic grouped each patient's [[HbA1c into bands of below 48, 48–58 and above 58 mmol/mol]].
+        question: What type of data is the HbA1c band?
+        answer: ordinal
+        hint: What is being analysed, the HbA1c value or the band it falls in?
+        why: "HbA1c itself is continuous, but once it is grouped into ordered bands, the variable analysed is ordinal."
+
+  - id: end
+    pattern: end
+    title: Your score
