@@ -280,3 +280,37 @@ a.next-topic:hover{border-color:var(--primary)}
 .tree-why{display:none;max-width:min(100%,460px);margin-top:12px}
 .tree-level.missed>.tree-why{display:flex;animation:slideIn .3s var(--ease)}
 .tree-level.missed>.tree-answers{transform:none}
+
+/* ---------- figures: SVG drawings from content/figures, coloured from the tokens ---------- */
+.fig{margin:clamp(10px,calc(1.8 * var(--u)),24px) 0 0}
+.fig svg{display:block;width:100%;height:auto;overflow:visible}
+.pain-scale .pf-face circle:first-child{fill:color-mix(in srgb,var(--primary) var(--t),var(--surface));stroke:var(--primary);stroke-width:2.5}
+.pain-scale .pf-eye{fill:var(--ink)}
+.pain-scale .pf-line{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round}
+.pain-scale .pf-axis line{stroke:var(--border-strong);stroke-width:3;stroke-linecap:round}
+.pain-scale .pf-num text{fill:var(--muted);font:600 20px var(--sans);text-anchor:middle}
+.pain-scale .pf-end{fill:var(--muted);font:600 15px var(--sans);letter-spacing:.08em;text-transform:uppercase}
+.pain-scale .pf-end:first-of-type{text-anchor:start}
+.pain-scale .pf-end:last-of-type{text-anchor:end}
+.pain-scale .pf-face{transform-box:fill-box;transform-origin:center;animation:pillIn .5s var(--ease) both;animation-delay:calc(.2s + var(--i) * 110ms)}
+@media (prefers-reduced-motion:reduce){.pain-scale .pf-face{animation:none}}
+
+/* the hook's question card sits in the middle of the slide */
+.stem-card.hook{width:100%;margin-inline:auto}
+@container (max-width:600px){.pain-scale .pf-num text{font-size:32px}.pain-scale .pf-num .odd{display:none}.pain-scale .pf-end{font-size:24px}.pain-scale .pf-end:first-of-type,.pain-scale .pf-end:last-of-type{transform:translateY(14px)}}
+
+/* ---------- cartoon scenes: flat characters beside a card ---------- */
+.hook-row{display:grid;grid-template-columns:minmax(0,1fr) clamp(220px,calc(30 * var(--u)),400px);gap:clamp(16px,calc(2.4 * var(--u)),32px);align-items:center;width:100%;max-width:1320px;margin-inline:auto}
+.hook-row>.stem-card.hook{max-width:none}
+.hook-row>.fig{margin:0}
+.scene-ward .sc-o{stroke:var(--sc-line);stroke-width:3;stroke-linejoin:round}
+.scene-ward .sc-f{fill:none;stroke:#22303F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.scene-ward .sc-bed{fill:var(--surface-2);stroke:var(--sc-line);stroke-width:3}
+.scene-ward .sc-pillow{fill:var(--surface);stroke:var(--sc-line);stroke-width:3}
+.scene-ward [stroke="#22303F"]{stroke:var(--sc-line)}
+.scene-ward .sc-shadow{fill:color-mix(in srgb,var(--ink) 8%,transparent)}
+.scene-ward .sc-bubble{fill:var(--surface);stroke:var(--primary);stroke-width:3;stroke-linejoin:round}
+.scene-ward .sc-bubble-t{fill:var(--primary);font:700 26px var(--sans);text-anchor:middle}
+.scene-ward .sc-pop{transform-box:fill-box;transform-origin:bottom center;animation:pillIn .6s var(--ease) both;animation-delay:calc(.25s + var(--i) * 220ms)}
+@media (prefers-reduced-motion:reduce){.scene-ward .sc-pop{animation:none}}
+@container (max-width:900px){.hook-row{grid-template-columns:minmax(0,1fr)}.hook-row>.fig{order:-1;width:min(70%,300px);margin-inline:auto}}

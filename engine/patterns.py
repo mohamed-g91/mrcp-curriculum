@@ -6,9 +6,11 @@ Practice patterns (sort, stem-quiz) also hand their data to the page through
 topic_data(), because their slides are built in the browser.
 """
 import html
+import os
 import re
 
 ICON = '<svg class="ico" aria-hidden="true"><use href="#i-{}"/></svg>'
+FIGURES = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "content", "figures")
 CLUE = re.compile(r"\[\[(?:([a-z-]+)\|)?(.+?)\]\]")
 
 
@@ -58,10 +60,20 @@ def p_title(slide, topic):
             f'<div class="part-cards">{cards}</div></div>{credits(topic)}')
 
 
+def figure(name):
+    """An SVG drawing from content/figures, inlined so the page stays one offline file.
+    Drawings colour themselves from the page's tokens (see .pain-scale in patterns.css)."""
+    with open(os.path.join(FIGURES, name + ".svg"), encoding="utf-8") as f:
+        return f'<figure class="fig fig-{e(name)}">{f.read().strip()}</figure>'
+
+
 def p_hook(slide, topic):
-    return (heading(slide) + '<div class="center-body"><div class="stem-card hook">'
-            f'<p class="stem-text">{stem_html(slide["stem"])}</p>'
-            f'<p class="stem-q">{e(slide["question"])}</p></div></div>')
+    fig = figure(slide["figure"]) if slide.get("figure") else ""
+    card = (f'<div class="stem-card hook"><p class="stem-text">{stem_html(slide["stem"])}</p>{fig}'
+            f'<p class="stem-q">{e(slide["question"])}</p></div>')
+    if slide.get("scene"):  # a cartoon scene beside the card (above it on phones)
+        card = f'<div class="hook-row">{card}{figure(slide["scene"])}</div>'
+    return heading(slide) + f'<div class="center-body">{card}</div>'
 
 
 def _examples(items, start=0):

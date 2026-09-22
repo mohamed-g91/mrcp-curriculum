@@ -35,6 +35,7 @@ A clinical look with conviction: one primary blue, one colour per concept family
 | Special states | Amber marks anything unscored, such as the solved example |
 | Themes | Light by default (recording), dark as a toggle; every colour is a light and a dark token |
 | Fonts and assets | Embedded in the file, so the page works offline |
+| Figures | Our own SVG drawings in `content/figures/`, inlined by the build (no image files, no stock art). Two kinds: **diagrams** (scales, charts) drawn in the neutral primary blue and greys, never in a concept's family colour where that would hint at an answer; and **scenes**, flat cartoon characters with a dark outline (`--sc-line`, lighter in dark mode), fixed skin, hair and uniform colours, and a recurring cast (the patient and the nurse) so the slides read as one story. A figure pops in once as its slide opens. On phones a scene moves above its card |
 
 ## Interaction patterns
 
@@ -43,7 +44,7 @@ Each slide is one pattern, named in the topic's YAML (`pattern:`). Pick the one 
 | Pattern (`pattern:`) | Use it for | What the learner does |
 | --- | --- | --- |
 | Title (`title`, automatic) | Every page | Taps Learn (open-book icon: the video deck) or Practise (pencil icon: the cases). The title, its rule (fading out at both ends) and the two cards are centred |
-| Hook (`hook`) | The opening exam question | Reads it; nothing to tap |
+| Hook (`hook`) | The opening exam question | Reads it; nothing to tap. Optional `figure` (a diagram inside the card, such as the pain scale) and `scene` (a cartoon beside the card) |
 | Tap-to-reveal circles (`spectrum`) | A set of types or categories on a spectrum | Taps a circle; its examples appear beneath, one by one |
 | Zoom circle (`spectrum` with `open: zoom`) | A spectrum whose examples deserve the whole slide | Taps a circle; the rest of the slide fades back and the circle grows out of its dot into a large centred circle holding its letter, its name (large serif, family ink) and its examples as soft pills (white, thin family border, family dot, dark ink; popping in one by one; sized as a share of the circle so they scale with it; a long name stays on one line at a smaller size, and a long list takes smaller pills, so nothing spills out of the circle), over a fine dot texture that shows only near the rim and a thin dashed inner ring. Tapping outside, or Esc, shrinks it back into its dot; tapping another dot swaps to that one |
 | Sequential question flow (`question-flow`) | A short yes/no decision (2–4 questions) | Answers each question in turn; the next unlocks and the "No" result appears. Boxes show their question or name only |

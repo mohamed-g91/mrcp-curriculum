@@ -7,6 +7,7 @@
 :root{
   --page:#F7F9FC;--surface:#FFFFFF;--surface-2:#EEF2F7;--border:#DDE3EC;--border-strong:#C3CCD8;
   --letterbox:#E4EAF2;
+  --sc-line:#22303F;
   --ink:#0E1F35;--text:#2F3E52;--muted:#56657A;
   --primary:#1F4E8C;--primary-hover:#173D6E;--on-primary:#FFFFFF;
   --cat-bg:#FDEEE8;--cat-ink:#5E1F0B;--cat-bd:#EBA88D;--cat-solid:#D85A30;
@@ -46,6 +47,7 @@
 :root[data-theme="dark"]{
   --page:#0E1826;--surface:#152235;--surface-2:#1B2B41;--border:#26374E;--border-strong:#3A5070;
   --letterbox:#08101B;
+  --sc-line:#8FA3BD;
   --ink:#F5F8FC;--text:#D3DCE7;--muted:#A5B3C5;
   --primary:#5B92DB;--primary-hover:#79A8E6;--on-primary:#0B1522;
   --cat-bg:#3A1E14;--cat-ink:#FFD3C2;--cat-bd:#B5583A;--cat-solid:#E0764D;

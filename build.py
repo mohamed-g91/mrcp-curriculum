@@ -85,6 +85,9 @@ def check_topic(t, expected_id):
             warns.append(f"{where}: title reads like an instruction ({s['title']!r})")
         refs = []
         p = s["pattern"]
+        for key in ("figure", "scene"):
+            if s.get(key) and not os.path.exists(os.path.join(ROOT, "content", "figures", s[key] + ".svg")):
+                errs.append(f"{where}: no drawing at content/figures/{s[key]}.svg")
         if p == "spectrum":
             refs += [st["concept"] for st in s["stops"] if st.get("concept")]
             if s.get("open", "list") not in ("list", "zoom"):
