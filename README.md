@@ -29,7 +29,7 @@ The built pages land in `dist/`: `dist/index.html` is the home page, and each to
 
 Open the topic page in a full-screen browser window. On any screen of at least 900 × 480 the page is a fixed 16:9 stage, so a 1920 × 1080 recording frames the same every time. Use the arrow keys to move between slides.
 
-Each topic is either horizontal slides (Back / Next) or vertical scrolling, set by `navigation:` in its content file. To preview the other mode, add `?nav=scroll` or `?nav=slides` to the page address.
+Each topic is either horizontal slides (Back / Next) or one fluid page that scrolls vertically, set by `navigation:` in its content file. To preview the other mode, add `?nav=scroll` or `?nav=slides` to the page address.
 
 ## Publishing on Cloudflare Pages
 

@@ -75,9 +75,9 @@ Every interactive element behaves the same way, so learners never have to relear
 - **A right answer explains.** It shows why, then a "Next case" (or "See your score") button. In a multi-step case, a correct step moves on by itself after about 0.75 s.
 - **Two ways through the slides, chosen per topic** (`navigation:` in the topic file; ask the user each time a topic is planned):
   - **Slides (horizontal, the default)**: one slide at a time. Back, Home and Next sit in a bottom bar, and the left and right arrow keys move between slides. The title slide has none of them; the last slide has no Next. A hidden button takes no space. Best for longer topics.
-  - **Scroll (vertical)**: the slides stack and snap one per scroll (wheel, trackpad, swipe, arrow keys, Page Up/Down, Space). A rail of dots on the right shows where you are and jumps to any slide; the title slide has a bouncing down-arrow and no text. Best for short topics of about 6–8 slides.
+  - **Scroll (vertical)**: one fluid page. Sections flow one after another at their natural height in a centred column (up to 1,200 px), and the window scrolls freely: no snapping and no 16:9 frame. The top bar stays pinned and its progress line follows the scroll; a rail of dots on the right (wide windows) marks each section and jumps to it; the left and right arrow keys step between sections. The title fills the first screen, with a bouncing down-arrow and no text. Best for short topics of about 6–8 sections.
   - `?nav=slides` or `?nav=scroll` on the page address previews the other mode. The wordmark always goes back to the first slide.
-- **Slides move in and out.** As a slide appears, its heading, cards, circles and choices rise and sharpen one after another (about 75 ms apart); in scroll mode they fade away as the slide scrolls out, upwards once it has been passed. Switched off for users who prefer reduced motion.
+- **Things move in and out.** In slides mode, as a slide appears its heading, cards, circles and choices rise and sharpen one after another (about 75 ms apart). On the scroll page, each of them rises in as it enters the window (those arriving together about 80 ms apart) and fades away as it leaves, upwards once it has been passed. Switched off for users who prefer reduced motion.
 - **Keyboard and screen readers.** Every clickable element is a button or has a button role, is reachable with Tab, and opens with Enter or Space.
 - **Every event goes through `record()`.** Views and answers are reported with permanent IDs through one function in the engine, so analytics and a results database can plug in later.
 
@@ -86,7 +86,7 @@ Every interactive element behaves the same way, so learners never have to relear
 - **The 16:9 stage.** In any window at least 900 × 480 px, the page is a fixed 1280 × 720 canvas scaled to fit, with a letterbox around it. Every recording frames the same, and a 1920 × 1080 recording is the stage at 1.5×.
 - **Fluid below that.** On phones and small windows the page reflows and scrolls, with a sticky top and bottom bar and 16 px side margins.
 - **Sizes are written once.** Engine sizes use `clamp(phone, cqw, stage)`, so they sit at their stage value on the canvas and shrink on phones. Responsive rules use container queries on the page, not media queries.
-- **In scroll mode each slide is exactly one stage tall** (it snaps); on phones slides are at least one screen tall and snapping is gentle.
+- **The 16:9 stage is for slides mode only.** The scroll page is always fluid, at every window size.
 - **A teaching slide fits the stage** with its answers open: no vertical scrolling. Shrink cards and spacing rather than letting it scroll. Practice slides (warm-up, end) may scroll.
 - **Short slides are centred:** the heading stays at the top and the content sits in the middle of the space below it (hook, question flows, reveal cards, end).
 - **Question flows** run left to right on the stage and turn vertical on phones.

@@ -48,7 +48,7 @@ A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERN
 - Most topics are drafted by Claude and reviewed by the user; sometimes the user writes the content and Claude only builds it. A drafted topic stays `status: draft` until the user approves it.
 - Topic content must be accurate for the MRCP. List the sources in the topic's `sources`. Flag anything uncertain to the user instead of guessing.
 - Question bank items must be original, written from guidelines and textbooks. PassMedicine or Pastest material can guide which topics to cover and their weight, never be copied.
-- Before building a new topic, confirm its slide list, steps and cases with the user, and ask whether it should use horizontal slides or vertical scrolling (`navigation: slides | scroll`), with a recommendation: vertical for short topics (about 6–8 slides), horizontal for longer ones.
+- Before building a new topic, confirm its slide list, steps and cases with the user, and ask whether it should use horizontal slides or a vertical fluid scroll page (`navigation: slides | scroll`), with a recommendation: vertical for short topics (about 6–8 slides), horizontal for longer ones.
 - British English; plain, short sentences on slides.
 - Credits (from `curriculum.yaml`) sit on the title and end slides automatically.
 

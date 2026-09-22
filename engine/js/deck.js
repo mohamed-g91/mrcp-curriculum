@@ -4,7 +4,7 @@ const Stage = {
   s: 1,
   fit() {
     const w = window.innerWidth, h = window.innerHeight;
-    const fluid = w < 900 || h < 480;
+    const fluid = SCROLL || w < 900 || h < 480;  // the scroll page is always fluid
     document.documentElement.classList.toggle("fluid", fluid);
     this.s = fluid ? 1 : Math.min(w / 1280, h / 720);
     $("#app").style.setProperty("--s", this.s);
@@ -28,15 +28,16 @@ const REVEAL = "h1, h2, .part-card, .scroll-cue, .stem-card, .spec-group, .spec-
 /* ---------- deck ----------
    slides: one slide at a time; Back / Home / Next and the arrow keys move between them. The title
      slide has no buttons; it is left through its Watch and Practise cards.
-   scroll: the slides stack vertically and snap one per scroll (wheel, trackpad, touch, arrow keys).
-     The current slide is the one at the top of the view; the rail of dots jumps to any slide.
-   In both, the wordmark goes back to the first slide, and a slide's parts rise in as it appears. */
+   scroll: one fluid page. The window scrolls freely; each part rises in as it enters the window
+     and fades as it leaves. The current section is the one under the top third of the window;
+     the rail of dots jumps to any section, and the left and right arrow keys step between them.
+   In both, the wordmark goes back to the first slide. */
 const Deck = {
-  i: -1, slides: [], shown: null, target: null, targetUntil: 0,
+  i: -1, slides: [], shown: null, target: null, targetUntil: 0, io: null,
   refresh() {
     this.slides = $$(".slide");
     this.slides.forEach(s => $$(REVEAL, s).forEach((n, k) => { n.classList.add("rv"); n.style.setProperty("--rv", k); }));
-    if (SCROLL) { this.buildRail(); this.update(); }
+    if (SCROLL) { this.watchParts(); this.buildRail(); this.update(); }
   },
   byId(id) { return this.slides.findIndex(s => s.dataset.id === id); },
   firstOf(part) { return this.slides.findIndex(s => s.dataset.part === part); },
@@ -59,22 +60,35 @@ const Deck = {
     const after = sec.nextElementSibling, arrow = icon(SCROLL ? "down" : "right");
     return after && after.classList.contains("case") ? `Next case${arrow}` : `See your score${arrow}`;
   },
-  // scroll mode: which slides are in view (they play their motion) and which is current
+  // scroll mode: every part fades up as it enters the window and away as it leaves;
+  // parts that arrive together come in one after another
+  watchParts() {
+    if (this.io) this.io.disconnect();
+    this.io = new IntersectionObserver(entries => {
+      let k = 0;
+      entries.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top).forEach(en => {
+        const n = en.target;
+        if (en.isIntersecting) {
+          n.style.transitionDelay = `${Math.min(k++, 6) * 80}ms`;
+          n.classList.add("in"); n.classList.remove("above");
+        } else {
+          n.style.transitionDelay = "0ms";
+          n.classList.remove("in");
+          n.classList.toggle("above", en.boundingClientRect.top < (en.rootBounds ? en.rootBounds.top : 0));
+        }
+      });
+    }, { rootMargin: "-5% 0px -5% 0px", threshold: 0.1 });
+    $$(".rv").forEach(n => this.io.observe(n));
+  },
+  // scroll mode: the current section is the last one whose top has passed a third of the way down
   update() {
-    const sc = Stage.fluid ? null : $("#deck");
-    let top, h;
-    if (sc) { top = sc.getBoundingClientRect().top; h = sc.clientHeight; }
-    else { top = $(".topbar").offsetHeight + $(".progress").offsetHeight; h = window.innerHeight - top; }
-    let best = 0, bestD = Infinity;
-    this.slides.forEach((s, k) => {
-      const r = s.getBoundingClientRect();
-      const seen = Math.max(0, Math.min(r.bottom, top + h) - Math.max(r.top, top)) / Math.max(1, Math.min(r.height, h));
-      const inView = seen > .45;
-      s.classList.toggle("in", inView);
-      s.classList.toggle("above", !inView && r.top < top);
-      const d = Math.abs(r.top - top);
-      if (d < bestD) { bestD = d; best = k; }
-    });
+    const top = $(".topbar").offsetHeight + $(".progress").offsetHeight;
+    const line = top + (window.innerHeight - top) * .33;
+    let best = 0;
+    this.slides.forEach((s, k) => { if (s.getBoundingClientRect().top <= line) best = k; });
+    const room = document.documentElement.scrollHeight - window.innerHeight;
+    if (room - window.scrollY < 4) best = this.slides.length - 1;  // the bottom of the page is the last section
+    $("#progressBar").style.width = (room > 0 ? Math.min(1, window.scrollY / room) * 100 : 0) + "%";
     if (this.target !== null) {
       if (best === this.target || Date.now() > this.targetUntil) this.target = null;
       else return;
@@ -88,7 +102,7 @@ const Deck = {
     const label = s.getAttribute("aria-label") || "";
     $("#partLabel").textContent = s.dataset.part ? `${s.dataset.part} · ${label}` : "";
     const len = this.slides.length - 1;  // the title slide is not counted
-    $("#progressBar").style.width = (i / len * 100) + "%";
+    if (!SCROLL) $("#progressBar").style.width = (i / len * 100) + "%";
     if (SCROLL) {
       $$(".rail-dot").forEach((d, k) => { d.classList.toggle("on", k === i); if (k === i) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current"); });
     } else {
@@ -169,9 +183,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", e => {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     const onControl = e.target.closest && e.target.closest("button, [role=button], input, textarea");
-    const fwd = ["ArrowRight", "PageDown"].concat(SCROLL ? ["ArrowDown"] : []);
-    const back = ["ArrowLeft", "PageUp"].concat(SCROLL ? ["ArrowUp"] : []);
-    if (fwd.includes(e.key) || (SCROLL && e.key === " " && !onControl)) { e.preventDefault(); Deck.next(); }
+    // on the scroll page, up, down, Page Up/Down and Space scroll the page as usual
+    const fwd = SCROLL ? ["ArrowRight"] : ["ArrowRight", "PageDown"];
+    const back = SCROLL ? ["ArrowLeft"] : ["ArrowLeft", "PageUp"];
+    if (onControl && e.key.startsWith("Arrow") && e.target.closest(".chip, .bucket")) return;
+    if (fwd.includes(e.key)) { e.preventDefault(); Deck.next(); }
     else if (back.includes(e.key)) { e.preventDefault(); Deck.prev(); }
   });
 });
