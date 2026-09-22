@@ -1,5 +1,5 @@
 
-/* ---------- stage: fit the 1280 x 720 canvas to the window, or reflow on small screens ---------- */
+/* ---------- stage: scale the canvas to fill the window, or reflow on small screens ---------- */
 const Stage = {
   s: 1,
   fit() {
@@ -9,7 +9,12 @@ const Stage = {
     const fluid = w < 900 || h < 480 || h > w;
     document.documentElement.classList.toggle("fluid", fluid);
     this.s = fluid ? 1 : Math.min(w / 1280, h / 720);
-    $("#app").style.setProperty("--s", this.s);
+    // the canvas is at least 1280 x 720 and grows to the window's shape, so it fills the window
+    // with no letterbox; a 16:9 window (and every recording) still gets exactly 1280 x 720
+    const app = $("#app");
+    app.style.setProperty("--s", this.s);
+    app.style.width = fluid ? "" : Math.floor(w / this.s) + "px";
+    app.style.height = fluid ? "" : Math.floor(h / this.s) + "px";
   }
 };
 

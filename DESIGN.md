@@ -28,7 +28,7 @@ A clinical look with conviction: one primary blue, one colour per concept family
 | Headings | Serif (Source Serif 4), weight 600. On the stage: title 80 px, slide heading 44 px |
 | Body text | Sans-serif (Inter). On the stage: 20 px body, 23 px stems, 16 px small text; contrast at least 4.5:1 |
 | Small labels | Uppercase, letter-spaced, 13 px on the stage, muted or family ink |
-| No eyebrows | No kicker or label above a heading: the heading carries the slide. The part and slide name sit in the top bar |
+| No eyebrows | No kicker or label above a heading: the heading carries the slide. The top bar reads: wordmark, specialty, topic, then the part and slide name |
 | Cards | 16 px corners, thin border, soft offset shadow, a 4–6 px coloured **top** edge for the family. No thick coloured left borders |
 | Circles | Outlined in the family colour; filled solid with a soft ring when selected |
 | Feedback | Green for correct, red for wrong, each with a drawn tick or cross icon (never a text glyph) |
@@ -84,7 +84,7 @@ Every interactive element behaves the same way, so learners never have to relear
 
 ## Layout and responsiveness
 
-- **The 16:9 stage.** In any landscape window at least 900 × 480 px (laptops, desktops, tablets held sideways), the page is a fixed 1280 × 720 canvas scaled to fit, with a letterbox around it. Every recording frames the same, and a 1920 × 1080 recording is the stage at 1.5×.
+- **The 16:9 stage.** In any landscape window at least 900 × 480 px (laptops, desktops, tablets held sideways), the page is a canvas at least 1280 × 720, scaled to fit and widened (or deepened) to the window's shape, so it fills the whole window with no letterbox. A 16:9 window gets exactly 1280 × 720, so every recording frames the same, and a 1920 × 1080 recording is the stage at 1.5×.
 - **Fluid below that, and in portrait.** On phones, small windows and portrait tablets the page reflows and scrolls, with a sticky top and bottom bar and 16 px side margins. The window is measured by its real width (`clientWidth`), because a tablet widens `innerWidth` to fit the canvas.
 - **Tablets are roomy, not shrunk.** A fluid page 601–1099 px wide uses a larger size unit, so type, dots and spacing stay near their stage size instead of shrinking with the width. Tablet layouts use the extra height: the decision tree gets longer links and bigger steps, question flows stack vertically, answer choices sit 2 × 2, warm-up buckets 2 × 2 and reveal cards three across.
 - **Sizes are written once.** Engine sizes use `clamp(phone, n * var(--u), stage)`, where `--u` is 1% of the page width (1.4% on tablets), so they sit at their stage value on the canvas and shrink on phones. Never write a bare `cqw` size. Responsive rules use container queries on the page, not media queries.
