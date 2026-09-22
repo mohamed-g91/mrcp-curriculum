@@ -6,6 +6,8 @@ id: stats.data-types
 title: Types of data
 description: Nominal, ordinal, discrete or continuous? Learn three quick questions that name any variable in an MRCP stem, then practise on nine exam-style stems.
 status: draft
+# slides: one slide at a time with Back / Next (horizontal). scroll: stacked slides, one per scroll (vertical).
+navigation: slides
 updated: 2026-09-22
 sources:
   - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapter 2.

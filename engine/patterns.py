@@ -55,7 +55,8 @@ def p_title(slide, topic):
         for go, ico, label in (("watch", "play", "Watch"), ("practise", "pencil", "Practise"))
     )
     return (f'<div class="title-wrap"><h1>{e(topic["title"])}</h1>'
-            f'<div class="part-cards">{cards}</div></div>{credits(topic)}')
+            f'<div class="part-cards">{cards}</div></div>'
+            f'<button type="button" class="scroll-cue" aria-label="Next slide">{icon("down")}</button>{credits(topic)}')
 
 
 def p_hook(slide, topic):
