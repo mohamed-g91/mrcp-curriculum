@@ -14,7 +14,7 @@ function buildSpectra() {
     const geometry = stop => {
       const s = Stage.s || 1, sr = slide.getBoundingClientRect(), dr = $(".spec-dot", stop).getBoundingClientRect();
       const w = sr.width / s, h = sr.height / s;
-      const D = Math.round(Math.min(460, w * .9, Math.max(h * .94, 320)));
+      const D = Math.round(Math.min(500, w * .9, Math.max(h * .94, 320)));
       return { D, cx: w / 2, cy: Math.max(h / 2, D / 2 + 8),
         dx: (dr.left - sr.left + dr.width / 2) / s, dy: (dr.top - sr.top + dr.height / 2) / s, d: dr.width / s };
     };
