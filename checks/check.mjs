@@ -2,7 +2,7 @@
 //
 //   node checks/check.mjs dist/statistics/data-types.html [--shots out-dir]
 //
-// For each window size (1280 x 720 stage, 1920 x 1080 recording, 375 x 812 phone) it visits
+// For each window size (1280 x 720 stage, 1920 x 1080 recording, 768 x 1024 and 1024 x 768 tablet, 375 x 812 phone) it visits
 // every slide, opens every reveal on it, and checks there is no sideways overflow and, on the
 // stage, no vertical scrolling. Then it solves every case, sorts the warm-up, and fails on any
 // console error or network request. --shots saves a screenshot of every slide and open state.
@@ -17,6 +17,8 @@ const PORT = 9333;
 const SIZES = [
   { name: "stage", width: 1280, height: 720 },
   { name: "rec", width: 1920, height: 1080 },
+  { name: "tablet", width: 768, height: 1024, mobile: true },
+  { name: "tablet-wide", width: 1024, height: 768, mobile: true },
   { name: "phone", width: 375, height: 812, mobile: true },
 ];
 

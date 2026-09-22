@@ -3,8 +3,10 @@
 const Stage = {
   s: 1,
   fit() {
-    const w = window.innerWidth, h = window.innerHeight;
-    const fluid = w < 900 || h < 480;
+    // clientWidth, not innerWidth: a tablet widens innerWidth to fit the 1280 canvas before we measure.
+    // Portrait windows reflow too, since a 16:9 canvas would leave most of the screen empty.
+    const d = document.documentElement, w = d.clientWidth, h = d.clientHeight;
+    const fluid = w < 900 || h < 480 || h > w;
     document.documentElement.classList.toggle("fluid", fluid);
     this.s = fluid ? 1 : Math.min(w / 1280, h / 720);
     $("#app").style.setProperty("--s", this.s);

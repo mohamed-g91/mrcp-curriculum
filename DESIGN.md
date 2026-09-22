@@ -81,12 +81,13 @@ Every interactive element behaves the same way, so learners never have to relear
 
 ## Layout and responsiveness
 
-- **The 16:9 stage.** In any window at least 900 × 480 px, the page is a fixed 1280 × 720 canvas scaled to fit, with a letterbox around it. Every recording frames the same, and a 1920 × 1080 recording is the stage at 1.5×.
-- **Fluid below that.** On phones and small windows the page reflows and scrolls, with a sticky top and bottom bar and 16 px side margins.
-- **Sizes are written once.** Engine sizes use `clamp(phone, cqw, stage)`, so they sit at their stage value on the canvas and shrink on phones. Responsive rules use container queries on the page, not media queries.
+- **The 16:9 stage.** In any landscape window at least 900 × 480 px (laptops, desktops, tablets held sideways), the page is a fixed 1280 × 720 canvas scaled to fit, with a letterbox around it. Every recording frames the same, and a 1920 × 1080 recording is the stage at 1.5×.
+- **Fluid below that, and in portrait.** On phones, small windows and portrait tablets the page reflows and scrolls, with a sticky top and bottom bar and 16 px side margins. The window is measured by its real width (`clientWidth`), because a tablet widens `innerWidth` to fit the canvas.
+- **Tablets are roomy, not shrunk.** A fluid page 601–1099 px wide uses a larger size unit, so type, dots and spacing stay near their stage size instead of shrinking with the width. Tablet layouts use the extra height: the decision tree gets longer links and bigger steps, question flows stack vertically, answer choices sit 2 × 2, warm-up buckets 2 × 2 and reveal cards three across.
+- **Sizes are written once.** Engine sizes use `clamp(phone, n * var(--u), stage)`, where `--u` is 1% of the page width (1.4% on tablets), so they sit at their stage value on the canvas and shrink on phones. Never write a bare `cqw` size. Responsive rules use container queries on the page, not media queries.
 - **A teaching slide fits the stage** with its answers open: no vertical scrolling. Shrink cards and spacing rather than letting it scroll. Practice slides (warm-up, end) may scroll.
 - **Short slides are centred:** the heading stays at the top and the content sits in the middle of the space below it (hook, question flows, reveal cards, zoom spectra, end).
-- **Question flows** run left to right on the stage and turn vertical on phones.
+- **Question flows** run left to right on the stage and turn vertical on phones and portrait tablets.
 - **Bottom bar on phones:** buttons show an icon only, except Next.
 
 ## Slide blueprint and checklist

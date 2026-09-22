@@ -1,12 +1,13 @@
 /* ---------- 16:9 stage ----------
    On laptops and desktops the page is a fixed 1280 x 720 canvas, scaled to fit the window,
    so every recording frames the same. On phones and small windows (html.fluid) the page
-   reflows and scrolls normally. deck.js sets --s and the fluid class. */
+   reflows and scrolls normally. deck.js sets --s and the fluid class. The canvas is fixed, so
+   its unscaled 1280 px never widens the page on a tablet. */
 html,body{height:100%}
 body{background:var(--letterbox);overflow:hidden}
-.app{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform:translate(-50%,-50%) scale(var(--s,1));container-type:inline-size;background:var(--page);overflow:hidden;box-shadow:0 20px 60px rgba(14,31,53,.14)}
+.app{position:fixed;left:50%;top:50%;width:1280px;height:720px;transform:translate(-50%,-50%) scale(var(--s,1));container-type:inline-size;background:var(--page);overflow:hidden;box-shadow:0 20px 60px rgba(14,31,53,.14)}
 .frame{height:100%;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto}
-.deck{position:relative;overflow-y:auto;overflow-x:hidden;padding:clamp(18px,2.5cqw,32px) var(--pad) clamp(14px,1.6cqw,20px)}
+.deck{position:relative;overflow-y:auto;overflow-x:hidden;padding:clamp(18px,calc(2.5 * var(--u)),32px) var(--pad) clamp(14px,calc(1.6 * var(--u)),20px)}
 
 html.fluid,html.fluid body{height:auto}
 html.fluid body{overflow:auto;background:var(--page)}
