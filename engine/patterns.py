@@ -46,13 +46,13 @@ def heading(slide):
     return f'<h2>{e(slide["title"])}</h2>'
 
 
-# ---------------------------------------------------------------- watch patterns
+# ---------------------------------------------------------------- learn patterns
 
 def p_title(slide, topic):
     cards = "".join(
         f'<button type="button" class="part-card" data-go="{go}">'
         f'<span class="part-ico">{icon(ico)}</span><b>{label}</b>{icon("right")}</button>'
-        for go, ico, label in (("watch", "play", "Watch"), ("practise", "pencil", "Practise"))
+        for go, ico, label in (("learn", "book", "Learn"), ("practise", "pencil", "Practise"))
     )
     return (f'<div class="title-wrap"><h1>{e(topic["title"])}</h1>'
             f'<div class="part-cards">{cards}</div></div>{credits(topic)}')

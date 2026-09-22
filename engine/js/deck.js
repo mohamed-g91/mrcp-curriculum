@@ -13,7 +13,7 @@ const Stage = {
 
 /* ---------- deck ----------
    Next and Back walk every slide in order. The title slide has no Back, Home or Next;
-   it is left through its Watch and Practise cards. */
+   it is left through its Learn and Practise cards. */
 const NEXT_HTML = `Next${icon("right")}`;
 const Deck = {
   i: 0, slides: [], shown: null,
@@ -22,7 +22,8 @@ const Deck = {
   firstOf(part) { return this.slides.findIndex(s => s.dataset.part === part); },
   go(i) { this.i = Math.max(0, Math.min(this.slides.length - 1, i)); this.render(); },
   next() { this.go(this.i + 1); },
-  prev() { this.go(this.i - 1); },
+  // Practise starts fresh: its first slide has no Back, so it never leads into the Learn slides
+  prev() { if (this.i !== this.firstOf("Practise")) this.go(this.i - 1); },
   // the button that ends a case does what Next would do from there
   caseNextLabel(sec) {
     const after = sec.nextElementSibling;
@@ -38,7 +39,7 @@ const Deck = {
     $("#navCount").textContent = this.i ? `${this.i} / ${len}` : "";
     $("#progressBar").style.width = (this.i / len * 100) + "%";
     const home = this.i === 0, end = this.i === this.slides.length - 1;
-    $("#prevBtn").hidden = home;
+    $("#prevBtn").hidden = home || this.i === this.firstOf("Practise");
     $("#homeBtn").hidden = home;
     $("#nextBtn").hidden = home || end;
     if (this.shown !== s) {
@@ -80,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#prevBtn").addEventListener("click", () => Deck.prev());
   $("#homeBtn").addEventListener("click", () => Deck.go(0));
   $$("[data-go]").forEach(b => b.addEventListener("click", () =>
-    b.dataset.go === "practise" ? Deck.deal() : Deck.go(Deck.firstOf("Watch"))));
+    b.dataset.go === "practise" ? Deck.deal() : Deck.go(Deck.firstOf("Learn"))));
   const restart = $("#restartBtn"), toStart = $("#toStartBtn");
   if (restart) restart.addEventListener("click", () => Deck.deal("cases"));
   if (toStart) toStart.addEventListener("click", () => Deck.go(0));

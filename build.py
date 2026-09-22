@@ -60,7 +60,7 @@ def check_topic(t, expected_id):
     errs, warns = [], []
     if t.get("id") != expected_id:
         errs.append(f"id is {t.get('id')!r}, curriculum.yaml expects {expected_id!r}")
-    for key in ("title", "description", "updated", "concepts", "families", "watch", "practise"):
+    for key in ("title", "description", "updated", "concepts", "families", "learn", "practise"):
         if key not in t:
             errs.append(f"missing '{key}'")
     if errs:
@@ -70,7 +70,7 @@ def check_topic(t, expected_id):
         if c.get("family") not in fams:
             errs.append(f"concept {k}: unknown family {c.get('family')!r}")
     seen = set()
-    for s in t["watch"] + t["practise"]:
+    for s in t["learn"] + t["practise"]:
         sid = s.get("id")
         where = f"slide {sid or '?'}"
         if not sid:
@@ -161,7 +161,7 @@ def section(slide, part, inner):
 
 def render_topic(t, spec, site):
     slides = [section({"id": "title", "pattern": "title", "title": "Title"}, "", p_title({}, t))]
-    for part, key in (("Watch", "watch"), ("Practise", "practise")):
+    for part, key in (("Learn", "learn"), ("Practise", "practise")):
         for s in t[key]:
             inner = PATTERNS[s["pattern"]](s, t)
             if inner is None:  # dealt in the browser

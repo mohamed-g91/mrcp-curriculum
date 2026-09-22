@@ -1,6 +1,6 @@
 # MRCP curriculum: interactive teaching pages
 
-This repo builds the whole MRCP curriculum as single-file, offline, interactive pages, one per topic. Each page is the visual for a short YouTube video ("Watch") and a practice page viewers come back to ("Practise"). Later the same site gains a question bank, video lectures, login, payments and progress tracking; see "Future" below before making choices that would block them.
+This repo builds the whole MRCP curriculum as single-file, offline, interactive pages, one per topic. Each page is the visual for a short YouTube video ("Learn") and a practice page viewers come back to ("Practise"). Later the same site gains a question bank, video lectures, login, payments and progress tracking; see "Future" below before making choices that would block them.
 
 ## Design rules
 
@@ -18,7 +18,7 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 | Path | Holds |
 | --- | --- |
 | `curriculum.yaml` | The spine: site credits, specialties, their topics, status and video IDs |
-| `content/<specialty>/<slug>.yaml` | One topic: concepts, the Watch slides, the Practise slides, cases, sources |
+| `content/<specialty>/<slug>.yaml` | One topic: concepts, the Learn slides, the Practise slides, cases, sources |
 | `content/ids.lock` | Every permanent item ID ever built (written by `build.py`) |
 | `engine/patterns.py` | One Python function per slide pattern, turning YAML into HTML |
 | `engine/shell.html`, `engine/icons.svg` | The page frame and the icon set |

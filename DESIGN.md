@@ -10,7 +10,7 @@ Every page teaches one decision process: show the skeleton first, and let the le
 2. **Minimal text on screen.** Show names and labels only. Examples, answers and explanations stay hidden until tapped.
 3. **No instruction sentences.** Slides never say "Tap a circle…" or "Drag…"; the circles, cards and buckets make the interaction obvious. `build.py` warns when a slide title reads like an instruction.
 4. **Hook with a real question.** The first slide after the title is an exam-style stem and its question, with no options or answer. A later slide comes back to it and solves it.
-5. **Watch, then practise.** "Watch" is the video deck; "Practise" applies the same steps to cases on the page.
+5. **Learn, then practise.** "Learn" is the video deck; "Practise" applies the same steps to cases on the page.
 6. **Same order everywhere.** Question flows, cases and summaries use one order and one wording.
 
 ## Visual system
@@ -42,7 +42,7 @@ Each slide is one pattern, named in the topic's YAML (`pattern:`). Pick the one 
 
 | Pattern (`pattern:`) | Use it for | What the learner does |
 | --- | --- | --- |
-| Title (`title`, automatic) | Every page | Taps Watch (the video deck) or Practise (the cases) |
+| Title (`title`, automatic) | Every page | Taps Learn (open-book icon: the video deck) or Practise (pencil icon: the cases) |
 | Hook (`hook`) | The opening exam question | Reads it; nothing to tap |
 | Tap-to-reveal circles (`spectrum`) | A set of types or categories on a spectrum | Taps a circle; its examples appear beneath, one by one |
 | Sequential question flow (`question-flow`) | A short yes/no decision (2–4 questions) | Answers each question in turn; the next unlocks and the "No" result appears. Boxes show their question or name only |
@@ -73,7 +73,7 @@ Every interactive element behaves the same way, so learners never have to relear
 - **A case gives nothing away.** The stem, question and choices carry no hints; the clue phrase is highlighted only after a wrong answer (and in the solved example).
 - **Wrong answers teach.** A wrong choice shakes, gives a one-line hint and lights the clue phrase. Scoring counts the first attempt only, once per case.
 - **A right answer explains.** It shows why, then a "Next case" (or "See your score") button. In a multi-step case, a correct step moves on by itself after about 0.75 s.
-- **Navigation is always there.** Back, Home and Next sit in a bottom bar, and the arrow keys move between slides. The title slide has none of them; the last slide has no Next. A hidden button takes no space.
+- **Navigation is always there.** Back, Home and Next sit in a bottom bar, and the arrow keys move between slides. The title slide has none of them; the first Practise slide has no Back (Practise starts on its own, and the left arrow stops there too); the last slide has no Next. A hidden button takes no space.
 - **Keyboard and screen readers.** Every clickable element is a button or has a button role, is reachable with Tab, and opens with Enter or Space.
 - **Every event goes through `record()`.** Views and answers are reported with permanent IDs through one function in the engine, so analytics and a results database can plug in later.
 

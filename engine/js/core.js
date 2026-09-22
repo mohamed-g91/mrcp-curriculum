@@ -52,7 +52,7 @@ const Score = {
     fm.textContent = !this.total ? "Work through the cases to build your score." :
       pct >= .85 ? "Excellent. You're ready for exam stems." :
       pct >= .6 ? "Good. Go back over the three questions for the ones you missed." :
-      "Watch the three questions again, then deal new cases.";
+      "Go back over the three questions, then deal new cases.";
   }
 };
 

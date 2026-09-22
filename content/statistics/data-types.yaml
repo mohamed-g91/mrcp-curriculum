@@ -1,5 +1,5 @@
 # Types of data: MRCP Part 1 statistics.
-# A 5-minute video deck ("watch") followed by practice on the page ("practise").
+# A 5-minute video deck ("learn") followed by practice on the page ("practise").
 # IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
 
 id: stats.data-types
@@ -24,7 +24,7 @@ concepts:
   discrete:   { label: Discrete,         family: par, letter: D, icon: hash }
   continuous: { label: Continuous,       family: par, letter: C, icon: ruler }
 
-watch:
+learn:
   - id: hook
     pattern: hook
     title: What type of data is this?
