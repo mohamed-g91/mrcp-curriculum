@@ -87,6 +87,8 @@ def check_topic(t, expected_id):
         p = s["pattern"]
         if p == "spectrum":
             refs += [st["concept"] for st in s["stops"] if st.get("concept")]
+            if s.get("open", "list") not in ("list", "zoom"):
+                errs.append(f"{where}: open is {s['open']!r}: use list (bullets under the circle) or zoom (a large centred circle)")
         if p == "question-flow":
             refs += [st["no"] for st in s["steps"]] + [s["end"]]
         if p == "clue-stem":

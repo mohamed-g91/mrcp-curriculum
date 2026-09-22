@@ -91,7 +91,8 @@ def p_spectrum(slide, topic):
         html_stops.append(
             f'<div class="spec-stop f-{fam}"><button class="spec-dot" type="button" aria-expanded="false" '
             f'aria-label="Show {e(label)} examples">{e(letter)}</button><b>{e(label)}</b>{body}</div>')
-    return (heading(slide) + f'<div class="spec" style="--n:{len(stops)}">{groups}'
+    zoom = " spec-zoom" if slide.get("open") == "zoom" else ""
+    return (heading(slide) + f'<div class="spec{zoom}" style="--n:{len(stops)}">{groups}'
             f'<div class="spec-line">{"".join(html_stops)}</div></div>')
 
 

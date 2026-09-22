@@ -138,7 +138,7 @@ async function layoutPass(size) {
     const r = await js(REVEALS);
     for (let k = 0; k < r.dots; k++) {
       await js(`Deck.slides[Deck.i].querySelectorAll(".spec-dot")[${k}].click(), true`);
-      await sleep(k === r.dots - 1 ? 1600 : 250);
+      await sleep(k === 2 || k === r.dots - 1 ? 1600 : 250);
       await measure(size, `slide ${i + 1} circle ${k + 1}`);
       if (k === 2 || k === r.dots - 1) await shot(`${tag}-open${k + 1}`);
     }

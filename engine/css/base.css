@@ -33,7 +33,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 @container (max-width:420px){.brand,.brand-sep{display:none}}
 
 /* ---------- slides ---------- */
-.slide{display:none}
+.slide{display:none;position:relative}
 .slide.active{display:flex;flex-direction:column;min-height:100%;animation:slideIn .45s var(--ease)}
 @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .slide-center .center-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--gap);padding-bottom:clamp(8px,2cqw,28px)}

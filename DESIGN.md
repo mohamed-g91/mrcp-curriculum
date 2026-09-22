@@ -45,6 +45,7 @@ Each slide is one pattern, named in the topic's YAML (`pattern:`). Pick the one 
 | Title (`title`, automatic) | Every page | Taps Learn (open-book icon: the video deck) or Practise (pencil icon: the cases) |
 | Hook (`hook`) | The opening exam question | Reads it; nothing to tap |
 | Tap-to-reveal circles (`spectrum`) | A set of types or categories on a spectrum | Taps a circle; its examples appear beneath, one by one |
+| Zoom circle (`spectrum` with `open: zoom`) | A spectrum whose examples deserve the whole slide | Taps a circle; the rest of the slide fades back and the circle grows out of its dot into a large centred circle holding its name and examples (appearing one by one). Tapping outside, or Esc, shrinks it back into its dot; tapping another dot swaps to that one |
 | Sequential question flow (`question-flow`) | A short yes/no decision (2–4 questions) | Answers each question in turn; the next unlocks and the "No" result appears. Boxes show their question or name only |
 | Worked flow (`question-flow` with `path` and `stem`) | Solving the hook with the flow | Taps each question; only the branch taken lights, and the answer it lands on stands out |
 | Linked highlight (`clue-stem`) | Finding clues in a sample stem | Taps a phrase or a circle; the matching pair lights up together |
