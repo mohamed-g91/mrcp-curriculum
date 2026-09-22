@@ -91,6 +91,16 @@ def check_topic(t, expected_id):
                 errs.append(f"{where}: open is {s['open']!r}: use list (bullets under the circle) or zoom (a large centred circle)")
         if p in ("question-flow", "decision-tree"):
             refs += [st["no"] for st in s["steps"]] + [s["end"]]
+        if p == "decision-tree":
+            ends = {st["no"] for st in s["steps"]} | {s["end"]}
+            for k in s.get("examples") or {}:
+                if k not in ends:
+                    errs.append(f"{where}: examples for {k!r}, which is not an answer in this tree")
+            path = s.get("path") or []
+            if any(a not in ("yes", "no") for a in path) or len(path) > len(s["steps"]):
+                errs.append(f"{where}: path must be yes/no answers, one per step at most")
+            if path and len(s.get("wrong") or []) != len(path):
+                errs.append(f"{where}: give one 'wrong' line for each step in the path")
         if p == "clue-stem":
             refs += list(s["clues"])
         if p == "reveal-cards":
@@ -166,6 +176,8 @@ def render_topic(t, spec, site):
     slides = [section({"id": "title", "pattern": "title", "title": "Title"}, "", p_title({}, t))]
     for part, key in (("Learn", "learn"), ("Practise", "practise")):
         for s in t[key]:
+            if s.get("hidden"):  # kept in the YAML and checked, but left out of the page
+                continue
             inner = PATTERNS[s["pattern"]](s, t)
             if inner is None:  # dealt in the browser
                 slides.append(f'<div class="case-anchor" data-quiz="{e(s["id"])}" hidden></div>')

@@ -68,6 +68,19 @@ def _examples(items, start=0):
     return "".join(f'<li style="--i:{start + i}">{e(x)}</li>' for i, x in enumerate(items))
 
 
+def _examples_body(ex, hidden=False):
+    """Examples as a list, or, given a list of {label, family, items}, as labelled sub-lists."""
+    attr = " hidden" if hidden else ""
+    if ex and isinstance(ex[0], dict):
+        n, subs = 0, []
+        for sub in ex:
+            subs.append(f'<ul class="spec-sub f-{sub["family"]}"><li class="spec-sub-h" style="--i:{n}">{e(sub["label"])}</li>'
+                        f'{_examples(sub["items"], n + 1)}</ul>')
+            n += len(sub["items"]) + 1
+        return f'<div class="spec-ex spec-split"{attr}>{"".join(subs)}</div>'
+    return f'<ul class="spec-ex"{attr}>{_examples(ex)}</ul>'
+
+
 def p_spectrum(slide, topic):
     stops = slide["stops"]
     groups = ""
@@ -79,15 +92,7 @@ def p_spectrum(slide, topic):
     for s in stops:
         c = concept(topic, s["concept"]) if s.get("concept") else {}
         label, fam, letter = s.get("label", c.get("label")), s.get("family", c.get("family")), s.get("letter", c.get("letter"))
-        if s.get("split"):
-            n, subs = 0, []
-            for sub in s["split"]:
-                subs.append(f'<ul class="spec-sub f-{sub["family"]}"><li class="spec-sub-h" style="--i:{n}">{e(sub["label"])}</li>'
-                            f'{_examples(sub["items"], n + 1)}</ul>')
-                n += len(sub["items"]) + 1
-            body = f'<div class="spec-ex spec-split">{"".join(subs)}</div>'
-        else:
-            body = f'<ul class="spec-ex">{_examples(s["examples"])}</ul>'
+        body = _examples_body(s.get("split") or s["examples"])
         html_stops.append(
             f'<div class="spec-stop f-{fam}"><button class="spec-dot" type="button" aria-expanded="false" '
             f'aria-label="Show {e(label)} examples">{e(letter)}</button><b>{e(label)}</b>{body}</div>')
@@ -122,28 +127,42 @@ def p_question_flow(slide, topic):
             f'<div class="qf-chart"{data_path}>{"".join(parts)}</div></div></div>')
 
 
-def _tree_final(topic, key):
-    """The answer at the end of a branch: a solid family card, unlike the step pills."""
+def _tree_final(topic, key, examples):
+    """The answer at the end of a branch: a solid family card, unlike the step pills.
+    With examples, tapping it zooms them open in a large circle."""
     c = concept(topic, key)
-    return (f'<div class="tree-final f-{c["family"]}" data-type="{e(key)}"><span class="tree-dot">{e(c["letter"])}</span>'
-            f'<b class="tree-label">{e(c["label"])}</b></div>')
+    ex = examples.get(key)
+    tap = (f' role="button" tabindex="0" aria-expanded="false" aria-label="Show {e(c["label"])} examples"' if ex else "")
+    return (f'<div class="tree-final f-{c["family"]}{" zoomable" if ex else ""}" data-type="{e(key)}"{tap}>'
+            f'<span class="tree-dot">{e(c["letter"])}</span><b class="tree-label">{e(c["label"])}</b>'
+            f'{_examples_body(ex, hidden=True) if ex else ""}</div>')
 
 
 def p_decision_tree(slide, topic):
     """Top-down yes/no tree. The chosen answer slides onto the centre line; Yes opens the next
-    question below it, No drops to the final answer."""
+    question below it, No drops to the final answer. With a stem, the stem sits beside the tree.
+    With a path (the right answers) and wrong (why, for each step), a wrong answer says why and goes no further."""
     steps = slide["steps"]
+    examples = slide.get("examples") or {}
+    path, wrong = slide.get("path"), slide.get("wrong") or []
     levels = []
     for i, st in enumerate(steps):
+        why = (f'<div class="feedback bad tree-why" aria-live="polite">{icon("cross")}'
+               f'<span><b>Not quite.</b> {e(wrong[i])}</span></div>' if i < len(wrong) else "")
         levels.append(
             f'<div class="tree-level" data-step="{i}">'
             f'<div class="tree-q"><span class="tree-n">{i + 1}</span><b>{e(st["q"])}</b></div>'
             f'<div class="tree-answers">'
             f'<button class="tree-a yes" type="button" data-a="yes" aria-pressed="false">Yes</button>'
-            f'<button class="tree-a no" type="button" data-a="no" aria-pressed="false">No</button></div>'
-            f'<div class="tree-out">{_tree_final(topic, st["no"])}</div></div>')
-    levels.append(f'<div class="tree-level tree-end" data-step="{len(steps)}">{_tree_final(topic, slide["end"])}</div>')
-    return heading(slide) + f'<div class="tree">{"".join(levels)}</div>'
+            f'<button class="tree-a no" type="button" data-a="no" aria-pressed="false">No</button></div>{why}'
+            f'<div class="tree-out">{_tree_final(topic, st["no"], examples)}</div></div>')
+    levels.append(f'<div class="tree-level tree-end" data-step="{len(steps)}">{_tree_final(topic, slide["end"], examples)}</div>')
+    data_path = f' data-path="{",".join(path)}"' if path else ""
+    tree = f'<div class="tree"{data_path}>{"".join(levels)}</div>'
+    if slide.get("stem"):
+        stem = f'<div class="stem-card compact"><p class="stem-text">{stem_html(slide["stem"], lit=True)}</p></div>'
+        return heading(slide) + f'<div class="tree-case">{stem}{tree}</div>'
+    return heading(slide) + tree
 
 
 def p_clue_stem(slide, topic):

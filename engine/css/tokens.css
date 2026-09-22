@@ -22,6 +22,7 @@
   --edge:inset 0 1px 0 rgba(255,255,255,.8);
   --motif:linear-gradient(90deg,var(--cat-solid),var(--np-solid) 50%,var(--par-solid));
   --rule:linear-gradient(90deg,var(--primary),color-mix(in srgb,var(--primary) 12%,transparent));
+  --rule-centre:linear-gradient(90deg,color-mix(in srgb,var(--primary) 12%,transparent),var(--primary),color-mix(in srgb,var(--primary) 12%,transparent));
   --radius:10px;--radius-lg:16px;
   --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
   --sans:"Inter","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;

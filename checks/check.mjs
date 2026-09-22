@@ -121,6 +121,18 @@ async function measure(size, label) {
   return m;
 }
 
+// the open zoom circle: its name and every example pill must sit inside the circle
+const BUBBLE_SPILL = `s => {
+  const b = s.querySelector(".spec-bubble.open");
+  if (!b) return "no zoom circle opened";
+  const r = b.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, R = r.width / 2 - 4;
+  const out = [...b.querySelectorAll(".bubble-label, .bubble-ex li")].filter(n => {
+    const q = n.getBoundingClientRect();
+    return [[q.left, q.top], [q.right, q.top], [q.left, q.bottom], [q.right, q.bottom]].some(([x, y]) => Math.hypot(x - cx, y - cy) > R);
+  });
+  return out.length ? b.getAttribute("aria-label") + " spills out of its circle: " + out.slice(0, 3).map(n => n.textContent).join(", ") : "";
+}`;
+
 // open every reveal on the current slide, one at a time, measuring each state
 const REVEALS = `(() => {
   const s = Deck.slides[Deck.i];
@@ -141,8 +153,10 @@ async function layoutPass(size) {
     const r = await js(REVEALS);
     for (let k = 0; k < r.dots; k++) {
       await js(`Deck.slides[Deck.i].querySelectorAll(".spec-dot")[${k}].click(), true`);
-      await sleep(k === 2 || k === r.dots - 1 ? 1600 : 250);
+      const zoomed = await js(`!!Deck.slides[Deck.i].querySelector(".spec-zoom")`);
+      await sleep(zoomed || k === 2 || k === r.dots - 1 ? 1600 : 250);
       await measure(size, `slide ${i + 1} circle ${k + 1}`);
+      if (zoomed) { const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`); if (out) fail(`${size.name} slide ${i + 1}: ${out}`); }
       if (k === 2 || k === r.dots - 1) await shot(`${tag}-open${k + 1}`);
     }
     for (let k = 0; k < r.cards; k++) {
@@ -159,7 +173,37 @@ async function layoutPass(size) {
       await measure(size, `slide ${i + 1} flow answered`);
       await shot(`${tag}-open`);
     }
-    if (r.tree) {
+    const path = r.tree ? await js(`Deck.slides[Deck.i].querySelector(".tree").dataset.path || ""`) : "";
+    if (path) {
+      // a worked tree: each wrong answer says why and stops; the right answers reach the end of the path
+      const steps = path.split(",");
+      for (let k = 0; k < steps.length; k++) {
+        const bad = steps[k] === "yes" ? "no" : "yes";
+        await js(`Deck.slides[Deck.i].querySelectorAll(".tree-level")[${k}].querySelector(".tree-a.${bad}").click(), true`);
+        await sleep(500);
+        await measure(size, `slide ${i + 1} tree wrong at ${k + 1}`);
+        const w = await js(`(() => { const lv = Deck.slides[Deck.i].querySelectorAll(".tree-level"); const why = lv[${k}].querySelector(".tree-why"); return { why: !!why && getComputedStyle(why).display !== "none", stopped: !lv[${k}].classList.contains("answered") }; })()`);
+        if (!w.why || !w.stopped) fail(`${size.name} slide ${i + 1}: a wrong answer at step ${k + 1} did not say why and stop`);
+        if (k === steps.length - 1) await shot(`${tag}-wrong`);
+        await js(`Deck.slides[Deck.i].querySelectorAll(".tree-level")[${k}].querySelector(".tree-a.${steps[k]}").click(), true`);
+        await sleep(400);
+      }
+      await sleep(700);
+      await measure(size, `slide ${i + 1} tree solved`);
+      const done = await js(`!!Deck.slides[Deck.i].querySelector(".tree-level.no:not(.missed)") && !Deck.slides[Deck.i].querySelector(".tree-level.missed")`);
+      if (!done) fail(`${size.name} slide ${i + 1}: the right answers did not reach the result`);
+      await shot(`${tag}-solved`);
+      if (await js(`!!Deck.slides[Deck.i].querySelector(".tree-level.no .tree-final.zoomable")`)) {
+        await js(`Deck.slides[Deck.i].querySelector(".tree-level.no .tree-final.zoomable").click(), true`);
+        await sleep(2200);
+        const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`);
+        if (out) fail(`${size.name} slide ${i + 1}: ${out}`);
+        await shot(`${tag}-zoom`);
+        await js(`document.body.click(), true`);
+        await sleep(600);
+      }
+    }
+    if (r.tree && !path) {
       // every Yes down to the end, then a No part-way
       for (let k = 0; k < r.tree - 1; k++) {
         await js(`Deck.slides[Deck.i].querySelectorAll(".tree-level")[${k}].querySelector(".tree-a.yes").click(), true`);
@@ -176,6 +220,30 @@ async function layoutPass(size) {
       const cut = await js(`(() => { const lv = Deck.slides[Deck.i].querySelectorAll(".tree-level"); return !lv[2].classList.contains("shown") && lv[1].classList.contains("no"); })()`);
       if (!cut) fail(`${size.name} slide ${i + 1}: a No did not close the branch below it`);
       await shot(`${tag}-no`);
+      // a final answer with examples zooms them open, and the tree stays as it was underneath
+      const zoomable = await js(`!!Deck.slides[Deck.i].querySelector(".tree-level.no .tree-final.zoomable")`);
+      if (zoomable) {
+        await js(`Deck.slides[Deck.i].querySelector(".tree-level.no .tree-final.zoomable").click(), true`);
+        await sleep(1400);
+        const z = await js(`(() => { const s = Deck.slides[Deck.i]; return { bubble: !!s.querySelector(".spec-bubble.open"), pills: s.querySelectorAll(".spec-bubble .bubble-ex li").length, kept: !!s.querySelector(".tree-level.no") }; })()`);
+        if (!z.bubble || !z.pills) fail(`${size.name} slide ${i + 1}: tapping the final answer did not open its examples`);
+        if (!z.kept) fail(`${size.name} slide ${i + 1}: tapping the final answer reset the tree`);
+        await shot(`${tag}-zoom`);
+        await js(`document.body.click(), true`);
+        await sleep(600);
+        const after = await js(`(() => { const s = Deck.slides[Deck.i]; return !s.querySelector(".spec-bubble") && !!s.querySelector(".tree-level.no"); })()`);
+        if (!after) fail(`${size.name} slide ${i + 1}: a click away should close the circle and keep the tree`);
+        // every answer's circle holds its name and examples inside the circle
+        const finals = await js(`Deck.slides[Deck.i].querySelectorAll(".tree-final.zoomable").length`);
+        for (let k = 0; k < finals; k++) {
+          await js(`Deck.slides[Deck.i].querySelectorAll(".tree-final.zoomable")[${k}].click(), true`);
+          await sleep(2200);
+          const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`);
+          if (out) fail(`${size.name} slide ${i + 1}: ${out}`);
+          await js(`document.body.click(), true`);
+          await sleep(600);
+        }
+      }
     }
     await js(`document.body.click(), true`);
   }

@@ -1,8 +1,8 @@
 /* ---------- title ---------- */
-.p-title .title-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;gap:clamp(28px,calc(4.4 * var(--u)),56px)}
+.p-title .title-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:clamp(28px,calc(4.4 * var(--u)),56px)}
 .p-title h1{position:relative;max-width:14ch;padding-bottom:clamp(18px,calc(2.2 * var(--u)),28px)}
-.p-title h1::after{content:"";position:absolute;left:0;bottom:0;width:clamp(120px,calc(22 * var(--u)),280px);height:clamp(6px,calc(.6 * var(--u)),8px);border-radius:8px;background:var(--rule)}
-.part-cards{display:grid;grid-template-columns:repeat(2,minmax(0,320px));gap:var(--gap)}
+.p-title h1::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:clamp(120px,calc(22 * var(--u)),280px);height:clamp(6px,calc(.6 * var(--u)),8px);border-radius:8px;background:var(--rule-centre)}
+.part-cards{display:grid;grid-template-columns:repeat(2,minmax(0,320px));gap:var(--gap);width:100%;justify-content:center}
 .part-card{display:flex;align-items:center;gap:16px;padding:clamp(14px,calc(1.7 * var(--u)),22px) clamp(16px,calc(2 * var(--u)),26px);border-radius:var(--radius-lg);background:var(--surface);border:1px solid var(--border);box-shadow:var(--edge),var(--shadow);text-align:left;transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
 .part-card b{flex:1;font-family:var(--serif);font-weight:600;font-size:clamp(20px,calc(2.2 * var(--u)),28px)}
 .part-card>.ico{width:24px;height:24px;color:var(--primary);transition:transform .25s var(--ease)}
@@ -255,3 +255,28 @@ a.next-topic:hover{border-color:var(--primary)}
 .final-score{font-family:var(--serif);font-weight:600;font-size:clamp(56px,calc(7.5 * var(--u)),96px);line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
 .final-msg{font-size:var(--fs-body);color:var(--text)}
 .end-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+
+/* a final answer with examples opens them in a zoom circle */
+.tree-final.zoomable{cursor:pointer;transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
+.tree-final.zoomable:hover{transform:translateY(-3px);box-shadow:0 0 0 5px var(--x-bg),0 16px 36px color-mix(in srgb,var(--x-solid) 46%,transparent)}
+.tree-final:focus-visible{outline:3px solid var(--primary);outline-offset:6px}
+
+/* a tree with a stem: the stem on the left, the tree on the right; stacked on phones and portrait */
+.tree-case{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(20px,calc(3 * var(--u)),40px);align-items:start;margin-top:clamp(8px,calc(1 * var(--u)),12px)}
+.tree-case>.stem-card{align-self:start}
+.tree-case .tree{width:100%}
+@container (min-width:1100px){.tree-case .tree{--link:26px}}
+@container (max-width:1099px){.tree-case{grid-template-columns:minmax(0,1fr)}}
+
+/* a long name stays on one line; a long list takes smaller pills */
+.spec-bubble.long-label .bubble-label{font-size:8.4cqi;white-space:nowrap}
+.spec-bubble.many .bubble-body{gap:1.4cqi}
+.spec-bubble.many .bubble-split{gap:2cqi}
+.spec-bubble.many .bubble-split .spec-sub{gap:1.3cqi}
+.spec-bubble.many .bubble-split .spec-sub li{font-size:3.4cqi;padding:1.2cqi 2.8cqi 1.2cqi 2.2cqi}
+
+/* a worked tree: a wrong answer turns red, says why, and the branch goes no further */
+.tree-a.wrong{background:var(--bad-bg);border-color:var(--bad-solid);color:var(--bad-ink)}
+.tree-why{display:none;max-width:min(100%,460px);margin-top:12px}
+.tree-level.missed>.tree-why{display:flex;animation:slideIn .3s var(--ease)}
+.tree-level.missed>.tree-answers{transform:none}

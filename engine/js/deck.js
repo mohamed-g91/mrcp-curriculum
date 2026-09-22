@@ -14,18 +14,24 @@ const Stage = {
 };
 
 /* ---------- deck ----------
-   Next and Back walk every slide in order. The title slide has no Back, Home or Next;
-   it is left through its Learn and Practise cards. */
+   Learn and Practise are separate runs: Next and Back walk the slides of one part and never
+   cross into the other. Each part's first slide has no Back and its last has no Next.
+   The title slide has no Back, Home or Next; it is left through its Learn and Practise cards. */
 const NEXT_HTML = `Next${icon("right")}`;
 const Deck = {
   i: 0, slides: [], shown: null,
   refresh() { this.slides = $$(".slide"); },
   byId(id) { return this.slides.findIndex(s => s.dataset.id === id); },
   firstOf(part) { return this.slides.findIndex(s => s.dataset.part === part); },
+  // the first and last index of the part the current slide belongs to
+  range() {
+    const part = this.slides[this.i].dataset.part, idx = this.slides.map((s, k) => s.dataset.part === part ? k : -1).filter(k => k >= 0);
+    return [idx[0], idx[idx.length - 1]];
+  },
   go(i) { this.i = Math.max(0, Math.min(this.slides.length - 1, i)); this.render(); },
-  next() { this.go(this.i + 1); },
-  // Practise starts fresh: its first slide has no Back, so it never leads into the Learn slides
-  prev() { if (this.i !== this.firstOf("Practise")) this.go(this.i - 1); },
+  // from the title, the arrow keys open Learn
+  next() { if (!this.i) this.go(this.firstOf("Learn")); else if (this.i < this.range()[1]) this.go(this.i + 1); },
+  prev() { if (this.i > this.range()[0]) this.go(this.i - 1); },
   // the button that ends a case does what Next would do from there
   caseNextLabel(sec) {
     const after = sec.nextElementSibling;
@@ -37,13 +43,13 @@ const Deck = {
     this.slides.forEach((x, k) => x.classList.toggle("active", k === this.i));
     const label = s.getAttribute("aria-label") || "";
     $("#partLabel").textContent = s.dataset.part ? `${s.dataset.part} · ${label}` : "";
-    const len = this.slides.length - 1;  // the title slide is not counted
-    $("#navCount").textContent = this.i ? `${this.i} / ${len}` : "";
-    $("#progressBar").style.width = (this.i / len * 100) + "%";
-    const home = this.i === 0, end = this.i === this.slides.length - 1;
-    $("#prevBtn").hidden = home || this.i === this.firstOf("Practise");
+    // slides are counted within their part
+    const [first, last] = this.range(), home = this.i === 0;
+    $("#navCount").textContent = home ? "" : `${this.i - first + 1} / ${last - first + 1}`;
+    $("#progressBar").style.width = home ? "0%" : ((this.i - first + 1) / (last - first + 1) * 100) + "%";
+    $("#prevBtn").hidden = home || this.i === first;
     $("#homeBtn").hidden = home;
-    $("#nextBtn").hidden = home || end;
+    $("#nextBtn").hidden = home || this.i === last;
     if (this.shown !== s) {
       this.shown = s;
       s.dispatchEvent(new CustomEvent("slideenter"));

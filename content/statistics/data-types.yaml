@@ -40,14 +40,14 @@ learn:
       - { family: np,  span: 1 }
       - { family: par, span: 2 }
     stops:
-      - { label: Nominal, family: cat, letter: N, examples: [Blood group, Ethnicity, Diagnosis] }
-      - { label: Binary,  family: cat, letter: B, examples: [Alive / dead, Smoker yes / no, Test positive / negative] }
+      - { label: Nominal, family: cat, letter: N, examples: &ex-nominal [Blood group, Ethnicity, Diagnosis] }
+      - { label: Binary,  family: cat, letter: B, examples: &ex-binary [Alive / dead, Smoker yes / no, Test positive / negative] }
       - concept: ordinal
-        split:
+        split: &ex-ordinal
           - { label: Labels,  family: cat, items: [Mild / moderate / severe, NYHA class I–IV] }
           - { label: Numbers, family: par, items: [Pain score 0–10, mRS 0–6, GCS 3–15] }
-      - { concept: discrete,   examples: [Number of seizures, Admissions per year, Number of children] }
-      - { concept: continuous, examples: [Blood pressure, Weight, HbA1c, eGFR] }
+      - { concept: discrete,   examples: &ex-discrete [Number of seizures, Admissions per year, Number of children] }
+      - { concept: continuous, examples: &ex-continuous [Blood pressure, Weight, HbA1c, eGFR] }
 
   - id: questions
     pattern: decision-tree
@@ -57,8 +57,17 @@ learn:
       - { q: "Equal gaps?", no: ordinal }
       - { q: "Fractions?",  no: discrete }
     end: continuous
+    # tapping a final answer zooms its examples open (the same examples as the spectrum)
+    examples: &tree-examples
+      nominal:
+        - { label: Nominal, family: cat, items: *ex-nominal }
+        - { label: Binary,  family: cat, items: *ex-binary }
+      ordinal: *ex-ordinal
+      discrete: *ex-discrete
+      continuous: *ex-continuous
 
   - id: identify
+    hidden: true
     pattern: clue-stem
     title: Spot the type in a stem
     stem: >-
@@ -74,7 +83,7 @@ learn:
       continuous: ["a unit: mmHg, kg", "mmol/mol, mL/min", "days, hours"]
 
   - id: hook-solved
-    pattern: question-flow
+    pattern: decision-tree
     title: Back to the pain score
     stem: In a trial of a new analgesic, 120 adults rated their [[pain on a scale from 0 to 10]], 24 hours after surgery.
     steps:
@@ -82,9 +91,15 @@ learn:
       - { q: "Equal gaps?", no: ordinal }
       - { q: "Fractions?",  no: discrete }
     end: continuous
+    examples: *tree-examples
+    # the right answers for the pain score, and why each wrong answer is wrong
     path: [yes, no]
+    wrong:
+      - "The scores are ordered: 0 is no pain and 10 is the worst pain."
+      - "The gaps are not equal: a change from 2 to 3 need not mean the same as a change from 8 to 9."
 
   - id: why
+    hidden: true
     pattern: reveal-cards
     title: The type picks the test
     cards:
