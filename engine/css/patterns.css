@@ -123,52 +123,46 @@ mark.clue-mark.lit{background:var(--hl);color:var(--hl-ink);box-shadow:0 0 0 .15
 }
 
 /* ---------- decision tree ----------
-   Space for every level is kept from the start, so nothing moves as branches open.
-   The spine runs down the middle: question, Yes, a green line down. No sits to the right of Yes,
-   with a coral line out to the answer. */
-.tree{width:min(100%,860px);margin:0 auto;display:flex;flex-direction:column;align-items:stretch}
-.tree-level{position:relative;display:flex;flex-direction:column;align-items:center;transition:opacity .45s var(--ease),translate .6s var(--ease)}
-.tree-level:not(.shown){opacity:0;translate:0 -10px;pointer-events:none}
-.tree-level+.tree-level{padding-top:clamp(12px,1.4cqw,18px)}
-.tree-level+.tree-level::before{content:"";position:absolute;top:0;left:50%;width:3px;height:clamp(12px,1.4cqw,18px);margin-left:-1.5px;border-radius:2px;background:var(--ok-bd);transform-origin:top;transform:scaleY(0);transition:transform .4s var(--ease)}
-.tree-level.shown::before{transform:scaleY(1)}
-.tree-q{display:inline-flex;align-items:center;gap:12px;min-height:clamp(40px,3.4cqw,44px);padding:4px 22px 4px 6px;border-radius:999px;border:3px solid var(--primary);background:var(--surface);box-shadow:var(--edge),var(--shadow);transition:transform .45s var(--ease)}
-.tree-level.shown .tree-q{animation:treeIn .5s var(--ease) both}
+   Grows downward from the top, so nothing above ever moves. Steps are outlined blue pills;
+   Yes and No sit centred beneath each one, and the chosen answer slides onto the centre line.
+   The answer at the end of a branch is a solid family card, so it never looks like a step. */
+.tree{--link:clamp(22px,3cqw,38px);--pill:clamp(76px,7.2cqw,92px);--pgap:14px;width:min(100%,860px);margin:0 auto;display:flex;flex-direction:column;align-items:center}
+.tree-level{position:relative;display:flex;flex-direction:column;align-items:center}
+.tree-level:not(.shown){display:none}
+.tree-level+.tree-level{padding-top:var(--link)}
+.tree-level+.tree-level::before{content:"";position:absolute;top:0;left:50%;width:3px;height:var(--link);margin-left:-1.5px;border-radius:2px;background:var(--ok-bd);transform-origin:top;animation:linkDown .4s var(--ease) both}
+.tree-level.shown>.tree-q,.tree-end.shown>.tree-final{animation:treeIn .5s var(--ease) .25s both}
+.tree-level:first-child.shown>.tree-q{animation:none}
+.tree-q{display:inline-flex;align-items:center;gap:12px;min-height:clamp(42px,3.4cqw,44px);padding:4px 22px 4px 6px;border-radius:999px;border:3px solid var(--primary);background:var(--surface);box-shadow:var(--edge),var(--shadow)}
 .tree-n{display:inline-flex;align-items:center;justify-content:center;flex:none;width:clamp(28px,2.5cqw,32px);height:clamp(28px,2.5cqw,32px);border-radius:50%;background:var(--primary);color:var(--on-primary);font-weight:750;font-size:var(--fs-small)}
 .tree-q b{font-size:clamp(18px,1.9cqw,24px);line-height:1.1}
-.tree-row{width:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:clamp(6px,.6cqw,8px)}
-.tree-side{display:flex;align-items:center;justify-self:start;margin-left:12px;min-width:0}
-.tree-a{min-width:clamp(72px,7cqw,92px);height:clamp(34px,2.8cqw,36px);padding:0 18px;border-radius:999px;border:2px solid;background:var(--surface);font-weight:700;font-size:var(--fs-body);box-shadow:var(--edge),0 1px 2px rgba(14,31,53,.08),0 4px 10px rgba(14,31,53,.06);transition:transform .25s var(--ease),background .2s ease,color .2s ease,opacity .25s ease,box-shadow .25s var(--ease)}
+/* the pair is centred; choosing slides the pair so the chosen pill sits on the centre line */
+.tree-answers{display:flex;gap:var(--pgap);margin-top:clamp(10px,1cqw,12px);transition:transform .5s var(--ease)}
+.tree-level.yes>.tree-answers{transform:translateX(calc((var(--pill) + var(--pgap)) / 2))}
+.tree-level.no>.tree-answers{transform:translateX(calc((var(--pill) + var(--pgap)) / -2))}
+.tree-a{width:var(--pill);height:clamp(34px,2.8cqw,36px);padding:0;border-radius:999px;border:2px solid;background:var(--surface);font-weight:700;font-size:var(--fs-body);box-shadow:var(--edge),0 1px 2px rgba(14,31,53,.08),0 4px 10px rgba(14,31,53,.06);transition:transform .25s var(--ease),background .2s ease,color .2s ease,opacity .3s ease,box-shadow .25s var(--ease)}
 .tree-a:hover{transform:translateY(-2px);box-shadow:var(--edge),var(--shadow)}
 .tree-a.yes{border-color:var(--ok-bd);color:var(--ok-ink)}
 .tree-a.no{border-color:var(--bad-bd);color:var(--bad-ink)}
 .tree-a.yes[aria-pressed="true"]{background:var(--ok-solid);border-color:var(--ok-solid);color:#fff}
 .tree-a.no[aria-pressed="true"]{background:var(--bad-solid);border-color:var(--bad-solid);color:#fff}
-.tree-level.answered .tree-a[aria-pressed="false"]{opacity:.4}
-.tree-link{flex:none;width:clamp(24px,3cqw,40px);height:3px;border-radius:2px;background:var(--bad-bd);transform-origin:left;transform:scaleX(0);transition:transform .35s var(--ease)}
-.tree-level.no .tree-link{transform:scaleX(1)}
-/* answers: a family circle with its letter and a soft ring, the name beside it */
-.tree-res{display:flex;align-items:center;gap:12px;opacity:0;transform:scale(.4);transform-origin:left center;transition:opacity .3s ease,transform .55s var(--ease)}
-.tree-level.no .tree-res,.tree-end.shown .tree-res{opacity:1;transform:none;transition-delay:.18s}
-.tree-dot{display:inline-flex;align-items:center;justify-content:center;flex:none;width:clamp(44px,4.2cqw,54px);height:clamp(44px,4.2cqw,54px);border-radius:50%;background:var(--x-solid);color:#fff;font-weight:750;font-size:clamp(18px,1.9cqw,24px);box-shadow:0 0 0 6px var(--x-bg),0 0 0 7px color-mix(in srgb,var(--x-solid) 30%,transparent),var(--shadow)}
-.tree-label{font-family:var(--serif);font-weight:600;font-size:clamp(20px,2.2cqw,28px);color:var(--x-ink);white-space:nowrap;line-height:1.1}
-.tree-end .tree-row{margin-top:0}
-.tree-end .tree-res{display:grid;grid-template-columns:1fr auto 1fr;gap:0;transform-origin:center top}
-.tree-end .tree-label{justify-self:start;margin-left:18px}
+.tree-level.answered .tree-a[aria-pressed="false"]{opacity:.35}
+/* No: a coral line down to the final answer */
+.tree-out{display:none;position:relative;padding-top:var(--link);flex-direction:column;align-items:center}
+.tree-level.no>.tree-out{display:flex}
+.tree-out::before{content:"";position:absolute;top:0;left:50%;width:3px;height:var(--link);margin-left:-1.5px;border-radius:2px;background:var(--bad-bd);transform-origin:top;animation:linkDown .4s var(--ease) .15s both}
+.tree-level.no>.tree-out>.tree-final{animation:finalIn .6s cubic-bezier(.34,1.56,.64,1) .4s both}
+/* the final answer: a solid, glowing family card with a faint dot texture */
+.tree-final{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;gap:14px;min-height:clamp(58px,5.6cqw,72px);padding:8px clamp(22px,2.4cqw,30px) 8px 10px;border-radius:20px;background:linear-gradient(135deg,var(--x-solid),color-mix(in srgb,var(--x-solid) 72%,#0b1522));color:#fff;box-shadow:0 0 0 5px var(--x-bg),0 12px 30px color-mix(in srgb,var(--x-solid) 38%,transparent)}
+.tree-final::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle,rgba(255,255,255,.22) 1.2px,transparent 1.7px) 0 0/12px 12px;-webkit-mask:linear-gradient(90deg,transparent 30%,#000);mask:linear-gradient(90deg,transparent 30%,#000)}
+.tree-dot{display:inline-flex;align-items:center;justify-content:center;flex:none;width:clamp(40px,3.9cqw,50px);height:clamp(40px,3.9cqw,50px);border-radius:50%;background:#fff;color:var(--x-solid);font-weight:800;font-size:clamp(18px,1.8cqw,23px);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.tree-label{font-family:var(--serif);font-weight:600;font-size:clamp(22px,2.4cqw,31px);line-height:1.1;color:#fff;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.18)}
 @keyframes treeIn{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes linkDown{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes finalIn{from{opacity:0;transform:translateY(-6px) scale(.7)}to{opacity:1;transform:none}}
 @container (max-width:600px){
-  /* phones: more air between levels; Yes stays on the spine, the answer drops below the pills */
-  .tree-level+.tree-level{padding-top:30px}
-  .tree-level+.tree-level::before{height:30px}
-  .tree-q{min-height:46px}
-  .tree-row{column-gap:12px;row-gap:18px;margin-top:14px}
-  .tree-link,.tree-end .tree-pad{display:none}
-  .tree-side{display:contents}
-  .tree-a.no{justify-self:start}
-  .tree-row .tree-res{grid-column:1 / -1;justify-content:center;transform-origin:center top}
-  .tree-level:not(.no) .tree-side .tree-res{display:none}
-  .tree-end .tree-res{display:flex;gap:14px;justify-content:center}
-  .tree-end .tree-label{margin-left:0}
+  .tree{--link:42px;--pill:84px;margin-top:10px}
+  .tree-label{font-size:22px}
 }
 
 /* ---------- clue stem (linked highlight) ---------- */

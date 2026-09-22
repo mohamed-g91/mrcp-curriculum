@@ -122,29 +122,28 @@ def p_question_flow(slide, topic):
             f'<div class="qf-chart"{data_path}>{"".join(parts)}</div></div></div>')
 
 
-def _tree_res(topic, key, cls="tree-res"):
+def _tree_final(topic, key):
+    """The answer at the end of a branch: a solid family card, unlike the step pills."""
     c = concept(topic, key)
-    return (f'<div class="{cls} f-{c["family"]}" data-type="{e(key)}"><span class="tree-dot">{e(c["letter"])}</span>'
+    return (f'<div class="tree-final f-{c["family"]}" data-type="{e(key)}"><span class="tree-dot">{e(c["letter"])}</span>'
             f'<b class="tree-label">{e(c["label"])}</b></div>')
 
 
 def p_decision_tree(slide, topic):
-    """Top-down yes/no tree: No gives the answer to the side, Yes opens the next question below."""
+    """Top-down yes/no tree. The chosen answer slides onto the centre line; Yes opens the next
+    question below it, No drops to the final answer."""
     steps = slide["steps"]
     levels = []
     for i, st in enumerate(steps):
         levels.append(
             f'<div class="tree-level" data-step="{i}">'
             f'<div class="tree-q"><span class="tree-n">{i + 1}</span><b>{e(st["q"])}</b></div>'
-            f'<div class="tree-row"><span class="tree-pad"></span>'
+            f'<div class="tree-answers">'
             f'<button class="tree-a yes" type="button" data-a="yes" aria-pressed="false">Yes</button>'
-            f'<div class="tree-side"><button class="tree-a no" type="button" data-a="no" aria-pressed="false">No</button>'
-            f'<span class="tree-link" aria-hidden="true"></span>{_tree_res(topic, st["no"])}</div></div></div>')
-    end = concept(topic, slide["end"])
-    levels.append(
-        f'<div class="tree-level tree-end" data-step="{len(steps)}"><div class="tree-row tree-res f-{end["family"]}" data-type="{e(slide["end"])}">'
-        f'<span class="tree-pad"></span><span class="tree-dot">{e(end["letter"])}</span><b class="tree-label">{e(end["label"])}</b></div></div>')
-    return heading(slide) + f'<div class="center-body"><div class="tree">{"".join(levels)}</div></div>'
+            f'<button class="tree-a no" type="button" data-a="no" aria-pressed="false">No</button></div>'
+            f'<div class="tree-out">{_tree_final(topic, st["no"])}</div></div>')
+    levels.append(f'<div class="tree-level tree-end" data-step="{len(steps)}">{_tree_final(topic, slide["end"])}</div>')
+    return heading(slide) + f'<div class="tree">{"".join(levels)}</div>'
 
 
 def p_clue_stem(slide, topic):
@@ -229,7 +228,7 @@ PATTERNS = {
 }
 
 # patterns whose slides are centred in the space under the heading
-CENTRED = {"hook", "question-flow", "decision-tree", "reveal-cards", "end"}
+CENTRED = {"hook", "question-flow", "reveal-cards", "end"}
 
 
 def topic_data(topic):

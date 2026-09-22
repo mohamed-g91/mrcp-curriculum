@@ -1,7 +1,7 @@
 
 /* ---------- decision tree ----------
-   Each question has Yes and No. No draws a line to the side and grows the answer there;
-   Yes draws a line down and opens the next question. Choosing the other answer re-routes the
+   Each question has Yes and No, centred beneath it. The chosen answer slides onto the centre line:
+   Yes draws a green line down to the next question; No draws a coral line down to the final answer. Choosing the other answer re-routes the
    branch, tapping a chosen answer again undoes it, and a click anywhere else starts again. */
 function buildTrees() {
   $$(".tree").forEach(tree => {
@@ -12,6 +12,7 @@ function buildTrees() {
         const shown = i === 0 || ans[i - 1] === "yes";
         lv.classList.toggle("shown", shown);
         lv.classList.toggle("answered", i < last && !!ans[i]);
+        lv.classList.toggle("yes", ans[i] === "yes");
         lv.classList.toggle("no", ans[i] === "no");
         $$(".tree-a", lv).forEach(b => {
           b.setAttribute("aria-pressed", String(ans[i] === b.dataset.a));
