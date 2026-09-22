@@ -1,6 +1,6 @@
 // Automated page check: drives headless Chrome through a built topic page.
 //
-//   node checks/check.mjs dist/statistics/data-types.html [--shots out-dir] [--nav slides|scroll]
+//   node checks/check.mjs dist/statistics/data-types.html [--shots out-dir]
 //
 // For each window size (1280 x 720 stage, 1920 x 1080 recording, 375 x 812 phone) it visits
 // every slide, opens every reveal on it, and checks there is no sideways overflow and, on the
@@ -13,7 +13,7 @@ import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const CHROME = process.env.CHROME || "C:/Program Files/Google/Chrome/Application/chrome.exe";
-const PORT = Number(process.env.PORT) || 9333;
+const PORT = 9333;
 const SIZES = [
   { name: "stage", width: 1280, height: 720 },
   { name: "rec", width: 1920, height: 1080 },
@@ -26,10 +26,7 @@ const shotsAt = args.indexOf("--shots");
 const shotDir = shotsAt >= 0 ? resolve(args[shotsAt + 1]) : null;
 if (!page) { console.error("usage: node checks/check.mjs <page.html> [--shots dir]"); process.exit(2); }
 if (shotDir) mkdirSync(shotDir, { recursive: true });
-const navAt = args.indexOf("--nav");
-const nav = navAt >= 0 ? args[navAt + 1] : null;
-const base = pathToFileURL(resolve(page)).href;
-const url = base + (nav ? `?nav=${nav}` : "");
+const url = pathToFileURL(resolve(page)).href;
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const problems = [];
@@ -85,7 +82,7 @@ listeners.push(m => {
   if (m.method === "Runtime.consoleAPICalled" && m.params.type === "error") fail(`console error: ${m.params.args.map(a => a.value).join(" ")}`);
   if (m.method === "Network.requestWillBeSent") {
     const u = m.params.request.url;
-    if (!u.startsWith("data:") && !u.startsWith(base)) fail(`network request: ${u}`);
+    if (!u.startsWith("data:") && !u.startsWith(url.split("#")[0])) fail(`network request: ${u}`);
   }
 });
 await send("Runtime.enable");
@@ -110,7 +107,7 @@ const MEASURE = W => `(() => {
   const wide = [...s.querySelectorAll("*")].filter(n => { const r = n.getBoundingClientRect(); return r.width && (r.right > ${W} + 1 || r.left < -1); })
     .slice(0, 3).map(n => n.className || n.tagName);
   return { id: s.dataset.id, fluid, hscroll: d.scrollWidth > ${W} + 1 || innerWidth > ${W}, wide,
-           box: 0, ...(() => { const b = SCROLL ? s : deck; return { vscroll: !fluid && b.scrollHeight > b.clientHeight + 1, over: b.scrollHeight - b.clientHeight }; })() };
+           vscroll: !fluid && deck.scrollHeight > deck.clientHeight + 1, over: deck.scrollHeight - deck.clientHeight };
 })()`;
 
 async function measure(size, label) {
@@ -133,8 +130,8 @@ async function layoutPass(size) {
   await load(size);
   const n = await js("Deck.slides.length");
   for (let i = 0; i < n; i++) {
-    await js(`Deck.go(${i}, false), true`);
-    await sleep(1300);
+    await js(`Deck.go(${i}), true`);
+    await sleep(550);
     const m = await measure(size, `slide ${i + 1}`);
     const tag = `${size.name}-${String(i + 1).padStart(2, "0")}-${m.id}`;
     await shot(tag);
@@ -188,7 +185,7 @@ async function solvePass() {
     const cases = [...document.querySelectorAll(".slide.case")];
     const all = Object.values(TOPIC.quizzes)[0].cases;
     for (const [pos, sec] of cases.entries()) {
-      Deck.go(Deck.slides.indexOf(sec), false); await wait(120);
+      Deck.go(Deck.slides.indexOf(sec)); await wait(80);
       const c = all.find(x => x.id === sec.dataset.case);
       if (pos === 1) {
         const wrong = [...sec.querySelectorAll(".choice")].find(b => b.dataset.key !== c.answer);
@@ -215,9 +212,8 @@ async function solvePass() {
   else console.log(`  ok   ${res.score}`);
   const firstIsSolved = await js(`document.querySelector(".slide.case").classList.contains("solved")`);
   if (!firstIsSolved) fail("the first case is not the solved example");
-  await js(`Deck.go(Deck.slides.length - 1, false), true`);
+  await js(`Deck.go(Deck.slides.length - 1), true`);
   await sleep(400);
-  await sleep(900);
   await shot("stage-end-scored");
 }
 
@@ -228,8 +224,8 @@ async function darkPass() {
   await js(`document.getElementById("themeBtn").click(), true`);
   const n = await js("Deck.slides.length");
   for (let i = 0; i < n; i++) {
-    await js(`Deck.go(${i}, false), true`);
-    await sleep(1200);
+    await js(`Deck.go(${i}), true`);
+    await sleep(500);
     const id = await js(`Deck.slides[Deck.i].dataset.id`);
     await js(`(() => { const d = Deck.slides[Deck.i].querySelector(".spec-dot, .reveal-item"); if (d) d.click(); return true; })()`);
     await sleep(900);

@@ -19,7 +19,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .topbar{display:flex;align-items:center;gap:14px;min-height:clamp(48px,4.4cqw,56px);padding-inline:var(--pad);background:var(--surface);border-bottom:1px solid var(--border);z-index:5}
 .wordmark{font-family:var(--sans);font-weight:800;font-size:clamp(15px,1.45cqw,19px);letter-spacing:-.015em;color:var(--ink);white-space:nowrap}
 .wm-us{color:var(--primary)}
-.wordmark{border:0;background:none;padding:0;cursor:pointer}
 .brand-sep{align-self:center;width:1px;height:22px;background:var(--border-strong)}
 .brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap;min-width:0}
 .brand b{font-family:var(--serif);font-size:clamp(16px,1.5cqw,19px)}
@@ -34,17 +33,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 @container (max-width:420px){.brand,.brand-sep{display:none}}
 
 /* ---------- slides ---------- */
-.slide{display:flex;flex-direction:column;position:relative}
+.slide{display:none}
+.slide.active{display:flex;flex-direction:column;min-height:100%;animation:slideIn .45s var(--ease)}
 @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-
-/* ---------- motion ----------
-   Slides mode: as a slide appears, its parts (.rv, tagged by deck.js) rise and sharpen one after another.
-   Scroll mode: each part rises in as it enters the window and fades away as it leaves,
-   upwards once it has been passed. */
-.rv{opacity:0;translate:0 28px;filter:blur(6px);transition:opacity .45s var(--ease),translate .7s var(--ease),filter .45s var(--ease)}
-.rv.above{translate:0 -28px}
-.rv.in{opacity:1;translate:none;filter:none;transition-duration:.6s,.9s,.6s}
-.slide.in .rv{opacity:1;translate:none;filter:none;transition-duration:.6s,.9s,.6s;transition-delay:calc(min(var(--rv),10) * 75ms)}
 .slide-center .center-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--gap);padding-bottom:clamp(8px,2cqw,28px)}
 
 /* ---------- buttons ---------- */
@@ -55,26 +46,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
 .btn.primary:hover{background:var(--primary-hover)}
 
-/* ---------- bottom bar (slides mode) ---------- */
+/* ---------- bottom bar ---------- */
 .navbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:clamp(56px,5cqw,64px);padding-inline:var(--pad);background:var(--surface);border-top:1px solid var(--border);z-index:5}
 .nav-left,.nav-right{flex:1;display:flex;gap:8px}
 .nav-right{justify-content:flex-end}
 .nav-count{font-size:var(--fs-small);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 @container (max-width:560px){.nav-label{display:none}}
-
-/* ---------- slide rail (scroll mode) ---------- */
-.rail{position:absolute;right:14px;top:50%;translate:0 -50%;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:6}
-.rail-dot{width:14px;height:14px;padding:0;border:0;background:none;display:flex;align-items:center;justify-content:center}
-.rail-dot::before{content:"";width:6px;height:6px;border-radius:6px;background:var(--border-strong);transition:height .35s var(--ease),background .25s ease}
-.rail-dot:hover::before{background:var(--muted)}
-.rail-dot.on::before{height:20px;background:var(--primary)}
-.rail-dot.part-start{margin-top:10px}
-.rail-dot.on{height:24px}
-
-/* ---------- title scroll cue ---------- */
-.scroll-cue{align-self:center;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-bottom:10px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--primary);box-shadow:var(--shadow);animation:cue 2.2s var(--ease) infinite}
-.scroll-cue .ico{width:22px;height:22px}
-@keyframes cue{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
 /* ---------- feedback ---------- */
 .feedback{display:none;align-items:flex-start;gap:10px;margin-top:var(--gap);padding:12px 16px;border-radius:var(--radius);border:1px solid;font-size:var(--fs-small);line-height:1.45}
@@ -92,5 +69,4 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  .rv{opacity:1;translate:none;filter:none}
 }

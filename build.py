@@ -65,8 +65,6 @@ def check_topic(t, expected_id):
             errs.append(f"missing '{key}'")
     if errs:
         return errs, warns
-    if t.get("navigation", "slides") not in ("slides", "scroll"):
-        errs.append(f"navigation is {t['navigation']!r}: use slides (horizontal) or scroll (vertical)")
     fams, cons = t["families"], t["concepts"]
     for k, c in cons.items():
         if c.get("family") not in fams:
@@ -177,7 +175,7 @@ def render_topic(t, spec, site):
     page_title = f'{t["title"]} · {site["title"]}'
     for k, v in {
         "{{PAGE_TITLE}}": e(page_title), "{{DESCRIPTION}}": e(t["description"]), "{{AUTHOR}}": e(site["author"]),
-        "{{NAV}}": t.get("navigation", "slides"), "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{SITE}}": e(site["title"]), "{{WORDMARK}}": wordmark(site["title"]), "{{ICONS}}": read(ENGINE, "icons.svg"),
+        "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{SITE}}": e(site["title"]), "{{WORDMARK}}": wordmark(site["title"]), "{{ICONS}}": read(ENGINE, "icons.svg"),
         "{{SLIDES}}": "\n".join(slides), "{{DATA}}": data, "{{CSS}}": css, "{{JS}}": js,
     }.items():
         shell = shell.replace(k, v)

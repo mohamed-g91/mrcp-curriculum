@@ -1,37 +1,13 @@
 /* ---------- 16:9 stage ----------
    On laptops and desktops the page is a fixed 1280 x 720 canvas, scaled to fit the window,
    so every recording frames the same. On phones and small windows (html.fluid) the page
-   reflows and scrolls. deck.js sets --s and the fluid class.
-
-   Two ways through the slides, set per topic (navigation: slides | scroll):
-   slides  one slide at a time, Back / Home / Next in a bottom bar
-   scroll  one fluid page that scrolls freely, a rail of dots on the right */
+   reflows and scrolls normally. deck.js sets --s and the fluid class. */
 html,body{height:100%}
 body{background:var(--letterbox);overflow:hidden}
 .app{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform:translate(-50%,-50%) scale(var(--s,1));container-type:inline-size;background:var(--page);overflow:hidden;box-shadow:0 20px 60px rgba(14,31,53,.14)}
 .frame{height:100%;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto}
-.deck{position:relative;overflow-y:auto;overflow-x:hidden}
+.deck{position:relative;overflow-y:auto;overflow-x:hidden;padding:clamp(18px,2.5cqw,32px) var(--pad) clamp(14px,1.6cqw,20px)}
 
-/* slides: one at a time */
-[data-nav="slides"] .deck{padding:clamp(18px,2.5cqw,32px) var(--pad) clamp(14px,1.6cqw,20px)}
-[data-nav="slides"] .slide{display:none;min-height:100%}
-[data-nav="slides"] .slide.active{display:flex}
-[data-nav="slides"] .rail,[data-nav="slides"] .scroll-cue{display:none}
-
-/* scroll: one fluid page. Always laid out like the phone view (html.fluid): the window scrolls,
-   sections flow at their natural height in a centred column, nothing snaps. */
-[data-nav="scroll"] .navbar{display:none}
-[data-nav="scroll"] .topbar{padding-inline:max(var(--pad),calc((100% - 1200px) / 2 + var(--pad)))}
-[data-nav="scroll"] .deck{padding-bottom:clamp(40px,6cqw,80px)}
-[data-nav="scroll"] .slide{width:100%;max-width:1200px;margin:0 auto;padding:clamp(44px,7cqw,96px) var(--pad) 0;scroll-margin-top:calc(clamp(48px,4.4cqw,56px) + 4px)}
-[data-nav="scroll"] .slide.p-title{min-height:calc(100dvh - clamp(48px,4.4cqw,56px) - 5px);padding-top:0}
-[data-nav="scroll"] .slide-center .center-body{flex:none;padding-bottom:0}
-[data-nav="scroll"] .progress{position:sticky;top:calc(clamp(48px,4.4cqw,56px) + 1px);z-index:5}
-[data-nav="scroll"] .rail{position:fixed;right:18px;top:50%}
-@media (max-width:899px){[data-nav="scroll"] .rail{display:none}}
-
-/* phones and small windows */
-html.fluid{--bar-h:52px}
 html.fluid,html.fluid body{height:auto}
 html.fluid body{overflow:auto;background:var(--page)}
 html.fluid .app{position:static;transform:none;width:auto;height:auto;box-shadow:none;overflow:visible}
