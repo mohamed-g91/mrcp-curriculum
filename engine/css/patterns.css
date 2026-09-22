@@ -49,24 +49,28 @@ mark.clue-mark.lit{background:var(--hl);color:var(--hl-ink);box-shadow:0 0 0 .15
 .slide>*{transition:opacity .45s var(--ease),filter .45s var(--ease)}
 .slide.focusing>:not(.spec-bubble){opacity:.1;filter:blur(2px)}
 .spec-zoom .spec-stop.on .spec-ex{display:none}
-.spec-bubble{position:absolute;z-index:4;border-radius:50%;background:var(--x-bg);border:6px solid var(--x-solid);box-shadow:0 0 0 12px color-mix(in srgb,var(--x-bg) 60%,transparent),var(--shadow-lift);display:flex;align-items:center;justify-content:center;transform-origin:center;overflow:hidden;isolation:isolate;transition:transform .6s var(--ease),opacity .35s ease}
+.spec-bubble{position:absolute;z-index:4;container-type:size;border-radius:50%;background:var(--x-bg);border:6px solid var(--x-solid);box-shadow:0 0 0 12px color-mix(in srgb,var(--x-bg) 60%,transparent),var(--shadow-lift);display:flex;align-items:center;justify-content:center;transform-origin:center;overflow:hidden;isolation:isolate;transition:transform .6s var(--ease),opacity .35s ease}
 /* texture: a fine dot grid that shows only towards the edge, and a thin dashed inner ring */
 .spec-bubble::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle,color-mix(in srgb,var(--x-solid) 34%,transparent) 1.4px,transparent 1.9px) 0 0/15px 15px;-webkit-mask:radial-gradient(circle,transparent 52%,#000 80%);mask:radial-gradient(circle,transparent 52%,#000 80%)}
 .spec-bubble::after{content:"";position:absolute;inset:14px;z-index:-1;border-radius:50%;border:2px dashed color-mix(in srgb,var(--x-solid) 45%,transparent)}
 .spec-bubble.closing{opacity:0;transition:transform .45s var(--ease),opacity .45s ease}
-.bubble-body{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1cqw,12px);width:74%;max-height:80%;text-align:center;opacity:0;transition:opacity .3s ease}
+.bubble-body{display:flex;flex-direction:column;align-items:center;gap:2cqi;width:74%;max-height:80%;text-align:center;opacity:0;transition:opacity .3s ease}
 .spec-bubble.open .bubble-body{opacity:1;transition-delay:.25s}
-.bubble-letter{flex:none;display:inline-flex;align-items:center;justify-content:center;width:clamp(36px,3.9cqw,50px);height:clamp(36px,3.9cqw,50px);border-radius:50%;background:var(--x-solid);color:#fff;font-weight:750;font-size:clamp(16px,1.8cqw,23px);box-shadow:0 0 0 5px var(--surface)}
-.bubble-label{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4.4cqw,56px);line-height:1.05;letter-spacing:-.01em;color:var(--x-ink)}
-.bubble-label::after{content:"";display:block;width:56px;height:4px;margin:clamp(8px,1.1cqw,14px) auto 0;border-radius:4px;background:var(--x-solid)}
-.bubble-ex{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-direction:column;gap:clamp(4px,.8cqw,10px)}
-.bubble-ex li{font-size:clamp(16px,1.95cqw,25px);font-weight:600;color:var(--ink);line-height:1.25;opacity:0}
-.spec-bubble.open .bubble-ex li{animation:specIn .4s var(--ease) forwards;animation-delay:calc(.35s + var(--i) * 170ms)}
-.bubble-ex li::before{display:none}
-.bubble-split{flex-direction:column;align-items:center;gap:clamp(8px,1.3cqw,16px)}
-.bubble-split .spec-sub{list-style:none;margin:0;padding:0;background:none;border:0;border-radius:0;display:flex;flex-direction:column;align-items:center;gap:clamp(2px,.5cqw,6px)}
-.bubble-split .spec-sub li{font-size:clamp(15px,1.8cqw,23px);white-space:nowrap}
-.bubble-split li.spec-sub-h{font-size:clamp(11px,1.1cqw,14px);font-weight:750;letter-spacing:.1em;text-transform:uppercase;color:var(--x-ink);padding-bottom:3px;border-bottom:3px solid var(--x-solid)}
+.bubble-letter{flex:none;display:inline-flex;align-items:center;justify-content:center;width:10cqi;height:10cqi;border-radius:50%;background:var(--x-solid);color:#fff;font-weight:750;font-size:4.6cqi;box-shadow:0 0 0 5px var(--surface)}
+.bubble-label{font-family:var(--serif);font-weight:600;font-size:11.2cqi;line-height:1.05;letter-spacing:-.01em;color:var(--x-ink)}
+.bubble-label::after{content:"";display:block;width:11cqi;height:.8cqi;margin:2.4cqi auto 0;border-radius:4px;background:var(--x-solid)}
+/* examples as soft pills: white, a thin family border, a family dot, a gentle shadow.
+   Everything inside the bubble is sized in cqi (a share of the bubble's width), so it scales with the circle. */
+.bubble-ex{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:2cqi}
+.bubble-ex li{display:inline-flex;align-items:center;gap:1.7cqi;padding:1.5cqi 3.4cqi 1.5cqi 2.6cqi;border-radius:999px;background:var(--surface);border:1px solid color-mix(in srgb,var(--x-solid) 38%,transparent);box-shadow:0 1px 2px rgba(14,31,53,.06),0 4px 12px color-mix(in srgb,var(--x-solid) 16%,transparent);font-size:4.2cqi;font-weight:600;color:var(--ink);line-height:1.2;white-space:nowrap;opacity:0}
+.bubble-ex li::before{content:"";flex:none;width:.46em;height:.46em;border-radius:50%;background:var(--x-solid);box-shadow:0 0 0 3px color-mix(in srgb,var(--x-solid) 18%,transparent)}
+.spec-bubble.open .bubble-ex li{animation:pillIn .5s var(--ease) forwards;animation-delay:calc(.35s + var(--i) * 140ms)}
+@keyframes pillIn{from{opacity:0;transform:translateY(8px) scale(.9)}to{opacity:1;transform:none}}
+.bubble-split{flex-direction:column;flex-wrap:nowrap;align-items:center;gap:3cqi}
+.bubble-split .spec-sub{list-style:none;margin:0;padding:0;background:none;border:0;border-radius:0;display:flex;flex-wrap:wrap;justify-content:center;gap:1.7cqi}
+.bubble-split .spec-sub li{font-size:3.8cqi}
+.bubble-split li.spec-sub-h{flex-basis:100%;justify-content:center;padding:0;border:0;background:none;box-shadow:none;font-size:2.8cqi;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--x-ink)}
+.bubble-split li.spec-sub-h::before{display:none}
 @media (prefers-reduced-motion:reduce){.bubble-ex li,.bubble-body{opacity:1}}
 @keyframes specIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.spec-ex li{opacity:1}}
