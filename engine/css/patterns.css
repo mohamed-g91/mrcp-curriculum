@@ -133,6 +133,8 @@ mark.clue-mark.lit{background:var(--hl);color:var(--hl-ink);box-shadow:0 0 0 .15
 .tree-level+.tree-level::before{content:"";position:absolute;top:0;left:50%;width:3px;height:var(--link);margin-left:-1.5px;border-radius:2px;background:var(--ok-bd);transform-origin:top;animation:linkDown .4s var(--ease) both}
 .tree-level.shown>.tree-q,.tree-end.shown>.tree-final{animation:treeIn .5s var(--ease) .25s both}
 .tree-level:first-child.shown>.tree-q{animation:none}
+/* a new question's Yes and No fade in after the question itself (opacity only, so the answers can still slide) */
+.tree-level:not(:first-child).shown>.tree-answers{animation:fadeIn .35s ease .6s both}
 .tree-q{display:inline-flex;align-items:center;gap:12px;min-height:clamp(42px,calc(3.4 * var(--u)),44px);padding:4px 22px 4px 6px;border-radius:999px;border:3px solid var(--primary);background:var(--surface);box-shadow:var(--edge),var(--shadow)}
 .tree-n{display:inline-flex;align-items:center;justify-content:center;flex:none;width:clamp(28px,calc(2.5 * var(--u)),32px);height:clamp(28px,calc(2.5 * var(--u)),32px);border-radius:50%;background:var(--primary);color:var(--on-primary);font-weight:750;font-size:var(--fs-small)}
 .tree-q b{font-size:clamp(18px,calc(1.9 * var(--u)),24px);line-height:1.1}
