@@ -274,7 +274,9 @@ a.next-topic:hover{border-color:var(--primary)}
 .choice.wrong{background:var(--bad-bg);border-color:var(--bad-bd);color:var(--bad-ink)}
 .choice.correct .mark-ok,.choice.wrong .mark-bad{display:block}
 .choice.correct .choice-dot{background:var(--x-solid);color:#fff}
-.case-actions{display:flex;justify-content:flex-end;margin-top:var(--gap)}
+/* a solved case lights the bar's Next with one soft pulse */
+#nextBtn.ready{animation:readyPulse 1.2s var(--ease) 2}
+@keyframes readyPulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--primary) 45%,transparent)}100%{box-shadow:0 0 0 14px transparent}}
 
 /* ---------- end ---------- */
 .end-card{align-self:flex-start;display:flex;flex-direction:column;gap:12px;padding:clamp(20px,calc(3 * var(--u)),40px);background:var(--surface);border:1px solid var(--border);border-top:6px solid var(--primary);border-radius:var(--radius-lg);box-shadow:var(--edge),var(--shadow);min-width:min(100%,420px)}

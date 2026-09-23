@@ -37,12 +37,14 @@ const Deck = {
   // from the title, the arrow keys open Learn
   next() { if (!this.i) this.go(this.firstOf("Learn")); else if (this.i < this.range()[1]) this.go(this.i + 1); },
   prev() { if (this.i > this.range()[0]) this.go(this.i - 1); },
-  // the button that ends a case does what Next would do from there
-  caseNextLabel(sec) {
-    const after = sec.nextElementSibling;
-    const nextCase = after && after.classList.contains("case");
-    return nextCase ? `Next case${icon("right")}` : `See your score${icon("right")}`;
+  // on a case, the bar's Next says where it goes: the next case, or the score after the last one
+  nextLabel(s) {
+    if (!s.classList.contains("case")) return NEXT_HTML;
+    const after = s.nextElementSibling;
+    return after && after.classList.contains("case") ? `Next case${icon("right")}` : `See your score${icon("right")}`;
   },
+  // a solved case lights the bar's Next and puts the keyboard on it
+  ready() { const b = $("#nextBtn"); b.classList.add("ready"); b.focus({ preventScroll: true }); },
   render() {
     const s = this.slides[this.i];
     this.slides.forEach((x, k) => x.classList.toggle("active", k === this.i));
@@ -54,7 +56,10 @@ const Deck = {
     $("#progressBar").style.width = home ? "0%" : ((this.i - first + 1) / (last - first + 1) * 100) + "%";
     $("#prevBtn").hidden = home || this.i === first;
     $("#homeBtn").hidden = home;
-    $("#nextBtn").hidden = home || this.i === last;
+    const nb = $("#nextBtn");
+    nb.hidden = home || this.i === last;
+    nb.innerHTML = this.nextLabel(s);
+    nb.classList.remove("ready");
     if (this.shown !== s) {
       this.shown = s;
       s.dispatchEvent(new CustomEvent("slideenter"));

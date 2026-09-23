@@ -285,7 +285,7 @@ async function solvePass() {
       const right = sec.querySelector('.choice[data-key="' + c.answer + '"]');
       if (!right) { out.push({ id: c.id, missing: true }); continue; }
       right.click(); await wait(80);
-      out.push({ id: c.id, ok: right.classList.contains("correct"), next: !!sec.querySelector(".case-next"), title: sec.querySelector("h2").textContent,
+      out.push({ id: c.id, ok: right.classList.contains("correct"), next: document.getElementById("nextBtn").classList.contains("ready") && /Next case|See your score/.test(document.getElementById("nextBtn").textContent), title: sec.querySelector("h2").textContent,
                  order: [...sec.querySelectorAll(".choice")].map(b => b.dataset.key).join(",") });
     }
     return { out, score: document.getElementById("scorePill").textContent, n: cases.length, total: all.length };

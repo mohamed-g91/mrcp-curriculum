@@ -2,7 +2,7 @@
 /* ---------- stem quiz: one-question cases ----------
    Each run deals the cases in a fresh random order, with the solved example first, and numbers
    them by their place in the run. Each case fixes its own order for the options. A wrong answer
-   gives a hint and lights the clue phrase; a right one shows why and a button to go on. */
+   gives a hint and lights the clue phrase; a right one shows why and lights the bar's Next. */
 function caseOrder(opts, id) {
   let h = 2166136261;
   for (const ch of id) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0;
@@ -25,7 +25,6 @@ function buildCaseSlide(Q, c, num) {
   }
   const grid = el("div", { class: "choices" });
   const fb = el("div", { class: "feedback", "aria-live": "polite" });
-  const actions = el("div", { class: "case-actions" });
   let first = true;
   caseOrder(Q.options, c.id).forEach(key => {
     const k = concept(key);
@@ -42,11 +41,7 @@ function buildCaseSlide(Q, c, num) {
         $$(".choice", grid).forEach(x => x.disabled = true);
         fb.className = "feedback show ok";
         fb.innerHTML = `${icon("check")}<span><b>Correct.</b> ${esc(c.why)}</span>`;
-        const next = el("button", { class: "btn primary case-next", type: "button" });
-        next.innerHTML = Deck.caseNextLabel(sec);
-        next.addEventListener("click", () => Deck.next());
-        actions.replaceChildren(next);
-        next.focus({ preventScroll: true });
+        Deck.ready();
       } else {
         first = false;
         b.classList.add("wrong"); b.disabled = true; shake(b);
@@ -57,7 +52,7 @@ function buildCaseSlide(Q, c, num) {
     });
     grid.appendChild(b);
   });
-  sec.append(grid, fb, actions);
+  sec.append(grid, fb);
   return sec;
 }
 
