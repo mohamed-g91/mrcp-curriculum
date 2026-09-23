@@ -12,6 +12,13 @@ Every page teaches one decision process: show the skeleton first, and let the le
 4. **Hook with a real question.** The first slide after the title is an exam-style stem and its question, with no options or answer. A later slide comes back to it and solves it.
 5. **Learn, then practise.** "Learn" is the video deck; "Practise" applies the same steps to cases on the page.
 6. **Same order everywhere.** Question flows, cases and summaries use one order and one wording.
+7. **Every page is illustrated.** Each topic gets figures that picture its own content, so the page is pleasant to look at and each idea has an image to remember it by. Figures:
+   - **stand for the topic:** each one shows what its slide is about. In *Types of data*, the concept icons sit above the title; slide 2 shows labels, a podium and a ruler above the three families; slide 3 has an icon beside each question and a chart beside each answer; and the hook, the tree and every case have a cartoon from the recurring cast;
+   - **fill the space the slide already has:** a corner, the room above a label, the side of a card. They never push a teaching slide past the stage, and they shrink, move above their card or hide on small screens;
+   - **stay minimal:** few shapes, little or no text, the family colour only where it means something, and neutral blue where colour would hint at an answer;
+   - **enter gently:** a short rise or pop as the slide opens, in step with the rest of the slide, and no motion for users who prefer less;
+   - **never give an answer away:** a case's figure shows its subject, never its type;
+   - **start as mockups:** a new figure is first drawn as three mockups for the author to choose from, and built only once one is chosen.
 
 ## Visual system
 
@@ -79,7 +86,7 @@ Every interactive element behaves the same way, so learners never have to relear
 - **A case has a cartoon.** One cast member with one prop for the case's subject (a painkiller, a cigarette, a walking stick), never its type, sits beside the stem card, and above it on phones.
 - **A right answer explains.** It shows why, and lights the bar's Next with a soft pulse. On a case the bar's Next reads "Next case" (or "See your score" after the last case); there is no second Next inside the case. In a multi-step case, a correct step moves on by itself after about 0.75 s.
 - **Learn and Practise are separate paths.** Next, Back and the arrow keys never cross from one into the other: each part's first slide has no Back and its last slide has no Next, and the slide count and progress bar count within the part. Home returns to the title.
-- **Navigation is always there.** Back, Home and Next sit in a bottom bar, and the arrow keys move between slides. The title slide has none of them. A hidden button takes no space.
+- **Navigation is always there.** Back, Home and Next sit in a bottom bar, the arrow keys move between slides, and swipes do the same on touch screens (on a phone held sideways, swipes replace the bar; see below). The title slide has none of them. A hidden button takes no space.
 - **Hidden slides.** A slide with `hidden: true` stays in the YAML and is still checked, but is left out of the page.
 - **Keyboard and screen readers.** Every clickable element is a button or has a button role, is reachable with Tab, and opens with Enter or Space.
 - **Every event goes through `record()`.** Views and answers are reported with permanent IDs through one function in the engine, so analytics and a results database can plug in later.
@@ -106,5 +113,6 @@ Before publishing:
 - [ ] `node checks/check.mjs dist/<specialty>/<topic>.html` passes: no overflow at 1280 × 720, 1920 × 1080 and 375 px with every reveal open, every case solves, the score adds up, no console errors or network requests
 - [ ] The screenshots (`--shots`) look right, in light and dark mode
 - [ ] Nothing on a case gives the answer away
+- [ ] The page is illustrated (principle 7): a cover, and a figure wherever a slide has room, each picturing its slide's content
 - [ ] Content checked against the sources listed in the topic, and reviewed by a second clinician before the status moves to `reviewed`
 - [ ] Description filled in; credits footer on the title and end slides
