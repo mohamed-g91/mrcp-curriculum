@@ -48,7 +48,7 @@ A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERN
 
 ## Content
 
-- Most topics are drafted by Claude and reviewed by the user; sometimes the user writes the content and Claude only builds it. A drafted topic stays `status: draft` until the user approves it.
+- Most topics are drafted by Codex and reviewed by the user; sometimes the user writes the content and Codex only builds it. A drafted topic stays `status: draft` until the user approves it.
 - Topic content must be accurate for the MRCP. List the sources in the topic's `sources`. Flag anything uncertain to the user instead of guessing.
 - Question bank items must be original, written from guidelines and textbooks. PassMedicine or Pastest material can guide which topics to cover and their weight, never be copied.
 - Before building a new topic, confirm its slide list, steps and cases with the user.
@@ -61,7 +61,7 @@ Opus plans the change, reviews what comes back, and lands it.
 
 | Size | Goes to |
 | --- | --- |
-| Short, self-contained (one file, a search, a mechanical edit, a check script) | A Claude Code subagent on Sonnet |
+| Short, self-contained (one file, a search, a mechanical edit, a check script) | A Codex subagent on Sonnet |
 | Larger (a change across several engine files, a batch of cases, a long repetitive edit) | DeepSeek Harness (`dsh`), through the `dsh-delegate` skill |
 
 - Delegate: typing up agreed content into YAML, mechanical engine edits, check scripts, repetitive fixes already described in full.
