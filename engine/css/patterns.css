@@ -2,6 +2,9 @@
 .p-title .title-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:clamp(28px,calc(4.4 * var(--u)),56px)}
 .p-title h1{position:relative;max-width:14ch;padding-bottom:clamp(18px,calc(2.2 * var(--u)),28px)}
 .p-title h1::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:clamp(120px,calc(22 * var(--u)),280px);height:clamp(6px,calc(.6 * var(--u)),8px);border-radius:8px;background:var(--rule-centre)}
+.cover{display:flex;justify-content:center;gap:clamp(16px,calc(2.4 * var(--u)),30px);margin-bottom:calc(-1 * clamp(6px,calc(1.2 * var(--u)),16px))}
+.cover>span{display:flex;color:var(--x-solid);animation:figUp .5s var(--ease) both;animation-delay:calc(.15s + var(--i) * 110ms)}
+.cover .ico{width:clamp(30px,calc(3.6 * var(--u)),46px);height:clamp(30px,calc(3.6 * var(--u)),46px)}
 .part-cards{display:grid;grid-template-columns:repeat(2,minmax(0,320px));gap:var(--gap);width:100%;justify-content:center}
 .part-card{display:flex;align-items:center;gap:16px;padding:clamp(14px,calc(1.7 * var(--u)),22px) clamp(16px,calc(2 * var(--u)),26px);border-radius:var(--radius-lg);background:var(--surface);border:1px solid var(--border);box-shadow:var(--edge),var(--shadow);text-align:left;transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
 .part-card b{flex:1;font-family:var(--serif);font-weight:600;font-size:clamp(20px,calc(2.2 * var(--u)),28px)}
@@ -25,8 +28,29 @@ mark.clue-mark.lit{background:var(--hl);color:var(--hl-ink);box-shadow:0 0 0 .15
 
 /* ---------- spectrum (tap-to-reveal circles) ---------- */
 .spec{margin-top:clamp(6px,calc(1.2 * var(--u)),16px)}
-.spec-groups{display:grid;grid-template-columns:repeat(var(--n,5),1fr);gap:0 clamp(6px,calc(1 * var(--u)),14px);margin-bottom:clamp(8px,calc(1.2 * var(--u)),16px)}
+.spec-groups{display:grid;align-items:end;grid-template-columns:repeat(var(--n,5),1fr);gap:0 clamp(6px,calc(1 * var(--u)),14px);margin-bottom:clamp(8px,calc(1.2 * var(--u)),16px)}
 .spec-group{text-align:center;font-size:var(--fs-label);font-weight:750;letter-spacing:.1em;text-transform:uppercase;color:var(--x-ink);padding-bottom:8px;border-bottom:4px solid var(--x-solid)}
+/* the line draws left to right, then each circle and its name rise in turn, after the pictures above */
+.spec-line::before{transform-origin:left;animation:lineAcross .7s var(--ease) .45s both}
+.spec-stop{animation:figUp .5s var(--ease) both;animation-delay:calc(.55s + var(--j) * 110ms)}
+@keyframes lineAcross{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.spec-line::before,.spec-stop,.spec-fig,.cover>span{animation:none}}
+/* a picture above each family's name, in the family's colour */
+.spec-fig{width:clamp(130px,calc(15 * var(--u)),200px);margin:0 auto clamp(10px,calc(1.4 * var(--u)),18px);text-transform:none;letter-spacing:0;animation:figUp .6s var(--ease) both;animation-delay:calc(.2s + var(--i) * 180ms)}
+.spec-fig svg{display:block;width:100%;height:auto;overflow:visible}
+@keyframes figUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@container (max-width:600px){.spec-fig{width:100%;max-width:110px}}
+.gfig .gf-tag{fill:var(--x-bg);stroke:var(--x-solid);stroke-width:3}
+.gfig .gf-t{fill:var(--x-ink);font:700 19px var(--sans);text-anchor:middle}
+.gfig .gf-s1{fill:var(--x-solid)}
+.gfig .gf-s2{fill:color-mix(in srgb,var(--x-solid) 70%,var(--surface))}
+.gfig .gf-s3{fill:color-mix(in srgb,var(--x-solid) 40%,var(--surface))}
+.gfig .gf-n{fill:#fff;font:750 19px var(--sans);text-anchor:middle}
+.gfig .gf-n3{fill:var(--x-ink)}
+.gfig .gf-base{stroke:var(--border-strong);stroke-width:2.5;stroke-linecap:round}
+.gfig .gf-tick{stroke:var(--x-solid);stroke-width:2.5;stroke-linecap:round}
+.gfig .gf-ptr{fill:none;stroke:var(--x-ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.gfig .gf-v{fill:var(--x-ink);font:700 16px var(--sans);text-anchor:middle}
 .spec-line{position:relative;display:grid;grid-template-columns:repeat(var(--n,5),1fr);align-items:start;padding-top:8px}
 .spec-line::before{content:"";position:absolute;left:calc(50% / var(--n,5));right:calc(50% / var(--n,5));top:calc(8px + var(--dot) / 2 - 2px);height:4px;border-radius:2px;background:var(--motif);opacity:.9}
 .spec-stop{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;min-width:0;padding:0 4px}

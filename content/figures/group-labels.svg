@@ -1,0 +1,5 @@
+<svg class="gfig" viewBox="0 0 200 110" role="img" aria-label="Three loose labels, A, O and B, in no order">
+  <g transform="rotate(-8 50 48)"><rect class="gf-tag" x="22" y="30" width="56" height="38" rx="9"/><text class="gf-t" x="50" y="56">A</text></g>
+  <g transform="rotate(6 100 70)"><rect class="gf-tag" x="72" y="52" width="56" height="38" rx="9"/><text class="gf-t" x="100" y="78">O</text></g>
+  <g transform="rotate(-4 150 40)"><rect class="gf-tag" x="122" y="22" width="56" height="38" rx="9"/><text class="gf-t" x="150" y="48">B</text></g>
+</svg>

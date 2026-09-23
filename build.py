@@ -66,6 +66,8 @@ def check_topic(t, expected_id):
     if errs:
         return errs, warns
     fams, cons = t["families"], t["concepts"]
+    if t.get("cover", "concepts") != "concepts":
+        errs.append(f"cover is {t['cover']!r}: the only cover is concepts (each concept's icon in a row)")
     for k, c in cons.items():
         if c.get("family") not in fams:
             errs.append(f"concept {k}: unknown family {c.get('family')!r}")
@@ -86,7 +88,7 @@ def check_topic(t, expected_id):
         refs = []
         p = s["pattern"]
         drawings = [s.get("figure"), s.get("scene")] + list((s.get("charts") or {}).values()) + list(s.get("side") or [])
-        drawings += [st.get("figure") for st in s.get("steps") or []]
+        drawings += [st.get("figure") for st in s.get("steps") or []] + [g.get("figure") for g in s.get("groups") or []]
         for name in filter(None, drawings):
             if not os.path.exists(os.path.join(ROOT, "content", "figures", name + ".svg")):
                 errs.append(f"{where}: no drawing at content/figures/{name}.svg")

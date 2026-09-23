@@ -11,6 +11,8 @@ sources:
   - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapter 2.
   - Petrie A, Sabin C. Medical Statistics at a Glance, 4th ed. Chapter 1.
 retired: []
+# above the title: each concept's icon, in its family colour
+cover: concepts
 
 # One label and one colour per concept, everywhere on the page.
 families:
@@ -38,9 +40,10 @@ learn:
     title: Five types of data
     open: zoom
     groups:
-      - { family: cat, span: 2 }
-      - { family: np,  span: 1 }
-      - { family: par, span: 2 }
+      # above each family's name, a picture of what it means: no order, an order, any value
+      - { family: cat, span: 2, figure: group-labels }
+      - { family: np,  span: 1, figure: group-podium }
+      - { family: par, span: 2, figure: group-ruler }
     stops:
       - { label: Nominal, family: cat, letter: N, examples: &ex-nominal [Blood group, Ethnicity, Diagnosis] }
       - { label: Binary,  family: cat, letter: B, examples: &ex-binary [Alive / dead, Smoker yes / no, Test positive / negative] }

@@ -1,0 +1,6 @@
+<svg class="gfig" viewBox="0 0 200 110" role="img" aria-label="A ruler reading an exact value, 72.4">
+  <rect class="gf-tag" x="12" y="50" width="176" height="40" rx="5"/>
+  <path class="gf-tick" d="M24 52 v16 M40 52 v9 M56 52 v16 M72 52 v9 M88 52 v16 M104 52 v9 M120 52 v16 M136 52 v9 M152 52 v16 M168 52 v9"/>
+  <path class="gf-ptr" d="M114 30 v22 M107 38 l7 -9 l7 9"/>
+  <text class="gf-v" x="114" y="22">72.4</text>
+</svg>
