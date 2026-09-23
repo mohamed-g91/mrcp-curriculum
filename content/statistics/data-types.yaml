@@ -59,6 +59,8 @@ learn:
       - { q: "Equal gaps?", no: ordinal,  figure: q-gaps }
       - { q: "Fractions?",  no: discrete, figure: q-fractions }
     end: continuous
+    # a doctor thinking, in the empty corner beside the tree
+    scene: doctor-think
     # the chart each type of data is drawn with, beside the answer
     charts: &tree-charts
       nominal: chart-nominal

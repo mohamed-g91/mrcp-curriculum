@@ -1,0 +1,56 @@
+<svg class="scene scene-think" viewBox="0 0 300 420" role="img" aria-label="A doctor in a white coat thinks, hand on chin, with a question mark in a thought bubble">
+  <!-- floor shadow -->
+  <ellipse class="sc-shadow" cx="126" cy="406" rx="92" ry="9"/>
+
+  <!-- doctor -->
+  <g class="sc-pop" style="--i:0">
+    <!-- legs and shoes -->
+    <rect class="sc-o" x="100" y="296" width="22" height="100" rx="6" fill="#2B3A55"/>
+    <rect class="sc-o" x="130" y="296" width="22" height="100" rx="6" fill="#2B3A55"/>
+    <path class="sc-o" d="M94 394 h28 v10 h-28 a5 5 0 0 1 0 -10 Z" fill="#3C4A5C"/>
+    <path class="sc-o" d="M130 394 h28 a5 5 0 0 1 0 10 h-28 Z" fill="#3C4A5C"/>
+    <!-- white coat over a teal shirt -->
+    <path class="sc-o" d="M82 190 C86 170 108 162 126 162 C144 162 166 170 170 190 L180 316 L72 316 Z" fill="#F4F6F9"/>
+    <path class="sc-o" d="M112 164 L126 196 L140 164 Z" fill="#2E9C8F"/>
+    <path class="sc-f" d="M112 164 L120 220 M140 164 L132 220 M126 220 V316"/>
+    <rect class="sc-o" x="140" y="252" width="24" height="18" rx="3" fill="#E6EBF1"/>
+    <path d="M147 252 v-10" stroke="#3A7BC8" stroke-width="4" stroke-linecap="round"/>
+    <!-- stethoscope round the neck -->
+    <path d="M108 170 C102 206 114 228 126 228 C138 228 150 206 144 170" fill="none" stroke="#3C4A5C" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="126" cy="234" r="6.5" fill="#B9C3CF" stroke="#3C4A5C" stroke-width="2.5"/>
+    <!-- the folded arm, across the body -->
+    <path d="M88 186 C76 216 78 246 92 258 L164 264" fill="none" stroke="#22303F" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M88 186 C76 216 78 246 92 258 L164 264" fill="none" stroke="#F4F6F9" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- neck, ears, head -->
+    <rect class="sc-o" x="117" y="138" width="18" height="20" rx="4" fill="#B97A50"/>
+    <circle class="sc-o" cx="96" cy="118" r="7" fill="#B97A50"/>
+    <circle class="sc-o" cx="156" cy="118" r="7" fill="#B97A50"/>
+    <circle class="sc-o" cx="126" cy="114" r="30" fill="#B97A50"/>
+    <!-- short hair -->
+    <path class="sc-o" d="M96 110 C92 84 112 76 128 78 C148 80 160 92 156 110 C148 98 128 94 112 98 C104 102 99 106 96 110 Z" fill="#2A1D14"/>
+    <!-- glasses, eyes turned up to the right, one brow raised -->
+    <circle class="sc-f" cx="114" cy="118" r="9"/>
+    <circle class="sc-f" cx="138" cy="118" r="9"/>
+    <path class="sc-f" d="M123 118 h6"/>
+    <circle cx="117" cy="115" r="3.2" fill="#22303F"/>
+    <circle cx="141" cy="115" r="3.2" fill="#22303F"/>
+    <path class="sc-f" d="M105 104 q9 -3 17 0 M130 100 q9 -4 17 1"/>
+    <!-- a small pursed mouth -->
+    <path class="sc-f" d="M119 134 q6 -3 11 1"/>
+    <!-- the arm up to the chin -->
+    <path d="M164 186 C176 214 178 240 170 254 L140 156" fill="none" stroke="#22303F" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M164 186 C176 214 178 240 170 254 L140 156" fill="none" stroke="#F4F6F9" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle class="sc-o" cx="136" cy="148" r="10" fill="#B97A50"/>
+    <path class="sc-f" d="M128 146 q6 -3 12 0"/>
+  </g>
+
+  <!-- thought bubble -->
+  <g class="sc-pop" style="--i:1">
+    <circle class="sc-bubble" cx="170" cy="86" r="5"/>
+    <circle class="sc-bubble" cx="186" cy="68" r="8"/>
+  </g>
+  <g class="sc-pop" style="--i:2">
+    <path class="sc-bubble" d="M214 78 a16 16 0 0 1 -12 -28 a20 20 0 0 1 30 -26 a22 22 0 0 1 38 4 a18 18 0 0 1 16 30 a18 18 0 0 1 -26 22 a22 22 0 0 1 -46 -2 Z"/>
+    <text class="sc-bubble-t sc-q" x="242" y="64">?</text>
+  </g>
+</svg>

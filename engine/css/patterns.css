@@ -305,16 +305,16 @@ a.next-topic:hover{border-color:var(--primary)}
 .hook-row{display:grid;grid-template-columns:minmax(0,1fr) clamp(220px,calc(30 * var(--u)),400px);gap:clamp(16px,calc(2.4 * var(--u)),32px);align-items:center;width:100%;max-width:1320px;margin-inline:auto}
 .hook-row>.stem-card.hook{max-width:none}
 .hook-row>.fig{margin:0}
-.scene-ward .sc-o{stroke:var(--sc-line);stroke-width:3;stroke-linejoin:round}
-.scene-ward .sc-f{fill:none;stroke:#22303F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.scene-ward .sc-bed{fill:var(--surface-2);stroke:var(--sc-line);stroke-width:3}
-.scene-ward .sc-pillow{fill:var(--surface);stroke:var(--sc-line);stroke-width:3}
-.scene-ward [stroke="#22303F"]{stroke:var(--sc-line)}
-.scene-ward .sc-shadow{fill:color-mix(in srgb,var(--ink) 8%,transparent)}
-.scene-ward .sc-bubble{fill:var(--surface);stroke:var(--primary);stroke-width:3;stroke-linejoin:round}
-.scene-ward .sc-bubble-t{fill:var(--primary);font:700 26px var(--sans);text-anchor:middle}
-.scene-ward .sc-pop{transform-box:fill-box;transform-origin:bottom center;animation:pillIn .6s var(--ease) both;animation-delay:calc(.25s + var(--i) * 220ms)}
-@media (prefers-reduced-motion:reduce){.scene-ward .sc-pop{animation:none}}
+.scene .sc-o{stroke:var(--sc-line);stroke-width:3;stroke-linejoin:round}
+.scene .sc-f{fill:none;stroke:#22303F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.scene .sc-bed{fill:var(--surface-2);stroke:var(--sc-line);stroke-width:3}
+.scene .sc-pillow{fill:var(--surface);stroke:var(--sc-line);stroke-width:3}
+.scene [stroke="#22303F"]{stroke:var(--sc-line)}
+.scene .sc-shadow{fill:color-mix(in srgb,var(--ink) 8%,transparent)}
+.scene .sc-bubble{fill:var(--surface);stroke:var(--primary);stroke-width:3;stroke-linejoin:round}
+.scene .sc-bubble-t{fill:var(--primary);font:700 26px var(--sans);text-anchor:middle}
+.scene .sc-pop{transform-box:fill-box;transform-origin:bottom center;animation:pillIn .6s var(--ease) both;animation-delay:calc(.25s + var(--i) * 220ms)}
+@media (prefers-reduced-motion:reduce){.scene .sc-pop{animation:none}}
 @container (max-width:900px){.hook-row{grid-template-columns:minmax(0,1fr)}.hook-row>.fig{order:-1;width:min(70%,300px);margin-inline:auto}}
 
 /* ---------- tree figures: an icon beside each question, a chart beside each answer ---------- */
@@ -358,4 +358,9 @@ a.next-topic:hover{border-color:var(--primary)}
 .gaps .g-hi{stroke:var(--primary);stroke-width:9;stroke-linecap:round}
 .gaps .g-num{fill:var(--muted);font:600 15px var(--sans);text-anchor:middle}
 .gaps .g-sym{fill:var(--primary);font:700 30px var(--sans);text-anchor:middle}
-.scene-ward .sc-score{font-size:34px}
+.scene .sc-score{font-size:34px}
+/* a scene beside a decision tree: bottom-left of the stage, above the tree when the slide reflows */
+.tree-scene{position:absolute;left:0;bottom:0;width:clamp(180px,calc(19 * var(--u)),240px);margin:0;pointer-events:none}
+.tree-scene svg{display:block;width:100%;height:auto}
+.scene .sc-q{font-size:40px}
+@container (max-width:1099px){.tree-scene{position:static;width:min(40%,150px);margin:0 auto 8px}}

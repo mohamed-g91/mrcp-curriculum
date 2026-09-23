@@ -185,7 +185,9 @@ def p_decision_tree(slide, topic):
         side = "".join(figure(n, "side-fig") for n in slide.get("side") or [])
         side = f'<div class="tree-side">{side}</div>' if side else ""
         return heading(slide) + f'<div class="tree-case"><div class="tree-stem">{stem}{side}</div>{tree}</div>'
-    return heading(slide) + tree
+    # a cartoon scene in the free corner beside the tree (above it on phones)
+    scene = figure(slide["scene"], "tree-scene") if slide.get("scene") else ""
+    return heading(slide) + scene + tree
 
 
 def p_clue_stem(slide, topic):
