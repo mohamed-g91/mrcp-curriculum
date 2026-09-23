@@ -76,6 +76,7 @@ Every interactive element behaves the same way, so learners never have to relear
 - **Answer positions are shuffled.** Each case fixes its own option order from its ID, so the answer is not always first and the order is the same every time that case is opened.
 - **A case gives nothing away.** The stem, question and choices carry no hints; the clue phrase is highlighted only after a wrong answer (and in the solved example).
 - **Wrong answers teach.** A wrong choice shakes, gives a one-line hint and lights the clue phrase. Scoring counts the first attempt only, once per case.
+- **A case has a cartoon.** One cast member with one prop for the case's subject (a painkiller, a cigarette, a walking stick), never its type, sits beside the stem card, and above it on phones.
 - **A right answer explains.** It shows why, and lights the bar's Next with a soft pulse. On a case the bar's Next reads "Next case" (or "See your score" after the last case); there is no second Next inside the case. In a multi-step case, a correct step moves on by itself after about 0.75 s.
 - **Learn and Practise are separate paths.** Next, Back and the arrow keys never cross from one into the other: each part's first slide has no Back and its last slide has no Next, and the slide count and progress bar count within the part. Home returns to the title.
 - **Navigation is always there.** Back, Home and Next sit in a bottom bar, and the arrow keys move between slides. The title slide has none of them. A hidden button takes no space.

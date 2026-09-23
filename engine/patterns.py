@@ -298,6 +298,8 @@ def topic_data(topic):
                 "title": s["title"], "options": s["options"],
                 "cases": [{"id": f'{topic["id"]}.{c["id"]}', "solved": bool(c.get("solved")), "twist": bool(c.get("twist")),
                            "stem": stem_html(c["stem"]), "question": c["question"], "answer": c["answer"],
-                           "hint": c["hint"], "why": c["why"], "tutor": c.get("tutor", "")}
+                           "hint": c["hint"], "why": c["why"], "tutor": c.get("tutor", ""),
+                           # a cast member with a prop for the case's subject, beside the stem
+                           "scene": svg(c["scene"]) if c.get("scene") else ""}
                           for c in s["cases"]]}
     return data

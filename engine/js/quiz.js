@@ -18,7 +18,7 @@ function buildCaseSlide(Q, c, num) {
   const sec = el("section", { class: `slide case p-stem-quiz${c.solved ? " solved" : ""}`, "data-id": c.solved ? "case-solved" : `case-${num}`,
     "data-case": c.id, "data-part": "Practise", "aria-label": title });
   sec.innerHTML = `<div class="case-head"><h2>${title}</h2>${c.solved ? '<span class="solved-badge">Not scored</span>' : ""}</div>
-    <div class="stem-card"><p class="stem-text">${c.stem}</p><p class="stem-q">${esc(c.question)}</p></div>`;
+    <div class="case-row">${c.scene ? `<figure class="fig case-fig">${c.scene}</figure>` : ""}<div class="stem-card"><p class="stem-text">${c.stem}</p><p class="stem-q">${esc(c.question)}</p></div></div>`;
   if (c.solved) {
     $$("mark", sec).forEach(m => m.classList.add("lit"));
     sec.appendChild(el("div", { class: "feedback info show" }, `${icon("bulb")}<span><b>Tutor note:</b> ${esc(c.tutor)}</span>`));

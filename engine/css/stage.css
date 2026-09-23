@@ -22,5 +22,5 @@ html.sideways .top-count{display:inline;margin-left:auto;font-size:var(--fs-smal
 html.sideways .top-home:not([hidden]){display:inline-flex}
 html.sideways .score-pill{margin-left:0}
 html.sideways .part-label,html.sideways .brand-sub{display:none}
-html.sideways .tree-scene{display:none}  /* the screen is short: the tree needs the room */
+html.sideways .tree-scene,html.sideways .case-fig{display:none}  /* the screen is short: the tree needs the room */
 html.fluid .deck{overflow:visible}

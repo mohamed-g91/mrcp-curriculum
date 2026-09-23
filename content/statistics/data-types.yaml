@@ -148,6 +148,7 @@ practise:
     # [[...]] marks the clue phrase, highlighted only after a wrong answer (or in the solved example).
     cases:
       - id: c01
+        scene: case-analgesic
         solved: true
         stem: In a trial of a new analgesic, 120 adults rated their [[pain on a scale from 0 to 10]], 24 hours after surgery.
         question: What type of data is the pain score?
@@ -157,6 +158,8 @@ practise:
         tutor: "Ordered? Yes. Equal gaps? No. So it is ordinal, even though it is written as numbers."
 
       - id: c02
+
+        scene: case-smoking
         stem: A survey of 400 adults at a chest clinic recorded whether each person [[had smoked in the past year (yes / no)]].
         question: What type of data is smoking in the past year?
         answer: nominal
@@ -164,6 +167,8 @@ practise:
         why: "Two categories with no order: binary, which is a type of nominal."
 
       - id: c03
+
+        scene: case-falls
         stem: A falls clinic recorded the [[number of falls in the previous 12 months]] for 250 older adults.
         question: What type of data is the number of falls?
         answer: discrete
@@ -171,6 +176,8 @@ practise:
         why: "A count: whole numbers only. Nobody has 2.5 falls."
 
       - id: c04
+
+        scene: case-kidney
         stem: In a cohort of adults with chronic kidney disease, researchers recorded the [[eGFR (mL/min/1.73 m²)]] at one year.
         question: What type of data is the eGFR?
         answer: continuous
@@ -178,6 +185,8 @@ practise:
         why: "Measured on a scale with a unit, so it can take any value in its range."
 
       - id: c05
+
+        scene: case-xray
         stem: A lung cancer registry recorded the [[tumour stage (I–IV)]] of each patient at diagnosis.
         question: What type of data is the tumour stage?
         answer: ordinal
@@ -185,6 +194,8 @@ practise:
         why: "Ordered, but stage IV is not 'twice' stage II: the gaps are not equal."
 
       - id: c06
+
+        scene: case-people
         stem: A diabetes audit recorded each patient's [[ethnicity as White, Black, Asian, Mixed or Other]].
         question: What type of data is ethnicity?
         answer: nominal
@@ -192,6 +203,8 @@ practise:
         why: Labels with no natural order.
 
       - id: c07
+
+        scene: case-hip
         twist: true
         stem: A study of hip fracture outcomes in 600 adults recorded each patient's [[age in completed years]].
         question: What type of data is age?
@@ -200,6 +213,8 @@ practise:
         why: "Age is measured on a continuous scale; recording it in whole years only rounds it. It is not a count of events."
 
       - id: c08
+
+        scene: case-head
         twist: true
         stem: Patients arriving after a head injury had their [[Glasgow Coma Scale score (3–15)]] recorded.
         question: What type of data is the GCS?
@@ -208,6 +223,8 @@ practise:
         why: "A score built from ranked responses: a change from 3 to 4 need not mean the same as a change from 14 to 15."
 
       - id: c09
+
+        scene: case-glucose
         twist: true
         stem: A diabetes clinic grouped each patient's [[HbA1c into bands of below 48, 48–58 and above 58 mmol/mol]].
         question: What type of data is the HbA1c band?

@@ -263,6 +263,12 @@ a.next-topic:hover{border-color:var(--primary)}
 .solved-badge{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-label);font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--sol-ink);background:var(--sol-bg);border:1px solid var(--sol-bd);border-radius:999px;padding:4px 12px}
 .case.solved .stem-card{border-top-color:var(--sol-solid)}
 .case .stem-card{max-width:none}
+/* a case's cartoon beside its stem card (above it, small, when the slide reflows) */
+.case-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(12px,calc(2 * var(--u)),24px);align-items:end}
+.case-row:not(:has(.case-fig)){grid-template-columns:minmax(0,1fr)}
+.case-fig{margin:0;width:clamp(110px,calc(13 * var(--u)),160px)}
+.case-fig svg{display:block;width:100%;height:auto}
+@container (max-width:900px){.case-row{grid-template-columns:minmax(0,1fr)}.case-fig{width:96px;margin-inline:auto}}
 .choices{display:grid;gap:12px;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:clamp(14px,calc(2 * var(--u)),24px)}
 @container (max-width:900px){.choices{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .choice{position:relative;display:flex;align-items:center;gap:12px;text-align:left;padding:clamp(10px,calc(1.2 * var(--u)),16px) 14px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);font-weight:650;font-size:var(--fs-body);box-shadow:var(--edge),0 1px 2px rgba(14,31,53,.08),0 4px 10px rgba(14,31,53,.06);transition:transform .2s var(--ease),box-shadow .2s ease,border-color .2s ease,background .2s ease}

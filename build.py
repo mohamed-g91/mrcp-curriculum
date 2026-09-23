@@ -121,6 +121,8 @@ def check_topic(t, expected_id):
                     errs.append(f"{where}: case {c['id']} answer {c['answer']!r} is not an option")
                 if "[[" not in c["stem"]:
                     errs.append(f"{where}: case {c['id']} has no [[clue]] in its stem")
+                if c.get("scene") and not os.path.exists(os.path.join(ROOT, "content", "figures", c["scene"] + ".svg")):
+                    errs.append(f"{where}: case {c['id']} has no drawing at content/figures/{c['scene']}.svg")
                 for key in ("question", "hint", "why"):
                     if not c.get(key):
                         errs.append(f"{where}: case {c['id']} has no {key}")
