@@ -21,7 +21,6 @@
   --shadow:0 1px 2px rgba(14,31,53,.08),0 4px 12px rgba(14,31,53,.08),0 14px 32px rgba(14,31,53,.08);
   --shadow-lift:0 2px 4px rgba(14,31,53,.10),0 10px 22px rgba(14,31,53,.12),0 24px 48px rgba(14,31,53,.12);
   --edge:inset 0 1px 0 rgba(255,255,255,.8);
-  --motif:linear-gradient(90deg,var(--cat-solid),var(--np-solid) 50%,var(--par-solid));
   --rule:linear-gradient(90deg,var(--primary),color-mix(in srgb,var(--primary) 12%,transparent));
   --rule-centre:linear-gradient(90deg,color-mix(in srgb,var(--primary) 12%,transparent),var(--primary),color-mix(in srgb,var(--primary) 12%,transparent));
   --radius:10px;--radius-lg:16px;
