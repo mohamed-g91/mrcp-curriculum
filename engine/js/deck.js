@@ -8,6 +8,8 @@ const Stage = {
     const d = document.documentElement, w = d.clientWidth, h = d.clientHeight;
     const fluid = w < 900 || h < 480 || h > w;
     document.documentElement.classList.toggle("fluid", fluid);
+    // a touch phone held sideways: no bottom bar; swipe moves between slides, the top bar keeps Home and the count
+    document.documentElement.classList.toggle("sideways", fluid && w > h && matchMedia("(pointer:coarse)").matches);
     this.s = fluid ? 1 : Math.min(w / 1280, h / 720);
     // the canvas is at least 1280 x 720 and grows to the window's shape, so it fills the window
     // with no letterbox; a 16:9 window (and every recording) still gets exactly 1280 x 720
@@ -52,7 +54,8 @@ const Deck = {
     $("#partLabel").textContent = s.dataset.part ? `${s.dataset.part} · ${label}` : "";
     // slides are counted within their part
     const [first, last] = this.range(), home = this.i === 0;
-    $("#navCount").textContent = home ? "" : `${this.i - first + 1} / ${last - first + 1}`;
+    $("#navCount").textContent = $("#topCount").textContent = home ? "" : `${this.i - first + 1} / ${last - first + 1}`;
+    $("#homeTop").hidden = home;
     $("#progressBar").style.width = home ? "0%" : ((this.i - first + 1) / (last - first + 1) * 100) + "%";
     $("#prevBtn").hidden = home || this.i === first;
     $("#homeBtn").hidden = home;
@@ -99,6 +102,18 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#nextBtn").addEventListener("click", () => Deck.next());
   $("#prevBtn").addEventListener("click", () => Deck.prev());
   $("#homeBtn").addEventListener("click", () => Deck.go(0));
+  $("#homeTop").addEventListener("click", () => Deck.go(0));
+  // swipe left for Next, right for Back (any touch screen; a sort chip's drag is left alone)
+  let touch = null;
+  $("#deck").addEventListener("touchstart", e => {
+    touch = e.touches.length === 1 && !e.target.closest(".chip, .spec-bubble") ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+  }, { passive: true });
+  $("#deck").addEventListener("touchend", e => {
+    if (!touch) return;
+    const dx = e.changedTouches[0].clientX - touch.x, dy = e.changedTouches[0].clientY - touch.y;
+    touch = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > 1.6 * Math.abs(dy)) dx < 0 ? Deck.next() : Deck.prev();
+  }, { passive: true });
   $$("[data-go]").forEach(b => b.addEventListener("click", () =>
     b.dataset.go === "practise" ? Deck.deal() : Deck.go(Deck.firstOf("Learn"))));
   const restart = $("#restartBtn"), toStart = $("#toStartBtn");

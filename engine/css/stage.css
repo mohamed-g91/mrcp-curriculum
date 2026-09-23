@@ -15,4 +15,12 @@ html.fluid .app{position:static;transform:none;width:auto;height:auto;box-shadow
 html.fluid .frame{height:auto;min-height:100dvh}
 html.fluid .topbar{position:sticky;top:0}
 html.fluid .navbar{position:sticky;bottom:0}
+/* a phone held sideways: the bottom bar goes (swipe moves on); Home and the count sit in the top bar */
+.top-count,.top-home{display:none}
+html.sideways .navbar{display:none}
+html.sideways .top-count{display:inline;margin-left:auto;font-size:var(--fs-small);color:var(--muted);font-variant-numeric:tabular-nums}
+html.sideways .top-home:not([hidden]){display:inline-flex}
+html.sideways .score-pill{margin-left:0}
+html.sideways .part-label,html.sideways .brand-sub{display:none}
+html.sideways .tree-scene{display:none}  /* the screen is short: the tree needs the room */
 html.fluid .deck{overflow:visible}
