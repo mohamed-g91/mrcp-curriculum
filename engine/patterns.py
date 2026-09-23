@@ -109,17 +109,19 @@ def p_spectrum(slide, topic):
     groups = ""
     if slide.get("groups"):
         groups = '<div class="spec-groups">' + "".join(
-            f'<div class="spec-group f-{g["family"]}" style="grid-column:span {g.get("span", 1)};--i:{i}">'
+            f'<div class="spec-group f-{g["family"]}" style="grid-column:span {g.get("span", 1)};--g:{i}">'
             # a small picture of what the family means, above its name
             + (f'<div class="spec-fig">{svg(g["figure"])}</div>' if g.get("figure") else "")
             + f'{e(topic["families"][g["family"]])}</div>' for i, g in enumerate(slide["groups"])) + "</div>"
+    # each stop enters with the group above it: --g is that group's place, found from the group spans
+    owner = [i for i, g in enumerate(slide.get("groups") or []) for _ in range(g.get("span", 1))]
     html_stops = []
     for j, s in enumerate(stops):
         c = concept(topic, s["concept"]) if s.get("concept") else {}
         label, fam, letter = s.get("label", c.get("label")), s.get("family", c.get("family")), s.get("letter", c.get("letter"))
         body = _examples_body(s.get("split") or s["examples"])
         html_stops.append(
-            f'<div class="spec-stop f-{fam}" style="--j:{j}"><button class="spec-dot" type="button" aria-expanded="false" '
+            f'<div class="spec-stop f-{fam}" style="--g:{owner[j] if j < len(owner) else j}"><button class="spec-dot" type="button" aria-expanded="false" '
             f'aria-label="Show {e(label)} examples">{e(letter)}</button><b>{e(label)}</b>{body}</div>')
     zoom = slide.get("open") == "zoom"
     spec = (f'<div class="spec{" spec-zoom" if zoom else ""}" style="--n:{len(stops)}">{groups}'
