@@ -74,7 +74,7 @@ Every interactive element behaves the same way, so learners never have to relear
 - **Tap again to close.** Tapping an open item hides it.
 - **Click anywhere to clear.** A click anywhere else, including empty space and the bottom bar, returns the slide to its starting state. Clicks inside an opened list or card keep it open.
 - **One open item per group.** Opening a circle closes its neighbour; reveal cards in a group open one at a time.
-- **Entry is quick and in step.** When a slide opens, a figure and the content it belongs to (a family's picture, its name and its circles) enter together, with the same start and length. Groups follow each other left to right or top to bottom about 0.09 s apart, each entrance lasts about 0.35 s, and the whole slide has settled within about 0.6 s, so nobody waits on the slide. Content revealed by a tap follows "Reveal in sequence" instead.
+- **Entry is quick and in step.** When a slide opens, a figure and the content it belongs to (a family's picture, its name and its circles) enter together, with the same start and length. Groups follow each other left to right or top to bottom about 0.16 s apart, each entrance lasts about 0.5 s, and the whole slide has settled within about 0.9 s: slow enough to be seen, quick enough that nobody waits on the slide. Content revealed by a tap follows "Reveal in sequence" instead.
 - **Re-entering a slide starts fresh.** Every pattern resets when its slide is shown again.
 - **Only the tapped item grows.** Neighbouring cards keep their size; nothing stretches around empty space.
 - **Reveal in sequence.** Lists appear one line after another (about 0.2 s apart); motion is off for users who prefer reduced motion.
