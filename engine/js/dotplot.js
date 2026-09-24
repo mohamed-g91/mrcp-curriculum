@@ -23,50 +23,77 @@ const Stats = {
 const num = x => Number.isInteger(x) ? String(x) : x.toFixed(1);
 const ORD = n => n + (n % 10 === 1 && n % 100 !== 11 ? "st" : n % 10 === 2 && n % 100 !== 12 ? "nd" : n % 10 === 3 && n % 100 !== 13 ? "rd" : "th");
 
-/* ---------- dot plot ----------
-   A handful of values as stacked dots on an axis. Tapping a measure's circle shows how it is found:
-   the mean gathers the sum and a fulcrum slides to the balance point; the median fades the dots in
-   pairs from both ends until the middle one is left; the mode lights the tallest stack. One dot
-   (data-swap) can be tapped to move to another value and back; the open measure follows it.
-   A click anywhere else returns the slide to its starting state. */
-function drawDots(host, values, o) {
-  const { min = 0, max, unit = "", W = 1000, H = 240, r = 12.5, gap = 30, AX = 152, tick, rows = 4 } = o;
-  const L = 34, R = 34;
-  const x = v => L + (v - min) / (max - min) * (W - L - R);
-  const svg = svgEl("svg", { class: "dp-svg", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `${values.length} values from ${min} to ${max} ${unit}` });
+// one person, standing with their feet at (x, y): a head and a rounded body, in one of a few skin tones
+const SKIN = ["#B97A50", "#E3B58E", "#8A5A3B", "#F1CBA7"];
+function drawPerson(parent, x, y, k, delay, scale = 1) {
+  const at = svgEl("g", { transform: `translate(${x} ${y}) scale(${scale})` }, parent);
+  const g = svgEl("g", { class: "cv-person", style: `animation-delay:${delay}ms` }, at);
+  svgEl("path", { class: "cv-body", d: "M-13 -2 V-14 A13 11 0 0 1 13 -14 V-2 Z" }, g);
+  svgEl("circle", { class: "cv-head", cx: 0, cy: -31, r: 9, fill: SKIN[k % SKIN.length] }, g);
+  return at;
+}
+
+/* ---------- stays chart ----------
+   How many patients stayed each number of days: one person per patient, stacked on their day, with
+   the count on top. Every day from 1 to the last short stay has its own slot; a far-out value (a
+   long stay) sits after a break in the axis. x(v) places any value, such as a mean, between the slots. */
+function drawStays(host, values, o) {
+  const { unit = "", W = 1000, H = 266, AX = 176, scale = 1, extra = [], wall = false } = o;
+  const all = Stats.sorted([...new Set([...values, ...extra])]);
+  // short stays run on from day 1; anything more than 3 days past the last of them goes after a break
+  let lastPre = all[0];
+  for (const v of all) if (v <= lastPre + 3) lastPre = Math.max(lastPre, v);
+  const pre = []; for (let d = Math.min(1, all[0]); d <= lastPre; d++) pre.push(d);
+  const post = all.filter(v => v > lastPre);
+  const L = wall ? 70 : 40, R = 40, BR = post.length ? 64 : 0;
+  const sw = (W - L - R - BR) / (pre.length + post.length);
+  const slotX = new Map();
+  pre.forEach((d, i) => slotX.set(d, L + sw * (i + .5)));
+  post.forEach((d, i) => slotX.set(d, L + BR + sw * (pre.length + i + .5)));
+  const keys = [...slotX.keys()].sort((a, b) => a - b);
+  const x = v => {
+    if (slotX.has(v)) return slotX.get(v);
+    if (v < keys[0]) return slotX.get(keys[0]) - (keys[0] - v) * sw;
+    if (v > keys[keys.length - 1]) return slotX.get(keys[keys.length - 1]) + (v - keys[keys.length - 1]) * sw;
+    const hi = keys.find(k => k > v), lo = keys[keys.indexOf(hi) - 1];
+    return slotX.get(lo) + (v - lo) / (hi - lo) * (slotX.get(hi) - slotX.get(lo));
+  };
+  const svg = svgEl("svg", { class: "dp-svg", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `${values.length} patients by ${unit} in hospital` });
   const back = svgEl("g", { class: "dp-back" }, svg);
   const marks = svgEl("g", { class: "dp-marks" }, svg);
-  svgEl("path", { class: "dp-axis", d: `M${L - 14} ${AX} H${W - R + 14}` }, svg);
-  const step = tick || (max - min > 20 ? 5 : max - min > 10 ? 2 : 1);
-  for (let t = Math.ceil(min / step) * step; t <= max; t += step) {
-    svgEl("path", { class: "dp-tick", d: `M${x(t)} ${AX} v8` }, svg);
-    svgEl("text", { class: "dp-tlab", x: x(t), y: AX + 56 * (r / 12.5) ** .4 }, svg).textContent = String(t).replace("-", "−");
-  }
-  if (unit) svgEl("text", { class: "dp-unit", x: W - R + 14, y: AX + 80 * (r / 12.5) ** .4 }, svg).textContent = unit;
-  const fulcrum = svgEl("path", { class: "dp-fulcrum", d: "M0 0 l-15 26 h30 z" }, svg);
+  const endPre = slotX.get(lastPre) + sw / 2;
+  svgEl("path", { class: "dp-axis", d: `M${L - 8} ${AX} H${endPre + 6}` + (post.length ? ` M${endPre + BR - 6} ${AX} H${W - R + 8}` : "") }, svg);
+  if (post.length) svgEl("path", { class: "dp-break", d: `M${endPre + 18} ${AX + 10} l9 -20 M${endPre + 32} ${AX + 10} l9 -20` }, svg);
+  const fs = Math.max(16, 22 * scale ** .5);
+  keys.forEach(d => { const t = svgEl("text", { class: "dp-tlab", x: slotX.get(d), y: AX + fs + 24, style: `font-size:${fs}px` }, svg); t.textContent = d; });
+  if (unit) { const t = svgEl("text", { class: "dp-unit", x: (L + W - R) / 2, y: AX + 2 * fs + 30, style: `font-size:${fs * .9}px` }, svg); t.textContent = unit; }
+  const fulcrum = svgEl("path", { class: "dp-fulcrum", d: "M0 0 l-11 18 h22 z" }, svg);
+  const counts = new Map(keys.map(d => [d, svgEl("text", { class: "dp-count", x: slotX.get(d), style: `font-size:${fs}px` }, svg)]));
+  const STEP = 44 * scale;
   const dots = values.map((v, i) => {
     const g = svgEl("g", { class: "dp-pt", "data-i": i }, svg);
-    svgEl("circle", { r }, g);
+    drawPerson(g, 0, 0, i, 0, scale);
     return g;
   });
   const place = vals => {
     const seen = new Map();
     vals.forEach((v, i) => {
       const k = seen.get(v) || 0; seen.set(v, k + 1);
-      dots[i].style.transform = `translate(${x(v)}px, ${AX - r - 3 - k * gap}px)`;
+      dots[i].style.transform = `translate(${x(v)}px, ${AX - 2 - k * STEP}px)`;
       dots[i].dataset.v = v;
     });
+    counts.forEach((t, d) => { const n = seen.get(d) || 0; t.textContent = n || ""; t.setAttribute("y", AX - 2 - n * STEP - 6 * scale); });
   };
   place(values);
   host.appendChild(svg);
-  return { svg, back, marks, dots, fulcrum, place, x, AX, r, top: AX - r - 3 - rows * gap };
+  return { svg, back, marks, dots, fulcrum, place, x, AX, sw, STEP, top: 20 };
 }
 
 function buildDotPlots() {
   $$(".dotplot").forEach(dp => {
-    const base = dp.dataset.values.split(",").map(Number), max = +dp.dataset.max, unit = dp.dataset.unit;
+    const base = dp.dataset.values.split(",").map(Number), unit = dp.dataset.unit;
     const swap = dp.dataset.swap ? dp.dataset.swap.split(",").map(Number) : null;
-    const D = drawDots($(".dp-chart", dp), base, { max, unit });
+    const D = drawStays($(".dp-chart", dp), base, { unit, extra: swap ? [swap[1]] : [] });
     const readout = $(".dp-readout", dp), stops = $$(".dp-m", dp);
     const swapIdx = swap ? base.indexOf(swap[0]) : -1;
     let vals = base.slice(), open = null, timers = [];
@@ -74,7 +101,7 @@ function buildDotPlots() {
       const d = D.dots[swapIdx];
       Object.assign(d, { tabIndex: 0 });
       d.setAttribute("class", "dp-pt dp-swap");
-      d.insertBefore(svgEl("circle", { class: "dp-ring", r: D.r + 7 }), d.firstChild);
+      d.insertBefore(svgEl("rect", { class: "dp-ring", x: -24, y: -48, width: 48, height: 54, rx: 14 }), d.firstChild);
       d.setAttribute("role", "button");
       d.setAttribute("aria-label", `Move the ${swap[0]} to ${swap[1]}`);
     }
@@ -95,8 +122,8 @@ function buildDotPlots() {
       readout.classList.add("show", fam);
       const mark = (v, delay) => {
         const g = svgEl("g", { class: `dp-mk ${fam}`, style: `transform:translateX(${D.x(v)}px);animation-delay:${REDUCED_MOTION || instant ? 0 : delay}ms` }, D.marks);
-        svgEl("path", { d: `M0 ${D.AX} V${D.top + 26}` }, g);
-        const t = svgEl("text", { y: D.top + 14 }, g);
+        svgEl("path", { d: `M0 ${D.AX} V${D.top + 12}` }, g);
+        const t = svgEl("text", { y: D.top }, g);
         t.textContent = `${c.letter} = ${num(Stats[key](vals))}`;
       };
       if (key === "mean") {

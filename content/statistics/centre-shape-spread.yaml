@@ -40,33 +40,48 @@ learn:
     pattern: dot-plot
     title: Three middles
     values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
-    axis: [0, 30]
-    unit: days
+    unit: days in hospital
     swap: { from: 30, to: 8 }
     measures: [mean, median, mode]
 
-  # a bell has no wall; a floor makes a tail to the right, a ceiling a tail to the left
+  # a bell has no wall and builds out from its middle; a floor makes a tail to the right, a ceiling a tail to the left
+  # the skewed curves are log-normal: positive (median 5, sigma 1) gives mode 1.8, mean 8.2 days;
+  # negative (42 - GA with median 3 weeks, sigma 0.637) gives mode 40.0, median 39, mean 38.3 weeks
   - id: shapes
     pattern: curve
     title: Why a bell, why a tail?
     steps:
       - concept: normal
         shape: normal
-        people: true
-        axis: Height
+        crowd: true
+        mean: 162
+        sd: 7
+        unit: cm
+        axis: Height of adult women (cm)
         examples: [Height, Haemoglobin, Serum sodium]
       - concept: positive
         shape: positive
-        axis: Length of stay
+        median: 5
+        sigma: 1
+        range: [0, 40]
+        ticks: [0, 10, 20, 30, 40]
+        axis: Length of stay (days)
         wall_label: 0 days
+        tail_label: a few long stays
         examples: [Length of stay, CRP, Alcohol units, Triglycerides]
       - concept: negative
         shape: negative
-        axis: Gestational age
+        ceiling: 42
+        median: 39
+        sigma: 0.637
+        range: [24, 42]
+        ticks: [24, 28, 32, 36, 40]
+        axis: Gestational age at birth (weeks)
         wall_label: 42 weeks
+        tail_label: early births
         examples: [Gestational age at birth, Age at death in the UK]
 
-  # SD on a bell (adult women's height); IQR, range and mean ± 2 SD on the ward's stays
+  # SD on a bell (adult women's height), built out from the mean; IQR, range and mean ± 2 SD on the ward's stays
   - id: spread
     pattern: curve
     title: "Spread: SD and IQR"
@@ -83,14 +98,13 @@ learn:
       - title: Interquartile range
         kind: dots
         values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
-        min: -12
-        max: 30
-        wall: 0
         unit: days
         chips: [IQR, Range, Mean ± 2 SD]
         summary: { family: np, label: Median (IQR), note: Skewed data }
 
+  # on hold until the slides before it are settled
   - id: traps
+    hidden: true
     pattern: reveal-cards
     title: Four traps
     cards:

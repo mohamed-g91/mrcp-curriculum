@@ -233,21 +233,25 @@ a.next-topic:hover{border-color:var(--primary)}
 
 /* ---------- dot plot (three middles on a handful of values) ---------- */
 .dotplot{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,calc(1 * var(--u)),14px);margin-top:clamp(4px,calc(1 * var(--u)),12px)}
-.dp-chart{width:100%;max-width:1000px}
+.dp-chart{width:100%;max-width:930px}
 .dp-svg{display:block;width:100%;height:auto;overflow:visible}
 .dp-axis,.cv-axis{stroke:var(--border-strong);stroke-width:3;stroke-linecap:round;fill:none}
 .dp-tick{stroke:var(--border-strong);stroke-width:2}
-.dp-tlab{fill:var(--muted);font:600 20px var(--sans);text-anchor:middle}
-.dp-unit{fill:var(--muted);font:600 18px var(--sans);text-anchor:end}
+.dp-tlab{fill:var(--text);font:700 20px var(--sans);text-anchor:middle}
+.dp-unit{fill:var(--muted);font:600 18px var(--sans);text-anchor:middle}
 .dp-pt{transition:transform .6s var(--ease)}
-.dp-pt circle{fill:var(--primary);transition:fill .3s ease,opacity .3s ease}
-.dp-pt .dp-ring{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-dasharray:4 4;opacity:.7}
 .dp-swap{cursor:pointer;outline:none}
 .dp-swap:focus-visible .dp-ring{stroke-width:4;opacity:1}
-.dp-pt.out circle:not(.dp-ring){opacity:.16}
-.dp-pt.hit circle:not(.dp-ring){fill:var(--x-solid)}
-.dp-pt.sum circle:not(.dp-ring){animation:dpSum .6s var(--ease)}
+/* each patient: fades out of the count, lights in the measure's colour, or pulses as they are added up */
+.dp-pt>g{transition:opacity .3s ease}
+.dp-pt .cv-body{transition:fill .3s ease}
+.dp-pt .dp-ring{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-dasharray:5 4;opacity:.75}
+.dp-pt.out>g{opacity:.16}
+.dp-pt.hit .cv-body{fill:var(--x-solid)}
+.dp-pt.sum .cv-body{animation:dpSum .6s var(--ease)}
 @keyframes dpSum{40%{fill:var(--x-solid)}}
+.dp-count{fill:var(--ink);font-weight:800;font-family:var(--sans);text-anchor:middle;paint-order:stroke;stroke:var(--surface);stroke-width:7px;stroke-linejoin:round}
+.dp-break{stroke:var(--muted);stroke-width:3;fill:none;stroke-linecap:round}
 .dp-fulcrum{fill:var(--x-solid);opacity:0;transition:transform .8s var(--ease),opacity .3s ease}
 .dp-fulcrum.on{opacity:1}
 .dp-mk{animation:fadeIn .45s ease both}
@@ -280,7 +284,8 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-area{fill:color-mix(in srgb,var(--x-solid,var(--primary)) 14%,transparent);animation:fadeIn .5s ease .35s both}
 .cv-wall{animation:figUp .5s var(--ease) .1s both}
 .cv-wall rect{fill:var(--wall)}
-.cv-wlab{fill:var(--muted);font:700 20px var(--sans);text-anchor:middle}
+.cv-wlab{fill:var(--muted);font:700 20px var(--sans);text-anchor:end}
+.cv-wlab.right{text-anchor:start}
 .cv-alab{fill:var(--muted);font:600 22px var(--sans);text-anchor:middle}
 .cv-person{transform-box:fill-box;transform-origin:bottom center;animation:pillIn .45s var(--ease) both}
 .cv-body{fill:color-mix(in srgb,var(--primary) 70%,var(--surface));stroke:var(--sc-line);stroke-width:2}
@@ -293,9 +298,23 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-order.show{animation:fadeIn .4s ease 1.2s both}
 .cv-tok{padding:4px 12px;border-radius:999px;background:var(--x-bg);color:var(--x-ink);border:1px solid var(--x-bd);font-weight:700;font-size:var(--fs-small)}
 .cv-rel{font-weight:800;color:var(--muted);font-size:var(--fs-h3)}
+.cv-col.hold,.cv-band.hold{display:none}
+.cv-band{fill:color-mix(in srgb,var(--x-solid) 22%,transparent)}
+.cv-chart.stepper{cursor:pointer;border-radius:var(--radius-lg);outline:none}
+.cv-chart.stepper:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
+.cv-bigpct{fill:var(--x-ink);font:800 52px var(--sans);animation:fadeIn .4s ease}
+.cv-subpct{fill:var(--muted);font:650 20px var(--sans)}
+.cv-pill rect{fill:var(--surface);stroke:var(--x-solid);stroke-width:2.5}
+.cv-pill text{fill:var(--x-ink);font:800 17px var(--sans);text-anchor:middle}
+.cv-tail{animation:fadeIn .45s ease 1.2s both}
+.cv-tail text{fill:var(--muted);font:700 19px var(--sans);text-anchor:middle}
+.cv-tail path{fill:none;stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.cv-meanline{animation:fadeIn .45s ease .5s both}
+.cv-arrow{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.cv-arrow.bad{stroke:var(--bad-solid)}
 .cv-ex{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:clamp(6px,calc(1 * var(--u)),12px) 0 0;padding:0;min-height:38px}
 .cv-ex li{padding:6px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border-strong);font-size:var(--fs-small);font-weight:600;color:var(--ink);opacity:0;animation:specIn .35s var(--ease) forwards;animation-delay:calc(1.4s + var(--i) * 200ms)}
-@container (max-width:600px){.cv-steps-mode{grid-template-columns:minmax(0,1fr)}.cv-steps{flex-direction:row;justify-content:center;gap:12px}.cv-steps .spec-stop{flex-direction:column;text-align:center;gap:4px}}
+@container (max-width:600px){.cv-steps-mode{grid-template-columns:minmax(0,1fr);align-content:start}.cv-steps{flex-direction:row;justify-content:center;gap:12px}.cv-steps .spec-stop{flex-direction:column;text-align:center;gap:4px}}
 .cv-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--gap);margin-top:clamp(4px,calc(1 * var(--u)),12px)}
 @container (max-width:900px){.cv-panels{grid-template-columns:minmax(0,1fr)}}
 .cv-panel{min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:clamp(12px,calc(1.4 * var(--u)),18px) clamp(14px,calc(1.8 * var(--u)),22px);background:var(--surface);border:1px solid var(--border);border-top:6px solid var(--x-solid);border-radius:var(--radius-lg);box-shadow:var(--edge),var(--shadow);animation:figUp .5s var(--ease) both;animation-delay:calc(.1s + var(--g) * 160ms)}

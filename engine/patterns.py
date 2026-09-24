@@ -217,7 +217,7 @@ def p_dot_plot(slide, topic):
     """The same few values as stacked dots on an axis. Each measure's circle shows how it is found,
     on the dots; one dot (swap) can be tapped to move, and the open measure moves with it."""
     swap = slide.get("swap")
-    attrs = (f' data-values="{",".join(str(v) for v in slide["values"])}" data-max="{slide["axis"][1]}"'
+    attrs = (f' data-values="{",".join(str(v) for v in slide["values"])}"'
              f' data-unit="{e(slide.get("unit", ""))}"' + (f' data-swap="{swap["from"]},{swap["to"]}"' if swap else ""))
     return (heading(slide) + f'<div class="dotplot"{attrs}><div class="dp-chart"></div>'
             f'<div class="dp-readout" aria-live="polite"></div>'

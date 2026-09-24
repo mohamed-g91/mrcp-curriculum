@@ -117,14 +117,18 @@ def check_topic(t, expected_id):
                 errs.append(f"{where}: measures are mean, median and mode (concept keys of those names)")
             if s.get("swap") and s["swap"].get("from") not in vals:
                 errs.append(f"{where}: swap.from must be one of the values")
-            if len(s.get("axis") or []) != 2 or max(vals or [0]) > s["axis"][1]:
-                errs.append(f"{where}: axis is [0, max] and must hold every value")
+            if any(v != int(v) or v < 0 for v in vals):
+                errs.append(f"{where}: values are whole numbers of 0 or more (one slot per value on the axis)")
         if p == "curve":
             if s.get("steps"):
                 refs += [st["concept"] for st in s["steps"]] + ["mean", "median", "mode"]
                 for st in s["steps"]:
-                    if st.get("shape") not in ("normal", "positive", "negative"):
+                    need = {"normal": ("mean", "sd"), "positive": ("median", "sigma", "range"),
+                            "negative": ("ceiling", "median", "sigma", "range")}.get(st.get("shape"))
+                    if need is None:
                         errs.append(f"{where}: shape is normal, positive or negative, not {st.get('shape')!r}")
+                    elif any(k not in st for k in need):
+                        errs.append(f"{where}: a {st['shape']} step needs {', '.join(need)}")
             else:
                 for pn in s.get("panels") or []:
                     if pn.get("summary", {}).get("family") not in fams:
