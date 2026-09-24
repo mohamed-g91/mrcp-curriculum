@@ -254,6 +254,15 @@ def p_curve(slide, topic):
     return heading(slide) + f'<div class="curve cv-panels{one}">{"".join(panels)}</div>'
 
 
+def p_story(slide, topic):
+    """A scene beside one figure that builds a beat per tap (the story is told in the video).
+    The figure is drawn in the browser from the slide's numbers (engine/js/story.js)."""
+    data = {k: slide[k] for k in ("kind", "values", "outlier", "counts", "unit", "categories", "categories_unit") if k in slide}
+    scene = figure(slide["scene"], "st-scene") if slide.get("scene") else ""
+    return (heading(slide) + f'<div class="story" data-story="{e(json.dumps(data, ensure_ascii=False))}">'
+            f'{scene}<div class="st-chart"></div></div>')
+
+
 def p_clue_stem(slide, topic):
     stops = []
     for key, clues in slide["clues"].items():
@@ -330,6 +339,7 @@ PATTERNS = {
     "decision-tree": p_decision_tree,
     "dot-plot": p_dot_plot,
     "curve": p_curve,
+    "story": p_story,
     "clue-stem": p_clue_stem,
     "reveal-cards": p_reveal_cards,
     "sort": p_sort,

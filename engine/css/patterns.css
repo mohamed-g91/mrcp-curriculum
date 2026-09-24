@@ -517,3 +517,43 @@ a.next-topic:hover{border-color:var(--primary)}
 .tree-scene svg{display:block;width:100%;height:auto}
 .scene .sc-q{font-size:40px}
 @container (max-width:1099px){.tree-scene{position:static;width:min(40%,150px);margin:0 auto 8px}}
+
+/* ---------- story: a scene beside one figure that builds a beat per tap ---------- */
+.story{display:grid;grid-template-columns:clamp(200px,calc(24 * var(--u)),300px) minmax(0,1fr);gap:clamp(16px,calc(2.4 * var(--u)),36px);align-items:center;width:100%;max-width:1280px;margin:clamp(8px,calc(2 * var(--u)),28px) auto 0}
+.story>.fig{margin:0}
+.st-chart{position:relative;width:100%;border-radius:var(--radius-lg);outline:none}
+.st-chart.stepper{cursor:pointer}
+.st-chart.stepper:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
+.st-svg{display:block;width:100%;height:auto;overflow:visible;transition:opacity .45s ease}
+.st-svg.st-next{position:absolute;left:0;top:0;animation:fadeIn .5s ease .2s both}
+.st-wait .dp-pt,.st-wait .dp-count{display:none}
+.scene [data-beat]{opacity:0;transition:opacity .5s ease}
+.scene [data-beat].st-on{opacity:1}
+.scene [data-until]{transition:opacity .5s ease}
+.scene [data-until].st-off{opacity:0}
+.st-pt{transition:transform .8s var(--ease),opacity .35s ease}
+.st-pt circle{fill:var(--ink);transition:fill .3s ease;transform-box:fill-box;transform-origin:center}
+.st-pt circle.drop{animation:stDrop .5s var(--ease) both}
+@keyframes stDrop{from{opacity:0;transform:translateY(-44px)}to{opacity:1;transform:none}}
+.st-pt.out{opacity:.25}
+.st-pt.hit circle{fill:var(--x-solid)}
+.st-pt.sum circle{animation:dpSum .6s var(--ease)}
+.st-pt.pulse circle{animation:stPulse .7s var(--ease)}
+@keyframes stPulse{40%{transform:scale(1.5)}}
+.st-arrows{animation:fadeIn .45s ease both}
+.st-arrow{stroke:var(--muted);stroke-width:4;fill:none;stroke-linecap:round}
+.st-head{fill:var(--muted)}
+.st-err{fill:var(--muted);font:750 22px var(--sans)}
+.st-sum{fill:var(--ink);font:750 26px var(--sans);text-anchor:middle;animation:fadeIn .45s ease both}
+.st-gone{opacity:0!important;transition:opacity .4s ease}
+.st-mk{transition:transform .8s var(--ease),opacity .4s ease}
+.st-star{fill:#F2B84B;stroke:var(--sc-line);stroke-width:2.5;stroke-linejoin:round;transform-box:fill-box;transform-origin:center;animation:pillIn .5s var(--ease) both}
+.st-shoe{animation:fadeIn .45s ease .3s both;transition:opacity .4s ease}
+.st-shoe path:first-child{fill:#C9A36B;stroke:var(--sc-line);stroke-width:3;stroke-linejoin:round}
+.st-shoe text{fill:var(--ink);font:750 22px var(--sans);text-anchor:middle}
+.st-shoe .st-x{stroke:var(--bad-solid);stroke-width:5;stroke-linecap:round;fill:none}
+.st-no{animation:fadeIn .45s ease both}
+.st-no text{fill:var(--muted);font:750 26px var(--sans)}
+.st-no path{stroke:var(--bad-solid);stroke-width:3.5;stroke-linecap:round}
+@media (prefers-reduced-motion:reduce){.st-pt,.st-mk{transition:none}.st-pt circle.drop,.st-star,.st-arrows,.st-sum,.st-shoe,.st-no{animation:none}}
+@container (max-width:900px){.story{grid-template-columns:minmax(0,1fr)}.story>.fig{width:min(45%,170px);margin-inline:auto}}

@@ -36,6 +36,34 @@ learn:
     question: What shape is the distribution of length of stay?
     scene: stays-calendar
 
+  # three stories told in the video; each slide shows the scene and a figure that builds a beat per tap
+  # the same five readings run through the mean and the median: mean 50 / 5 = 10, then 78 / 5 = 15.6, then 438 / 5 = 87.6
+  - id: story-mean
+    pattern: story
+    title: The mean
+    kind: mean
+    scene: story-astronomer
+    values: [11, 8, 10, 12, 9]
+
+  - id: story-median
+    pattern: story
+    title: The median
+    kind: median
+    scene: story-storm
+    values: [11, 8, 10, 12, 9]
+    outlier: { from: 12, to: [40, 400] }
+
+  # 19 customers: mean 785 / 19 = 41.3, a size nobody wears; mode 42. Twelve donors: mode O
+  - id: story-mode
+    pattern: story
+    title: The mode
+    kind: mode
+    scene: story-shoes
+    unit: shoe size
+    counts: { 39: 2, 40: 4, 41: 4, 42: 5, 43: 3, 44: 1 }
+    categories_unit: blood group
+    categories: { A: 4, B: 2, AB: 1, O: 5 }
+
   # the ward this week: mode 2, median 3, mean 66 / 11 = 6; moving the 30 to 8 makes the mean 4
   - id: middles
     pattern: dot-plot

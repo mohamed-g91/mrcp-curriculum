@@ -28,7 +28,7 @@ ENGINE = os.path.join(ROOT, "engine")
 DIST = os.path.join(ROOT, "dist")
 LOCK = os.path.join(ROOT, "content", "ids.lock")
 CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css"]
-JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "sort.js", "quiz.js", "deck.js"]
+JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "sort.js", "quiz.js", "deck.js"]
 ITEM_ID = re.compile(r"^[a-z]\d{2,3}$")
 INSTRUCTION = re.compile(r"\b(tap|click|drag|press|select)\b", re.I)
 
@@ -143,6 +143,20 @@ def check_topic(t, expected_id):
                         errs.append(f"{where}: a dots panel has three chips: IQR, range, mean ± 2 SD")
                 if not s.get("panels"):
                     errs.append(f"{where}: a curve slide has steps or panels")
+        if p == "story":
+            # the numbers are worked out in the browser; only the data each kind draws from is given here
+            kind = s.get("kind")
+            nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
+            if kind not in ("mean", "median", "mode"):
+                errs.append(f"{where}: kind is mean, median or mode, not {kind!r}")
+            elif kind in ("mean", "median") and (not nums(s.get("values")) or len(s["values"]) % 2 == 0):
+                errs.append(f"{where}: a {kind} story needs an odd number of whole-number values")
+            elif kind == "median" and (s.get("outlier", {}).get("from") not in s["values"] or len(s["outlier"].get("to") or []) != 2):
+                errs.append(f"{where}: a median story needs outlier: {{from: one of the values, to: [far, farther]}}")
+            elif kind == "mode" and not (s.get("counts") and s.get("categories") and s.get("unit") and s.get("categories_unit")):
+                errs.append(f"{where}: a mode story needs counts, unit, categories and categories_unit")
+            if kind in ("mean", "median", "mode"):
+                refs += [kind] + (["mean"] if kind != "mean" else []) + (["median"] if kind == "mode" else [])
         if p == "clue-stem":
             refs += list(s["clues"])
         if p == "reveal-cards":

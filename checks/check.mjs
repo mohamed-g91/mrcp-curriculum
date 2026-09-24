@@ -152,6 +152,16 @@ async function layoutPass(size) {
     const m = await measure(size, `slide ${i + 1}`);
     const tag = `${size.name}-${String(i + 1).padStart(2, "0")}-${m.id}`;
     await shot(tag);
+    // a story: tap its figure through every beat, measuring each
+    if (await js(`!!Deck.slides[Deck.i].querySelector(".st-chart.stepper")`)) {
+      for (let n = 0; n < 8 && await js(`!!Deck.slides[Deck.i].querySelector(".st-chart.stepper")`); n++) {
+        await js(`Deck.slides[Deck.i].querySelector(".st-chart.stepper").click(), true`);
+        await sleep(1400);
+        await measure(size, `slide ${i + 1} beat ${n + 1}`);
+        await shot(`${tag}-beat${n + 1}`);
+      }
+      if (await js(`!!Deck.slides[Deck.i].querySelector(".st-chart.stepper")`)) fail(`${size.name} slide ${i + 1}: the story did not finish`);
+    }
     const r = await js(REVEALS);
     for (let k = 0; k < r.dots; k++) {
       await js(`Deck.slides[Deck.i].querySelectorAll(".spec-dot")[${k}].click(), true`);
