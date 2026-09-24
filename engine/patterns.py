@@ -220,7 +220,6 @@ def p_dot_plot(slide, topic):
     attrs = (f' data-values="{",".join(str(v) for v in slide["values"])}"'
              f' data-unit="{e(slide.get("unit", ""))}"' + (f' data-swap="{swap["from"]},{swap["to"]}"' if swap else ""))
     return (heading(slide) + f'<div class="dotplot"{attrs}><div class="dp-chart"></div>'
-            f'<div class="dp-readout" aria-live="polite"></div>'
             f'<div class="dp-measures">{_measure_dots(topic, slide["measures"], "dp-m")}</div></div>')
 
 
@@ -240,12 +239,14 @@ def p_curve(slide, topic):
         sm = pn["summary"]
         chips = "".join(f'<button class="cv-chip" type="button" aria-pressed="false" data-k="{e(ch)}">{e(ch)}</button>'
                         for ch in pn["chips"])
+        # a dots panel writes its values on the figure; an sd panel reads them out below
+        read = '<div class="cv-read" aria-live="polite"></div>' if pn["kind"] == "sd" else ""
         panels.append(
             f'<div class="cv-panel f-{sm["family"]}" style="--g:{i}" data-panel="{e(json.dumps(pn, ensure_ascii=False))}">'
             f'<h3 class="cv-title">{e(pn["title"])}</h3><div class="cv-chart"></div><div class="cv-chips">{chips}</div>'
-            f'<div class="cv-read" aria-live="polite"></div>'
-            f'<div class="cv-sum"><b>{e(sm["label"])}</b><span>{e(sm["note"])}</span></div></div>')
-    return heading(slide) + f'<div class="curve cv-panels">{"".join(panels)}</div>'
+            f'{read}<div class="cv-sum"><b>{e(sm["label"])}</b><span>{e(sm["note"])}</span></div></div>')
+    one = " cv-one" if len(panels) == 1 else ""
+    return heading(slide) + f'<div class="curve cv-panels{one}">{"".join(panels)}</div>'
 
 
 def p_clue_stem(slide, topic):

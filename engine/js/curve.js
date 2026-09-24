@@ -62,18 +62,65 @@ function buildCurves() {
     const chart = $(".cv-chart", cv), order = $(".cv-order", cv), exList = $(".cv-ex", cv);
     const W = 1000, H = 330, L = 70, R = 70, BASE = 262, PEAK = 34;
     const COLS = [-2.1, -1.4, -.67, 0, .67, 1.4, 2.1], COUNTS = [1, 2, 4, 6, 4, 2, 1], PCT = ["", "68%", "95%", "99.7%"];
-    let open = null, stage = 0, crowd = null;
+    let open = null, stage = 0, crowd = null, marks = null;
+    // the three middles of a step: worked out from its people when it has them, else from its curve
+    const middles = st => st.values ? { mode: Stats.mode(st.values), median: Stats.median(st.values), mean: Stats.mean(st.values) } : Dist.make(st);
     const finish = st => {
-      const D = Dist.make(st);
+      const D = middles(st);
       const byX = ORDERED.map(k => [k, D[k]]).sort((a, b) => a[1] - b[1]);
       const same = st.shape === "normal";
       order.innerHTML = byX.map(([k], i) => (i ? `<span class="cv-rel">${same ? "=" : "<"}</span>` : "") +
-        `<span class="cv-tok f-${concept(k).family}">${esc(concept(k).label)}</span>`).join("");
+        `<span class="cv-tok f-${concept(k).family}">${esc(concept(k).label)}</span>`).join("") +
+        // how such data are summed up, at the end of the same row
+        (st.summary ? `<span class="cv-sum show f-${st.summary.family}"><b>${esc(st.summary.label)}</b><span>${esc(st.summary.note)}</span></span>` : "");
       order.className = "cv-order show";
       exList.innerHTML = (st.examples || []).map((x, i) => `<li style="--i:${i}">${esc(x)}</li>`).join("");
     };
+    /* a skewed step drawn from its people: stacked on a broken axis, a wall on the steep side and a
+       fitted curve over them that runs out into the tail; each tap on the graph then drops in the
+       mean, the median and the mode, one at a time */
+    const drawPeople = st => {
+      const fam = concept(st.concept).family, v = st.values, side = st.shape === "positive" ? "left" : "right";
+      const D = drawStays(chart, v, { unit: st.axis || "", W, H: H + 14, AX: BASE, wall: side, counts: false, breaks: st.breaks });
+      D.svg.setAttribute("class", `dp-svg cv-svg f-${fam}`);
+      D.svg.setAttribute("aria-label", concept(st.concept).label);
+      const lo = Math.min(...v), hi = Math.max(...v), med = Stats.median(v);
+      const s = st.sigma, ln = (t, m) => t > 0 ? Math.exp(-((Math.log(t / m)) ** 2) / (2 * s * s)) / t : 0;
+      const f = st.shape === "positive" ? t => ln(t, med) : t => ln(st.ceiling - t, st.ceiling - med);
+      const a = st.shape === "positive" ? 0.05 : lo - .6, b = st.shape === "positive" ? hi + .6 : st.ceiling - .01;
+      let top = 0; for (let i = 0; i <= 400; i++) top = Math.max(top, f(a + (b - a) * i / 400));
+      const tall = Math.max(...[...new Set(v)].map(u => v.filter(w => w === u).length));
+      const y = fv => BASE - fv / top * (tall * D.STEP + 34);
+      const d = curvePath(f, a, b, D.x, y, 300);
+      svgEl("path", { class: "cv-area", d: `${d} L${D.x(b)} ${BASE} L${D.x(a)} ${BASE} Z` }, D.back);
+      svgEl("path", { class: "cv-line", d, pathLength: 1 }, D.back);
+      // the wall stands where no value can go: 0 days, or the ceiling; its name sits over it, reading inwards
+      const wx = D.x(side === "left" ? 0 : st.ceiling) - 14, wtop = BASE - tall * D.STEP - 40;
+      drawWall(D.back, wx, 28, wtop, BASE);
+      svgEl("text", { class: "cv-wlab", x: side === "left" ? wx : wx + 28, y: wtop - 12, style: `text-anchor:${side === "left" ? "start" : "end"}` }, D.back).textContent = st.wall_label || "";
+      // the tail, named over the break where it runs out
+      if (st.tail_label) {
+        const far = side === "left" ? hi : lo, sorted = Stats.sorted(v), near = side === "left" ? sorted[sorted.length - 2] : sorted[1];
+        const tx = D.x((far + near) / 2), g = svgEl("g", { class: "cv-tail" }, D.svg);
+        svgEl("text", { x: tx, y: BASE - 96 }, g).textContent = st.tail_label;
+        svgEl("path", { d: side === "left" ? `M${tx - 60} ${BASE - 76} h120 m-8 -6 l8 6 l-8 6` : `M${tx + 60} ${BASE - 76} h-120 m8 -6 l-8 6 l8 6` }, g);
+      }
+      // the markers stand behind the people, their pills in one row above the curve
+      const mk = svgEl("g", { class: "cv-marks" }, D.back), M = middles(st), SEQ = ["mean", "median", "mode"];
+      return {
+        n: 0,
+        next() {
+          const key = SEQ[this.n], cc = concept(key), px = D.x(M[key]), py = PEAK + 4;
+          const g = svgEl("g", { class: `cv-mk f-${cc.family}` }, mk);
+          svgEl("path", { d: `M${px} ${BASE} V${py + 13}` }, g);
+          valuePill(g, px, py, `f-${cc.family}`, `${cc.letter} ${num(M[key])}`);
+          return ++this.n < SEQ.length;
+        }
+      };
+    };
     const draw = st => {
       chart.innerHTML = ""; order.innerHTML = ""; order.className = "cv-order"; exList.innerHTML = "";
+      if (st.values) { marks = drawPeople(st); return; }
       const fam = concept(st.concept).family;
       const svg = svgEl("svg", { class: `cv-svg f-${fam}`, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": concept(st.concept).label }, chart);
       const D = Dist.make(st), wall = st.shape === "positive" ? "left" : st.shape === "negative" ? "right" : null;
@@ -149,7 +196,7 @@ function buildCurves() {
       if (stage === 4) finish(steps.find(s => s.concept === open));
     };
     const show = key => {
-      open = key; crowd = null; stage = 0;
+      open = key; crowd = null; marks = null; stage = 0;
       stops.forEach(s => { s.classList.toggle("on", s.dataset.key === key); $(".spec-dot", s).setAttribute("aria-expanded", String(s.dataset.key === key)); });
       cv.classList.toggle("drawn", !!key);
       chart.classList.remove("stepper");
@@ -157,19 +204,26 @@ function buildCurves() {
       if (key) {
         const st = steps.find(s => s.concept === key);
         draw(st);
-        if (st.crowd) {
-          stage = 1; grow();
-          Object.entries({ role: "button", tabindex: "0", "aria-label": "Show the next part of the crowd" }).forEach(([k, v]) => chart.setAttribute(k, v));
+        if (st.crowd) { stage = 1; grow(); }
+        if (st.crowd || marks) {
+          if (marks) chart.classList.add("stepper");
+          Object.entries({ role: "button", tabindex: "0", "aria-label": st.crowd ? "Show the next part of the crowd" : "Show the next middle" }).forEach(([k, v]) => chart.setAttribute(k, v));
         }
       } else {
         chart.innerHTML = ""; order.innerHTML = ""; order.className = "cv-order"; exList.innerHTML = "";
-        const svg = svgEl("svg", { class: "cv-svg", viewBox: `0 0 ${W} ${H}`, "aria-hidden": "true" }, chart);
+          const svg = svgEl("svg", { class: "cv-svg", viewBox: `0 0 ${W} ${H}`, "aria-hidden": "true" }, chart);
         svgEl("path", { class: "cv-axis", d: `M${L - 20} ${BASE} H${W - R + 20}` }, svg);
       }
     };
-    const next = () => { if (crowd && stage < 4) { stage++; grow(); } };
+    const next = () => {
+      if (crowd && stage < 4) { stage++; grow(); }
+      if (marks && chart.classList.contains("stepper") && !marks.next()) {
+        chart.classList.remove("stepper");
+        finish(steps.find(s => s.concept === open));
+      }
+    };
     chart.addEventListener("click", next);
-    chart.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && crowd) { e.preventDefault(); next(); } });
+    chart.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && (crowd || marks)) { e.preventDefault(); next(); } });
     stops.forEach(s => $(".spec-dot", s).addEventListener("click", () => show(open === s.dataset.key ? null : s.dataset.key)));
     ClickAway.add(e => { if (open && !e.target.closest(".cv-s .spec-dot, .cv-chart")) show(null); });
     onEnter(cv, () => show(null));
@@ -201,14 +255,16 @@ function buildCurves() {
       valuePill(mg, x(0), BASE - 164, "f-par", `${concept("mean").letter} ${P.mean} ${P.unit}`);
       bell = { x, y, f, BASE };
     } else {
-      D = drawStays(chart, P.values, { unit: P.unit, W, H, AX: 200, scale: .8, wall: true });
+      // the ward's stays shoulder to shoulder, in order, so the middle half can be boxed
+      D = drawStays(chart, P.values, { unit: P.unit, W: 1000, H: 250, AX: 176, wall: "left", row: true });
       D.svg.classList.add("cv-svg");
-      drawWall(D.back, D.x(0) - 22, 20, 200 - 112, 200);
+      drawWall(D.back, D.x(0) - 14, 28, 176 - 84, 176);
       layer = svgEl("g", {}, D.back);
     }
     const shade = k => {
       layer.innerHTML = "";
-      read.innerHTML = "";
+      if (read) read.innerHTML = "";
+      D && D.dots.forEach(d => d.classList.remove("out", "hit"));
       if (k < 0) return;
       if (P.kind === "sd") {
         const n = k + 1, { x, y, f, BASE } = bell, lo = P.mean - n * P.sd, hi = P.mean + n * P.sd;
@@ -216,20 +272,27 @@ function buildCurves() {
         svgEl("text", { class: "cv-pct", x: x(0) - 70, y: BASE - 30 }, layer).textContent = P.pct[k];
         read.innerHTML = `<b>${lo}–${hi} ${esc(P.unit)}</b> · ${esc(P.pct[k])}`;
       } else {
-        const v = P.values, [q1, q3] = Stats.quartiles(v), m = Stats.mean(v), sd = Stats.sd(v), x = D.x, AX = D.AX, half = D.sw * .46;
+        // each spread is labelled on the figure: the middle half boxed, the range bracketed, mean ± 2 SD barred
+        const v = P.values, [q1, q3] = Stats.quartiles(v), m = Stats.mean(v), sd = Stats.sd(v), x = D.x, AX = D.AX;
+        const order = v.map((u, i) => [u, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p[1]);
+        const px = i => +D.dots[order[i]].dataset.x, n = v.length, pad = D.PW / 2 + 8, yy = AX - 92;
+        const label = (tx, text, cls = "cv-lab") => { svgEl("text", { class: cls, x: tx, y: yy - 14 }, layer).textContent = text; };
+        const bracket = (a, b, cls) => svgEl("path", { class: cls, d: `M${a} ${yy + 12} V${yy} H${b} V${yy + 12}` }, layer);
         const key = ["iqr", "range", "msd"][k];
         if (key === "iqr") {
-          svgEl("rect", { class: "cv-box", x: x(q1) - half, y: AX - 116, width: x(q3) - x(q1) + 2 * half, height: 114, rx: 8 }, layer);
-          svgEl("path", { class: "cv-boxmid", d: `M${x(Stats.median(v))} ${AX - 116} v114` }, layer);
-          read.innerHTML = `<b>${num(q1)}–${num(q3)} ${esc(P.unit)}</b> · the middle half`;
+          // the quartiles are the middles of each half, so the box runs from the one to the other
+          const i0 = Math.floor((Math.floor(n / 2) - 1) / 2), i1 = n - 1 - i0;
+          D.dots.forEach((d, i) => d.classList.add(order.indexOf(i) >= i0 && order.indexOf(i) <= i1 ? "hit" : "out"));
+          svgEl("rect", { class: "cv-box", x: px(i0) - pad, y: AX - 60, width: px(i1) - px(i0) + 2 * pad, height: 66, rx: 12 }, layer);
+          bracket(px(i0), px(i1), "cv-brace");
+          label((px(i0) + px(i1)) / 2, `IQR ${num(q1)} to ${num(q3)} ${P.unit}`);
         }
         if (key === "range") {
-          const a = Math.min(...v), b = Math.max(...v);
-          svgEl("path", { class: "cv-range", d: `M${x(a)} ${AX - 150} H${x(b)} M${x(a)} ${AX - 158} v16 M${x(b)} ${AX - 158} v16` }, layer);
-          read.innerHTML = `<b>${num(a)}–${num(b)} ${esc(P.unit)}</b> · one patient stretches it`;
+          bracket(px(0), px(n - 1), "cv-range");
+          label((px(0) + px(n - 1)) / 2, `Range ${num(Math.min(...v))} to ${num(Math.max(...v))} ${P.unit}`, "cv-lab ink");
         }
         if (key === "msd") {
-          const lo = m - 2 * sd, hi = m + 2 * sd, yy = AX - 150, w0 = x(0);
+          const lo = m - 2 * sd, hi = m + 2 * sd, w0 = x(0);
           svgEl("path", { class: "cv-msd", d: `M${w0} ${yy} H${x(hi)}` }, layer);
           if (lo < 0) {
             // below zero: through the wall, where no stay can be
@@ -238,7 +301,7 @@ function buildCurves() {
             svgEl("text", { class: "cv-bad", x: 6, y: yy - 16 }, layer).textContent = `${num(Math.round(lo)).replace("-", "−")} ${P.unit}?`;
           }
           svgEl("path", { class: "cv-msdcap", d: `M${x(hi)} ${yy - 8} v16` }, layer);
-          read.innerHTML = `${num(m)} ± 2 × ${num(sd)} = <b>${num(Math.round(lo)).replace("-", "−")} to ${num(Math.round(hi))} ${esc(P.unit)}</b>`;
+          label((w0 + x(hi)) / 2 + 40, `${num(m)} ± 2 × ${num(sd)}`, "cv-lab par");
         }
       }
     };

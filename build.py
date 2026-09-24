@@ -123,12 +123,16 @@ def check_topic(t, expected_id):
             if s.get("steps"):
                 refs += [st["concept"] for st in s["steps"]] + ["mean", "median", "mode"]
                 for st in s["steps"]:
-                    need = {"normal": ("mean", "sd"), "positive": ("median", "sigma", "range"),
-                            "negative": ("ceiling", "median", "sigma", "range")}.get(st.get("shape"))
+                    # a skewed step is drawn either from its people (values) or from a curve alone (median, range)
+                    skew = ("values", "sigma") if st.get("values") else ("median", "sigma", "range")
+                    need = {"normal": ("mean", "sd"), "positive": skew,
+                            "negative": ("ceiling",) + skew}.get(st.get("shape"))
                     if need is None:
                         errs.append(f"{where}: shape is normal, positive or negative, not {st.get('shape')!r}")
                     elif any(k not in st for k in need):
                         errs.append(f"{where}: a {st['shape']} step needs {', '.join(need)}")
+                    if st.get("summary") and st["summary"].get("family") not in fams:
+                        errs.append(f"{where}: step {st.get('concept')!r} summary needs a family")
             else:
                 for pn in s.get("panels") or []:
                     if pn.get("summary", {}).get("family") not in fams:

@@ -34,22 +34,29 @@ function drawPerson(parent, x, y, k, delay, scale = 1) {
 }
 
 /* ---------- stays chart ----------
-   How many patients stayed each number of days: one person per patient, stacked on their day, with
-   the count on top. Every day from 1 to the last short stay has its own slot; a far-out value (a
-   long stay) sits after a break in the axis. x(v) places any value, such as a mean, between the slots. */
+   One person per value on a real axis. Every whole number in the main run of values has its own slot;
+   a far-out value (a long stay, a very early birth) sits past a break in the axis. With row, people
+   who share a value stand shoulder to shoulder, so the whole group reads in order left to right;
+   otherwise they stack on their value with the count on top. x(v) places any value between the slots. */
 function drawStays(host, values, o) {
-  const { unit = "", W = 1000, H = 266, AX = 176, scale = 1, extra = [], wall = false } = o;
+  const { unit = "", W = 1000, H = 266, AX = 176, scale = 1, extra = [], wall = null, row = false, counts: showCounts = !row } = o;
   const all = Stats.sorted([...new Set([...values, ...extra])]);
-  // short stays run on from day 1; anything more than 3 days past the last of them goes after a break
-  let lastPre = all[0];
-  for (const v of all) if (v <= lastPre + 3) lastPre = Math.max(lastPre, v);
-  const pre = []; for (let d = Math.min(1, all[0]); d <= lastPre; d++) pre.push(d);
-  const post = all.filter(v => v > lastPre);
-  const L = wall ? 70 : 40, R = 40, BR = post.length ? 64 : 0;
-  const sw = (W - L - R - BR) / (pre.length + post.length);
+  // the main run: the biggest group of values with no gap of more than 3 between neighbours
+  const runs = [[all[0]]];
+  all.slice(1).forEach(v => v - runs[runs.length - 1].slice(-1)[0] <= 3 ? runs[runs.length - 1].push(v) : runs.push([v]));
+  const run = o.breaks === false ? all : runs.reduce((a, b) => b.length > a.length ? b : a);
+  const main = []; for (let d = run[0]; d <= run[run.length - 1]; d++) main.push(d);
+  const pre = all.filter(v => v < run[0]), post = all.filter(v => v > run[run.length - 1]);
+  const L = wall === "left" ? 70 : 40, R = wall === "right" ? 70 : 40, BR = 64;
+  const sw = (W - L - R - (pre.length ? BR : 0) - (post.length ? BR : 0)) / (pre.length + main.length + post.length);
   const slotX = new Map();
-  pre.forEach((d, i) => slotX.set(d, L + sw * (i + .5)));
-  post.forEach((d, i) => slotX.set(d, L + BR + sw * (pre.length + i + .5)));
+  let at = L;
+  pre.forEach(d => { slotX.set(d, at + sw / 2); at += sw; });
+  const endPreBrk = at; if (pre.length) at += BR;
+  const startMain = at;
+  main.forEach(d => { slotX.set(d, at + sw / 2); at += sw; });
+  const endMain = at; if (post.length) at += BR;
+  post.forEach(d => { slotX.set(d, at + sw / 2); at += sw; });
   const keys = [...slotX.keys()].sort((a, b) => a - b);
   const x = v => {
     if (slotX.has(v)) return slotX.get(v);
@@ -61,40 +68,47 @@ function drawStays(host, values, o) {
   const svg = svgEl("svg", { class: "dp-svg", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `${values.length} patients by ${unit} in hospital` });
   const back = svgEl("g", { class: "dp-back" }, svg);
   const marks = svgEl("g", { class: "dp-marks" }, svg);
-  const endPre = slotX.get(lastPre) + sw / 2;
-  svgEl("path", { class: "dp-axis", d: `M${L - 8} ${AX} H${endPre + 6}` + (post.length ? ` M${endPre + BR - 6} ${AX} H${W - R + 8}` : "") }, svg);
-  if (post.length) svgEl("path", { class: "dp-break", d: `M${endPre + 18} ${AX + 10} l9 -20 M${endPre + 32} ${AX + 10} l9 -20` }, svg);
+  // the axis in pieces, with a break (//) wherever a far-out value was set apart
+  const pieces = [[pre.length ? startMain - 6 : L - 8, post.length ? endMain + 6 : W - R + 8]];
+  if (pre.length) pieces.push([L - 8, endPreBrk + 6]);
+  if (post.length) pieces.push([endMain + BR - 6, W - R + 8]);
+  svgEl("path", { class: "dp-axis", d: pieces.map(p => `M${p[0]} ${AX} H${p[1]}`).join(" ") }, svg);
+  const brk = x0 => svgEl("path", { class: "dp-break", d: `M${x0 + 18} ${AX + 10} l9 -20 M${x0 + 32} ${AX + 10} l9 -20` }, svg);
+  if (pre.length) brk(endPreBrk);
+  if (post.length) brk(endMain);
   const fs = Math.max(16, 22 * scale ** .5);
   keys.forEach(d => { const t = svgEl("text", { class: "dp-tlab", x: slotX.get(d), y: AX + fs + 24, style: `font-size:${fs}px` }, svg); t.textContent = d; });
   if (unit) { const t = svgEl("text", { class: "dp-unit", x: (L + W - R) / 2, y: AX + 2 * fs + 30, style: `font-size:${fs * .9}px` }, svg); t.textContent = unit; }
   const fulcrum = svgEl("path", { class: "dp-fulcrum", d: "M0 0 l-11 18 h22 z" }, svg);
-  const counts = new Map(keys.map(d => [d, svgEl("text", { class: "dp-count", x: slotX.get(d), style: `font-size:${fs}px` }, svg)]));
-  const STEP = 44 * scale;
+  const counts = !showCounts ? new Map() : new Map(keys.map(d => [d, svgEl("text", { class: "dp-count", x: slotX.get(d), style: `font-size:${fs}px` }, svg)]));
+  const STEP = 44 * scale, PW = 29 * scale;
   const dots = values.map((v, i) => {
     const g = svgEl("g", { class: "dp-pt", "data-i": i }, svg);
     drawPerson(g, 0, 0, i, 0, scale);
     return g;
   });
   const place = vals => {
-    const seen = new Map();
+    const seen = new Map(), n = new Map();
+    vals.forEach(v => n.set(v, (n.get(v) || 0) + 1));
     vals.forEach((v, i) => {
       const k = seen.get(v) || 0; seen.set(v, k + 1);
-      dots[i].style.transform = `translate(${x(v)}px, ${AX - 2 - k * STEP}px)`;
-      dots[i].dataset.v = v;
+      const px = row ? x(v) + (k - (n.get(v) - 1) / 2) * PW : x(v), py = row ? AX - 2 : AX - 2 - k * STEP;
+      dots[i].style.transform = `translate(${px}px, ${py}px)`;
+      Object.assign(dots[i].dataset, { v, x: px, y: py });
     });
-    counts.forEach((t, d) => { const n = seen.get(d) || 0; t.textContent = n || ""; t.setAttribute("y", AX - 2 - n * STEP - 6 * scale); });
+    counts.forEach((t, d) => { const c = seen.get(d) || 0; t.textContent = c || ""; t.setAttribute("y", AX - 2 - c * STEP - 6 * scale); });
   };
   place(values);
   host.appendChild(svg);
-  return { svg, back, marks, dots, fulcrum, place, x, AX, sw, STEP, top: 20 };
+  return { svg, back, marks, dots, fulcrum, place, x, AX, sw, STEP, PW, top: 20 };
 }
 
 function buildDotPlots() {
   $$(".dotplot").forEach(dp => {
     const base = dp.dataset.values.split(",").map(Number), unit = dp.dataset.unit;
     const swap = dp.dataset.swap ? dp.dataset.swap.split(",").map(Number) : null;
-    const D = drawStays($(".dp-chart", dp), base, { unit, extra: swap ? [swap[1]] : [] });
-    const readout = $(".dp-readout", dp), stops = $$(".dp-m", dp);
+    const D = drawStays($(".dp-chart", dp), base, { unit, extra: swap ? [swap[1]] : [], row: true });
+    const stops = $$(".dp-m", dp);
     const swapIdx = swap ? base.indexOf(swap[0]) : -1;
     let vals = base.slice(), open = null, timers = [];
     if (swapIdx >= 0) {
@@ -115,46 +129,44 @@ function buildDotPlots() {
       D.svg.setAttribute("class", "dp-svg" + (key ? ` f-${concept(key).family}` : ""));
       D.marks.innerHTML = "";
       D.fulcrum.classList.remove("on");
-      readout.innerHTML = "";
-      readout.className = "dp-readout";
       if (!key) return;
       const c = concept(key), fam = `f-${c.family}`;
-      readout.classList.add("show", fam);
-      const mark = (v, delay) => {
-        const g = svgEl("g", { class: `dp-mk ${fam}`, style: `transform:translateX(${D.x(v)}px);animation-delay:${REDUCED_MOTION || instant ? 0 : delay}ms` }, D.marks);
+      // each measure's working is written on its marker: 66 ÷ 11 = 6, the 6th of 11, 2 three times
+      const mark = (v, text, delay, foot = D.AX) => {
+        const g = svgEl("g", { class: `dp-mk ${fam}`, style: `transform:translateX(${v}px);animation-delay:${REDUCED_MOTION || instant ? 0 : delay}ms` }, D.marks);
         svgEl("path", { d: `M0 ${D.AX} V${D.top + 12}` }, g);
-        const t = svgEl("text", { y: D.top }, g);
-        t.textContent = `${c.letter} = ${num(Stats[key](vals))}`;
+        svgEl("text", { y: D.top }, g).textContent = text;
       };
       if (key === "mean") {
         const s = Stats.sum(vals), m = Stats.mean(vals);
         D.dots.forEach(d => d.classList.add("sum"));
-        readout.innerHTML = `<span>${vals.join(" + ")} = <b>${s}</b></span>`;
         later(instant ? 0 : 650, () => {
-          readout.insertAdjacentHTML("beforeend", `<span class="dp-then">${s} ÷ ${vals.length} = <b>${num(m)}</b></span>`);
           D.fulcrum.style.transform = `translate(${D.x(m)}px, ${D.AX + 3}px)`;
           D.fulcrum.classList.add("on");
-          mark(m, 250);
+          mark(D.x(m), `${c.letter} = ${s} ÷ ${vals.length} = ${num(m)}`, 250);
         });
       }
       if (key === "median") {
+        // people drop out in pairs from both ends until one is left; a box then holds each half
         const order = vals.map((v, i) => [v, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p[1]);
-        const n = order.length, mid = (n - 1) / 2, sorted = order.map(i => vals[i]);
-        readout.innerHTML = `<span class="dp-row">${sorted.map((v, k) => `<i style="--k:${Math.min(k, n - 1 - k)}"${k === mid ? ' class="mid"' : ""}>${v}</i>`).join("")}</span>`;
-        for (let k = 0; k < Math.floor(n / 2); k++) later(instant ? 0 : 150 + k * 190, () => { D.dots[order[k]].classList.add("out"); D.dots[order[n - 1 - k]].classList.add("out"); });
-        const done = instant ? 0 : 150 + Math.floor(n / 2) * 190;
-        later(done, () => {
+        const n = order.length, h = Math.floor(n / 2), mid = (n - 1) / 2;
+        for (let k = 0; k < h; k++) later(instant ? 0 : 150 + k * 190, () => { D.dots[order[k]].classList.add("out"); D.dots[order[n - 1 - k]].classList.add("out"); });
+        later(instant ? 0 : 150 + h * 190, () => {
+          [order.slice(0, h), order.slice(n - h)].forEach(half => {
+            const xs = half.map(i => +D.dots[i].dataset.x), a = Math.min(...xs) - D.PW / 2 - 8, b = Math.max(...xs) + D.PW / 2 + 8;
+            const g = svgEl("g", { class: "dp-half" }, D.marks);
+            svgEl("rect", { x: a, y: D.AX - 62, width: b - a, height: 70, rx: 12 }, g);
+            svgEl("text", { x: (a + b) / 2, y: D.AX - 74 }, g).textContent = h;
+          });
           if (Number.isInteger(mid)) D.dots[order[mid]].classList.add("hit");
-          readout.insertAdjacentHTML("beforeend", `<span class="dp-then">${ORD(mid + 1)} of ${n} = <b>${num(Stats.median(vals))}</b></span>`);
-          readout.classList.add("done");
-          mark(Stats.median(vals), 0);
+          const mx = Number.isInteger(mid) ? +D.dots[order[mid]].dataset.x : D.x(Stats.median(vals));
+          mark(mx, `${c.letter} = ${num(Stats.median(vals))}`, 0, D.AX - 54);
         });
       }
       if (key === "mode") {
         const m = Stats.mode(vals), k = vals.filter(v => v === m).length;
         D.dots.forEach(d => d.classList.add(+d.dataset.v === m ? "hit" : "out"));
-        readout.innerHTML = `<span><b>${m}</b> ${esc(unit)} · ${k} of ${vals.length}</span>`;
-        mark(m, 200);
+        mark(D.x(m), `${c.letter} = ${m}  ×${k}`, 200);
       }
     };
     const setSwap = on => {

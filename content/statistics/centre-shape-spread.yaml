@@ -6,7 +6,7 @@ id: stats.centre-shape-spread
 title: Centre, shape and spread
 description: Mean, median and mode, why data come out normal or skewed, and how SD and IQR describe them. Learn from one ward's lengths of stay, then practise on exam-style stems.
 status: draft
-updated: 2026-09-23
+updated: 2026-09-24
 sources:
   - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapters 3–5.
   - Petrie A, Sabin C. Medical Statistics at a Glance, 4th ed. Chapters 5–7.
@@ -45,8 +45,8 @@ learn:
     measures: [mean, median, mode]
 
   # a bell has no wall and builds out from its middle; a floor makes a tail to the right, a ceiling a tail to the left
-  # the skewed curves are log-normal: positive (median 5, sigma 1) gives mode 1.8, mean 8.2 days;
-  # negative (42 - GA with median 3 weeks, sigma 0.637) gives mode 40.0, median 39, mean 38.3 weeks
+  # the skewed steps stack their people under a fitted log-normal curve; the middles come from the people:
+  # the ward's stays (mean 6, median 3, mode 2) and eleven births (418 / 11 = mean 38, median 39, mode 40)
   - id: shapes
     pattern: curve
     title: Why a bell, why a tail?
@@ -59,42 +59,33 @@ learn:
         unit: cm
         axis: Height of adult women (cm)
         examples: [Height, Haemoglobin, Serum sodium]
+        summary: { family: par, label: Mean (SD), note: Normal data }
       - concept: positive
         shape: positive
-        median: 5
-        sigma: 1
-        range: [0, 40]
-        ticks: [0, 10, 20, 30, 40]
-        axis: Length of stay (days)
+        values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
+        sigma: 0.64
+        axis: days in hospital
         wall_label: 0 days
         tail_label: a few long stays
         examples: [Length of stay, CRP, Alcohol units, Triglycerides]
+        summary: { family: np, label: Median (IQR), note: Skewed data }
       - concept: negative
         shape: negative
-        ceiling: 42
-        median: 39
-        sigma: 0.637
-        range: [24, 42]
-        ticks: [24, 28, 32, 36, 40]
-        axis: Gestational age at birth (weeks)
+        values: [29, 36, 37, 38, 38, 39, 39, 40, 40, 40, 42]
+        ceiling: 42.5
+        sigma: 0.58
+        breaks: false
+        axis: weeks at birth
         wall_label: 42 weeks
         tail_label: early births
         examples: [Gestational age at birth, Age at death in the UK]
+        summary: { family: np, label: Median (IQR), note: Skewed data }
 
-  # SD on a bell (adult women's height), built out from the mean; IQR, range and mean ± 2 SD on the ward's stays
+  # the ward's stays side by side: the IQR boxes the middle half; range and mean ± 2 SD for contrast
   - id: spread
     pattern: curve
-    title: "Spread: SD and IQR"
+    title: Spread in skewed data
     panels:
-      - title: Standard deviation
-        kind: sd
-        mean: 162
-        sd: 7
-        unit: cm
-        axis: Height of adult women (cm)
-        chips: [±1 SD, ±2 SD, ±3 SD]
-        pct: ["68%", "95%", "99.7%"]
-        summary: { family: par, label: Mean (SD), note: Normal data }
       - title: Interquartile range
         kind: dots
         values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
