@@ -166,7 +166,7 @@ function buildDotPlots() {
       if (key === "mode") {
         const m = Stats.mode(vals), k = vals.filter(v => v === m).length;
         D.dots.forEach(d => d.classList.add(+d.dataset.v === m ? "hit" : "out"));
-        mark(D.x(m), `${c.letter} = ${m}  ×${k}`, 200);
+        mark(D.x(m), `${c.letter} = ${m}`, 200);
       }
     };
     const setSwap = on => {
