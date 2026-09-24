@@ -89,6 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
   buildSpectra();
   buildQuestionFlows();
   buildTrees();
+  buildDotPlots();
+  buildCurves();
   buildClueStems();
   buildRevealCards();
   buildSorts();

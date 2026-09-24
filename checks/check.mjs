@@ -138,6 +138,7 @@ const BUBBLE_SPILL = `s => {
 const REVEALS = `(() => {
   const s = Deck.slides[Deck.i];
   return { dots: s.querySelectorAll(".spec-dot").length, cards: s.querySelectorAll(".reveal-item").length, qf: s.querySelectorAll(".qf-q").length,
+           chips: s.querySelectorAll(".cv-chip").length, swap: s.querySelectorAll(".dp-swap").length,
            tree: s.querySelectorAll(".tree-level").length };
 })()`;
 
@@ -166,6 +167,29 @@ async function layoutPass(size) {
       await measure(size, `slide ${i + 1} card ${k + 1}`);
     }
     if (r.cards) await shot(`${tag}-open`);
+    // spread chips: each one shades its band and shows its summary
+    for (let k = 0; k < r.chips; k++) {
+      await js(`Deck.slides[Deck.i].querySelectorAll(".cv-chip")[${k}].click(), true`);
+      await sleep(450);
+      await measure(size, `slide ${i + 1} chip ${k + 1}`);
+      const on = await js(`(() => { const c = Deck.slides[Deck.i].querySelectorAll(".cv-chip")[${k}]; return c.classList.contains("on") && c.closest(".cv-panel").classList.contains("open"); })()`);
+      if (!on) fail(`${size.name} slide ${i + 1}: chip ${k + 1} did not open`);
+      if (k % 3 === 2) await shot(`${tag}-chip${k + 1}`);
+    }
+    if (r.swap) {
+      // the movable dot moves, and the open measure follows it
+      await js(`Deck.slides[Deck.i].querySelector(".dp-m .spec-dot").click(), true`);
+      await sleep(900);
+      const before = await js(`Deck.slides[Deck.i].querySelector(".dp-mk text")?.textContent || ""`);
+      await js(`Deck.slides[Deck.i].querySelector(".dp-swap").dispatchEvent(new MouseEvent("click", { bubbles: true })), true`);
+      await sleep(900);
+      const after = await js(`Deck.slides[Deck.i].querySelector(".dp-mk text")?.textContent || ""`);
+      await measure(size, `slide ${i + 1} swapped`);
+      if (!before || before === after) fail(`${size.name} slide ${i + 1}: moving the dot did not move the mean (${before} → ${after})`);
+      await shot(`${tag}-swap`);
+      await js(`document.body.click(), true`);
+      await sleep(300);
+    }
     if (r.qf) {
       for (let k = 0; k < r.qf; k++) {
         await js(`(() => { const q = Deck.slides[Deck.i].querySelectorAll(".qf-q")[${k}]; if (!q.disabled) q.click(); return true; })()`);
@@ -191,11 +215,14 @@ async function layoutPass(size) {
       }
       await sleep(700);
       await measure(size, `slide ${i + 1} tree solved`);
-      const done = await js(`!!Deck.slides[Deck.i].querySelector(".tree-level.no:not(.missed)") && !Deck.slides[Deck.i].querySelector(".tree-level.missed")`);
+      // a path ending in No lands on that step's answer; one ending in Yes lands on the end card
+      const res = steps[steps.length - 1] === "no" ? ".tree-level.no:not(.missed)" : ".tree-end.shown";
+      const done = await js(`!!Deck.slides[Deck.i].querySelector("${res}") && !Deck.slides[Deck.i].querySelector(".tree-level.missed")`);
       if (!done) fail(`${size.name} slide ${i + 1}: the right answers did not reach the result`);
       await shot(`${tag}-solved`);
-      if (await js(`!!Deck.slides[Deck.i].querySelector(".tree-level.no .tree-final.zoomable")`)) {
-        await js(`Deck.slides[Deck.i].querySelector(".tree-level.no .tree-final.zoomable").click(), true`);
+      const fin = `${res.replace(":not(.missed)", "")} .tree-final.zoomable`;
+      if (await js(`!!Deck.slides[Deck.i].querySelector("${fin}")`)) {
+        await js(`Deck.slides[Deck.i].querySelector("${fin}").click(), true`);
         await sleep(2200);
         const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`);
         if (out) fail(`${size.name} slide ${i + 1}: ${out}`);

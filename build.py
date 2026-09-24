@@ -28,7 +28,7 @@ ENGINE = os.path.join(ROOT, "engine")
 DIST = os.path.join(ROOT, "dist")
 LOCK = os.path.join(ROOT, "content", "ids.lock")
 CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css"]
-JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "sort.js", "quiz.js", "deck.js"]
+JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "sort.js", "quiz.js", "deck.js"]
 ITEM_ID = re.compile(r"^[a-z]\d{2,3}$")
 INSTRUCTION = re.compile(r"\b(tap|click|drag|press|select)\b", re.I)
 
@@ -108,6 +108,33 @@ def check_topic(t, expected_id):
                 errs.append(f"{where}: path must be yes/no answers, one per step at most")
             if path and len(s.get("wrong") or []) != len(path):
                 errs.append(f"{where}: give one 'wrong' line for each step in the path")
+        if p == "dot-plot":
+            refs += s["measures"]
+            vals = s.get("values") or []
+            if len(vals) < 3 or not all(isinstance(v, (int, float)) for v in vals):
+                errs.append(f"{where}: give three or more numbers in values")
+            if any(m not in ("mean", "median", "mode") for m in s["measures"]):
+                errs.append(f"{where}: measures are mean, median and mode (concept keys of those names)")
+            if s.get("swap") and s["swap"].get("from") not in vals:
+                errs.append(f"{where}: swap.from must be one of the values")
+            if len(s.get("axis") or []) != 2 or max(vals or [0]) > s["axis"][1]:
+                errs.append(f"{where}: axis is [0, max] and must hold every value")
+        if p == "curve":
+            if s.get("steps"):
+                refs += [st["concept"] for st in s["steps"]] + ["mean", "median", "mode"]
+                for st in s["steps"]:
+                    if st.get("shape") not in ("normal", "positive", "negative"):
+                        errs.append(f"{where}: shape is normal, positive or negative, not {st.get('shape')!r}")
+            else:
+                for pn in s.get("panels") or []:
+                    if pn.get("summary", {}).get("family") not in fams:
+                        errs.append(f"{where}: panel {pn.get('title')!r} summary needs a family")
+                    if pn.get("kind") == "sd" and len(pn.get("pct") or []) != len(pn.get("chips") or []):
+                        errs.append(f"{where}: an sd panel gives one pct per chip")
+                    if pn.get("kind") == "dots" and len(pn.get("chips") or []) != 3:
+                        errs.append(f"{where}: a dots panel has three chips: IQR, range, mean ± 2 SD")
+                if not s.get("panels"):
+                    errs.append(f"{where}: a curve slide has steps or panels")
         if p == "clue-stem":
             refs += list(s["clues"])
         if p == "reveal-cards":
@@ -117,7 +144,13 @@ def check_topic(t, expected_id):
         if p == "stem-quiz":
             refs += s["options"]
             for c in s["cases"]:
-                if c["answer"] not in s["options"]:
+                # a case may bring its own options: concept keys, or plain text for choices that are not concepts
+                opts = c.get("options") or s["options"]
+                if c.get("options"):
+                    refs += [o for o in c["options"] if o in cons]
+                    if len(set(opts)) != len(opts) or len(opts) < 2:
+                        errs.append(f"{where}: case {c['id']} needs two or more different options")
+                if c["answer"] not in opts:
                     errs.append(f"{where}: case {c['id']} answer {c['answer']!r} is not an option")
                 if "[[" not in c["stem"]:
                     errs.append(f"{where}: case {c['id']} has no [[clue]] in its stem")

@@ -6,6 +6,7 @@ Practice patterns (sort, stem-quiz) also hand their data to the page through
 topic_data(), because their slides are built in the browser.
 """
 import html
+import json
 import os
 import re
 
@@ -201,6 +202,52 @@ def p_decision_tree(slide, topic):
     return heading(slide) + scene + tree
 
 
+def _measure_dots(topic, keys, cls):
+    """Concept circles that open one measure or one step each (the spectrum's circles, reused)."""
+    out = []
+    for i, key in enumerate(keys):
+        c = concept(topic, key)
+        out.append(f'<div class="spec-stop {cls} f-{c["family"]}" data-key="{e(key)}" style="--g:{i}">'
+                   f'<button class="spec-dot" type="button" aria-expanded="false" aria-label="Show the {e(c["label"])}">'
+                   f'{e(c["letter"])}</button><b>{e(c["label"])}</b></div>')
+    return "".join(out)
+
+
+def p_dot_plot(slide, topic):
+    """The same few values as stacked dots on an axis. Each measure's circle shows how it is found,
+    on the dots; one dot (swap) can be tapped to move, and the open measure moves with it."""
+    swap = slide.get("swap")
+    attrs = (f' data-values="{",".join(str(v) for v in slide["values"])}" data-max="{slide["axis"][1]}"'
+             f' data-unit="{e(slide.get("unit", ""))}"' + (f' data-swap="{swap["from"]},{swap["to"]}"' if swap else ""))
+    return (heading(slide) + f'<div class="dotplot"{attrs}><div class="dp-chart"></div>'
+            f'<div class="dp-readout" aria-live="polite"></div>'
+            f'<div class="dp-measures">{_measure_dots(topic, slide["measures"], "dp-m")}</div></div>')
+
+
+def p_curve(slide, topic):
+    """Shapes of data drawn as curves. With steps: one graph, each concept's circle draws its shape,
+    its wall (if any) and where the mean, median and mode land. With panels: side by side, each with
+    chips that shade a spread (SD bands on a bell, IQR, range or mean +/- 2 SD on a handful of values)."""
+    if slide.get("steps"):
+        steps = [{k: v for k, v in st.items()} for st in slide["steps"]]
+        data = e(json.dumps(steps, ensure_ascii=False))
+        return (heading(slide) + f'<div class="curve cv-steps-mode" data-steps="{data}">'
+                f'<div class="cv-steps">{_measure_dots(topic, [st["concept"] for st in steps], "cv-s")}</div>'
+                f'<div class="cv-stage"><div class="cv-chart"></div><div class="cv-order" aria-live="polite"></div>'
+                f'<ul class="cv-ex"></ul></div></div>')
+    panels = []
+    for i, pn in enumerate(slide["panels"]):
+        sm = pn["summary"]
+        chips = "".join(f'<button class="cv-chip" type="button" aria-pressed="false" data-k="{e(ch)}">{e(ch)}</button>'
+                        for ch in pn["chips"])
+        panels.append(
+            f'<div class="cv-panel f-{sm["family"]}" style="--g:{i}" data-panel="{e(json.dumps(pn, ensure_ascii=False))}">'
+            f'<h3 class="cv-title">{e(pn["title"])}</h3><div class="cv-chart"></div><div class="cv-chips">{chips}</div>'
+            f'<div class="cv-read" aria-live="polite"></div>'
+            f'<div class="cv-sum"><b>{e(sm["label"])}</b><span>{e(sm["note"])}</span></div></div>')
+    return heading(slide) + f'<div class="curve cv-panels">{"".join(panels)}</div>'
+
+
 def p_clue_stem(slide, topic):
     stops = []
     for key, clues in slide["clues"].items():
@@ -275,6 +322,8 @@ PATTERNS = {
     "spectrum": p_spectrum,
     "question-flow": p_question_flow,
     "decision-tree": p_decision_tree,
+    "dot-plot": p_dot_plot,
+    "curve": p_curve,
     "clue-stem": p_clue_stem,
     "reveal-cards": p_reveal_cards,
     "sort": p_sort,
@@ -300,6 +349,7 @@ def topic_data(topic):
                 "title": s["title"], "options": s["options"],
                 "cases": [{"id": f'{topic["id"]}.{c["id"]}', "solved": bool(c.get("solved")), "twist": bool(c.get("twist")),
                            "stem": stem_html(c["stem"]), "question": c["question"], "answer": c["answer"],
+                           "options": c.get("options"),
                            "hint": c["hint"], "why": c["why"], "tutor": c.get("tutor", ""),
                            # a cast member with a prop for the case's subject, beside the stem
                            "scene": svg(c["scene"]) if c.get("scene") else ""}

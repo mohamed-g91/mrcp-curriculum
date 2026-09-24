@@ -1,0 +1,217 @@
+# Centre, shape and spread: MRCP Part 1 statistics.
+# One story runs through the Learn deck: eleven patients leaving one ward this week.
+# IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
+
+id: stats.centre-shape-spread
+title: Centre, shape and spread
+description: Mean, median and mode, why data come out normal or skewed, and how SD and IQR describe them. Learn from one ward's lengths of stay, then practise on exam-style stems.
+status: draft
+updated: 2026-09-23
+sources:
+  - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapters 3–5.
+  - Petrie A, Sabin C. Medical Statistics at a Glance, 4th ed. Chapters 5–7.
+retired: []
+cover: concepts
+
+# The colours follow Types of data: purple goes with numbers and the mean, green with ranks and
+# the median, coral with categories and the mode.
+families:
+  cat: Categories
+  np: Skewed
+  par: Normal
+
+concepts:
+  mean:     { label: Mean,          family: par, letter: x̄,  icon: balance }
+  median:   { label: Median,        family: np,  letter: x̃,  icon: middle }
+  mode:     { label: Mode,          family: cat, letter: Mo, icon: peak }
+  normal:   { label: Normal,        family: par, letter: N,  icon: bell }
+  positive: { label: Positive skew, family: np,  letter: "+", icon: tail-right }
+  negative: { label: Negative skew, family: np,  letter: "−", icon: tail-left }
+
+learn:
+  - id: hook
+    pattern: hook
+    title: What shape are these stays?
+    stem: A study of 200 adults admitted with pneumonia reported a mean length of stay of 9 days (SD 8 days) and a median of 5 days.
+    question: What shape is the distribution of length of stay?
+
+  # the ward this week: mode 2, median 3, mean 66 / 11 = 6; moving the 30 to 8 makes the mean 4
+  - id: middles
+    pattern: dot-plot
+    title: Three middles
+    values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
+    axis: [0, 30]
+    unit: days
+    swap: { from: 30, to: 8 }
+    measures: [mean, median, mode]
+
+  # a bell has no wall; a floor makes a tail to the right, a ceiling a tail to the left
+  - id: shapes
+    pattern: curve
+    title: Why a bell, why a tail?
+    steps:
+      - concept: normal
+        shape: normal
+        people: true
+        axis: Height
+        examples: [Height, Haemoglobin, Serum sodium]
+      - concept: positive
+        shape: positive
+        axis: Length of stay
+        wall_label: 0 days
+        examples: [Length of stay, CRP, Alcohol units, Triglycerides]
+      - concept: negative
+        shape: negative
+        axis: Gestational age
+        wall_label: 42 weeks
+        examples: [Gestational age at birth, Age at death in the UK]
+
+  # SD on a bell (adult women's height); IQR, range and mean ± 2 SD on the ward's stays
+  - id: spread
+    pattern: curve
+    title: "Spread: SD and IQR"
+    panels:
+      - title: Standard deviation
+        kind: sd
+        mean: 162
+        sd: 7
+        unit: cm
+        axis: Height of adult women (cm)
+        chips: [±1 SD, ±2 SD, ±3 SD]
+        pct: ["68%", "95%", "99.7%"]
+        summary: { family: par, label: Mean (SD), note: Normal data }
+      - title: Interquartile range
+        kind: dots
+        values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
+        min: -12
+        max: 30
+        wall: 0
+        unit: days
+        chips: [IQR, Range, Mean ± 2 SD]
+        summary: { family: np, label: Median (IQR), note: Skewed data }
+
+  - id: traps
+    pattern: reveal-cards
+    title: Four traps
+    cards:
+      - { family: np, icon: tail-right, label: Tail to the right, answer: "Positive skew. Skew is named by its tail, not its hump." }
+      - { family: np, icon: balance, label: Mean well above median, answer: "Positive skew: the mean follows the tail. In negative skew, mean < median < mode." }
+      - { family: np, icon: ruler, label: Mean − 2 SD below zero, answer: "Skewed. A stay or a count cannot be negative, so mean ± SD misleads." }
+      - { family: np, icon: middle, label: Skewed data, answer: "Median (IQR) and non-parametric tests. A log transform often makes right skew normal." }
+
+  - id: hook-solved
+    pattern: decision-tree
+    title: Back to the pneumonia stays
+    stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 9 days (SD 8 days) and a median of 5 days]].
+    steps:
+      - { q: "Mean and median apart?", no: normal }
+      - { q: "Mean above median?",     no: negative }
+    end: positive
+    examples:
+      normal: [Height, Haemoglobin, Serum sodium]
+      positive: [Length of stay, CRP, Alcohol units, Triglycerides]
+      negative: [Gestational age at birth, Age at death in the UK]
+    path: [yes, yes]
+    wrong:
+      - "9 and 5 days are far apart, so the stays are not symmetrical."
+      - "The mean (9) is above the median (5): a few long stays pull it up, into a tail on the right."
+
+practise:
+  - id: warmup
+    pattern: sort
+    title: Sort these variables
+    buckets: [normal, positive, negative]
+    retry: "Look for a wall: a floor makes a tail to the right, a ceiling a tail to the left."
+    done: "Skew is named by its tail. Skewed data are summarised by the median (IQR)."
+    items:
+      - { id: w01, label: Height of adult women,         answer: normal,   why: "Many small influences, and nothing stops either side." }
+      - { id: w02, label: Haemoglobin in healthy adults, answer: normal,   why: Roughly symmetrical about its mean. }
+      - { id: w03, label: Serum sodium in healthy adults, answer: normal,  why: "Held tightly around a set point, symmetrical." }
+      - { id: w04, label: Length of hospital stay,       answer: positive, why: "A floor at 0 days, but a few stay for weeks." }
+      - { id: w05, label: CRP,                           answer: positive, why: "Most are low; infection sends a few very high." }
+      - { id: w06, label: Alcohol units per week,        answer: positive, why: "Many drink little or none; a few drink a lot." }
+      - { id: w07, label: Serum triglycerides,           answer: positive, why: "Cannot fall below zero; a few are very high." }
+      - { id: w08, label: Gestational age at birth,      answer: negative, why: "A ceiling near 42 weeks; some babies are born early." }
+      - { id: w09, label: Age at death in the UK,        answer: negative, why: "Most die old; fewer die young, a tail to the left." }
+
+  - id: cases
+    pattern: stem-quiz
+    title: Name the shape
+    options: [normal, positive, negative]
+    # The first case is the solved example; the rest are dealt in a random order.
+    # A case with its own options overrides the slide's; plain text options are shown in grey.
+    cases:
+      - id: c01
+        solved: true
+        stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 9 days (SD 8 days) and a median of 5 days]].
+        question: What shape is the distribution of length of stay?
+        answer: positive
+        hint: Compare the mean with the median.
+        why: "A few long stays pull the mean above the median: a tail to the right."
+        tutor: "Mean and median apart? Yes. Mean above median? Yes. So positive skew. And 9 − 2 × 8 is below zero, which a stay cannot be."
+
+      - id: c02
+        stem: In 150 adults seen in the emergency department, [[CRP had a mean of 45 mg/L and a median of 12 mg/L]].
+        question: What shape is the distribution of CRP?
+        answer: positive
+        hint: Which is larger, the mean or the median?
+        why: "A few very high CRPs pull the mean far above the median: positive skew."
+
+      - id: c03
+        stem: In 3,000 births at one maternity unit, [[gestational age had a mean of 38.1 weeks and a median of 39.2 weeks]].
+        question: What shape is the distribution of gestational age?
+        answer: negative
+        hint: Is the mean above or below the median?
+        why: "The mean is below the median: a few early births make a tail to the left."
+
+      - id: c04
+        stem: In 500 healthy men, [[height had a mean of 176 cm and an SD of 7 cm]], with a symmetrical, bell-shaped distribution.
+        question: About what proportion are between 162 and 190 cm?
+        options: ["68%", "95%", "99.7%"]
+        answer: "95%"
+        hint: How many SDs from the mean are 162 and 190 cm?
+        why: "162 and 190 cm are the mean ± 2 SD. In a normal distribution about 95% lie within 2 SD (1.96 SD exactly)."
+
+      - id: c05
+        twist: true
+        stem: A survey of 800 adults recorded [[alcohol intake with a mean of 14 units per week (SD 16)]].
+        question: What shape is the distribution of alcohol intake?
+        answer: positive
+        hint: What is the mean minus 2 SD, and can intake be that low?
+        why: "14 − 2 × 16 = −18 units, which is impossible, so the data are not normal. Many drink little and a few drink a lot: positive skew."
+
+      - id: c06
+        stem: A ward audit found that [[length of stay was strongly positively skewed]].
+        question: How should length of stay be summarised?
+        options: [Mean (SD), Median (IQR), Mode (range)]
+        answer: Median (IQR)
+        hint: Which middle and which spread are not pulled by the tail?
+        why: "The median and IQR are not pulled by the few very long stays; the mean and SD are."
+
+      - id: c07
+        stem: A transfusion audit recorded each donor's [[blood group (A, B, AB or O)]].
+        question: Which average describes blood group?
+        options: [mean, median, mode]
+        answer: mode
+        hint: Can blood groups be added up, or put in order?
+        why: "Blood group is nominal: only the most common group, the mode, makes sense."
+
+      - id: c08
+        twist: true
+        stem: Eleven patients on a ward stayed between 1 and 8 days. [[A twelfth patient stays 90 days]].
+        question: Which average changes most?
+        options: [mean, median, mode]
+        answer: mean
+        hint: Which average uses the size of every value?
+        why: "The mean adds up every value, so one 90-day stay drags it up; the median and mode barely move."
+
+      - id: c09
+        stem: In a hospice, [[age at death had a mean of 79 years and a median of 83 years]].
+        question: What shape is the distribution of age at death?
+        answer: negative
+        hint: Is the mean above or below the median?
+        why: "The mean is below the median: a few younger deaths make a tail to the left."
+
+  - id: end
+    pattern: end
+    title: Your score

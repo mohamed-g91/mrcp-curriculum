@@ -1,4 +1,22 @@
 # Every permanent item ID ever built. Maintained by build.py; do not edit by hand.
+stats.centre-shape-spread.c01
+stats.centre-shape-spread.c02
+stats.centre-shape-spread.c03
+stats.centre-shape-spread.c04
+stats.centre-shape-spread.c05
+stats.centre-shape-spread.c06
+stats.centre-shape-spread.c07
+stats.centre-shape-spread.c08
+stats.centre-shape-spread.c09
+stats.centre-shape-spread.w01
+stats.centre-shape-spread.w02
+stats.centre-shape-spread.w03
+stats.centre-shape-spread.w04
+stats.centre-shape-spread.w05
+stats.centre-shape-spread.w06
+stats.centre-shape-spread.w07
+stats.centre-shape-spread.w08
+stats.centre-shape-spread.w09
 stats.data-types.c01
 stats.data-types.c02
 stats.data-types.c03

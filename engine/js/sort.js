@@ -24,6 +24,7 @@ function makeSorter(buckets, onDrop) {
       chip.setAttribute("aria-disabled", "true");
       chip.tabIndex = -1;
       $(".bucket-items", bucket.el).appendChild(chip);
+      bucket.el.classList.remove("caught"); void bucket.el.offsetWidth; bucket.el.classList.add("caught");
     } else {
       chip.classList.add("wrong"); shake(chip);
       setTimeout(() => chip.classList.remove("wrong"), 700);
@@ -93,7 +94,10 @@ function buildSort(host) {
   const buckets = S.buckets.map(key => {
     const c = concept(key);
     const b = el("div", { class: `bucket f-${c.family}`, tabindex: "0", "data-key": key, "aria-label": `${c.label} bucket` },
-      `<div class="bucket-head">${icon(c.icon)}${esc(c.label)}</div><div class="bucket-items"></div>`);
+      // a pail: a raised handle, an open rim, a tapered body; chips land inside, the name sits low on its side
+      `<span class="pail-handle" aria-hidden="true"></span><svg class="pail-body" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">` +
+      `<path d="M1 3 L99 3 L90 97 Q50 100 10 97 Z"/></svg><span class="pail-rim" aria-hidden="true"></span>` +
+      `<div class="bucket-items"></div><div class="bucket-head"><span class="bucket-letter">${esc(c.letter)}</span>${esc(c.label)}</div>`);
     wrap.appendChild(b);
     return { key, el: b };
   });
