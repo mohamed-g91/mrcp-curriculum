@@ -78,7 +78,7 @@ learn:
   # the ward's stays (mean 6, median 3, mode 2) and eleven births (418 / 11 = mean 38, median 39, mode 40)
   - id: shapes
     pattern: curve
-    title: Why a bell, why a tail?
+    title: Spread
     steps:
       - concept: normal
         shape: normal

@@ -200,6 +200,9 @@ def p_decision_tree(slide, topic):
         stem = f'<div class="stem-card compact"><p class="stem-text">{stem_html(slide["stem"], lit=True)}</p></div>'
         # side figures under the stem: the k-th shows once k questions are answered (the last one stays)
         side = "".join(figure(n, "side-fig") for n in slide.get("side") or [])
+        # or, with no side figures, a cartoon scene under the stem
+        if not side and slide.get("scene"):
+            side = figure(slide["scene"], "stem-scene")
         side = f'<div class="tree-side">{side}</div>' if side else ""
         return heading(slide) + f'<div class="tree-case"><div class="tree-stem">{stem}{side}</div>{tree}</div>'
     # a cartoon scene in the free corner beside the tree (above it on phones)

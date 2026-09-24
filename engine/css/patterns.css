@@ -505,6 +505,9 @@ a.next-topic:hover{border-color:var(--primary)}
 .side-fig{display:none;height:100%;margin:0}
 .side-fig.on{display:flex;justify-content:center;animation:fadeIn .5s ease}
 .side-fig svg{height:100%;width:auto;max-width:100%}
+.tree-side:has(.stem-scene){height:clamp(130px,calc(18 * var(--u)),230px)}
+.stem-scene{height:100%;margin:0;display:flex;justify-content:center}
+.stem-scene svg{height:100%;width:auto;max-width:100%}
 .gaps .g-lab{fill:var(--muted);font:700 15px var(--sans);letter-spacing:.08em;text-transform:uppercase}
 .gaps .g-line{stroke:var(--border-strong);stroke-width:3;stroke-linecap:round}
 .gaps .g-tick{stroke:var(--border-strong);stroke-width:2.5;stroke-linecap:round}
