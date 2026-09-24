@@ -44,7 +44,7 @@ function drawWall(parent, x0, w, top, base) {
   return g;
 }
 
-// a value pill on a marker line: the concept's letter and the value
+// a value pill on a marker line: the concept's name and the value
 function valuePill(parent, x, y, fam, text) {
   const g = svgEl("g", { class: `cv-pill ${fam}` }, parent);
   const w = 18 + text.length * 11;
@@ -81,7 +81,7 @@ function buildCurves() {
        mean, the median and the mode, one at a time */
     const drawPeople = st => {
       const fam = concept(st.concept).family, v = st.values, side = st.shape === "positive" ? "left" : "right";
-      const D = drawStays(chart, v, { unit: st.axis || "", W, H: H + 14, AX: BASE, wall: side, counts: false, breaks: st.breaks });
+      const D = drawStays(chart, v, { unit: st.axis || "", W, H: H + 14, AX: BASE, wall: side, counts: false, breaks: st.breaks, scale: .8 });
       D.svg.setAttribute("class", `dp-svg cv-svg f-${fam}`);
       D.svg.setAttribute("aria-label", concept(st.concept).label);
       const lo = Math.min(...v), hi = Math.max(...v), med = Stats.median(v);
@@ -90,7 +90,7 @@ function buildCurves() {
       const a = st.shape === "positive" ? 0.05 : lo - .6, b = st.shape === "positive" ? hi + .6 : st.ceiling - .01;
       let top = 0; for (let i = 0; i <= 400; i++) top = Math.max(top, f(a + (b - a) * i / 400));
       const tall = Math.max(...[...new Set(v)].map(u => v.filter(w => w === u).length));
-      const y = fv => BASE - fv / top * (tall * D.STEP + 34);
+      const y = fv => BASE - fv / top * (tall * D.STEP + 24);
       const d = curvePath(f, a, b, D.x, y, 300);
       svgEl("path", { class: "cv-area", d: `${d} L${D.x(b)} ${BASE} L${D.x(a)} ${BASE} Z` }, D.back);
       svgEl("path", { class: "cv-line", d, pathLength: 1 }, D.back);
@@ -105,15 +105,15 @@ function buildCurves() {
         svgEl("text", { x: tx, y: BASE - 96 }, g).textContent = st.tail_label;
         svgEl("path", { d: side === "left" ? `M${tx - 60} ${BASE - 76} h120 m-8 -6 l8 6 l-8 6` : `M${tx + 60} ${BASE - 76} h-120 m8 -6 l-8 6 l8 6` }, g);
       }
-      // the markers stand behind the people, their pills in one row above the curve
+      // the markers stand behind the people, their pills stepping down above the curve
       const mk = svgEl("g", { class: "cv-marks" }, D.back), M = middles(st), SEQ = ["mean", "median", "mode"];
       return {
         n: 0,
         next() {
-          const key = SEQ[this.n], cc = concept(key), px = D.x(M[key]), py = PEAK + 4;
+          const key = SEQ[this.n], cc = concept(key), px = D.x(M[key]), py = PEAK + 2 + this.n * 34;
           const g = svgEl("g", { class: `cv-mk f-${cc.family}` }, mk);
           svgEl("path", { d: `M${px} ${BASE} V${py + 13}` }, g);
-          valuePill(g, px, py, `f-${cc.family}`, `${cc.letter} ${num(M[key])}`);
+          valuePill(g, px, py, `f-${cc.family}`, `${cc.label} ${num(M[key])}`);
           return ++this.n < SEQ.length;
         }
       };
@@ -163,24 +163,19 @@ function buildCurves() {
         svgEl("text", { x: tx, y: BASE - 46 }, g).textContent = st.tail_label;
         svgEl("path", { d: wall === "left" ? `M${tx - 60} ${BASE - 26} h120 m-8 -6 l8 6 l-8 6` : `M${tx + 60} ${BASE - 26} h-120 m8 -6 l-8 6 l8 6` }, g);
       }
-      // where the three middles land: the letters side by side on one line for a bell, else a pill each with its value
+      // where the three middles land: one pill naming all three for a bell, else a pill each with its value
       const mk = svgEl("g", { class: "cv-marks" }, svg), unit = st.unit ? ` ${st.unit}` : "";
       if (st.shape === "normal") {
         const g = svgEl("g", { class: "cv-mk f-par" }, mk);
         svgEl("path", { d: `M${x(st.mean)} ${BASE} V${PEAK + 4}` }, g);
-        ORDERED.forEach((key, i) => {
-          const cc = concept(key), gg = svgEl("g", { class: `f-${cc.family}` }, g), bx = x(st.mean) + (i - 1) * 40;
-          svgEl("circle", { class: "cv-badge", cx: bx, cy: PEAK - 14, r: 17 }, gg);
-          svgEl("text", { class: "cv-blab", x: bx, y: PEAK - 8 }, gg).textContent = cc.letter;
-        });
-        valuePill(g, x(st.mean) + 118, PEAK - 14, "f-par", `${st.mean}${unit}`);
+        valuePill(g, x(st.mean), PEAK - 14, "f-par", `${["mean", "median", "mode"].map(k => concept(k).label).join(" = ")} = ${st.mean}${unit}`);
       } else {
         ORDERED.forEach((key, i) => {
           const cc = concept(key), v = D[key], px = x(v);
           const g = svgEl("g", { class: `cv-mk f-${cc.family}`, style: `animation-delay:${REDUCED_MOTION ? 0 : 700 + i * 160}ms` }, mk);
           const py = PEAK + 4 + i * 40;
           svgEl("path", { d: `M${px} ${BASE} V${py + 13}` }, g);
-          valuePill(g, px, py, `f-${cc.family}`, `${cc.letter} ${Math.round(v)}`);
+          valuePill(g, px, py, `f-${cc.family}`, `${cc.label} ${Math.round(v)}`);
         });
         finish(st);
       }
@@ -252,7 +247,7 @@ function buildCurves() {
       // the mean, dotted, that every band is built out from
       const mg = svgEl("g", { class: "cv-mk cv-meanline f-par" }, svg);
       svgEl("path", { d: `M${x(0)} ${BASE} V${BASE - 150}` }, mg);
-      valuePill(mg, x(0), BASE - 164, "f-par", `${concept("mean").letter} ${P.mean} ${P.unit}`);
+      valuePill(mg, x(0), BASE - 164, "f-par", `${concept("mean").label} ${P.mean} ${P.unit}`);
       bell = { x, y, f, BASE };
     } else {
       // the ward's stays shoulder to shoulder, in order, so the middle half can be boxed

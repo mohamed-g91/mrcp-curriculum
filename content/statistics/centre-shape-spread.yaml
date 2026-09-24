@@ -21,9 +21,9 @@ families:
   par: Normal
 
 concepts:
-  mean:     { label: Mean,          family: par, letter: x̄,  icon: balance }
-  median:   { label: Median,        family: np,  letter: x̃,  icon: middle }
-  mode:     { label: Mode,          family: cat, letter: Mo, icon: peak }
+  mean:     { label: Mean,          family: par, icon: balance }
+  median:   { label: Median,        family: np,  icon: middle }
+  mode:     { label: Mode,          family: cat, icon: peak }
   normal:   { label: Normal,        family: par, letter: N,  icon: bell }
   positive: { label: Positive skew, family: np,  letter: "+", icon: tail-right }
   negative: { label: Negative skew, family: np,  letter: "−", icon: tail-left }
@@ -34,6 +34,7 @@ learn:
     title: What shape are these stays?
     stem: A study of 200 adults admitted with pneumonia reported a mean length of stay of 9 days (SD 8 days) and a median of 5 days.
     question: What shape is the distribution of length of stay?
+    scene: stays-calendar
 
   # the ward this week: mode 2, median 3, mean 66 / 11 = 6; moving the 30 to 8 makes the mean 4
   - id: middles
@@ -107,6 +108,7 @@ learn:
   - id: hook-solved
     pattern: decision-tree
     title: Back to the pneumonia stays
+    scene: doctor-think
     stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 9 days (SD 8 days) and a median of 5 days]].
     steps:
       - { q: "Mean and median apart?", no: normal }
@@ -147,6 +149,7 @@ practise:
     # A case with its own options overrides the slide's; plain text options are shown in grey.
     cases:
       - id: c01
+        scene: case-pneumonia
         solved: true
         stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 9 days (SD 8 days) and a median of 5 days]].
         question: What shape is the distribution of length of stay?
@@ -156,6 +159,7 @@ practise:
         tutor: "Mean and median apart? Yes. Mean above median? Yes. So positive skew. And 9 − 2 × 8 is below zero, which a stay cannot be."
 
       - id: c02
+        scene: case-crp
         stem: In 150 adults seen in the emergency department, [[CRP had a mean of 45 mg/L and a median of 12 mg/L]].
         question: What shape is the distribution of CRP?
         answer: positive
@@ -163,6 +167,7 @@ practise:
         why: "A few very high CRPs pull the mean far above the median: positive skew."
 
       - id: c03
+        scene: case-newborn
         stem: In 3,000 births at one maternity unit, [[gestational age had a mean of 38.1 weeks and a median of 39.2 weeks]].
         question: What shape is the distribution of gestational age?
         answer: negative
@@ -170,6 +175,7 @@ practise:
         why: "The mean is below the median: a few early births make a tail to the left."
 
       - id: c04
+        scene: case-height
         stem: In 500 healthy men, [[height had a mean of 176 cm and an SD of 7 cm]], with a symmetrical, bell-shaped distribution.
         question: About what proportion are between 162 and 190 cm?
         options: ["68%", "95%", "99.7%"]
@@ -178,6 +184,7 @@ practise:
         why: "162 and 190 cm are the mean ± 2 SD. In a normal distribution about 95% lie within 2 SD (1.96 SD exactly)."
 
       - id: c05
+        scene: case-alcohol
         twist: true
         stem: A survey of 800 adults recorded [[alcohol intake with a mean of 14 units per week (SD 16)]].
         question: What shape is the distribution of alcohol intake?
@@ -186,6 +193,7 @@ practise:
         why: "14 − 2 × 16 = −18 units, which is impossible, so the data are not normal. Many drink little and a few drink a lot: positive skew."
 
       - id: c06
+        scene: case-audit
         stem: A ward audit found that [[length of stay was strongly positively skewed]].
         question: How should length of stay be summarised?
         options: [Mean (SD), Median (IQR), Mode (range)]
@@ -194,6 +202,7 @@ practise:
         why: "The median and IQR are not pulled by the few very long stays; the mean and SD are."
 
       - id: c07
+        scene: case-bloodbag
         stem: A transfusion audit recorded each donor's [[blood group (A, B, AB or O)]].
         question: Which average describes blood group?
         options: [mean, median, mode]
@@ -202,6 +211,7 @@ practise:
         why: "Blood group is nominal: only the most common group, the mode, makes sense."
 
       - id: c08
+        scene: case-longstay
         twist: true
         stem: Eleven patients on a ward stayed between 1 and 8 days. [[A twelfth patient stays 90 days]].
         question: Which average changes most?
@@ -211,6 +221,7 @@ practise:
         why: "The mean adds up every value, so one 90-day stay drags it up; the median and mode barely move."
 
       - id: c09
+        scene: case-older
         stem: In a hospice, [[age at death had a mean of 79 years and a median of 83 years]].
         question: What shape is the distribution of age at death?
         answer: negative

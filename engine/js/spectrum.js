@@ -20,7 +20,7 @@ function makeZoom(slide) {
     const n = $$("li", ex).length;
     const b = el("div", { class: `spec-bubble ${fam}${label.length > 10 ? " long-label" : ""}${n > 5 ? " many" : ""}`,
       role: "dialog", "aria-label": `${label} examples` });
-    b.innerHTML = `<div class="bubble-body"><span class="bubble-letter">${esc(letter)}</span>` +
+    b.innerHTML = `<div class="bubble-body"><span class="bubble-letter">${letter}</span>` +
       `<b class="bubble-label">${esc(label)}</b></div>`;
     const list = ex.cloneNode(true);
     list.hidden = false;
@@ -67,7 +67,7 @@ function buildSpectra() {
         s.classList.toggle("on", s === stop);
         $(".spec-dot", s).setAttribute("aria-expanded", String(s === stop));
       });
-      if (zoom) zoom.show(stop && { dot: $(".spec-dot", stop), fam: famClass(stop), letter: $(".spec-dot", stop).textContent,
+      if (zoom) zoom.show(stop && { dot: $(".spec-dot", stop), fam: famClass(stop), letter: $(".spec-dot", stop).innerHTML,
         label: $(":scope > b", stop).textContent, ex: $(".spec-ex", stop) }, instant);
       spec.dispatchEvent(new CustomEvent("specchange", { detail: stop ? stop.dataset.type : null }));
     };

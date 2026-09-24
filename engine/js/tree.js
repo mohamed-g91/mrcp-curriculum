@@ -34,7 +34,7 @@ function buildTrees() {
       if (open) open.setAttribute("aria-expanded", "false");
       open = card;
       if (card) card.setAttribute("aria-expanded", "true");
-      zoom.show(card && { dot: $(".tree-dot", card), fam: famClass(card), letter: $(".tree-dot", card).textContent,
+      zoom.show(card && { dot: $(".tree-dot", card), fam: famClass(card), letter: $(".tree-dot", card).innerHTML,
         label: $(".tree-label", card).textContent, ex: $(".spec-ex", card) }, instant);
     };
     $$(".tree-a", tree).forEach(b => b.addEventListener("click", () => {

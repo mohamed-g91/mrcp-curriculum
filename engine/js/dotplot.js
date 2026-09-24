@@ -131,7 +131,7 @@ function buildDotPlots() {
       D.fulcrum.classList.remove("on");
       if (!key) return;
       const c = concept(key), fam = `f-${c.family}`;
-      // each measure's working is written on its marker: 66 ÷ 11 = 6, the 6th of 11, 2 three times
+      // each measure's working is written on its marker: Mean = 66 ÷ 11 = 6, Median = 3, Mode = 2
       const mark = (v, text, delay, foot = D.AX) => {
         const g = svgEl("g", { class: `dp-mk ${fam}`, style: `transform:translateX(${v}px);animation-delay:${REDUCED_MOTION || instant ? 0 : delay}ms` }, D.marks);
         svgEl("path", { d: `M0 ${D.AX} V${D.top + 12}` }, g);
@@ -143,7 +143,7 @@ function buildDotPlots() {
         later(instant ? 0 : 650, () => {
           D.fulcrum.style.transform = `translate(${D.x(m)}px, ${D.AX + 3}px)`;
           D.fulcrum.classList.add("on");
-          mark(D.x(m), `${c.letter} = ${s} ÷ ${vals.length} = ${num(m)}`, 250);
+          mark(D.x(m), `${c.label} = ${s} ÷ ${vals.length} = ${num(m)}`, 250);
         });
       }
       if (key === "median") {
@@ -160,13 +160,13 @@ function buildDotPlots() {
           });
           if (Number.isInteger(mid)) D.dots[order[mid]].classList.add("hit");
           const mx = Number.isInteger(mid) ? +D.dots[order[mid]].dataset.x : D.x(Stats.median(vals));
-          mark(mx, `${c.letter} = ${num(Stats.median(vals))}`, 0, D.AX - 54);
+          mark(mx, `${c.label} = ${num(Stats.median(vals))}`, 0, D.AX - 54);
         });
       }
       if (key === "mode") {
         const m = Stats.mode(vals), k = vals.filter(v => v === m).length;
         D.dots.forEach(d => d.classList.add(+d.dataset.v === m ? "hit" : "out"));
-        mark(D.x(m), `${c.letter} = ${m}`, 200);
+        mark(D.x(m), `${c.label} = ${m}`, 200);
       }
     };
     const setSwap = on => {

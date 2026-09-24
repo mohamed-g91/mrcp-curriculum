@@ -45,6 +45,11 @@ def concept(topic, key):
     return topic["concepts"][key]
 
 
+def mark(c):
+    """What a concept's circle holds: its letter, or its icon when it has no letter."""
+    return e(c["letter"]) if c.get("letter") else icon(c["icon"])
+
+
 def heading(slide):
     return f'<h2>{e(slide["title"])}</h2>'
 
@@ -119,11 +124,11 @@ def p_spectrum(slide, topic):
     html_stops = []
     for j, s in enumerate(stops):
         c = concept(topic, s["concept"]) if s.get("concept") else {}
-        label, fam, letter = s.get("label", c.get("label")), s.get("family", c.get("family")), s.get("letter", c.get("letter"))
+        label, fam, letter = s.get("label", c.get("label")), s.get("family", c.get("family")), (e(s["letter"]) if s.get("letter") else mark(c))
         body = _examples_body(s.get("split") or s["examples"])
         html_stops.append(
             f'<div class="spec-stop f-{fam}" style="--g:{owner[j] if j < len(owner) else j}"><button class="spec-dot" type="button" aria-expanded="false" '
-            f'aria-label="Show {e(label)} examples">{e(letter)}</button><b>{e(label)}</b>{body}</div>')
+            f'aria-label="Show {e(label)} examples">{letter}</button><b>{e(label)}</b>{body}</div>')
     zoom = slide.get("open") == "zoom"
     spec = (f'<div class="spec{" spec-zoom" if zoom else ""}" style="--n:{len(stops)}">{groups}'
             f'<div class="spec-line">{"".join(html_stops)}</div></div>')
@@ -164,7 +169,7 @@ def _tree_final(topic, key, examples, charts):
     tap = (f' role="button" tabindex="0" aria-expanded="false" aria-label="Show {e(c["label"])} examples"' if ex else "")
     chart = f'<div class="tree-chart f-{c["family"]}">{svg(charts[key])}</div>' if charts.get(key) else ""
     return (f'<div class="tree-final f-{c["family"]}{" zoomable" if ex else ""}" data-type="{e(key)}"{tap}>'
-            f'<span class="tree-dot">{e(c["letter"])}</span><b class="tree-label">{e(c["label"])}</b>'
+            f'<span class="tree-dot">{mark(c)}</span><b class="tree-label">{e(c["label"])}</b>'
             f'{_examples_body(ex, hidden=True) if ex else ""}</div>{chart}')
 
 
@@ -209,7 +214,7 @@ def _measure_dots(topic, keys, cls):
         c = concept(topic, key)
         out.append(f'<div class="spec-stop {cls} f-{c["family"]}" data-key="{e(key)}" style="--g:{i}">'
                    f'<button class="spec-dot" type="button" aria-expanded="false" aria-label="Show the {e(c["label"])}">'
-                   f'{e(c["letter"])}</button><b>{e(c["label"])}</b></div>')
+                   f'{mark(c)}</button><b>{e(c["label"])}</b></div>')
     return "".join(out)
 
 
@@ -255,7 +260,7 @@ def p_clue_stem(slide, topic):
         c = concept(topic, key)
         stops.append(
             f'<div class="spec-stop f-{c["family"]}" data-type="{e(key)}"><button class="spec-dot" type="button" '
-            f'aria-expanded="false" aria-label="Show {e(c["label"])} clues">{e(c["letter"])}</button>'
+            f'aria-expanded="false" aria-label="Show {e(c["label"])} clues">{mark(c)}</button>'
             f'<b>{e(c["label"])}</b><ul class="spec-ex{" long" if len(clues) > 4 else ""}">{_examples(clues)}</ul></div>')
     marks = CLUE.sub(lambda m: "\0{}\1{}\2".format(m.group(1), m.group(2)), slide["stem"])
     text = e(marks)

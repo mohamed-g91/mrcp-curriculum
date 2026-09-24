@@ -14,6 +14,8 @@ const icon = id => `<svg class="ico" aria-hidden="true"><use href="#i-${id}"/></
 const shake = n => { n.classList.remove("shake"); void n.offsetWidth; n.classList.add("shake"); };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const concept = key => TOPIC.concepts[key];
+// what a concept's circle holds: its letter, or its icon when it has no letter
+const conceptMark = c => c.letter ? esc(c.letter) : c.icon ? icon(c.icon) : "";
 
 /* ---------- record ----------
    Every learner event passes through here: slide views and answers, keyed by permanent IDs.

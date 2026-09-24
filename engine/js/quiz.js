@@ -30,7 +30,7 @@ function buildCaseSlide(Q, c, num) {
   caseOrder(c.options || Q.options, c.id).forEach(key => {
     const k = concept(key) || { label: key, family: "gray", letter: "" };
     const b = el("button", { class: `choice f-${k.family}`, type: "button", "data-key": key },
-      (k.letter ? `<span class="choice-dot">${esc(k.letter)}</span>` : "") + `<span>${esc(k.label)}</span>` +
+      (conceptMark(k) ? `<span class="choice-dot">${conceptMark(k)}</span>` : "") + `<span>${esc(k.label)}</span>` +
       `<svg class="ico mark mark-ok" aria-hidden="true"><use href="#i-check"/></svg><svg class="ico mark mark-bad" aria-hidden="true"><use href="#i-cross"/></svg>`);
     b.addEventListener("click", () => {
       if (b.disabled) return;
