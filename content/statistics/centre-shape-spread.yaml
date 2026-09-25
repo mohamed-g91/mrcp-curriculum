@@ -25,6 +25,7 @@ concepts:
   median:   { label: Median,        family: np,  icon: middle }
   mode:     { label: Mode,          family: cat, icon: peak }
   normal:   { label: Normal,        family: par, letter: N,  icon: bell }
+  skewed:   { label: Skewed,        family: np,  letter: S,  icon: tail-right }
   positive: { label: Positive skew, family: np,  letter: "+", icon: tail-right }
   negative: { label: Negative skew, family: np,  letter: "−", icon: tail-left }
 
@@ -32,7 +33,7 @@ learn:
   - id: hook
     pattern: hook
     title: What shape are these stays?
-    stem: A study of 200 adults admitted with pneumonia reported a mean length of stay of 9 days (SD 8 days) and a median of 5 days.
+    stem: A study of 200 adults admitted with pneumonia reported a mean length of stay of 6 days (SD 8 days) and a median of 3 days.
     question: What shape is the distribution of length of stay?
     scene: stays-calendar
 
@@ -73,12 +74,12 @@ learn:
     swap: { from: 30, to: 8 }
     measures: [mean, median, mode]
 
-  # a bell has no wall and builds out from its middle; a floor makes a tail to the right, a ceiling a tail to the left
-  # the skewed steps stack their people under a fitted log-normal curve; the middles come from the people:
-  # the ward's stays (mean 6, median 3, mode 2) and eleven births (418 / 11 = mean 38, median 39, mode 40)
+  # what normal and skewed mean, before any spread: the people drop in one by one, then the curve draws over them
+  # normal: a bell, its halves alike, mode = median = mean; skewed: the ward's stays piled against the 0-day wall
+  # with a tail of long stays, the middles apart (mode 2, median 3, mean 66 / 11 = 6)
   - id: shapes
     pattern: curve
-    title: Spread
+    title: Distribution
     steps:
       - concept: normal
         shape: normal
@@ -88,8 +89,7 @@ learn:
         unit: cm
         axis: Height of adult women (cm)
         examples: [Height, Haemoglobin, Serum sodium]
-        summary: { family: par, label: Mean (SD), note: Normal data }
-      - concept: positive
+      - concept: skewed
         shape: positive
         values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
         sigma: 0.64
@@ -97,24 +97,22 @@ learn:
         wall_label: 0 days
         tail_label: a few long stays
         examples: [Length of stay, CRP, Alcohol units, Triglycerides]
-        summary: { family: np, label: Median (IQR), note: Skewed data }
-      - concept: negative
-        shape: negative
-        values: [29, 36, 37, 38, 38, 39, 39, 40, 40, 40, 42]
-        ceiling: 42.5
-        sigma: 0.58
-        breaks: false
-        axis: weeks at birth
-        wall_label: 42 weeks
-        tail_label: early births
-        examples: [Gestational age at birth, Age at death in the UK]
-        summary: { family: np, label: Median (IQR), note: Skewed data }
 
-  # the ward's stays side by side: the IQR boxes the middle half; range and mean ± 2 SD for contrast
+  # spread for each shape: SD bands on the heights bell; the ward's stays with the IQR boxing the middle half,
+  # and range and mean ± 2 SD (6 ± 2 × 8.2, below 0 days) for contrast
   - id: spread
     pattern: curve
-    title: Spread in skewed data
+    title: Spread
     panels:
+      - title: Standard deviation
+        kind: sd
+        mean: 162
+        sd: 7
+        unit: cm
+        axis: Height of adult women (cm)
+        chips: [±1 SD, ±2 SD]
+        pct: [68%, 95%]
+        summary: { family: par, label: Mean (SD), note: Normal data }
       - title: Interquartile range
         kind: dots
         values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
@@ -137,7 +135,7 @@ learn:
     pattern: decision-tree
     title: Back to the pneumonia stays
     scene: doctor-think
-    stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 9 days (SD 8 days) and a median of 5 days]].
+    stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 6 days (SD 8 days) and a median of 3 days]].
     steps:
       - { q: "Mean and median apart?", no: normal }
       - { q: "Mean above median?",     no: negative }
@@ -179,12 +177,12 @@ practise:
       - id: c01
         scene: case-pneumonia
         solved: true
-        stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 9 days (SD 8 days) and a median of 5 days]].
+        stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 6 days (SD 8 days) and a median of 3 days]].
         question: What shape is the distribution of length of stay?
         answer: positive
         hint: Compare the mean with the median.
         why: "A few long stays pull the mean above the median: a tail to the right."
-        tutor: "Mean and median apart? Yes. Mean above median? Yes. So positive skew. And 9 − 2 × 8 is below zero, which a stay cannot be."
+        tutor: "Mean and median apart? Yes. Mean above median? Yes. So positive skew. And 6 − 2 × 8 is below zero, which a stay cannot be."
 
       - id: c02
         scene: case-crp

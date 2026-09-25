@@ -168,15 +168,10 @@ async function layoutPass(size) {
       const zoomed = await js(`!!Deck.slides[Deck.i].querySelector(".spec-zoom")`);
       await sleep(zoomed || k === 2 || k === r.dots - 1 ? 1600 : 250);
       await measure(size, `slide ${i + 1} circle ${k + 1}`);
-      // a graph that builds in stages (the normal crowd): tap it through to the end
-      if (await js(`!!Deck.slides[Deck.i].querySelector(".cv-chart.stepper")`)) {
-        for (let n = 0; n < 6 && await js(`!!Deck.slides[Deck.i].querySelector(".cv-chart.stepper")`); n++) {
-          await js(`Deck.slides[Deck.i].querySelector(".cv-chart.stepper").click(), true`);
-          await sleep(450);
-          await measure(size, `slide ${i + 1} circle ${k + 1} stage ${n + 2}`);
-        }
-        if (await js(`!!Deck.slides[Deck.i].querySelector(".cv-chart.stepper")`)) fail(`${size.name} slide ${i + 1}: the graph did not finish building`);
-        await sleep(1600);
+      // a shape whose people drop in: wait for the last to land and the curve, middles and examples to follow
+      if (await js(`!!Deck.slides[Deck.i].querySelector(".cv-drop")`)) {
+        await sleep(5600);
+        await measure(size, `slide ${i + 1} circle ${k + 1} built`);
         await shot(`${tag}-built${k + 1}`);
       }
       if (zoomed) { const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`); if (out) fail(`${size.name} slide ${i + 1}: ${out}`); }

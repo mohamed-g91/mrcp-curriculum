@@ -294,12 +294,7 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-order.show{animation:fadeIn .4s ease 1.2s both}
 .cv-tok{padding:4px 12px;border-radius:999px;background:var(--x-bg);color:var(--x-ink);border:1px solid var(--x-bd);font-weight:700;font-size:var(--fs-small)}
 .cv-rel{font-weight:800;color:var(--muted);font-size:var(--fs-h3)}
-.cv-col.hold,.cv-band.hold{display:none}
 .cv-band{fill:color-mix(in srgb,var(--x-solid) 22%,transparent)}
-.cv-chart.stepper{cursor:pointer;border-radius:var(--radius-lg);outline:none}
-.cv-chart.stepper:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
-.cv-bigpct{fill:var(--x-ink);font:800 52px var(--sans);animation:fadeIn .4s ease}
-.cv-subpct{fill:var(--muted);font:650 20px var(--sans)}
 .cv-pill rect{fill:var(--surface);stroke:var(--x-solid);stroke-width:2.5}
 .cv-pill text{fill:var(--x-ink);font:800 17px var(--sans);text-anchor:middle}
 .cv-tail{animation:fadeIn .45s ease 1.2s both}
@@ -310,6 +305,15 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-arrow.bad{stroke:var(--bad-solid)}
 .cv-ex{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:clamp(6px,calc(1 * var(--u)),12px) 0 0;padding:0;min-height:38px}
 .cv-ex li{padding:6px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border-strong);font-size:var(--fs-small);font-weight:600;color:var(--ink);opacity:0;animation:specIn .35s var(--ease) forwards;animation-delay:calc(1.4s + var(--i) * 200ms)}
+/* a shape's people drop in one by one; the curve, the middles and the rest wait for the last to land (--after) */
+.cv-drop .cv-person{animation:cvDrop .45s var(--ease) both}
+@keyframes cvDrop{from{opacity:0;transform:translateY(-70px)}to{opacity:1;transform:none}}
+.cv-steps-mode .cv-line{animation-delay:var(--after,0ms);animation-duration:.9s}
+.cv-steps-mode .cv-area{animation-delay:calc(var(--after,0ms) + .5s)}
+.cv-steps-mode .cv-mk{animation-delay:calc(var(--after,0ms) + 1s + var(--i,0) * 160ms)}
+.cv-steps-mode .cv-tail{animation-delay:calc(var(--after,0ms) + 1.4s)}
+.cv-steps-mode .cv-order.show{animation-delay:calc(var(--after,0ms) + 1.5s)}
+.cv-steps-mode .cv-ex li{animation-delay:calc(var(--after,0ms) + 1.7s + var(--i) * 200ms)}
 @container (max-width:600px){.cv-steps-mode{grid-template-columns:minmax(0,1fr);align-content:start}.cv-steps{flex-direction:row;justify-content:center;gap:12px}.cv-steps .spec-stop{flex-direction:column;text-align:center;gap:4px}.cv-steps .spec-dot{margin-bottom:12px}}
 .cv-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--gap);margin-top:clamp(4px,calc(1 * var(--u)),12px)}
 @container (max-width:900px){.cv-panels{grid-template-columns:minmax(0,1fr)}}
@@ -343,7 +347,7 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-msd{stroke:var(--par-solid);stroke-width:9;stroke-linecap:butt;animation:fadeIn .4s ease}
 .cv-msd.bad{stroke:var(--bad-solid)}
 .cv-bad{fill:var(--bad-solid);font:800 19px var(--sans);text-anchor:start;animation:fadeIn .4s ease}
-@media (prefers-reduced-motion:reduce){.cv-line{animation:none;stroke-dashoffset:0}.cv-area,.cv-wall,.cv-person,.cv-mk,.cv-order.show,.cv-ex li,.cv-panel{animation:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.cv-line{animation:none;stroke-dashoffset:0}.cv-area,.cv-wall,.cv-person,.cv-mk,.cv-tail,.cv-order.show,.cv-ex li,.cv-panel{animation:none;opacity:1}}
 
 /* ---------- sort (drag to bucket) ---------- */
 .pool{display:flex;flex-wrap:wrap;gap:10px;align-items:center;min-height:64px;padding:12px 14px;border:2px dashed var(--border-strong);border-radius:var(--radius-lg);background:var(--surface-2);margin-bottom:var(--gap)}

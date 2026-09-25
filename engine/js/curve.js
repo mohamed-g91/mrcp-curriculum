@@ -1,10 +1,10 @@
 /* ---------- curve: shapes of data ----------
-   Steps: one graph and a circle per shape, on a real axis (cm, days, weeks).
-   - Normal: a crowd of people stacked in columns by height, under a dashed bell. The circle shows the
-     middle column, where the mode, median and mean all land; each tap on the graph then adds the next
-     columns out and shades ±1, ±2, ±3 SD (68%, 95%, 99.7%).
-   - Skewed: the curve piles against a grey brick wall (a floor or a ceiling) and runs out into a tail on
-     the open side; the mode, median and mean drop in with their values, and the tail is named.
+   Steps: one graph and a circle per shape, on a real axis (cm, days, weeks). Opening a circle drops its
+   people onto the axis one at a time, in a random order, each onto the top of its own stack; once all
+   have landed the curve draws over them, then the middles, the order row and the examples follow.
+   - Normal: a crowd stacked in columns by height; the bell, and one pill where mode, median and mean meet.
+   - Skewed: the people pile against a grey brick wall (a floor or a ceiling) and run out into a tail on
+     the open side; the mode, median and mean land apart, and the tail is named.
    Panels: side by side, each with chips that shade one spread (SD bands on a bell with the mean marked;
    IQR, range or mean ± 2 SD on the ward's stays). One open item per graph; a click anywhere else clears. */
 const Dist = {
@@ -31,6 +31,17 @@ function curvePath(f, lo, hi, x, y, n = 160) {
   for (let i = 0; i <= n; i++) { const t = lo + (hi - lo) * i / n; d += (i ? " L" : "M") + x(t).toFixed(1) + " " + y(f(t)).toFixed(1); }
   return d;
 }
+
+// people land one at a time in a random order, but always onto the top of their own stack:
+// keys[i] is person i's stack (people listed bottom-up within a stack); returns each one's delay
+function dropDelays(keys, gap) {
+  const pools = {}, seq = keys.slice(), out = [];
+  keys.forEach((k, i) => (pools[k] = pools[k] || []).push(i));
+  for (let i = seq.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [seq[i], seq[j]] = [seq[j], seq[i]]; }
+  seq.forEach((k, t) => { out[pools[k].shift()] = REDUCED_MOTION ? 0 : t * gap; });
+  return out;
+}
+const dropGap = n => Math.min(150, 2400 / n);
 
 // a short brick wall standing on the axis, bricks offset on alternate rows
 function drawWall(parent, x0, w, top, base) {
@@ -61,8 +72,10 @@ function buildCurves() {
     const steps = JSON.parse(cv.dataset.steps), stops = $$(".cv-s", cv);
     const chart = $(".cv-chart", cv), order = $(".cv-order", cv), exList = $(".cv-ex", cv);
     const W = 1000, H = 330, L = 70, R = 70, BASE = 262, PEAK = 34;
-    const COLS = [-2.1, -1.4, -.67, 0, .67, 1.4, 2.1], COUNTS = [1, 2, 4, 6, 4, 2, 1], PCT = ["", "68%", "95%", "99.7%"];
-    let open = null, stage = 0, crowd = null, marks = null;
+    const COLS = [-2.1, -1.4, -.67, 0, .67, 1.4, 2.1], COUNTS = [1, 2, 4, 6, 4, 2, 1];
+    let open = null;
+    // everything after the people waits for the last of them to land
+    const settle = n => { const ms = REDUCED_MOTION ? 0 : Math.round((n - 1) * dropGap(n) + 500); cv.style.setProperty("--after", `${ms}ms`); return ms; };
     // the three middles of a step: worked out from its people when it has them, else from its curve
     const middles = st => st.values ? { mode: Stats.mode(st.values), median: Stats.median(st.values), mean: Stats.mean(st.values) } : Dist.make(st);
     const finish = st => {
@@ -84,6 +97,12 @@ function buildCurves() {
       const D = drawStays(chart, v, { unit: st.axis || "", W, H: H + 14, AX: BASE, wall: side, counts: false, breaks: st.breaks, scale: .8 });
       D.svg.setAttribute("class", `dp-svg cv-svg f-${fam}`);
       D.svg.setAttribute("aria-label", concept(st.concept).label);
+      D.svg.classList.add("cv-drop");
+      // the stays chart keeps an empty strip at its top; trimming it keeps this graph as tall as the bell's
+      D.svg.setAttribute("viewBox", `0 14 ${W} ${H}`);
+      const delays = dropDelays(v.map(String), dropGap(v.length));
+      D.dots.forEach((d, i) => { const p = $(".cv-person", d); if (p) p.style.animationDelay = `${delays[i]}ms`; });
+      settle(v.length);
       const lo = Math.min(...v), hi = Math.max(...v), med = Stats.median(v);
       const s = st.sigma, ln = (t, m) => t > 0 ? Math.exp(-((Math.log(t / m)) ** 2) / (2 * s * s)) / t : 0;
       const f = st.shape === "positive" ? t => ln(t, med) : t => ln(st.ceiling - t, st.ceiling - med);
@@ -106,51 +125,42 @@ function buildCurves() {
         svgEl("path", { d: side === "left" ? `M${tx - 60} ${BASE - 76} h120 m-8 -6 l8 6 l-8 6` : `M${tx + 60} ${BASE - 76} h-120 m8 -6 l-8 6 l8 6` }, g);
       }
       // the markers stand behind the people, their pills stepping down above the curve
-      const mk = svgEl("g", { class: "cv-marks" }, D.back), M = middles(st), SEQ = ["mean", "median", "mode"];
-      return {
-        n: 0,
-        next() {
-          const key = SEQ[this.n], cc = concept(key), px = D.x(M[key]), py = PEAK + 2 + this.n * 34;
-          const g = svgEl("g", { class: `cv-mk f-${cc.family}` }, mk);
-          svgEl("path", { d: `M${px} ${BASE} V${py + 13}` }, g);
-          valuePill(g, px, py, `f-${cc.family}`, `${cc.label} ${num(M[key])}`);
-          return ++this.n < SEQ.length;
-        }
-      };
+      const mk = svgEl("g", { class: "cv-marks" }, D.back), M = middles(st);
+      ["mean", "median", "mode"].forEach((key, n) => {
+        const cc = concept(key), px = D.x(M[key]), py = PEAK + 2 + n * 34;
+        const g = svgEl("g", { class: `cv-mk f-${cc.family}`, style: `--i:${n}` }, mk);
+        svgEl("path", { d: `M${px} ${BASE} V${py + 13}` }, g);
+        valuePill(g, px, py, `f-${cc.family}`, `${cc.label} ${num(M[key])}`);
+      });
     };
     const draw = st => {
       chart.innerHTML = ""; order.innerHTML = ""; order.className = "cv-order"; exList.innerHTML = "";
-      if (st.values) { marks = drawPeople(st); return; }
+      if (st.values) { drawPeople(st); finish(st); return; }
       const fam = concept(st.concept).family;
-      const svg = svgEl("svg", { class: `cv-svg f-${fam}`, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": concept(st.concept).label }, chart);
+      const svg = svgEl("svg", { class: `cv-svg cv-drop f-${fam}`, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": concept(st.concept).label }, chart);
       const D = Dist.make(st), wall = st.shape === "positive" ? "left" : st.shape === "negative" ? "right" : null;
       const x0 = wall === "left" ? L + 26 : L, x1 = wall === "right" ? W - R - 26 : W - R;
       const x = v => x0 + (v - D.lo) / (D.hi - D.lo) * (x1 - x0);
       let top = 0; for (let i = 0; i <= 400; i++) top = Math.max(top, D.f(D.lo + (D.hi - D.lo) * i / 400));
       const y = v => BASE - v / top * (BASE - PEAK);
-      const bands = svgEl("g", {}, svg);
       if (wall) {
         drawWall(svg, wall === "left" ? L - 4 : W - R - 26, 30, PEAK + 50, BASE);
         // the wall's name sits on its outer side, clear of the curve
         svgEl("text", { class: `cv-wlab${wall === "right" ? " right" : ""}`, x: wall === "left" ? L + 26 : W - R - 26, y: PEAK + 38 }, svg).textContent = st.wall_label || "";
       }
       const d = curvePath(D.f, D.lo, D.hi, x, y);
-      if (!st.crowd) svgEl("path", { class: "cv-area", d: `${d} L${x(D.hi)} ${BASE} L${x(D.lo)} ${BASE} Z` }, svg);
       if (st.crowd) {
-        // the ±1, ±2 and ±3 SD bands, shown one by one as the crowd grows
-        crowd = { bands: [1, 2, 3].map(k => svgEl("path", { class: "cv-band hold", d: `${curvePath(D.f, st.mean - k * st.sd, st.mean + k * st.sd, x, y, 80)} L${x(st.mean + k * st.sd)} ${BASE} L${x(st.mean - k * st.sd)} ${BASE} Z` }, bands)), cols: [] };
-        let n = 0;
-        COLS.forEach((c, i) => {
-          const g = svgEl("g", { class: "cv-col hold" }, svg);
-          for (let r = 0; r < COUNTS[i]; r++) drawPerson(g, x(st.mean + c * st.sd), BASE - 2 - r * 37, n++, REDUCED_MOTION ? 0 : r * 70, .85);
-          crowd.cols.push([Math.abs(i - 3), g]);
-        });
-        crowd.pct = svgEl("text", { class: "cv-bigpct", x: L + 10, y: PEAK + 44 }, svg);
-        crowd.sub = svgEl("text", { class: "cv-subpct", x: L + 12, y: PEAK + 74 }, svg);
-      }
-      svgEl("path", { class: `cv-line${st.crowd ? " cv-dash" : ""}`, d, pathLength: 1 }, svg);
+        // the crowd, stacked in columns by height
+        const keys = [], at = [];
+        COLS.forEach((c, i) => { for (let r = 0; r < COUNTS[i]; r++) { keys.push(i); at.push([x(st.mean + c * st.sd), BASE - 2 - r * 37]); } });
+        const delays = dropDelays(keys, dropGap(keys.length));
+        at.forEach(([px, py], n) => drawPerson(svg, px, py, n, delays[n], .85));
+        settle(keys.length);
+      } else settle(1);
+      svgEl("path", { class: "cv-area", d: `${d} L${x(D.hi)} ${BASE} L${x(D.lo)} ${BASE} Z` }, svg);
+      svgEl("path", { class: "cv-line", d, pathLength: 1 }, svg);
       svgEl("path", { class: "cv-axis", d: `M${L - 20} ${BASE} H${W - R + 20}` }, svg);
-      const ticks = st.crowd ? [-3, -2, -1, 0, 1, 2, 3].map(k => st.mean + k * st.sd) : st.ticks || [];
+      const ticks = st.crowd ? [-2, -1, 0, 1, 2].map(k => st.mean + k * st.sd) : st.ticks || [];
       ticks.forEach(t => {
         svgEl("path", { class: "dp-tick", d: `M${x(t)} ${BASE} v8` }, svg);
         svgEl("text", { class: "cv-tlab", x: x(t), y: BASE + 30 }, svg).textContent = t;
@@ -169,10 +179,11 @@ function buildCurves() {
         const g = svgEl("g", { class: "cv-mk f-par" }, mk);
         svgEl("path", { d: `M${x(st.mean)} ${BASE} V${PEAK + 4}` }, g);
         valuePill(g, x(st.mean), PEAK - 14, "f-par", `${["mean", "median", "mode"].map(k => concept(k).label).join(" = ")} = ${st.mean}${unit}`);
+        finish(st);
       } else {
         ORDERED.forEach((key, i) => {
           const cc = concept(key), v = D[key], px = x(v);
-          const g = svgEl("g", { class: `cv-mk f-${cc.family}`, style: `animation-delay:${REDUCED_MOTION ? 0 : 700 + i * 160}ms` }, mk);
+          const g = svgEl("g", { class: `cv-mk f-${cc.family}`, style: `--i:${i}` }, mk);
           const py = PEAK + 4 + i * 40;
           svgEl("path", { d: `M${px} ${BASE} V${py + 13}` }, g);
           valuePill(g, px, py, `f-${cc.family}`, `${cc.label} ${Math.round(v)}`);
@@ -180,45 +191,17 @@ function buildCurves() {
         finish(st);
       }
     };
-    // the crowd grows by one ring of columns per tap: the middle, then ±1, ±2, ±3 SD
-    const grow = () => {
-      if (!crowd) return;
-      crowd.cols.forEach(([ring, g]) => g.classList.toggle("hold", ring >= stage));
-      crowd.bands.forEach((b, k) => b.classList.toggle("hold", k !== stage - 2));
-      crowd.pct.textContent = PCT[stage - 1];
-      crowd.sub.textContent = stage > 1 ? `within ±${stage - 1} SD` : "";
-      chart.classList.toggle("stepper", stage < 4);
-      if (stage === 4) finish(steps.find(s => s.concept === open));
-    };
     const show = key => {
-      open = key; crowd = null; marks = null; stage = 0;
+      open = key;
       stops.forEach(s => { s.classList.toggle("on", s.dataset.key === key); $(".spec-dot", s).setAttribute("aria-expanded", String(s.dataset.key === key)); });
       cv.classList.toggle("drawn", !!key);
-      chart.classList.remove("stepper");
-      chart.removeAttribute("role"); chart.removeAttribute("tabindex"); chart.removeAttribute("aria-label");
-      if (key) {
-        const st = steps.find(s => s.concept === key);
-        draw(st);
-        if (st.crowd) { stage = 1; grow(); }
-        if (st.crowd || marks) {
-          if (marks) chart.classList.add("stepper");
-          Object.entries({ role: "button", tabindex: "0", "aria-label": st.crowd ? "Show the next part of the crowd" : "Show the next middle" }).forEach(([k, v]) => chart.setAttribute(k, v));
-        }
-      } else {
+      if (key) draw(steps.find(s => s.concept === key));
+      else {
         chart.innerHTML = ""; order.innerHTML = ""; order.className = "cv-order"; exList.innerHTML = "";
-          const svg = svgEl("svg", { class: "cv-svg", viewBox: `0 0 ${W} ${H}`, "aria-hidden": "true" }, chart);
+        const svg = svgEl("svg", { class: "cv-svg", viewBox: `0 0 ${W} ${H}`, "aria-hidden": "true" }, chart);
         svgEl("path", { class: "cv-axis", d: `M${L - 20} ${BASE} H${W - R + 20}` }, svg);
       }
     };
-    const next = () => {
-      if (crowd && stage < 4) { stage++; grow(); }
-      if (marks && chart.classList.contains("stepper") && !marks.next()) {
-        chart.classList.remove("stepper");
-        finish(steps.find(s => s.concept === open));
-      }
-    };
-    chart.addEventListener("click", next);
-    chart.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && (crowd || marks)) { e.preventDefault(); next(); } });
     stops.forEach(s => $(".spec-dot", s).addEventListener("click", () => show(open === s.dataset.key ? null : s.dataset.key)));
     ClickAway.add(e => { if (open && !e.target.closest(".cv-s .spec-dot, .cv-chart")) show(null); });
     onEnter(cv, () => show(null));
