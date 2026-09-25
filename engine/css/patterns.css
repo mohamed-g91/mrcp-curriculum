@@ -305,8 +305,6 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-tail text{fill:var(--muted);font:700 19px var(--sans);text-anchor:middle}
 .cv-tail path{fill:none;stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .cv-meanline{animation:fadeIn .45s ease .5s both}
-.cv-arrow{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
-.cv-arrow.bad{stroke:var(--bad-solid)}
 .cv-ex{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:clamp(6px,calc(1 * var(--u)),12px) 0 0;padding:0;min-height:38px}
 .cv-ex li{padding:6px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border-strong);font-size:var(--fs-small);font-weight:600;color:var(--ink);opacity:0;animation:specIn .35s var(--ease) forwards;animation-delay:calc(1.4s + var(--i) * 200ms)}
 /* a shape's people drop in one by one; the curve, the middles and the rest wait for the last to land (--after) */
@@ -352,8 +350,10 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-rangebar{stroke:var(--ink);stroke-width:9;fill:none;animation:fadeIn .4s ease}
 .cv-edge{stroke:var(--x-solid);stroke-width:2.5;stroke-dasharray:6 5;fill:none;animation:fadeIn .4s ease}
 .cv-outside{opacity:.25;transition:opacity .3s ease}
-.cv-msd{stroke:var(--par-solid);stroke-width:9;stroke-linecap:butt;animation:fadeIn .4s ease}
-.cv-msd.bad{stroke:var(--bad-solid)}
+.cv-sdband{fill:color-mix(in srgb,var(--par-solid) 22%,transparent);animation:fadeIn .4s ease}
+.cv-sdband.bad{fill:color-mix(in srgb,var(--bad-solid) 30%,transparent)}
+.cv-neg{stroke-dasharray:6 6}
+.cv-meanl{stroke:var(--par-solid);stroke-width:3;stroke-dasharray:7 5;fill:none;animation:fadeIn .4s ease}
 .cv-bad{fill:var(--bad-solid);font:800 19px var(--sans);text-anchor:start;animation:fadeIn .4s ease}
 @media (prefers-reduced-motion:reduce){.cv-line{animation:none;stroke-dashoffset:0}.cv-area,.cv-wall,.cv-person,.cv-mk,.cv-tail,.cv-order.show,.cv-ex li,.cv-panel{animation:none;opacity:1}}
 

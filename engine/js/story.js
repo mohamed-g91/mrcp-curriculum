@@ -141,7 +141,9 @@ const STORIES = {
     svg.remove();
     const P = S.panel, v = S.values, n = v.length, h = (n - 1) / 2, i1 = (h - 1) / 2, i3 = n - 1 - i1, AX = 214;
     const [q1, q3] = Stats.quartiles(v), med = Stats.median(v), fam = concept("median").family;
-    const D = drawStays(chart, v, { unit: S.unit, W: 1000, H: 290, AX, wall: "left", counts: false, scale: .8, left: 130 });
+    const D = drawStays(chart, v, { unit: S.unit, W: 1000, H: 290, AX, wall: "left", counts: false, scale: .8, left: 210,
+      // room on the axis for mean ± 2 SD: up to 14 days, and past the wall to below 0
+      extra: Array.from({ length: 14 - Math.max(...v.filter(x => x <= 14)) }, (_, k) => Math.max(...v.filter(x => x <= 14)) + 1 + k) });
     D.svg.classList.add("st-svg", "st-rowmode", `f-${fam}`);
     D.svg.setAttribute("aria-label", chart.closest(".slide").getAttribute("aria-label"));
     // rank[k] is the person with the kth shortest stay

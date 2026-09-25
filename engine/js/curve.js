@@ -87,7 +87,7 @@ function dressStays(D, P, AX) {
   return g;
 }
 
-// one spread on the ward's stays (k: 0 IQR, 1 range, 2 mean ± 2 SD)
+// one spread on the ward's stays: the kth chip's (IQR, Range, Mean ± 1 SD or Mean ± 2 SD)
 function shadeStays(D, P, layer, k) {
   // each spread is labelled on the figure, above the curve: the middle half boxed, the range bracketed,
   // mean ± 2 SD barred (the panel's stated SD, else the people's own in whole days)
@@ -96,7 +96,8 @@ function shadeStays(D, P, layer, k) {
   const px = i => +D.dots[order[i]].dataset.x, n = v.length, pad = D.PW / 2 + 8, yy = AX - D.tall * D.STEP - 62;
   const label = (tx, text, cls = "cv-lab") => { svgEl("text", { class: cls, x: tx, y: yy - 14 }, layer).textContent = text; };
   const bracket = (a, b, cls) => svgEl("path", { class: cls, d: `M${a} ${yy + 12} V${yy} H${b} V${yy + 12}` }, layer);
-  const key = ["iqr", "range", "msd"][k];
+  // the chip's own words say which spread it is: IQR, Range, or Mean ± 1 or 2 SD
+  const c = P.chips[k], key = /IQR/.test(c) ? "iqr" : /Range/.test(c) ? "range" : /1 SD/.test(c) ? "sd1" : "sd2";
   if (key === "iqr") {
     // the box runs from the lower quartile to the upper one, around everyone between them
     D.dots.forEach((d, i) => d.classList.add(v[i] >= q1 && v[i] <= q3 ? "hit" : "out"));
@@ -109,17 +110,17 @@ function shadeStays(D, P, layer, k) {
     [px(0), px(n - 1)].forEach(ex => svgEl("path", { class: "cv-msdcap", d: `M${ex} ${yy - 10} v20` }, layer));
     label((px(0) + px(n - 1)) / 2, `Range ${num(Math.min(...v))} to ${num(Math.max(...v))} ${P.unit}`, "cv-lab ink");
   }
-  if (key === "msd") {
-    const lo = m - 2 * sd, hi = m + 2 * sd, w0 = x(0);
-    svgEl("path", { class: "cv-msd", d: `M${w0} ${yy} H${x(hi)}` }, layer);
+  if (key === "sd1" || key === "sd2") {
+    // mean ± 1 or 2 SD as a band from low to high, standing over the stays; below 0 it runs red through the wall
+    const k2 = key === "sd1" ? 1 : 2, lo = m - k2 * sd, hi = m + k2 * sd, w0 = x(0), top = AX - D.tall * D.STEP - 44;
+    svgEl("rect", { class: "cv-sdband", x: x(Math.max(lo, 0)), y: top, width: x(hi) - x(Math.max(lo, 0)), height: AX - top }, layer);
     if (lo < 0) {
-      // below zero: through the wall, where no stay can be
-      svgEl("path", { class: "cv-msd bad", d: `M${w0} ${yy} H${w0 - 44}` }, layer);
-      svgEl("path", { class: "cv-arrow bad", d: `M${w0 - 38} ${yy - 9} l-10 9 l10 9` }, layer);
-      svgEl("text", { class: "cv-bad", x: 6, y: yy - 16 }, layer).textContent = `${num(Math.round(lo)).replace("-", "−")} ${P.unit}?`;
+      svgEl("rect", { class: "cv-sdband bad", x: x(lo), y: top, width: w0 - x(lo), height: AX - top }, layer);
+      svgEl("path", { class: "cv-axis cv-neg", d: `M${x(lo) - 14} ${AX} H${w0}` }, layer);
+      svgEl("text", { class: "cv-bad", x: x(lo), y: top - 12, style: "text-anchor:middle" }, layer).textContent = `${num(lo).replace("-", "−")} ${P.unit}?`;
     }
-    svgEl("path", { class: "cv-msdcap", d: `M${x(hi)} ${yy - 8} v16` }, layer);
-    label((w0 + x(hi)) / 2 + 40, `${num(m)} ± 2 × ${sd}`, "cv-lab par");
+    svgEl("path", { class: "cv-meanl", d: `M${x(m)} ${AX} V${top}` }, layer);
+    svgEl("text", { class: "cv-lab par", x: x(m), y: top - 12 }, layer).textContent = k2 === 1 ? `${num(m)} ± ${sd}` : `${num(m)} ± 2 × ${sd}`;
   }
 }
 
