@@ -76,6 +76,52 @@ function valuePill(parent, x, y, fam, text) {
   return g;
 }
 
+// the ward's stays dressed as a skew: the curve they make and the wall at 0 (in a group, so a story can
+// hold it back until its people have stacked)
+function dressStays(D, P, AX) {
+  const S = skewPath(D, P.values, { shape: "positive", sigma: P.sigma || .64 }, AX), g = svgEl("g", { class: "cv-dress" }, D.back);
+  svgEl("path", { class: "cv-area", d: `${S.d} L${D.x(S.b)} ${AX} L${D.x(S.a)} ${AX} Z` }, g);
+  svgEl("path", { class: "cv-line", d: S.d, pathLength: 1 }, g);
+  D.tall = S.tall;
+  drawWall(g, D.x(0) - 14, 28, AX - S.tall * D.STEP - 30, AX);
+  return g;
+}
+
+// one spread on the ward's stays (k: 0 IQR, 1 range, 2 mean ± 2 SD)
+function shadeStays(D, P, layer, k) {
+  // each spread is labelled on the figure, above the curve: the middle half boxed, the range bracketed,
+  // mean ± 2 SD barred (the SD in whole days, as a paper would report it)
+  const v = P.values, [q1, q3] = Stats.quartiles(v), m = Stats.mean(v), sd = Math.round(Stats.sd(v)), x = D.x, AX = D.AX;
+  const order = v.map((u, i) => [u, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p[1]);
+  const px = i => +D.dots[order[i]].dataset.x, n = v.length, pad = D.PW / 2 + 8, yy = AX - D.tall * D.STEP - 62;
+  const label = (tx, text, cls = "cv-lab") => { svgEl("text", { class: cls, x: tx, y: yy - 14 }, layer).textContent = text; };
+  const bracket = (a, b, cls) => svgEl("path", { class: cls, d: `M${a} ${yy + 12} V${yy} H${b} V${yy + 12}` }, layer);
+  const key = ["iqr", "range", "msd"][k];
+  if (key === "iqr") {
+    // the box runs from the lower quartile to the upper one, around everyone between them
+    D.dots.forEach((d, i) => d.classList.add(v[i] >= q1 && v[i] <= q3 ? "hit" : "out"));
+    svgEl("rect", { class: "cv-box", x: x(q1) - pad, y: AX - D.tall * D.STEP - 10, width: x(q3) - x(q1) + 2 * pad, height: D.tall * D.STEP + 16, rx: 12 }, layer);
+    bracket(x(q1), x(q3), "cv-brace");
+    label((x(q1) + x(q3)) / 2, `IQR ${num(q1)} to ${num(q3)} ${P.unit}`);
+  }
+  if (key === "range") {
+    bracket(px(0), px(n - 1), "cv-range");
+    label((px(0) + px(n - 1)) / 2, `Range ${num(Math.min(...v))} to ${num(Math.max(...v))} ${P.unit}`, "cv-lab ink");
+  }
+  if (key === "msd") {
+    const lo = m - 2 * sd, hi = m + 2 * sd, w0 = x(0);
+    svgEl("path", { class: "cv-msd", d: `M${w0} ${yy} H${x(hi)}` }, layer);
+    if (lo < 0) {
+      // below zero: through the wall, where no stay can be
+      svgEl("path", { class: "cv-msd bad", d: `M${w0} ${yy} H${w0 - 44}` }, layer);
+      svgEl("path", { class: "cv-arrow bad", d: `M${w0 - 38} ${yy - 9} l-10 9 l10 9` }, layer);
+      svgEl("text", { class: "cv-bad", x: 6, y: yy - 16 }, layer).textContent = `${num(Math.round(lo)).replace("-", "−")} ${P.unit}?`;
+    }
+    svgEl("path", { class: "cv-msdcap", d: `M${x(hi)} ${yy - 8} v16` }, layer);
+    label((w0 + x(hi)) / 2 + 40, `${num(m)} ± 2 × ${sd}`, "cv-lab par");
+  }
+}
+
 function buildCurves() {
   const ORDERED = ["mode", "median", "mean"];
 
@@ -232,14 +278,25 @@ function buildCurves() {
     const W = 600, H = 270;
     let open = -1, layer, D, bell;
     if (P.kind === "sd") {
-      const BASE = 196, L = 30, R = 30, x = t => L + (t + 3.5) / 7 * (W - L - R), y = v => BASE - v * 140;
+      const BASE = 196, L = 96, R = 30, x = t => L + (t + 3.5) / 7 * (W - L - R), y = v => BASE - v * 140;
       const f = t => Math.exp(-t * t / 2);
       const svg = svgEl("svg", { class: "cv-svg", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": P.title || P.axis }, chart);
       layer = svgEl("g", {}, svg);
       const d = curvePath(f, -3.5, 3.5, x, y);
       svgEl("path", { class: "cv-area", d: `${d} L${x(3.5)} ${BASE} L${x(-3.5)} ${BASE} Z` }, svg);
+      // the same crowd of heights as Distribution, stacked in columns under the bell, and its y axis
+      const COLS = [-2.1, -1.4, -.67, 0, .67, 1.4, 2.1], COUNTS = [1, 2, 4, 6, 4, 2, 1], STEP = 22, N = 20;
+      let k = 0;
+      COLS.forEach((c, i) => { for (let r = 0; r < COUNTS[i]; r++) drawPerson(svg, x(c), BASE - 1 - r * STEP, k++, 0, .5); });
+      const yp = p => BASE - p * N / 100 * STEP;
+      svgEl("path", { class: "cv-axis", d: `M${L - 20} ${BASE} V${yp(30) - 10}` }, svg);
+      [0, 10, 20, 30].forEach(p => {
+        svgEl("path", { class: "dp-tick", d: `M${L - 26} ${yp(p)} H${L - 20}` }, svg);
+        svgEl("text", { class: "cv-ylab sm", x: L - 30, y: yp(p) + 5 }, svg).textContent = `${p}%`;
+      });
+      svgEl("text", { class: "cv-ytitle sm", transform: `translate(${L - 84} ${(BASE + yp(30)) / 2}) rotate(-90)` }, svg).textContent = "% of people";
       svgEl("path", { class: "cv-line", d, pathLength: 1 }, svg);
-      svgEl("path", { class: "cv-axis", d: `M${L - 10} ${BASE} H${W - R + 10}` }, svg);
+      svgEl("path", { class: "cv-axis", d: `M${L - 20} ${BASE} H${W - R + 10}` }, svg);
       for (let k = -3; k <= 3; k++) {
         svgEl("path", { class: "dp-tick", d: `M${x(k)} ${BASE} v8` }, svg);
         svgEl("text", { class: "cv-tlab", x: x(k), y: BASE + 30 }, svg).textContent = P.mean + k * P.sd;
@@ -255,11 +312,7 @@ function buildCurves() {
       const AX = 214;
       D = drawStays(chart, P.values, { unit: P.unit, W: 1000, H: 290, AX, wall: "left", counts: false, scale: .8, left: 130 });
       D.svg.classList.add("cv-svg");
-      const S = skewPath(D, P.values, { shape: "positive", sigma: P.sigma || .64 }, AX);
-      svgEl("path", { class: "cv-area", d: `${S.d} L${D.x(S.b)} ${AX} L${D.x(S.a)} ${AX} Z` }, D.back);
-      svgEl("path", { class: "cv-line", d: S.d, pathLength: 1 }, D.back);
-      D.tall = S.tall;
-      drawWall(D.back, D.x(0) - 14, 28, AX - S.tall * D.STEP - 30, AX);
+      dressStays(D, P, AX);
       layer = svgEl("g", {}, D.back);
     }
     const shade = k => {
@@ -270,40 +323,10 @@ function buildCurves() {
       if (P.kind === "sd") {
         const n = k + 1, { x, y, f, BASE } = bell, lo = P.mean - n * P.sd, hi = P.mean + n * P.sd;
         svgEl("path", { class: "cv-band", d: `${curvePath(f, -n, n, x, y, 60)} L${x(n)} ${BASE} L${x(-n)} ${BASE} Z` }, layer);
-        svgEl("text", { class: "cv-pct", x: x(0) - 70, y: BASE - 30 }, layer).textContent = P.pct[k];
+        svgEl("text", { class: "cv-pct", x: x(2.6), y: BASE - 110 }, layer).textContent = P.pct[k];
         read.innerHTML = `<b>${lo}–${hi} ${esc(P.unit)}</b> · ${esc(P.pct[k])}`;
       } else {
-        // each spread is labelled on the figure, above the curve: the middle half boxed, the range bracketed,
-        // mean ± 2 SD barred (the SD in whole days, as a paper would report it)
-        const v = P.values, [q1, q3] = Stats.quartiles(v), m = Stats.mean(v), sd = Math.round(Stats.sd(v)), x = D.x, AX = D.AX;
-        const order = v.map((u, i) => [u, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p[1]);
-        const px = i => +D.dots[order[i]].dataset.x, n = v.length, pad = D.PW / 2 + 8, yy = AX - D.tall * D.STEP - 62;
-        const label = (tx, text, cls = "cv-lab") => { svgEl("text", { class: cls, x: tx, y: yy - 14 }, layer).textContent = text; };
-        const bracket = (a, b, cls) => svgEl("path", { class: cls, d: `M${a} ${yy + 12} V${yy} H${b} V${yy + 12}` }, layer);
-        const key = ["iqr", "range", "msd"][k];
-        if (key === "iqr") {
-          // the box runs from the lower quartile to the upper one, around everyone between them
-          D.dots.forEach((d, i) => d.classList.add(v[i] >= q1 && v[i] <= q3 ? "hit" : "out"));
-          svgEl("rect", { class: "cv-box", x: x(q1) - pad, y: AX - D.tall * D.STEP - 10, width: x(q3) - x(q1) + 2 * pad, height: D.tall * D.STEP + 16, rx: 12 }, layer);
-          bracket(x(q1), x(q3), "cv-brace");
-          label((x(q1) + x(q3)) / 2, `IQR ${num(q1)} to ${num(q3)} ${P.unit}`);
-        }
-        if (key === "range") {
-          bracket(px(0), px(n - 1), "cv-range");
-          label((px(0) + px(n - 1)) / 2, `Range ${num(Math.min(...v))} to ${num(Math.max(...v))} ${P.unit}`, "cv-lab ink");
-        }
-        if (key === "msd") {
-          const lo = m - 2 * sd, hi = m + 2 * sd, w0 = x(0);
-          svgEl("path", { class: "cv-msd", d: `M${w0} ${yy} H${x(hi)}` }, layer);
-          if (lo < 0) {
-            // below zero: through the wall, where no stay can be
-            svgEl("path", { class: "cv-msd bad", d: `M${w0} ${yy} H${w0 - 44}` }, layer);
-            svgEl("path", { class: "cv-arrow bad", d: `M${w0 - 38} ${yy - 9} l-10 9 l10 9` }, layer);
-            svgEl("text", { class: "cv-bad", x: 6, y: yy - 16 }, layer).textContent = `${num(Math.round(lo)).replace("-", "−")} ${P.unit}?`;
-          }
-          svgEl("path", { class: "cv-msdcap", d: `M${x(hi)} ${yy - 8} v16` }, layer);
-          label((w0 + x(hi)) / 2 + 40, `${num(m)} ± 2 × ${sd}`, "cv-lab par");
-        }
+        shadeStays(D, P, layer, k);
       }
     };
     const set = k => {

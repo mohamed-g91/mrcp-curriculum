@@ -2,9 +2,11 @@
    The story itself is told in the video; the slide shows only the figure. Each kind draws its own
    beats from the slide's numbers, and works every sum out itself:
    mean    readings drop onto a line, greyer the further from the mean; their sum is written and the mean lands on the star
-   median  the same readings, one flies off and then further, the mean follows it, the median stays on the star
-   iqr     the ward's stays in a row line up in order; the middle one is the median, the middle of each half
-           a quartile, and a box between the quartiles holds the middle half; then how it is written
+   median  the same readings in a row as they were taken, then in order, then on the line; one flies off and then
+           further, the mean follows it, the median stays on the star
+   iqr     the ward's stays in a row line up in order; the middle one is the median, with a half boxed on each
+           side; the middle of each half is a quartile; a box between the quartiles holds the middle half; then
+           the same people stack on their days under their curve, with a chip per spread
    mode    shoe sizes stack up, the mean is a size nobody wears, the mode is the tallest stack;
            then the same question for blood groups, where only the mode makes sense */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -83,13 +85,27 @@ const STORIES = {
   median(svg, S, later) {
     const v = Stats.sorted(S.values), lo = v[0] - 1, hi = v[v.length - 1] + 1, med = Stats.median(v);
     const [first, second] = S.outlier.to, oi = S.values.indexOf(S.outlier.from);
-    svg.classList.add(`f-${concept("median").family}`);
+    svg.classList.add(`f-${concept("median").family}`, "st-rowmode");
     const A = storyAxis(svg, lo, hi, first), layer = svgEl("g", {}, svg), pts = svgEl("g", {}, svg);
     const vals = S.values.slice();
-    storyStar(layer, A.x(med), ST.AX - 64);
-    const dots = vals.map(x => storyDot(pts, A.x(x), false, 0));
-    const mean = storyMark(layer, "mean", A.x(Stats.mean(vals)), `${concept("mean").label} =`, ST.TOP, ST.AX, num(Stats.mean(vals)));
+    // first a row above the line, each reading wearing its value, in the order the readings were taken
+    const ROW = ST.AX - 130, X = k => A.x(lo + 1 + k), rowAt = (i, k) => { dots[i].style.transform = `translate(${X(k)}px, ${ROW}px)`; };
+    const dots = vals.map((x, i) => { const d = storyDot(pts, 0, false, 0); svgEl("text", { class: "st-num", y: -24 }, d).textContent = x; return d; });
+    dots.forEach((d, i) => rowAt(i, i));
+    const rank = vals.map((x, i) => [x, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p[1]);
+    let mean;
     return [
+      // in order, smallest to largest: the step that comes before any median
+      () => rank.forEach((i, k) => rowAt(i, k)),
+      // onto the number line, where the mean lands on the star
+      () => {
+        svg.classList.remove("st-rowmode");
+        dots.forEach((d, i) => { d.style.transform = `translate(${A.x(vals[i])}px, ${ST.AX - 18}px)`; });
+        // the star and the mean wait for the readings to land
+        storyStar(layer, A.x(med), ST.AX - 64).style.animationDelay = ".6s";
+        mean = storyMark(layer, "mean", A.x(Stats.mean(vals)), `${concept("mean").label} =`, ST.TOP, ST.AX, num(Stats.mean(vals)));
+        mean.g.style.animationDelay = ".6s";
+      },
       // one wild reading: the dot flies past the break, and the mean follows it
       () => {
         vals[oi] = first;
@@ -117,43 +133,67 @@ const STORIES = {
   },
 
   iqr(svg, S, later, chart) {
-    svg.classList.add(`f-${concept("median").family}`);
-    const v = S.values, n = v.length, h = (n - 1) / 2, i1 = (h - 1) / 2, i3 = n - 1 - i1, gap = (ST.W - 60) / n, X = k => 30 + (k + .5) * gap;
-    const [q1, q3] = Stats.quartiles(v), med = Stats.median(v);
+    svg.remove();
+    const P = S.panel, v = S.values, n = v.length, h = (n - 1) / 2, i1 = (h - 1) / 2, i3 = n - 1 - i1, AX = 214;
+    const [q1, q3] = Stats.quartiles(v), med = Stats.median(v), fam = concept("median").family;
+    const D = drawStays(chart, v, { unit: S.unit, W: 1000, H: 290, AX, wall: "left", counts: false, scale: .8, left: 130 });
+    D.svg.classList.add("st-svg", "st-rowmode", `f-${fam}`);
+    D.svg.setAttribute("aria-label", chart.closest(".slide").getAttribute("aria-label"));
     // rank[k] is the person with the kth shortest stay
     const rank = v.map((x, i) => [x, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p[1]);
-    const layer = svgEl("g", {}, svg), row = svgEl("g", {}, svg);
-    svgEl("path", { class: "dp-axis", d: `M16 ${ST.AX} H${ST.W - 16}` }, svg);
-    // the people stand in the order they were admitted, each with their stay over their head
-    const ppl = v.map((x, i) => {
-      const g = svgEl("g", { class: "st-row", style: `transform:translateX(${X(i)}px)` }, row);
-      drawPerson(g, 0, ST.AX - 2, i, REDUCED_MOTION ? 0 : i * 70, 1.1);
-      svgEl("text", { class: "st-num", x: 0, y: ST.AX - 64 }, g).textContent = x;
-      return g;
-    });
-    const who = k => ppl[rank[k]];
+    const gap = 840 / n, X = k => 80 + (k + .5) * gap, rowLayer = svgEl("g", { class: "st-rowlayer" }, D.back);
+    svgEl("path", { class: "dp-axis st-floor", d: `M40 ${AX} H960` }, D.back);
+    const rowAt = (i, k) => { D.dots[i].style.transform = `translate(${X(k)}px, ${AX - 2}px)`; };
+    // the people stand evenly spaced in the order they were admitted, each with their stay over their head
+    D.dots.forEach((d, i) => { rowAt(i, i); svgEl("text", { class: "st-num", y: -50 }, d).textContent = v[i]; });
+    const who = k => D.dots[rank[k]];
+    const box = (k0, k1, cls) => svgEl("rect", { class: cls, x: X(k0) - gap / 2 + 4, y: AX - 80, width: X(k1) - X(k0) + gap - 8, height: 88, rx: 14 }, rowLayer);
+    let halves = [];
+    // the chips shade one spread at a time once the graph is built; a click anywhere else clears them
+    const tools = $(".st-tools", chart.parentNode), chips = $$(".cv-chip", tools), layer = svgEl("g", {}, D.back);
+    let open = -1;
+    const set = k => {
+      open = k; layer.innerHTML = "";
+      D.dots.forEach(d => d.classList.remove("out", "hit"));
+      chips.forEach((c, i) => { c.classList.toggle("on", i === k); c.setAttribute("aria-pressed", String(i === k)); });
+      tools.classList.toggle("open", k >= 0);
+      if (k >= 0) shadeStays(D, P, layer, k);
+    };
+    chips.forEach((c, i) => { c.onclick = () => set(open === i ? -1 : i); });
+    tools.clear = e => { if (open >= 0 && !e.target.closest(".cv-chip")) set(-1); };
+    if (!tools.dataset.wired) { tools.dataset.wired = "1"; ClickAway.add(e => tools.clear && tools.clear(e)); }
+    set(-1); tools.hidden = true;
     return [
       // in order, shortest stay to longest
-      () => rank.forEach((i, k) => { ppl[i].style.transform = `translateX(${X(k)}px)`; }),
-      // the middle one is the median, with as many on each side
-      () => { who(h).classList.add("hit"); storyMark(layer, "median", X(h), `${concept("median").label} = ${num(med)}`, ST.TOP + 50, ST.AX - 92); },
+      () => rank.forEach((i, k) => rowAt(i, k)),
+      // the middle one is the median, with a half of five boxed on each side
+      () => {
+        who(h).classList.add("hit");
+        storyMark(rowLayer, "median", X(h), `${concept("median").label} = ${num(med)}`, 70, AX - 76);
+        halves = [box(0, h - 1, "st-half"), box(h + 1, n - 1, "st-half")];
+      },
       // the middle of each half: the quartiles
       () => [[i1, "Q1", q1], [i3, "Q3", q3]].forEach(([k, name, q]) => {
         who(k).classList.add("q");
-        storyMark(layer, "median", X(k), `${name} = ${num(q)}`, ST.TOP + 116, ST.AX - 92).g.classList.add("st-q");
+        storyMark(rowLayer, "median", X(k), `${name} = ${num(q)}`, 118, AX - 84).g.classList.add("st-q");
       }),
       // the box between the quartiles holds the middle half; the long stay sits outside it
       () => {
-        svgEl("rect", { class: "st-box", x: X(i1) - gap / 2 + 3, y: ST.AX - 88, width: X(i3) - X(i1) + gap - 6, height: 96, rx: 14 }, layer);
-        svgEl("text", { class: "st-boxlab", x: X(h), y: ST.AX + 44 }, layer).textContent = `IQR ${num(q1)} to ${num(q3)} ${S.unit}`;
+        halves.forEach(b => b.classList.add("st-gone"));
+        box(i1, i3, "st-box");
+        svgEl("text", { class: "st-boxlab", x: X(h), y: AX + 46 }, rowLayer).textContent = `IQR ${num(q1)} to ${num(q3)} ${S.unit}`;
+        svgEl("text", { class: "st-sum st-iqsum", x: X(h), y: 26 }, rowLayer).textContent = `${concept("median").label} ${num(med)} (IQR ${num(q1)}–${num(q3)})`;
         const far = who(n - 1); far.classList.remove("pulse"); void far.getBBox(); far.classList.add("pulse");
       },
-      // and how a paper writes it
-      () => { svgEl("text", { class: "st-sum st-iqsum", x: ST.W / 2, y: ST.TOP }, layer).textContent = `${concept("median").label} ${num(med)} (IQR ${num(q1)}–${num(q3)})`; }
-    ].concat(S.panel ? [
-      // the same people on their days, under the curve they make, with a chip per spread
-      () => { chart.hidden = true; $(".st-panel", chart.parentNode).hidden = false; }
-    ] : []);
+      // the same people step onto their days and stack up, and the curve they make is drawn over them
+      () => {
+        rowLayer.classList.add("st-gone");
+        D.dots.forEach(d => d.classList.remove("hit", "q"));
+        D.svg.classList.remove("st-rowmode");
+        D.place(v);
+        later(700, () => { dressStays(D, P, AX); tools.hidden = false; });
+      }
+    ];
   },
 
   mode(svg, S, later, chart) {
@@ -221,7 +261,6 @@ function buildStories() {
     const start = () => {
       timers.forEach(clearTimeout); timers = [];
       chart.innerHTML = ""; beat = 0;
-      const pn = $(".st-panel", sb); if (pn) { pn.hidden = true; chart.hidden = false; }
       const svg = svgEl("svg", { class: "st-svg", viewBox: `0 0 ${ST.W} ${ST.H}`, role: "img", "aria-label": sb.closest(".slide").getAttribute("aria-label") }, chart);
       beats = STORIES[S.kind](svg, S, later, chart);
       setScene(); stepper(true);

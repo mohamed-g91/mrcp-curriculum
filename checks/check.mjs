@@ -188,7 +188,7 @@ async function layoutPass(size) {
       await js(`Deck.slides[Deck.i].querySelectorAll(".cv-chip")[${k}].click(), true`);
       await sleep(450);
       await measure(size, `slide ${i + 1} chip ${k + 1}`);
-      const on = await js(`(() => { const c = Deck.slides[Deck.i].querySelectorAll(".cv-chip")[${k}]; return c.classList.contains("on") && c.closest(".cv-panel").classList.contains("open"); })()`);
+      const on = await js(`(() => { const c = Deck.slides[Deck.i].querySelectorAll(".cv-chip")[${k}]; return c.classList.contains("on") && c.closest(".cv-panel, .st-tools").classList.contains("open"); })()`);
       if (!on) fail(`${size.name} slide ${i + 1}: chip ${k + 1} did not open`);
       if (k % 3 === 2) await shot(`${tag}-chip${k + 1}`);
     }

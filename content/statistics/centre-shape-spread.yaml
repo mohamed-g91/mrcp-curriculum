@@ -65,13 +65,14 @@ learn:
     categories_unit: blood group
     categories: { A: 4, B: 2, AB: 1, O: 5 }
 
-  # the ward this week: mode 2, median 3, mean 66 / 11 = 6; moving the 30 to 8 makes the mean 4
+  # the ward this week, before its long stay: mode 2, median 3, mean 44 / 11 = 4; tapping one 8 sends it to 30,
+  # and only the mean moves (66 / 11 = 6)
   - id: middles
     pattern: dot-plot
     title: Three middles
-    values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
+    values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 8]
     unit: days in hospital
-    swap: { from: 30, to: 8 }
+    swap: { from: 8, to: 30 }
     measures: [mean, median, mode]
 
   # what normal and skewed mean, before any spread: the people drop in one by one, then the curve draws over them
@@ -108,8 +109,8 @@ learn:
         sd: 7
         unit: cm
         axis: Height of adult women (cm)
-        chips: [±1 SD, ±2 SD]
-        pct: [68%, 95%]
+        chips: [±1 SD, ±2 SD, ±3 SD]
+        pct: [68%, 95%, 99.7%]
         summary: { family: par, label: Mean (SD), note: Normal data }
 
   # spread in skewed data, built up: the ward's stays in the order they were admitted; in order, the 6th is the

@@ -264,10 +264,16 @@ def p_story(slide, topic):
     """A scene beside one figure that builds a beat per tap (the story is told in the video).
     The figure is drawn in the browser from the slide's numbers (engine/js/story.js)."""
     data = {k: slide[k] for k in ("kind", "values", "outlier", "counts", "unit", "categories", "categories_unit") if k in slide}
-    data["panel"] = bool(slide.get("panel"))
+    if slide.get("panel"):
+        data["panel"] = slide["panel"]
     scene = figure(slide["scene"], "st-scene") if slide.get("scene") else ""
-    # a story can end on a spread panel, shown in the figure's place at its last beat
-    panel = spread_panel(slide["panel"], extra=" st-panel").replace('<div class', '<div hidden class', 1) if slide.get("panel") else ""
+    # a story can end on a spread graph: its chips and summary card wait under the figure for the last beat
+    panel = ""
+    if slide.get("panel"):
+        pn, sm = slide["panel"], slide["panel"]["summary"]
+        chips = "".join(f'<button class="cv-chip" type="button" aria-pressed="false">{e(ch)}</button>' for ch in pn["chips"])
+        panel = (f'<div hidden class="st-tools f-{sm["family"]}"><div class="cv-chips">{chips}</div>'
+                 f'<div class="cv-sum"><b>{e(sm["label"])}</b><span>{e(sm["note"])}</span></div></div>')
     return (heading(slide) + f'<div class="story" data-story="{e(json.dumps(data, ensure_ascii=False))}">'
             f'{scene}<div class="st-chart"></div>{panel}</div>')
 

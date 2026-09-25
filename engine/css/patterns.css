@@ -284,6 +284,8 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-wlab.right{text-anchor:start}
 .cv-ylab{fill:var(--muted);font:600 17px var(--sans);text-anchor:end}
 .cv-ytitle{fill:var(--muted);font:600 19px var(--sans);text-anchor:middle}
+.cv-ylab.sm{font-size:14px}
+.cv-ytitle.sm{font-size:15px}
 .cv-alab{fill:var(--muted);font:600 22px var(--sans);text-anchor:middle}
 .cv-person{transform-box:fill-box;transform-origin:bottom center;animation:pillIn .45s var(--ease) both}
 .cv-body{fill:color-mix(in srgb,var(--primary) 70%,var(--surface));stroke:var(--sc-line);stroke-width:2}
@@ -531,9 +533,18 @@ a.next-topic:hover{border-color:var(--primary)}
 /* ---------- story: a scene beside one figure that builds a beat per tap ---------- */
 .story{display:grid;grid-template-columns:clamp(200px,calc(24 * var(--u)),300px) minmax(0,1fr);gap:clamp(16px,calc(2.4 * var(--u)),36px);align-items:center;width:100%;max-width:1280px;margin:clamp(8px,calc(2 * var(--u)),28px) auto 0}
 .story>.fig{margin:0}
-.story>.st-chart,.story>.st-panel{grid-column:2;grid-row:1}
-.st-panel[hidden]{display:none}
-.story>.st-panel .cv-chart{max-width:none}
+.story>.st-chart{grid-column:2;grid-row:1}
+.story>.st-tools{grid-column:2;grid-row:2;display:flex;flex-direction:column;align-items:center;gap:8px;animation:fadeIn .4s ease both}
+.st-tools[hidden]{display:none}
+.st-tools.open .cv-sum{visibility:visible;animation:specIn .35s var(--ease)}
+/* a row of people before they meet the axis: the axis waits, and each wears their value */
+.st-svg .dp-tlab,.st-svg .dp-unit,.st-svg .dp-break,.st-svg .dp-axis,.st-num{transition:opacity .5s ease}
+.st-rowmode .dp-tlab,.st-rowmode .dp-unit,.st-rowmode .dp-break,.st-rowmode .dp-axis:not(.st-floor),.st-svg:not(.st-rowmode) .st-floor,.st-svg:not(.st-rowmode) .st-num{opacity:0}
+.dp-pt.q .cv-body{fill:color-mix(in srgb,var(--x-solid) 45%,var(--surface))}
+.dp-pt.hit .st-num,.dp-pt.q .st-num{fill:var(--x-ink)}
+.dp-pt.pulse .cv-person{animation:stPulse .7s var(--ease)}
+.st-half{fill:color-mix(in srgb,var(--x-solid) 8%,transparent);stroke:var(--x-solid);stroke-width:2.5;stroke-dasharray:8 6;animation:fadeIn .4s ease both;transition:opacity .4s ease}
+.st-rowlayer{transition:opacity .4s ease}
 .st-chart{position:relative;width:100%;border-radius:var(--radius-lg);outline:none}
 .st-chart.stepper{cursor:pointer}
 .st-chart.stepper:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
@@ -545,6 +556,7 @@ a.next-topic:hover{border-color:var(--primary)}
 .scene [data-until]{transition:opacity .5s ease}
 .scene [data-until].st-off{opacity:0}
 .st-pt{transition:transform .8s var(--ease),opacity .35s ease}
+.st-pt .st-num{font-size:22px}
 .st-pt circle{fill:var(--ink);transition:fill .3s ease;transform-box:fill-box;transform-origin:center}
 .st-pt circle.drop{animation:stDrop .5s var(--ease) both}
 @keyframes stDrop{from{opacity:0;transform:translateY(-44px)}to{opacity:1;transform:none}}
@@ -581,4 +593,4 @@ a.next-topic:hover{border-color:var(--primary)}
 .st-no text{fill:var(--muted);font:750 26px var(--sans)}
 .st-no path{stroke:var(--bad-solid);stroke-width:3.5;stroke-linecap:round}
 @media (prefers-reduced-motion:reduce){.st-pt,.st-mk{transition:none}.st-pt circle.drop,.st-star,.st-res,.st-sum,.st-shoe,.st-no{animation:none}}
-@container (max-width:900px){.story>.st-chart,.story>.st-panel{grid-column:1;grid-row:2}.story{grid-template-columns:minmax(0,1fr)}.story>.fig{width:min(45%,170px);margin-inline:auto}}
+@container (max-width:900px){.story>.st-chart{grid-column:1;grid-row:2}.story>.st-tools{grid-column:1;grid-row:3}.story{grid-template-columns:minmax(0,1fr)}.story>.fig{width:min(45%,170px);margin-inline:auto}}
