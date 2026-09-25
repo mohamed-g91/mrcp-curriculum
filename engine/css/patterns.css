@@ -548,6 +548,9 @@ a.next-topic:hover{border-color:var(--primary)}
 .st-sum{fill:var(--ink);font:750 26px var(--sans);text-anchor:middle;animation:fadeIn .45s ease both}
 .st-gone{opacity:0!important;transition:opacity .4s ease}
 .st-mk{transition:transform .8s var(--ease),opacity .4s ease}
+.st-res{transform-box:fill-box;transform-origin:center;animation:pillIn .5s var(--ease) .25s both}
+.st-res rect{fill:#F2B84B;stroke:var(--sc-line);stroke-width:2.5}
+.dp-mk .st-res text{fill:#0E1F35;font-size:30px}
 .st-star{fill:#F2B84B;stroke:var(--sc-line);stroke-width:2.5;stroke-linejoin:round;transform-box:fill-box;transform-origin:center;animation:pillIn .5s var(--ease) both}
 .st-shoe{animation:fadeIn .45s ease .3s both;transition:opacity .4s ease}
 .st-shoe path:first-child{fill:#C9A36B;stroke:var(--sc-line);stroke-width:3;stroke-linejoin:round}
@@ -556,5 +559,5 @@ a.next-topic:hover{border-color:var(--primary)}
 .st-no{animation:fadeIn .45s ease both}
 .st-no text{fill:var(--muted);font:750 26px var(--sans)}
 .st-no path{stroke:var(--bad-solid);stroke-width:3.5;stroke-linecap:round}
-@media (prefers-reduced-motion:reduce){.st-pt,.st-mk{transition:none}.st-pt circle.drop,.st-star,.st-sum,.st-shoe,.st-no{animation:none}}
+@media (prefers-reduced-motion:reduce){.st-pt,.st-mk{transition:none}.st-pt circle.drop,.st-star,.st-res,.st-sum,.st-shoe,.st-no{animation:none}}
 @container (max-width:900px){.story{grid-template-columns:minmax(0,1fr)}.story>.fig{width:min(45%,170px);margin-inline:auto}}

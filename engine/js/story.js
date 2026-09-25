@@ -2,7 +2,7 @@
    The story itself is told in the video; the slide shows only the figure. Each kind draws its own
    beats from the slide's numbers, and works every sum out itself:
    mean    readings drop onto a line, greyer the further from the mean; their sum is written and the mean lands on the star
-   median  the same readings, one flies off, the mean follows it, the median stays on the star
+   median  the same readings, one flies off and then further, the mean follows it, the median stays on the star
    mode    shoe sizes stack up, the mean is a size nobody wears, the mode is the tallest stack;
            then the same question for blood groups, where only the mode makes sense */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -36,6 +36,17 @@ function storyMark(parent, key, x, text, top = ST.TOP, foot = ST.AX) {
   return { g, set(x2, text2) { g.style.transform = `translateX(${x2}px)`; if (text2) t.textContent = text2; } };
 }
 
+// the answer on a gold pill, the star's colour, after a marker's working
+function storyResult(mark, text) {
+  const t = $("text", mark.g), y = +t.getAttribute("y"), w = t.getComputedTextLength(), pw = 30 + 16 * text.length, gap = 12;
+  const left = -(w + gap + pw) / 2;
+  t.setAttribute("x", left + w / 2);
+  const g = svgEl("g", { class: "st-res" }, mark.g);
+  svgEl("rect", { x: left + w + gap, y: y - 33, width: pw, height: 44, rx: 22 }, g);
+  svgEl("text", { x: left + w + gap + pw / 2, y }, g).textContent = text;
+  return g;
+}
+
 function storyStar(parent, x, y) {
   const p = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 8 : 18; p.push(`${(x + r * Math.cos(a)).toFixed(1)} ${(y + r * Math.sin(a)).toFixed(1)}`); }
   return svgEl("path", { class: "st-star", d: `M${p.join(" L")} Z` }, parent);
@@ -55,9 +66,8 @@ const STORIES = {
       () => { dots = S.values.map((x, i) => { const d = storyDot(pts, A.x(x), true, i * 160); if (x !== m) d.classList.add(`st-d${Math.min(Math.ceil(Math.abs(x - m)), 2)}`); return d; }); },
       // the sum is written, and the mean lands on the star
       () => {
-        dots.forEach(d => d.classList.add("sum"));
         svgEl("text", { class: "st-sum", x: A.x(m), y: ST.TOP }, layer).textContent = sumText(S.values);
-        storyMark(layer, "mean", A.x(m), meanText("mean", S.values), ST.TOP + 44);
+        storyResult(storyMark(layer, "mean", A.x(m), `${concept("mean").label} = ${Stats.sum(S.values)} ÷ ${S.values.length} =`, ST.TOP + 44), num(m));
         storyStar(layer, A.x(m), ST.AX - 64);
       }
     ];
@@ -80,20 +90,21 @@ const STORIES = {
         dots[oi].style.transform = `translate(${A.x(first)}px, ${ST.AX - 18}px)`;
         later(500, () => mean.set(A.x(Stats.mean(vals)), meanText("mean", vals)));
       },
-      // in order, the readings drop out in pairs from both ends until one is left
-      () => {
-        const order = vals.map((x, i) => [x, i]).sort((a, b) => a[0] - b[0]).map(p => p[1]), n = order.length;
-        for (let k = 0; k < Math.floor(n / 2); k++) later(k * 300, () => { dots[order[k]].classList.add("out"); dots[order[n - 1 - k]].classList.add("out"); });
-        later(Math.floor(n / 2) * 300, () => dots[order[(n - 1) / 2]].classList.add("hit"));
-      },
-      // the median stands on the star
-      () => { storyMark(layer, "median", A.x(med), `${concept("median").label} = ${num(med)}`, ST.TOP + 64, ST.AX - 34); },
-      // make the wild reading wilder: the mean runs off, the median does not move
+      // make the wild reading wilder: the mean runs off
       () => {
         vals[oi] = second; A.far = second;
         A.farLab.textContent = second;
         dots[oi].classList.remove("pulse"); void dots[oi].getBBox(); dots[oi].classList.add("pulse");
         mean.set(A.x(Stats.mean(vals)), meanText("mean", vals));
+      },
+      // in order, the readings drop out in pairs from both ends; the one left is the median, on the star
+      () => {
+        const order = vals.map((x, i) => [x, i]).sort((a, b) => a[0] - b[0]).map(p => p[1]), n = order.length;
+        for (let k = 0; k < Math.floor(n / 2); k++) later(k * 300, () => { dots[order[k]].classList.add("out"); dots[order[n - 1 - k]].classList.add("out"); });
+        later(Math.floor(n / 2) * 300, () => {
+          dots[order[(n - 1) / 2]].classList.add("hit");
+          storyMark(layer, "median", A.x(med), `${concept("median").label} = ${num(med)}`, ST.TOP + 64, ST.AX - 34);
+        });
       }
     ];
   },
