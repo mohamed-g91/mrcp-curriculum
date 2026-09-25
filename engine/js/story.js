@@ -1,7 +1,7 @@
 /* ---------- story: a scene beside one figure that builds a beat per tap ----------
    The story itself is told in the video; the slide shows only the figure. Each kind draws its own
    beats from the slide's numbers, and works every sum out itself:
-   mean    readings drop onto a line, their errors pair off and cancel, the mean lands on the star
+   mean    readings drop onto a line, greyer the further from the mean; their sum is written and the mean lands on the star
    median  the same readings, one flies off, the mean follows it, the median stays on the star
    mode    shoe sizes stack up, the mean is a size nobody wears, the mode is the tallest stack;
            then the same question for blood groups, where only the mode makes sense */
@@ -49,31 +49,15 @@ const STORIES = {
     const v = Stats.sorted(S.values), lo = v[0] - 1, hi = v[v.length - 1] + 1, m = Stats.mean(v);
     svg.classList.add(`f-${concept("mean").family}`);
     const A = storyAxis(svg, lo, hi), layer = svgEl("g", {}, svg), pts = svgEl("g", {}, svg);
-    let arrows, sum, dots = [];
+    let dots = [];
     return [
-      // the readings arrive one at a time, in the order they were taken
-      () => { dots = S.values.map((x, i) => storyDot(pts, A.x(x), true, i * 160)); },
-      // each reading's error from the true value: as many to the left as to the right
+      // the readings arrive one at a time, in the order they were taken; a shade of grey for each distance from the mean
+      () => { dots = S.values.map((x, i) => { const d = storyDot(pts, A.x(x), true, i * 160); if (x !== m) d.classList.add(`st-d${Math.min(Math.ceil(Math.abs(x - m)), 2)}`); return d; }); },
+      // the sum is written, and the mean lands on the star
       () => {
-        arrows = svgEl("g", { class: "st-arrows" }, layer);
-        S.values.forEach(x => {
-          const d = x - m; if (!d) return;
-          const y = ST.AX - 60 - Math.abs(d) * 36, x0 = A.x(m), x1 = A.x(x), s = Math.sign(d);
-          svgEl("path", { class: "st-arrow", d: `M${x0} ${y} H${x1 - s * 10}` }, arrows);
-          svgEl("path", { class: "st-head", d: `M${x1} ${y} l${-s * 14} -9 v18 z` }, arrows);
-          svgEl("text", { class: "st-err", x: x1 + s * 14, y: y + 7, "text-anchor": s > 0 ? "start" : "end" }, arrows).textContent = (d > 0 ? "+" : "−") + num(Math.abs(d));
-        });
-      },
-      // the errors cancel: what is left is the sum
-      () => {
-        arrows.classList.add("st-gone");
         dots.forEach(d => d.classList.add("sum"));
-        sum = svgEl("text", { class: "st-sum", x: A.x(m), y: ST.TOP }, layer); sum.textContent = sumText(S.values);
-      },
-      // and the mean lands on the star
-      () => {
-        sum.classList.add("st-gone");
-        storyMark(layer, "mean", A.x(m), meanText("mean", S.values));
+        svgEl("text", { class: "st-sum", x: A.x(m), y: ST.TOP }, layer).textContent = sumText(S.values);
+        storyMark(layer, "mean", A.x(m), meanText("mean", S.values), ST.TOP + 44);
         storyStar(layer, A.x(m), ST.AX - 64);
       }
     ];

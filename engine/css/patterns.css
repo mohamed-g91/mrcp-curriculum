@@ -540,13 +540,11 @@ a.next-topic:hover{border-color:var(--primary)}
 @keyframes stDrop{from{opacity:0;transform:translateY(-44px)}to{opacity:1;transform:none}}
 .st-pt.out{opacity:.25}
 .st-pt.hit circle{fill:var(--x-solid)}
+.st-pt.st-d1 circle{fill:color-mix(in srgb,var(--ink) 62%,var(--page))}
+.st-pt.st-d2 circle{fill:color-mix(in srgb,var(--ink) 36%,var(--page))}
 .st-pt.sum circle{animation:dpSum .6s var(--ease)}
 .st-pt.pulse circle{animation:stPulse .7s var(--ease)}
 @keyframes stPulse{40%{transform:scale(1.5)}}
-.st-arrows{animation:fadeIn .45s ease both}
-.st-arrow{stroke:var(--muted);stroke-width:4;fill:none;stroke-linecap:round}
-.st-head{fill:var(--muted)}
-.st-err{fill:var(--muted);font:750 22px var(--sans)}
 .st-sum{fill:var(--ink);font:750 26px var(--sans);text-anchor:middle;animation:fadeIn .45s ease both}
 .st-gone{opacity:0!important;transition:opacity .4s ease}
 .st-mk{transition:transform .8s var(--ease),opacity .4s ease}
@@ -558,5 +556,5 @@ a.next-topic:hover{border-color:var(--primary)}
 .st-no{animation:fadeIn .45s ease both}
 .st-no text{fill:var(--muted);font:750 26px var(--sans)}
 .st-no path{stroke:var(--bad-solid);stroke-width:3.5;stroke-linecap:round}
-@media (prefers-reduced-motion:reduce){.st-pt,.st-mk{transition:none}.st-pt circle.drop,.st-star,.st-arrows,.st-sum,.st-shoe,.st-no{animation:none}}
+@media (prefers-reduced-motion:reduce){.st-pt,.st-mk{transition:none}.st-pt circle.drop,.st-star,.st-sum,.st-shoe,.st-no{animation:none}}
 @container (max-width:900px){.story{grid-template-columns:minmax(0,1fr)}.story>.fig{width:min(45%,170px);margin-inline:auto}}
