@@ -28,24 +28,30 @@ function storyDot(parent, x, drop, delay) {
   return g;
 }
 
-// a measure's marker: a dashed line up from the axis, its working written at the top
-function storyMark(parent, key, x, text, top = ST.TOP, foot = ST.AX) {
+// a measure's marker: a dashed line up from the axis, its working written at the top;
+// a result, if given, sits on a gold pill after the working, the whole label kept inside the figure
+function storyMark(parent, key, x, text, top = ST.TOP, foot = ST.AX, result) {
   const g = svgEl("g", { class: `dp-mk st-mk f-${concept(key).family}`, style: `transform:translateX(${x}px)` }, parent);
   svgEl("path", { d: `M0 ${foot} V${top + 12}` }, g);
-  const t = svgEl("text", { y: top }, g); t.textContent = text;
-  return { g, set(x2, text2) { g.style.transform = `translateX(${x2}px)`; if (text2) t.textContent = text2; } };
+  const t = svgEl("text", { y: top }, g);
+  let pill;
+  const lay = (at, res) => {
+    if (pill) pill.remove();
+    if (res == null) { t.setAttribute("x", 0); return; }
+    const w = t.getComputedTextLength() || t.textContent.length * 15.5, pw = 30 + 16 * res.length, gap = 12, all = w + gap + pw;
+    const left = Math.min(Math.max(-all / 2, 4 - at), ST.W - 4 - all - at);
+    t.setAttribute("x", left + w / 2);
+    pill = svgEl("g", { class: "st-res" }, g);
+    svgEl("rect", { x: left + w + gap, y: top - 33, width: pw, height: 44, rx: 22 }, pill);
+    svgEl("text", { x: left + w + gap + pw / 2, y: top }, pill).textContent = res;
+  };
+  t.textContent = text; lay(x, result);
+  return { g, set(x2, text2, res2) { g.style.transform = `translateX(${x2}px)`; if (text2) t.textContent = text2; lay(x2, res2); } };
 }
 
-// the answer on a gold pill, the star's colour, after a marker's working
-function storyResult(mark, text) {
-  const t = $("text", mark.g), y = +t.getAttribute("y"), w = t.getComputedTextLength(), pw = 30 + 16 * text.length, gap = 12;
-  const left = -(w + gap + pw) / 2;
-  t.setAttribute("x", left + w / 2);
-  const g = svgEl("g", { class: "st-res" }, mark.g);
-  svgEl("rect", { x: left + w + gap, y: y - 33, width: pw, height: 44, rx: 22 }, g);
-  svgEl("text", { x: left + w + gap + pw / 2, y }, g).textContent = text;
-  return g;
-}
+// the mean's marker: its working, and its answer on the pill
+const meanWork = v => [`${concept("mean").label} = ${Stats.sum(v)} ÷ ${v.length} =`, num(Stats.mean(v))];
+const meanMark = (parent, x, v, top) => { const [work, res] = meanWork(v); return storyMark(parent, "mean", x, work, top, ST.AX, res); };
 
 function storyStar(parent, x, y) {
   const p = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 8 : 18; p.push(`${(x + r * Math.cos(a)).toFixed(1)} ${(y + r * Math.sin(a)).toFixed(1)}`); }
@@ -53,7 +59,6 @@ function storyStar(parent, x, y) {
 }
 
 const sumText = v => `${v.join(" + ")} = ${Stats.sum(v)}`;
-const meanText = (key, v) => `${concept(key).label} = ${Stats.sum(v)} ÷ ${v.length} = ${num(Stats.mean(v))}`;
 
 const STORIES = {
   mean(svg, S, later) {
@@ -67,7 +72,7 @@ const STORIES = {
       // the sum is written, and the mean lands on the star
       () => {
         svgEl("text", { class: "st-sum", x: A.x(m), y: ST.TOP }, layer).textContent = sumText(S.values);
-        storyResult(storyMark(layer, "mean", A.x(m), `${concept("mean").label} = ${Stats.sum(S.values)} ÷ ${S.values.length} =`, ST.TOP + 44), num(m));
+        meanMark(layer, A.x(m), S.values, ST.TOP + 44);
         storyStar(layer, A.x(m), ST.AX - 64);
       }
     ];
@@ -81,21 +86,21 @@ const STORIES = {
     const vals = S.values.slice();
     storyStar(layer, A.x(med), ST.AX - 64);
     const dots = vals.map(x => storyDot(pts, A.x(x), false, 0));
-    const mean = storyMark(layer, "mean", A.x(Stats.mean(vals)), `${concept("mean").label} = ${num(Stats.mean(vals))}`);
+    const mean = storyMark(layer, "mean", A.x(Stats.mean(vals)), `${concept("mean").label} =`, ST.TOP, ST.AX, num(Stats.mean(vals)));
     return [
       // one wild reading: the dot flies past the break, and the mean follows it
       () => {
         vals[oi] = first;
         A.farLab.textContent = first;
         dots[oi].style.transform = `translate(${A.x(first)}px, ${ST.AX - 18}px)`;
-        later(500, () => mean.set(A.x(Stats.mean(vals)), meanText("mean", vals)));
+        later(500, () => mean.set(A.x(Stats.mean(vals)), ...meanWork(vals)));
       },
       // make the wild reading wilder: the mean runs off
       () => {
         vals[oi] = second; A.far = second;
         A.farLab.textContent = second;
         dots[oi].classList.remove("pulse"); void dots[oi].getBBox(); dots[oi].classList.add("pulse");
-        mean.set(A.x(Stats.mean(vals)), meanText("mean", vals));
+        mean.set(A.x(Stats.mean(vals)), ...meanWork(vals));
       },
       // in order, the readings drop out in pairs from both ends; the one left is the median, on the star
       () => {
@@ -123,7 +128,7 @@ const STORIES = {
       () => D.svg.classList.remove("st-wait"),
       // the mean is a size nobody can buy
       () => {
-        mean = storyMark(D.marks, "mean", D.x(m), meanText("mean", sizes), ST.TOP);
+        mean = meanMark(D.marks, D.x(m), sizes, ST.TOP);
         shoe = svgEl("g", { class: "st-shoe", transform: `translate(${D.x(m) + 200} 4)` }, D.marks);
         svgEl("path", { d: "M0 26 V6 Q0 0 6 0 H22 L32 12 Q50 14 58 18 Q66 22 66 28 V32 H0 Z" }, shoe);
         svgEl("text", { x: 33, y: 58 }, shoe).textContent = num(m);
