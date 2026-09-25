@@ -232,7 +232,8 @@ async function layoutPass(size) {
       await sleep(700);
       await measure(size, `slide ${i + 1} tree solved`);
       // a path ending in No lands on that step's answer; one ending in Yes lands on the end card
-      const res = steps[steps.length - 1] === "no" ? ".tree-level.no:not(.missed)" : ".tree-end.shown";
+      const grid = await js(`!!Deck.slides[Deck.i].querySelector(".tree-grid")`);
+      const res = grid ? ".tg-final.shown" : steps[steps.length - 1] === "no" ? ".tree-level.no:not(.missed)" : ".tree-end.shown";
       const done = await js(`!!Deck.slides[Deck.i].querySelector("${res}") && !Deck.slides[Deck.i].querySelector(".tree-level.missed")`);
       if (!done) fail(`${size.name} slide ${i + 1}: the right answers did not reach the result`);
       await shot(`${tag}-solved`);

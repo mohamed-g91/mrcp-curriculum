@@ -349,6 +349,9 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-box{fill:color-mix(in srgb,var(--x-solid) 22%,transparent);stroke:var(--x-solid);stroke-width:2.5;animation:fadeIn .4s ease}
 .cv-boxmid{stroke:var(--x-solid);stroke-width:3}
 .cv-range,.cv-msdcap{stroke:var(--ink);stroke-width:2.5;fill:none;stroke-linecap:round;animation:fadeIn .4s ease}
+.cv-rangebar{stroke:var(--ink);stroke-width:9;fill:none;animation:fadeIn .4s ease}
+.cv-edge{stroke:var(--x-solid);stroke-width:2.5;stroke-dasharray:6 5;fill:none;animation:fadeIn .4s ease}
+.cv-outside{opacity:.25;transition:opacity .3s ease}
 .cv-msd{stroke:var(--par-solid);stroke-width:9;stroke-linecap:butt;animation:fadeIn .4s ease}
 .cv-msd.bad{stroke:var(--bad-solid)}
 .cv-bad{fill:var(--bad-solid);font:800 19px var(--sans);text-anchor:start;animation:fadeIn .4s ease}
@@ -421,6 +424,26 @@ a.next-topic:hover{border-color:var(--primary)}
 .end-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 
 /* a final answer with examples opens them in a zoom circle */
+/* a tree laid out in rows: steps and finals take their cells as the trail reaches them, and lines follow the answers */
+.tree.tree-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(24px,calc(4 * var(--u)),52px);row-gap:var(--link);align-items:start;justify-items:center;position:relative}
+.tree-grid>.tree-level,.tree-grid>.tg-final{grid-row:var(--gr);grid-column:var(--gc)}
+.tree-grid .tree-level{padding-top:0}
+.tree-grid .tree-level::before{content:none}
+.tree-grid .tree-level:not(.shown),.tg-final:not(.shown){display:none}
+.tree-grid .tree-q b{font-size:clamp(15px,calc(1.55 * var(--u)),19px);white-space:nowrap}
+.tree-grid .tree-level:first-child.shown>.tree-q{animation:none}
+.tg-final.shown>.tree-final{animation:finalIn .6s cubic-bezier(.34,1.56,.64,1) .35s both}
+.tree-grid .tree-label{font-size:clamp(19px,calc(2 * var(--u)),26px)}
+.tg-links{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:-1}
+.tg-links path{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:cvDraw .45s var(--ease) forwards}
+.tg-links .yes{stroke:var(--ok-bd)}
+.tg-links .no{stroke:var(--bad-bd)}
+/* narrow: one column in reading order, each step followed by its finals; only what the trail reaches takes space */
+@container (max-width:700px){
+  .tree.tree-grid{grid-template-columns:minmax(0,1fr)}
+  .tree-grid>.tree-level,.tree-grid>.tg-final{grid-row:auto;grid-column:1}
+  .tree-grid .tree-q b{white-space:normal}
+}
 .tree-final.zoomable{cursor:pointer;transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
 .tree-final.zoomable:hover{transform:translateY(-3px);box-shadow:0 0 0 5px var(--x-bg),0 16px 36px color-mix(in srgb,var(--x-solid) 46%,transparent)}
 .tree-final:focus-visible{outline:3px solid var(--primary);outline-offset:6px}

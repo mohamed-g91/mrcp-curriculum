@@ -2,8 +2,9 @@
    The story itself is told in the video; the slide shows only the figure. Each kind draws its own
    beats from the slide's numbers, and works every sum out itself:
    mean    readings drop onto a line, greyer the further from the mean; their sum is written and the mean lands on the star
-   median  the same readings in a row as they were taken, then in order, then on the line; one flies off and then
-           further, the mean follows it, the median stays on the star
+   median  the same readings in a row as they were taken; the mean is worked out, one reading grows wild and then
+           wilder and the mean follows it; then they line up in order, pairs drop out to leave the median, and all
+           of them step onto the line, the median on the star and the mean far off
    iqr     the ward's stays in a row line up in order; the middle one is the median, with a half boxed on each
            side; the middle of each half is a quartile; a box between the quartiles holds the middle half; then
            the same people stack on their days under their curve, with a chip per spread
@@ -92,42 +93,42 @@ const STORIES = {
     const ROW = ST.AX - 130, X = k => A.x(lo + 1 + k), rowAt = (i, k) => { dots[i].style.transform = `translate(${X(k)}px, ${ROW}px)`; };
     const dots = vals.map((x, i) => { const d = storyDot(pts, 0, false, 0); svgEl("text", { class: "st-num", y: -24 }, d).textContent = x; return d; });
     dots.forEach((d, i) => rowAt(i, i));
-    const rank = vals.map((x, i) => [x, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p[1]);
-    let mean;
+    const rank = () => vals.map((x, i) => [x, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p[1]);
+    // the wild reading grows: its value changes over its head, and the mean's working follows
+    const grow = to => {
+      vals[oi] = to;
+      $(".st-num", dots[oi]).textContent = to;
+      dots[oi].classList.remove("pulse"); void dots[oi].getBBox(); dots[oi].classList.add("pulse");
+      mean.set(X(2), ...meanWork(vals));
+    };
+    let mean, median;
     return [
+      // the mean needs no order: add them up and share them out
+      () => { mean = storyMark(layer, "mean", X(2), ...meanWork(vals).slice(0, 1), ST.TOP, ST.TOP + 12, meanWork(vals)[1]); },
+      // one wild reading, then a wilder one: the mean runs off each time
+      () => grow(first),
+      () => grow(second),
       // in order, smallest to largest: the step that comes before any median
-      () => rank.forEach((i, k) => rowAt(i, k)),
-      // onto the number line, where the mean lands on the star
+      () => rank().forEach((i, k) => rowAt(i, k)),
+      // the readings drop out in pairs from both ends; the one left is the median
       () => {
-        svg.classList.remove("st-rowmode");
-        dots.forEach((d, i) => { d.style.transform = `translate(${A.x(vals[i])}px, ${ST.AX - 18}px)`; });
-        // the star and the mean wait for the readings to land
-        storyStar(layer, A.x(med), ST.AX - 64).style.animationDelay = ".6s";
-        mean = storyMark(layer, "mean", A.x(Stats.mean(vals)), `${concept("mean").label} =`, ST.TOP, ST.AX, num(Stats.mean(vals)));
-        mean.g.style.animationDelay = ".6s";
-      },
-      // one wild reading: the dot flies past the break, and the mean follows it
-      () => {
-        vals[oi] = first;
-        A.farLab.textContent = first;
-        dots[oi].style.transform = `translate(${A.x(first)}px, ${ST.AX - 18}px)`;
-        later(500, () => mean.set(A.x(Stats.mean(vals)), ...meanWork(vals)));
-      },
-      // make the wild reading wilder: the mean runs off
-      () => {
-        vals[oi] = second; A.far = second;
-        A.farLab.textContent = second;
-        dots[oi].classList.remove("pulse"); void dots[oi].getBBox(); dots[oi].classList.add("pulse");
-        mean.set(A.x(Stats.mean(vals)), ...meanWork(vals));
-      },
-      // in order, the readings drop out in pairs from both ends; the one left is the median, on the star
-      () => {
-        const order = vals.map((x, i) => [x, i]).sort((a, b) => a[0] - b[0]).map(p => p[1]), n = order.length;
+        const order = rank(), n = order.length;
         for (let k = 0; k < Math.floor(n / 2); k++) later(k * 300, () => { dots[order[k]].classList.add("out"); dots[order[n - 1 - k]].classList.add("out"); });
         later(Math.floor(n / 2) * 300, () => {
           dots[order[(n - 1) / 2]].classList.add("hit");
-          storyMark(layer, "median", A.x(med), `${concept("median").label} = ${num(med)}`, ST.TOP + 64, ST.AX - 34);
+          median = storyMark(layer, "median", X((n - 1) / 2), `${concept("median").label} = ${num(med)}`, ST.TOP + 64, ST.TOP + 76);
         });
+      },
+      // onto the number line: the median stands on the star, and the mean is far off with the wild reading
+      () => {
+        svg.classList.remove("st-rowmode");
+        A.far = second; A.farLab.textContent = second;
+        dots.forEach((d, i) => { d.classList.remove("out"); d.style.transform = `translate(${A.x(vals[i])}px, ${ST.AX - 18}px)`; });
+        layer.innerHTML = "";
+        storyStar(layer, A.x(med), ST.AX - 64).style.animationDelay = ".6s";
+        const [work, res] = meanWork(vals);
+        storyMark(layer, "mean", A.x(Stats.mean(vals)), work, ST.TOP, ST.AX, res).g.style.animationDelay = ".6s";
+        storyMark(layer, "median", A.x(med), `${concept("median").label} = ${num(med)}`, ST.TOP + 64, ST.AX - 34).g.style.animationDelay = ".6s";
       }
     ];
   },

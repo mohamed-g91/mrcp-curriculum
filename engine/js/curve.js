@@ -90,8 +90,8 @@ function dressStays(D, P, AX) {
 // one spread on the ward's stays (k: 0 IQR, 1 range, 2 mean ± 2 SD)
 function shadeStays(D, P, layer, k) {
   // each spread is labelled on the figure, above the curve: the middle half boxed, the range bracketed,
-  // mean ± 2 SD barred (the SD in whole days, as a paper would report it)
-  const v = P.values, [q1, q3] = Stats.quartiles(v), m = Stats.mean(v), sd = Math.round(Stats.sd(v)), x = D.x, AX = D.AX;
+  // mean ± 2 SD barred (the panel's stated SD, else the people's own in whole days)
+  const v = P.values, [q1, q3] = Stats.quartiles(v), m = Stats.mean(v), sd = P.sd || Math.round(Stats.sd(v)), x = D.x, AX = D.AX;
   const order = v.map((u, i) => [u, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p[1]);
   const px = i => +D.dots[order[i]].dataset.x, n = v.length, pad = D.PW / 2 + 8, yy = AX - D.tall * D.STEP - 62;
   const label = (tx, text, cls = "cv-lab") => { svgEl("text", { class: cls, x: tx, y: yy - 14 }, layer).textContent = text; };
@@ -105,7 +105,8 @@ function shadeStays(D, P, layer, k) {
     label((x(q1) + x(q3)) / 2, `IQR ${num(q1)} to ${num(q3)} ${P.unit}`);
   }
   if (key === "range") {
-    bracket(px(0), px(n - 1), "cv-range");
+    svgEl("path", { class: "cv-rangebar", d: `M${px(0)} ${yy} H${px(n - 1)}` }, layer);
+    [px(0), px(n - 1)].forEach(ex => svgEl("path", { class: "cv-msdcap", d: `M${ex} ${yy - 10} v20` }, layer));
     label((px(0) + px(n - 1)) / 2, `Range ${num(Math.min(...v))} to ${num(Math.max(...v))} ${P.unit}`, "cv-lab ink");
   }
   if (key === "msd") {
@@ -277,17 +278,17 @@ function buildCurves() {
     const P = JSON.parse(pn.dataset.panel), chart = $(".cv-chart", pn), read = $(".cv-read", pn), chips = $$(".cv-chip", pn);
     const W = 600, H = 270;
     let open = -1, layer, D, bell;
+    const crowd = [];  // [position in SD, person]
     if (P.kind === "sd") {
       const BASE = 196, L = 96, R = 30, x = t => L + (t + 3.5) / 7 * (W - L - R), y = v => BASE - v * 140;
       const f = t => Math.exp(-t * t / 2);
       const svg = svgEl("svg", { class: "cv-svg", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": P.title || P.axis }, chart);
       layer = svgEl("g", {}, svg);
       const d = curvePath(f, -3.5, 3.5, x, y);
-      svgEl("path", { class: "cv-area", d: `${d} L${x(3.5)} ${BASE} L${x(-3.5)} ${BASE} Z` }, svg);
       // the same crowd of heights as Distribution, stacked in columns under the bell, and its y axis
       const COLS = [-2.1, -1.4, -.67, 0, .67, 1.4, 2.1], COUNTS = [1, 2, 4, 6, 4, 2, 1], STEP = 22, N = 20;
       let k = 0;
-      COLS.forEach((c, i) => { for (let r = 0; r < COUNTS[i]; r++) drawPerson(svg, x(c), BASE - 1 - r * STEP, k++, 0, .5); });
+      COLS.forEach((c, i) => { for (let r = 0; r < COUNTS[i]; r++) crowd.push([c, drawPerson(svg, x(c), BASE - 1 - r * STEP, k++, 0, .5)]); });
       const yp = p => BASE - p * N / 100 * STEP;
       svgEl("path", { class: "cv-axis", d: `M${L - 20} ${BASE} V${yp(30) - 10}` }, svg);
       [0, 10, 20, 30].forEach(p => {
@@ -319,10 +320,14 @@ function buildCurves() {
       layer.innerHTML = "";
       if (read) read.innerHTML = "";
       D && D.dots.forEach(d => d.classList.remove("out", "hit"));
+      crowd.forEach(([, g]) => g.classList.remove("cv-outside"));
       if (k < 0) return;
       if (P.kind === "sd") {
         const n = k + 1, { x, y, f, BASE } = bell, lo = P.mean - n * P.sd, hi = P.mean + n * P.sd;
         svgEl("path", { class: "cv-band", d: `${curvePath(f, -n, n, x, y, 60)} L${x(n)} ${BASE} L${x(-n)} ${BASE} Z` }, layer);
+        // the band's edges, and the people beyond them faded: the few outside ±n SD
+        [-n, n].forEach(t => svgEl("path", { class: "cv-edge", d: `M${x(t)} ${BASE} V${y(f(t)) - 16}` }, layer));
+        crowd.forEach(([c, g]) => g.classList.toggle("cv-outside", Math.abs(c) > n));
         svgEl("text", { class: "cv-pct", x: x(2.6), y: BASE - 110 }, layer).textContent = P.pct[k];
         read.innerHTML = `<b>${lo}–${hi} ${esc(P.unit)}</b> · ${esc(P.pct[k])}`;
       } else {

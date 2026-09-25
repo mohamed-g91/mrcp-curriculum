@@ -96,10 +96,18 @@ def check_topic(t, expected_id):
             refs += [st["concept"] for st in s["stops"] if st.get("concept")]
             if s.get("open", "list") not in ("list", "zoom"):
                 errs.append(f"{where}: open is {s['open']!r}: use list (bullets under the circle) or zoom (a large centred circle)")
-        if p in ("question-flow", "decision-tree"):
+        if p == "question-flow":
             refs += [st["no"] for st in s["steps"]] + [s["end"]]
         if p == "decision-tree":
-            ends = {st["no"] for st in s["steps"]} | {s["end"]}
+            ends = {st[a] for st in s["steps"] for a in ("yes", "no") if isinstance(st.get(a), str)} | {s["end"]}
+            refs += list(ends)
+            n = len(s["steps"])
+            for k, st in enumerate(s["steps"]):
+                for a in ("yes", "no"):
+                    if isinstance(st.get(a), dict) and not (k + 2 <= st[a].get("to", 0) <= n):
+                        errs.append(f"{where}: step {k + 1} can only skip ahead, to a later step")
+            if any(st.get("at") for st in s["steps"]) and not all(st.get("at") for st in s["steps"]):
+                errs.append(f"{where}: in a tree laid out in rows, every step needs its place (at: [row, column])")
             for k in list(s.get("examples") or {}) + list(s.get("charts") or {}):
                 if k not in ends:
                     errs.append(f"{where}: examples or a chart for {k!r}, which is not an answer in this tree")

@@ -33,7 +33,7 @@ learn:
   - id: hook
     pattern: hook
     title: What shape are these stays?
-    stem: A study of 200 adults admitted with pneumonia reported a mean length of stay of 6 days (SD 8 days) and a median of 3 days.
+    stem: A study of 200 adults admitted with pneumonia reported a mean length of stay of 6 days (SD 4 days) and a median of 3 days.
     question: What shape is the distribution of length of stay?
     scene: stays-calendar
 
@@ -116,7 +116,8 @@ learn:
   # spread in skewed data, built up: the ward's stays in the order they were admitted; in order, the 6th is the
   # median (3), and the middle of each half of five a quartile (the 3rd, 2; the 9th, 6): median 3 (IQR 2–6).
   # Then the same people stacked on their days under their curve, with the IQR boxed, and range and
-  # mean ± 2 SD (6 ± 2 × 8, the stem's SD in whole days: below 0) for contrast
+  # mean ± 2 SD for contrast, with the pneumonia stem's SD of 4 (6 ± 2 × 4 = −2, below 0). The ward's own
+  # eleven stays have an SD of 8.2; the stem's 4 is used here on purpose, so every slide shows the same numbers
   - id: story-iqr
     pattern: story
     title: "Spread: interquartile range"
@@ -128,6 +129,7 @@ learn:
       kind: dots
       values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
       sigma: 0.64
+      sd: 4
       unit: days
       chips: [IQR, Range, Mean ± 2 SD]
       summary: { family: np, label: Median (IQR), note: Skewed data }
@@ -147,10 +149,14 @@ learn:
     pattern: decision-tree
     title: Back to the pneumonia stays
     scene: doctor-think
-    stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 6 days (SD 8 days) and a median of 3 days]].
+    stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 6 days (SD 4 days) and a median of 3 days]].
+    # four steps in two rows: a value that can't be negative goes to the SD test first (mean − 2 SD below 0
+    # means a tail to the right); anything else, or a test that doesn't settle it, goes on to mean against median
     steps:
-      - { q: "Mean and median apart?", no: normal }
-      - { q: "Mean above median?",     no: negative }
+      - { q: "Value can't be negative?", at: [1, 1], no: { to: 3 } }
+      - { q: "Mean − 2 SD below 0?",     at: [1, 2], yes: positive }
+      - { q: "Mean and median apart?",   at: [2, 1], no: normal }
+      - { q: "Mean above median?",       at: [2, 2], no: negative }
     end: positive
     examples:
       normal: [Height, Haemoglobin, Serum sodium]
@@ -158,8 +164,8 @@ learn:
       negative: [Gestational age at birth, Age at death in the UK]
     path: [yes, yes]
     wrong:
-      - "9 and 5 days are far apart, so the stays are not symmetrical."
-      - "The mean (9) is above the median (5): a few long stays pull it up, into a tail on the right."
+      - "A stay can't be shorter than 0 days."
+      - "6 − 2 × 4 = −2 days, below 0, where no stay can be: a tail of long stays to the right."
 
 practise:
   - id: warmup
@@ -189,12 +195,12 @@ practise:
       - id: c01
         scene: case-pneumonia
         solved: true
-        stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 6 days (SD 8 days) and a median of 3 days]].
+        stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 6 days (SD 4 days) and a median of 3 days]].
         question: What shape is the distribution of length of stay?
         answer: positive
         hint: Compare the mean with the median.
         why: "A few long stays pull the mean above the median: a tail to the right."
-        tutor: "Mean and median apart? Yes. Mean above median? Yes. So positive skew. And 6 − 2 × 8 is below zero, which a stay cannot be."
+        tutor: "Mean and median apart? Yes. Mean above median? Yes. So positive skew. And 6 − 2 × 4 is below zero, which a stay cannot be."
 
       - id: c02
         scene: case-crp

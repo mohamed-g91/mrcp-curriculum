@@ -173,6 +173,33 @@ def _tree_final(topic, key, examples, charts):
             f'{_examples_body(ex, hidden=True) if ex else ""}</div>{chart}')
 
 
+def tree_rule(slide, i, a):
+    """Where answer a of step i leads: {"step": j} (the next one by default, or a skip with {to: n}),
+    or {"final": key} (a concept at the end of the branch; the last step's Yes ends on the tree's end)."""
+    steps, r = slide["steps"], slide["steps"][i].get(a)
+    if isinstance(r, dict):
+        return {"step": r["to"] - 1}
+    if r:
+        return {"final": r}
+    return {"step": i + 1} if i + 1 < len(steps) else {"final": slide["end"]}
+
+
+def _tree_grid(slide, topic, levels_html, examples, charts):
+    """The tree laid out in rows: each step sits at its `at` [row, column]; a final sits in the cell under
+    the step it ends. The links between them are drawn in the browser along the answers chosen."""
+    steps, cells = slide["steps"], []
+    for i, st in enumerate(steps):
+        r, c = st["at"]
+        cells.append(levels_html[i].replace('class="tree-level"', f'class="tree-level" style="--gr:{2 * r - 1};--gc:{c}"', 1))
+        for a in ("yes", "no"):
+            rule = tree_rule(slide, i, a)
+            if "final" in rule:
+                cells.append(f'<div class="tg-final" data-from="{i}" data-a="{a}" style="--gr:{2 * r};--gc:{c}">'
+                             f'{_tree_final(topic, rule["final"], examples, charts)}</div>')
+    rules = [{a: tree_rule(slide, i, a) for a in ("yes", "no")} for i in range(len(steps))]
+    return cells, e(json.dumps(rules))
+
+
 def p_decision_tree(slide, topic):
     """Top-down yes/no tree. The chosen answer slides onto the centre line; Yes opens the next
     question below it, No drops to the final answer. With a stem, the stem sits beside the tree.
@@ -180,6 +207,7 @@ def p_decision_tree(slide, topic):
     steps = slide["steps"]
     examples, charts = slide.get("examples") or {}, slide.get("charts") or {}
     path, wrong = slide.get("path"), slide.get("wrong") or []
+    grid = all(st.get("at") for st in steps)
     levels = []
     for i, st in enumerate(steps):
         why = (f'<div class="feedback bad tree-why" aria-live="polite">{icon("cross")}'
@@ -192,10 +220,14 @@ def p_decision_tree(slide, topic):
             f'<div class="tree-answers">'
             f'<button class="tree-a yes" type="button" data-a="yes" aria-pressed="false">Yes</button>'
             f'<button class="tree-a no" type="button" data-a="no" aria-pressed="false">No</button></div>{why}'
-            f'<div class="tree-out">{_tree_final(topic, st["no"], examples, charts)}</div></div>')
-    levels.append(f'<div class="tree-level tree-end" data-step="{len(steps)}">{_tree_final(topic, slide["end"], examples, charts)}</div>')
+            + ("" if grid else f'<div class="tree-out">{_tree_final(topic, st["no"], examples, charts)}</div>') + '</div>')
     data_path = f' data-path="{",".join(path)}"' if path else ""
-    tree = f'<div class="tree"{data_path}>{"".join(levels)}</div>'
+    if grid:
+        cells, rules = _tree_grid(slide, topic, levels, examples, charts)
+        tree = f'<div class="tree tree-grid"{data_path} data-steps="{rules}">{"".join(cells)}</div>'
+    else:
+        levels.append(f'<div class="tree-level tree-end" data-step="{len(steps)}">{_tree_final(topic, slide["end"], examples, charts)}</div>')
+        tree = f'<div class="tree"{data_path}>{"".join(levels)}</div>'
     if slide.get("stem"):
         stem = f'<div class="stem-card compact"><p class="stem-text">{stem_html(slide["stem"], lit=True)}</p></div>'
         # side figures under the stem: the k-th shows once k questions are answered (the last one stays)
