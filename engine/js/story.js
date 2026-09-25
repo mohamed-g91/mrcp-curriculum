@@ -3,6 +3,8 @@
    beats from the slide's numbers, and works every sum out itself:
    mean    readings drop onto a line, greyer the further from the mean; their sum is written and the mean lands on the star
    median  the same readings, one flies off and then further, the mean follows it, the median stays on the star
+   iqr     the ward's stays in a row line up in order; the middle one is the median, the middle of each half
+           a quartile, and a box between the quartiles holds the middle half; then how it is written
    mode    shoe sizes stack up, the mean is a size nobody wears, the mode is the tallest stack;
            then the same question for blood groups, where only the mode makes sense */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -114,6 +116,46 @@ const STORIES = {
     ];
   },
 
+  iqr(svg, S, later, chart) {
+    svg.classList.add(`f-${concept("median").family}`);
+    const v = S.values, n = v.length, h = (n - 1) / 2, i1 = (h - 1) / 2, i3 = n - 1 - i1, gap = (ST.W - 60) / n, X = k => 30 + (k + .5) * gap;
+    const [q1, q3] = Stats.quartiles(v), med = Stats.median(v);
+    // rank[k] is the person with the kth shortest stay
+    const rank = v.map((x, i) => [x, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p[1]);
+    const layer = svgEl("g", {}, svg), row = svgEl("g", {}, svg);
+    svgEl("path", { class: "dp-axis", d: `M16 ${ST.AX} H${ST.W - 16}` }, svg);
+    // the people stand in the order they were admitted, each with their stay over their head
+    const ppl = v.map((x, i) => {
+      const g = svgEl("g", { class: "st-row", style: `transform:translateX(${X(i)}px)` }, row);
+      drawPerson(g, 0, ST.AX - 2, i, REDUCED_MOTION ? 0 : i * 70, 1.1);
+      svgEl("text", { class: "st-num", x: 0, y: ST.AX - 64 }, g).textContent = x;
+      return g;
+    });
+    const who = k => ppl[rank[k]];
+    return [
+      // in order, shortest stay to longest
+      () => rank.forEach((i, k) => { ppl[i].style.transform = `translateX(${X(k)}px)`; }),
+      // the middle one is the median, with as many on each side
+      () => { who(h).classList.add("hit"); storyMark(layer, "median", X(h), `${concept("median").label} = ${num(med)}`, ST.TOP + 50, ST.AX - 92); },
+      // the middle of each half: the quartiles
+      () => [[i1, "Q1", q1], [i3, "Q3", q3]].forEach(([k, name, q]) => {
+        who(k).classList.add("q");
+        storyMark(layer, "median", X(k), `${name} = ${num(q)}`, ST.TOP + 116, ST.AX - 92).g.classList.add("st-q");
+      }),
+      // the box between the quartiles holds the middle half; the long stay sits outside it
+      () => {
+        svgEl("rect", { class: "st-box", x: X(i1) - gap / 2 + 3, y: ST.AX - 88, width: X(i3) - X(i1) + gap - 6, height: 96, rx: 14 }, layer);
+        svgEl("text", { class: "st-boxlab", x: X(h), y: ST.AX + 44 }, layer).textContent = `IQR ${num(q1)} to ${num(q3)} ${S.unit}`;
+        const far = who(n - 1); far.classList.remove("pulse"); void far.getBBox(); far.classList.add("pulse");
+      },
+      // and how a paper writes it
+      () => { svgEl("text", { class: "st-sum st-iqsum", x: ST.W / 2, y: ST.TOP }, layer).textContent = `${concept("median").label} ${num(med)} (IQR ${num(q1)}–${num(q3)})`; }
+    ].concat(S.panel ? [
+      // the same people on their days, under the curve they make, with a chip per spread
+      () => { chart.hidden = true; $(".st-panel", chart.parentNode).hidden = false; }
+    ] : []);
+  },
+
   mode(svg, S, later, chart) {
     const expand = counts => Object.entries(counts).flatMap(([k, c]) => Array(c).fill(k));
     const sizes = expand(S.counts).map(Number), m = Stats.mean(sizes), mo = Stats.mode(sizes);
@@ -179,6 +221,7 @@ function buildStories() {
     const start = () => {
       timers.forEach(clearTimeout); timers = [];
       chart.innerHTML = ""; beat = 0;
+      const pn = $(".st-panel", sb); if (pn) { pn.hidden = true; chart.hidden = false; }
       const svg = svgEl("svg", { class: "st-svg", viewBox: `0 0 ${ST.W} ${ST.H}`, role: "img", "aria-label": sb.closest(".slide").getAttribute("aria-label") }, chart);
       beats = STORIES[S.kind](svg, S, later, chart);
       setScene(); stepper(true);

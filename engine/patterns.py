@@ -231,6 +231,19 @@ def p_dot_plot(slide, topic):
             f'<div class="dp-measures">{_measure_dots(topic, slide["measures"], "dp-m")}</div></div>')
 
 
+def spread_panel(pn, i=0, extra=""):
+    """One spread panel: its figure, a chip per spread and the summary card (engine/js/curve.js draws it)."""
+    sm = pn["summary"]
+    chips = "".join(f'<button class="cv-chip" type="button" aria-pressed="false" data-k="{e(ch)}">{e(ch)}</button>'
+                    for ch in pn["chips"])
+    # a dots panel writes its values on the figure; an sd panel reads them out below
+    read = '<div class="cv-read" aria-live="polite"></div>' if pn["kind"] == "sd" else ""
+    title = f'<h3 class="cv-title">{e(pn["title"])}</h3>' if pn.get("title") else ""
+    return (f'<div class="cv-panel cv-k-{pn["kind"]} f-{sm["family"]}{extra}" style="--g:{i}" data-panel="{e(json.dumps(pn, ensure_ascii=False))}">'
+            f'{title}<div class="cv-chart"></div><div class="cv-chips">{chips}</div>'
+            f'{read}<div class="cv-sum"><b>{e(sm["label"])}</b><span>{e(sm["note"])}</span></div></div>')
+
+
 def p_curve(slide, topic):
     """Shapes of data drawn as curves. With steps: one graph, each concept's circle draws its shape,
     its wall (if any) and where the mean, median and mode land. With panels: side by side, each with
@@ -242,17 +255,7 @@ def p_curve(slide, topic):
                 f'<div class="cv-steps">{_measure_dots(topic, [st["concept"] for st in steps], "cv-s")}</div>'
                 f'<div class="cv-stage"><div class="cv-chart"></div><div class="cv-order" aria-live="polite"></div>'
                 f'<ul class="cv-ex"></ul></div></div>')
-    panels = []
-    for i, pn in enumerate(slide["panels"]):
-        sm = pn["summary"]
-        chips = "".join(f'<button class="cv-chip" type="button" aria-pressed="false" data-k="{e(ch)}">{e(ch)}</button>'
-                        for ch in pn["chips"])
-        # a dots panel writes its values on the figure; an sd panel reads them out below
-        read = '<div class="cv-read" aria-live="polite"></div>' if pn["kind"] == "sd" else ""
-        panels.append(
-            f'<div class="cv-panel f-{sm["family"]}" style="--g:{i}" data-panel="{e(json.dumps(pn, ensure_ascii=False))}">'
-            f'<h3 class="cv-title">{e(pn["title"])}</h3><div class="cv-chart"></div><div class="cv-chips">{chips}</div>'
-            f'{read}<div class="cv-sum"><b>{e(sm["label"])}</b><span>{e(sm["note"])}</span></div></div>')
+    panels = [spread_panel(pn, i) for i, pn in enumerate(slide["panels"])]
     one = " cv-one" if len(panels) == 1 else ""
     return heading(slide) + f'<div class="curve cv-panels{one}">{"".join(panels)}</div>'
 
@@ -261,9 +264,12 @@ def p_story(slide, topic):
     """A scene beside one figure that builds a beat per tap (the story is told in the video).
     The figure is drawn in the browser from the slide's numbers (engine/js/story.js)."""
     data = {k: slide[k] for k in ("kind", "values", "outlier", "counts", "unit", "categories", "categories_unit") if k in slide}
+    data["panel"] = bool(slide.get("panel"))
     scene = figure(slide["scene"], "st-scene") if slide.get("scene") else ""
+    # a story can end on a spread panel, shown in the figure's place at its last beat
+    panel = spread_panel(slide["panel"], extra=" st-panel").replace('<div class', '<div hidden class', 1) if slide.get("panel") else ""
     return (heading(slide) + f'<div class="story" data-story="{e(json.dumps(data, ensure_ascii=False))}">'
-            f'{scene}<div class="st-chart"></div></div>')
+            f'{scene}<div class="st-chart"></div>{panel}</div>')
 
 
 def p_clue_stem(slide, topic):

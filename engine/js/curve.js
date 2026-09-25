@@ -6,7 +6,7 @@
    - Skewed: the people pile against a grey brick wall (a floor or a ceiling) and run out into a tail on
      the open side; the mode, median and mean land apart, and the tail is named.
    Panels: side by side, each with chips that shade one spread (SD bands on a bell with the mean marked;
-   IQR, range or mean ± 2 SD on the ward's stays). One open item per graph; a click anywhere else clears. */
+   IQR, range or mean ± 2 SD on the ward's stays, stacked under their curve). One open item per graph; a click anywhere else clears. */
 const Dist = {
   // a density over real values, with its mode, median and mean worked out exactly
   make(st) {
@@ -43,6 +43,18 @@ function dropDelays(keys, gap) {
 }
 const dropGap = n => Math.min(150, 2400 / n);
 
+// a log-normal fitted over a skew's people, rising from its wall and running out into the tail
+function skewPath(D, v, o, base) {
+  const med = Stats.median(v), s = o.sigma, neg = o.shape === "negative";
+  const ln = (t, m) => t > 0 ? Math.exp(-((Math.log(t / m)) ** 2) / (2 * s * s)) / t : 0;
+  const f = neg ? t => ln(o.ceiling - t, o.ceiling - med) : t => ln(t, med);
+  const a = neg ? Math.min(...v) - .6 : 0.05, b = neg ? o.ceiling - .01 : Math.max(...v) + .6;
+  let top = 0; for (let i = 0; i <= 400; i++) top = Math.max(top, f(a + (b - a) * i / 400));
+  const tall = Math.max(...[...new Set(v)].map(u => v.filter(w => w === u).length));
+  const y = fv => base - fv / top * (tall * D.STEP + 24);
+  return { d: curvePath(f, a, b, D.x, y, 300), a, b, tall };
+}
+
 // a short brick wall standing on the axis, bricks offset on alternate rows
 function drawWall(parent, x0, w, top, base) {
   const g = svgEl("g", { class: "cv-wall" }, parent), BH = 14, BW = w / 2;
@@ -71,7 +83,17 @@ function buildCurves() {
   $$(".cv-steps-mode").forEach(cv => {
     const steps = JSON.parse(cv.dataset.steps), stops = $$(".cv-s", cv);
     const chart = $(".cv-chart", cv), order = $(".cv-order", cv), exList = $(".cv-ex", cv);
-    const W = 1000, H = 330, L = 70, R = 70, BASE = 262, PEAK = 34;
+    const W = 1000, H = 330, L = 110, R = 70, BASE = 262, PEAK = 34;
+    // the y axis at x: the share of people, in round tens, each person worth 100 / n % and step units tall
+    const yAxis = (svg, x, n, step) => {
+      const g = svgEl("g", { class: "cv-yaxis" }, svg), y = p => BASE - p * n / 100 * step, tops = [0, 10, 20, 30];
+      svgEl("path", { class: "cv-axis", d: `M${x} ${BASE} V${y(30) - 14}` }, g);
+      tops.forEach(p => {
+        svgEl("path", { class: "dp-tick", d: `M${x - 7} ${y(p)} H${x}` }, g);
+        svgEl("text", { class: "cv-ylab", x: x - 12, y: y(p) + 6 }, g).textContent = `${p}%`;
+      });
+      svgEl("text", { class: "cv-ytitle", transform: `translate(${x - 60} ${(BASE + y(30)) / 2}) rotate(-90)` }, g).textContent = "% of people";
+    };
     const COLS = [-2.1, -1.4, -.67, 0, .67, 1.4, 2.1], COUNTS = [1, 2, 4, 6, 4, 2, 1];
     let open = null;
     // everything after the people waits for the last of them to land
@@ -94,7 +116,7 @@ function buildCurves() {
        mean, the median and the mode, one at a time */
     const drawPeople = st => {
       const fam = concept(st.concept).family, v = st.values, side = st.shape === "positive" ? "left" : "right";
-      const D = drawStays(chart, v, { unit: st.axis || "", W, H: H + 14, AX: BASE, wall: side, counts: false, breaks: st.breaks, scale: .8 });
+      const D = drawStays(chart, v, { unit: st.axis || "", W, H: H + 14, AX: BASE, wall: side, counts: false, breaks: st.breaks, scale: .8, left: side === "left" ? 150 : L });
       D.svg.setAttribute("class", `dp-svg cv-svg f-${fam}`);
       D.svg.setAttribute("aria-label", concept(st.concept).label);
       D.svg.classList.add("cv-drop");
@@ -103,14 +125,9 @@ function buildCurves() {
       const delays = dropDelays(v.map(String), dropGap(v.length));
       D.dots.forEach((d, i) => { const p = $(".cv-person", d); if (p) p.style.animationDelay = `${delays[i]}ms`; });
       settle(v.length);
-      const lo = Math.min(...v), hi = Math.max(...v), med = Stats.median(v);
-      const s = st.sigma, ln = (t, m) => t > 0 ? Math.exp(-((Math.log(t / m)) ** 2) / (2 * s * s)) / t : 0;
-      const f = st.shape === "positive" ? t => ln(t, med) : t => ln(st.ceiling - t, st.ceiling - med);
-      const a = st.shape === "positive" ? 0.05 : lo - .6, b = st.shape === "positive" ? hi + .6 : st.ceiling - .01;
-      let top = 0; for (let i = 0; i <= 400; i++) top = Math.max(top, f(a + (b - a) * i / 400));
-      const tall = Math.max(...[...new Set(v)].map(u => v.filter(w => w === u).length));
-      const y = fv => BASE - fv / top * (tall * D.STEP + 24);
-      const d = curvePath(f, a, b, D.x, y, 300);
+      yAxis(D.back, 84, v.length, D.STEP);
+      svgEl("path", { class: "cv-axis", d: `M84 ${BASE} H${150 - 8}` }, D.back);
+      const lo = Math.min(...v), hi = Math.max(...v), { d, a, b, tall } = skewPath(D, v, st, BASE);
       svgEl("path", { class: "cv-area", d: `${d} L${D.x(b)} ${BASE} L${D.x(a)} ${BASE} Z` }, D.back);
       svgEl("path", { class: "cv-line", d, pathLength: 1 }, D.back);
       // the wall stands where no value can go: 0 days, or the ceiling; its name sits over it, reading inwards
@@ -156,6 +173,7 @@ function buildCurves() {
         const delays = dropDelays(keys, dropGap(keys.length));
         at.forEach(([px, py], n) => drawPerson(svg, px, py, n, delays[n], .85));
         settle(keys.length);
+        yAxis(svg, L - 20, keys.length, 37);
       } else settle(1);
       svgEl("path", { class: "cv-area", d: `${d} L${x(D.hi)} ${BASE} L${x(D.lo)} ${BASE} Z` }, svg);
       svgEl("path", { class: "cv-line", d, pathLength: 1 }, svg);
@@ -216,7 +234,7 @@ function buildCurves() {
     if (P.kind === "sd") {
       const BASE = 196, L = 30, R = 30, x = t => L + (t + 3.5) / 7 * (W - L - R), y = v => BASE - v * 140;
       const f = t => Math.exp(-t * t / 2);
-      const svg = svgEl("svg", { class: "cv-svg", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": P.title }, chart);
+      const svg = svgEl("svg", { class: "cv-svg", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": P.title || P.axis }, chart);
       layer = svgEl("g", {}, svg);
       const d = curvePath(f, -3.5, 3.5, x, y);
       svgEl("path", { class: "cv-area", d: `${d} L${x(3.5)} ${BASE} L${x(-3.5)} ${BASE} Z` }, svg);
@@ -233,10 +251,15 @@ function buildCurves() {
       valuePill(mg, x(0), BASE - 164, "f-par", `${concept("mean").label} ${P.mean} ${P.unit}`);
       bell = { x, y, f, BASE };
     } else {
-      // the ward's stays shoulder to shoulder, in order, so the middle half can be boxed
-      D = drawStays(chart, P.values, { unit: P.unit, W: 1000, H: 250, AX: 176, wall: "left", row: true });
+      // the ward's stays stacked on their days against a wall at 0, under the curve they make
+      const AX = 214;
+      D = drawStays(chart, P.values, { unit: P.unit, W: 1000, H: 290, AX, wall: "left", counts: false, scale: .8, left: 130 });
       D.svg.classList.add("cv-svg");
-      drawWall(D.back, D.x(0) - 14, 28, 176 - 84, 176);
+      const S = skewPath(D, P.values, { shape: "positive", sigma: P.sigma || .64 }, AX);
+      svgEl("path", { class: "cv-area", d: `${S.d} L${D.x(S.b)} ${AX} L${D.x(S.a)} ${AX} Z` }, D.back);
+      svgEl("path", { class: "cv-line", d: S.d, pathLength: 1 }, D.back);
+      D.tall = S.tall;
+      drawWall(D.back, D.x(0) - 14, 28, AX - S.tall * D.STEP - 30, AX);
       layer = svgEl("g", {}, D.back);
     }
     const shade = k => {
@@ -250,20 +273,20 @@ function buildCurves() {
         svgEl("text", { class: "cv-pct", x: x(0) - 70, y: BASE - 30 }, layer).textContent = P.pct[k];
         read.innerHTML = `<b>${lo}–${hi} ${esc(P.unit)}</b> · ${esc(P.pct[k])}`;
       } else {
-        // each spread is labelled on the figure: the middle half boxed, the range bracketed, mean ± 2 SD barred
-        const v = P.values, [q1, q3] = Stats.quartiles(v), m = Stats.mean(v), sd = Stats.sd(v), x = D.x, AX = D.AX;
+        // each spread is labelled on the figure, above the curve: the middle half boxed, the range bracketed,
+        // mean ± 2 SD barred (the SD in whole days, as a paper would report it)
+        const v = P.values, [q1, q3] = Stats.quartiles(v), m = Stats.mean(v), sd = Math.round(Stats.sd(v)), x = D.x, AX = D.AX;
         const order = v.map((u, i) => [u, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p[1]);
-        const px = i => +D.dots[order[i]].dataset.x, n = v.length, pad = D.PW / 2 + 8, yy = AX - 92;
+        const px = i => +D.dots[order[i]].dataset.x, n = v.length, pad = D.PW / 2 + 8, yy = AX - D.tall * D.STEP - 62;
         const label = (tx, text, cls = "cv-lab") => { svgEl("text", { class: cls, x: tx, y: yy - 14 }, layer).textContent = text; };
         const bracket = (a, b, cls) => svgEl("path", { class: cls, d: `M${a} ${yy + 12} V${yy} H${b} V${yy + 12}` }, layer);
         const key = ["iqr", "range", "msd"][k];
         if (key === "iqr") {
-          // the quartiles are the middles of each half, so the box runs from the one to the other
-          const i0 = Math.floor((Math.floor(n / 2) - 1) / 2), i1 = n - 1 - i0;
-          D.dots.forEach((d, i) => d.classList.add(order.indexOf(i) >= i0 && order.indexOf(i) <= i1 ? "hit" : "out"));
-          svgEl("rect", { class: "cv-box", x: px(i0) - pad, y: AX - 60, width: px(i1) - px(i0) + 2 * pad, height: 66, rx: 12 }, layer);
-          bracket(px(i0), px(i1), "cv-brace");
-          label((px(i0) + px(i1)) / 2, `IQR ${num(q1)} to ${num(q3)} ${P.unit}`);
+          // the box runs from the lower quartile to the upper one, around everyone between them
+          D.dots.forEach((d, i) => d.classList.add(v[i] >= q1 && v[i] <= q3 ? "hit" : "out"));
+          svgEl("rect", { class: "cv-box", x: x(q1) - pad, y: AX - D.tall * D.STEP - 10, width: x(q3) - x(q1) + 2 * pad, height: D.tall * D.STEP + 16, rx: 12 }, layer);
+          bracket(x(q1), x(q3), "cv-brace");
+          label((x(q1) + x(q3)) / 2, `IQR ${num(q1)} to ${num(q3)} ${P.unit}`);
         }
         if (key === "range") {
           bracket(px(0), px(n - 1), "cv-range");
@@ -279,7 +302,7 @@ function buildCurves() {
             svgEl("text", { class: "cv-bad", x: 6, y: yy - 16 }, layer).textContent = `${num(Math.round(lo)).replace("-", "−")} ${P.unit}?`;
           }
           svgEl("path", { class: "cv-msdcap", d: `M${x(hi)} ${yy - 8} v16` }, layer);
-          label((w0 + x(hi)) / 2 + 40, `${num(m)} ± 2 × ${num(sd)}`, "cv-lab par");
+          label((w0 + x(hi)) / 2 + 40, `${num(m)} ± 2 × ${sd}`, "cv-lab par");
         }
       }
     };

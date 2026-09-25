@@ -47,7 +47,7 @@ function drawStays(host, values, o) {
   const run = o.breaks === false ? all : runs.reduce((a, b) => b.length > a.length ? b : a);
   const main = []; for (let d = run[0]; d <= run[run.length - 1]; d++) main.push(d);
   const pre = all.filter(v => v < run[0]), post = all.filter(v => v > run[run.length - 1]);
-  const L = wall === "left" ? 70 : 40, R = wall === "right" ? 70 : 40, BR = 64;
+  const L = o.left || (wall === "left" ? 70 : 40), R = wall === "right" ? 70 : 40, BR = 64;
   const sw = (W - L - R - (pre.length ? BR : 0) - (post.length ? BR : 0)) / (pre.length + main.length + post.length);
   const slotX = new Map();
   let at = L;

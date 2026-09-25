@@ -98,14 +98,12 @@ learn:
         tail_label: a few long stays
         examples: [Length of stay, CRP, Alcohol units, Triglycerides]
 
-  # spread for each shape: SD bands on the heights bell; the ward's stays with the IQR boxing the middle half,
-  # and range and mean ± 2 SD (6 ± 2 × 8.2, below 0 days) for contrast
+  # spread in normal data: SD bands on the heights bell
   - id: spread
     pattern: curve
-    title: Spread
+    title: "Spread: standard deviation"
     panels:
-      - title: Standard deviation
-        kind: sd
+      - kind: sd
         mean: 162
         sd: 7
         unit: cm
@@ -113,12 +111,25 @@ learn:
         chips: [±1 SD, ±2 SD]
         pct: [68%, 95%]
         summary: { family: par, label: Mean (SD), note: Normal data }
-      - title: Interquartile range
-        kind: dots
-        values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
-        unit: days
-        chips: [IQR, Range, Mean ± 2 SD]
-        summary: { family: np, label: Median (IQR), note: Skewed data }
+
+  # spread in skewed data, built up: the ward's stays in the order they were admitted; in order, the 6th is the
+  # median (3), and the middle of each half of five a quartile (the 3rd, 2; the 9th, 6): median 3 (IQR 2–6).
+  # Then the same people stacked on their days under their curve, with the IQR boxed, and range and
+  # mean ± 2 SD (6 ± 2 × 8, the stem's SD in whole days: below 0) for contrast
+  - id: story-iqr
+    pattern: story
+    title: "Spread: interquartile range"
+    kind: iqr
+    scene: stays-calendar
+    unit: days
+    values: [5, 2, 30, 3, 1, 8, 2, 4, 6, 3, 2]
+    panel:
+      kind: dots
+      values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 30]
+      sigma: 0.64
+      unit: days
+      chips: [IQR, Range, Mean ± 2 SD]
+      summary: { family: np, label: Median (IQR), note: Skewed data }
 
   # on hold until the slides before it are settled
   - id: traps

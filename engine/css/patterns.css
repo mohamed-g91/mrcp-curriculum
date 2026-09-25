@@ -282,6 +282,8 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-wall rect{fill:var(--wall)}
 .cv-wlab{fill:var(--muted);font:700 20px var(--sans);text-anchor:end}
 .cv-wlab.right{text-anchor:start}
+.cv-ylab{fill:var(--muted);font:600 17px var(--sans);text-anchor:end}
+.cv-ytitle{fill:var(--muted);font:600 19px var(--sans);text-anchor:middle}
 .cv-alab{fill:var(--muted);font:600 22px var(--sans);text-anchor:middle}
 .cv-person{transform-box:fill-box;transform-origin:bottom center;animation:pillIn .45s var(--ease) both}
 .cv-body{fill:color-mix(in srgb,var(--primary) 70%,var(--surface));stroke:var(--sc-line);stroke-width:2}
@@ -334,6 +336,7 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-order .cv-sum{margin-left:clamp(8px,calc(2 * var(--u)),28px);padding:2px 14px}
 .cv-one{grid-template-columns:minmax(0,1fr)}
 .cv-one .cv-panel .cv-chart{max-width:900px}
+.cv-one .cv-k-sd .cv-chart{max-width:600px}
 .cv-lab{fill:var(--x-ink);font:800 22px var(--sans);text-anchor:middle;animation:fadeIn .4s ease}
 .cv-lab.ink{fill:var(--ink)}
 .cv-lab.par{fill:var(--par-ink)}
@@ -528,6 +531,9 @@ a.next-topic:hover{border-color:var(--primary)}
 /* ---------- story: a scene beside one figure that builds a beat per tap ---------- */
 .story{display:grid;grid-template-columns:clamp(200px,calc(24 * var(--u)),300px) minmax(0,1fr);gap:clamp(16px,calc(2.4 * var(--u)),36px);align-items:center;width:100%;max-width:1280px;margin:clamp(8px,calc(2 * var(--u)),28px) auto 0}
 .story>.fig{margin:0}
+.story>.st-chart,.story>.st-panel{grid-column:2;grid-row:1}
+.st-panel[hidden]{display:none}
+.story>.st-panel .cv-chart{max-width:none}
 .st-chart{position:relative;width:100%;border-radius:var(--radius-lg);outline:none}
 .st-chart.stepper{cursor:pointer}
 .st-chart.stepper:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
@@ -550,6 +556,17 @@ a.next-topic:hover{border-color:var(--primary)}
 .st-pt.pulse circle{animation:stPulse .7s var(--ease)}
 @keyframes stPulse{40%{transform:scale(1.5)}}
 .st-sum{fill:var(--ink);font:750 26px var(--sans);text-anchor:middle;animation:fadeIn .45s ease both}
+.st-row{transition:transform .8s var(--ease)}
+.st-num{fill:var(--ink);font:750 24px var(--sans);text-anchor:middle;transition:fill .3s ease}
+.st-row .cv-body{transition:fill .3s ease}
+.st-row.hit .cv-body{fill:var(--x-solid)}
+.st-row.q .cv-body{fill:color-mix(in srgb,var(--x-solid) 45%,var(--surface))}
+.st-row.hit .st-num,.st-row.q .st-num{fill:var(--x-ink)}
+.st-row.pulse .cv-person{animation:stPulse .7s var(--ease)}
+.dp-mk.st-q text{font-size:22px}
+.st-box{fill:color-mix(in srgb,var(--x-solid) 12%,transparent);stroke:var(--x-solid);stroke-width:3;animation:fadeIn .4s ease both}
+.st-boxlab{fill:var(--x-ink);font:800 24px var(--sans);text-anchor:middle;animation:fadeIn .4s ease both}
+.st-iqsum{fill:var(--x-ink)}
 .st-gone{opacity:0!important;transition:opacity .4s ease}
 .st-mk{transition:transform .8s var(--ease),opacity .4s ease}
 .st-res{transform-box:fill-box;transform-origin:center;animation:pillIn .5s var(--ease) .25s both}
@@ -564,4 +581,4 @@ a.next-topic:hover{border-color:var(--primary)}
 .st-no text{fill:var(--muted);font:750 26px var(--sans)}
 .st-no path{stroke:var(--bad-solid);stroke-width:3.5;stroke-linecap:round}
 @media (prefers-reduced-motion:reduce){.st-pt,.st-mk{transition:none}.st-pt circle.drop,.st-star,.st-res,.st-sum,.st-shoe,.st-no{animation:none}}
-@container (max-width:900px){.story{grid-template-columns:minmax(0,1fr)}.story>.fig{width:min(45%,170px);margin-inline:auto}}
+@container (max-width:900px){.story>.st-chart,.story>.st-panel{grid-column:1;grid-row:2}.story{grid-template-columns:minmax(0,1fr)}.story>.fig{width:min(45%,170px);margin-inline:auto}}
