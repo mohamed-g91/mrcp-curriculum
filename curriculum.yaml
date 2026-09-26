@@ -14,5 +14,5 @@ specialties:
     title: Statistics
     topics:
       - { slug: data-types,            title: Types of data,            status: draft,   video: null }
-      - { slug: centre-shape-spread,   title: Centre, shape and spread, status: draft, video: null }
+      - { slug: centre-shape-spread,   title: "Centre, shape and spread", status: draft, video: null }
       - { slug: choose-the-right-test, title: Choosing the right test, status: planned, video: null }

@@ -310,6 +310,10 @@ def main():
                 links[tid] = f'../{spec["id"]}/{tp["slug"]}.html'
     for spec in specs:
         for tp in spec["topics"]:
+            # an unquoted comma in a { } line splits the title into stray keys ("Centre, shape and spread")
+            stray = set(tp) - {"slug", "title", "status", "video"}
+            if stray:
+                errors.append(f'{spec["prefix"]}.{tp.get("slug")}: unknown keys {sorted(stray)} in curriculum.yaml; quote a title that has a comma')
             if tp.get("status", "planned") == "planned":
                 continue
             tid = f'{spec["prefix"]}.{tp["slug"]}'
