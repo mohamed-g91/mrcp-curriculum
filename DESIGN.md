@@ -33,7 +33,7 @@ A clinical look with conviction: one primary blue, one colour per concept family
 | Primary colour | Deep blue (#1F4E8C) for step numbers, stem accents, links, primary buttons and the progress bar |
 | Concept families | One family per concept group, each with a background, ink, border and solid shade (coral = categorical, green = ranked, purple = numerical, grey = neutral) |
 | Family use | A concept keeps its colour, label and letter on every slide, card, bucket, choice and flow box. Labels come from the topic's `concepts`, never retyped. A concept with no `letter` shows its icon in its circles instead, and figures write its name, not a symbol (Mean = 6, never x̄ = 6); in *Centre, shape and spread* the mean, median and mode work this way |
-| Brand | The wordmark **mrcp_Gafar** (site title in `curriculum.yaml`): Inter 800, underscore in the primary blue. It opens the top bar on every page (so it is on camera in every video), heads the home page, and ends every page title ("Types of data · mrcp_Gafar") |
+| Brand | The wordmark **mrcp_Gafar** (site title in `curriculum.yaml`): Inter 800, underscore in the primary blue. It opens the top bar on every page (so it is on camera in every video) and links back to the home page, heads the home page, and ends every page title ("Types of data · mrcp_Gafar") |
 | Title rule | A single-colour gradient under the page title and the home page heading: primary blue fading to transparent |
 | Headings | Serif (Source Serif 4), weight 600. On the stage: title 80 px, slide heading 44 px |
 | Body text | Sans-serif (Inter). On the stage: 20 px body, 23 px stems, 16 px small text; contrast at least 4.5:1 |
