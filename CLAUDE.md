@@ -14,6 +14,10 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 - A teaching slide fits the 1280 × 720 stage with its answers open.
 - Every page is illustrated: minimal figures that picture the topic, fit the space the slide already has and never give an answer away. A new figure starts as three mockups for the user to choose from.
 - Every slide entrance uses one timing (0.5 s each, 0.16 s apart), a figure entering with the content it belongs to.
+- One set of numbers per topic: an example keeps the same mean, SD and median on every slide and case.
+- Order is its own step: data appear in the order they came, and sorting is shown just before the median or quartiles.
+- One figure builds in one motion: moving from one view of the same data to another never swaps to a second figure.
+- Distribution graphs show both axes (value, and % of people); neutral items stay grey, with no colour flashes.
 - Reading order, one control per job, and lines only where they mean something (see DESIGN.md, Behaviour rules).
 
 ## How it is built
@@ -39,6 +43,8 @@ A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERN
 3. Check: `node checks/check.mjs dist/<specialty>/<slug>.html --shots <scratchpad>/shots`, then look at the screenshots. The check fails on overflow, a slide that scrolls on the stage, a case that does not solve, a wrong score, console errors or network requests.
 4. Commit with a short message. Cloudflare Pages builds and publishes from `main`.
 
+Mockups go to the user as a picture: write a static SVG (no scripts), render it to PNG with headless Chrome (`chrome --headless=new --screenshot=<png> --window-size=W,H file:///<svg>`) and send the PNG. Inline widgets and HTML pages with scripts do not show for them.
+
 ## Permanent IDs
 
 - Topic IDs are `<prefix>.<slug>` (e.g. `stats.data-types`); never rename a published slug.
@@ -50,6 +56,7 @@ A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERN
 
 - Most topics are drafted by Claude and reviewed by the user; sometimes the user writes the content and Claude only builds it. A drafted topic stays `status: draft` until the user approves it.
 - Topic content must be accurate for the MRCP. List the sources in the topic's `sources`. Flag anything uncertain to the user instead of guessing.
+- If the user asks for a number that the data on screen cannot give, show the arithmetic and say so; if they keep it, note the choice in a YAML comment beside it.
 - Question bank items must be original, written from guidelines and textbooks. PassMedicine or Pastest material can guide which topics to cover and their weight, never be copied.
 - Before building a new topic, confirm its slide list, steps and cases with the user.
 - British English; plain, short sentences on slides.

@@ -248,7 +248,34 @@ async function layoutPass(size) {
         await sleep(600);
       }
     }
-    if (r.tree && !path) {
+    const gridTree = r.tree ? await js(`!!Deck.slides[Deck.i].querySelector(".tree-grid")`) : false;
+    if (r.tree && !path && gridTree) {
+      // a tree in rows: Yes, Yes ends early; a No at step 1 skips step 2; then on to an end at step 4
+      const tap = (k, a) => js(`Deck.slides[Deck.i].querySelectorAll(".tree-level")[${k}].querySelector(".tree-a.${a}").click(), true`);
+      const shown = k => js(`Deck.slides[Deck.i].querySelectorAll(".tree-level")[${k}].classList.contains("shown")`);
+      await tap(0, "yes"); await sleep(300); await tap(1, "yes"); await sleep(900);
+      await measure(size, `slide ${i + 1} tree yes yes`);
+      if (!await js(`!!Deck.slides[Deck.i].querySelector(".tg-final.shown")`)) fail(`${size.name} slide ${i + 1}: Yes, Yes did not reach an answer`);
+      await shot(`${tag}-yes`);
+      await tap(0, "no"); await sleep(900);
+      await measure(size, `slide ${i + 1} tree skip`);
+      if (await shown(1) || !await shown(2)) fail(`${size.name} slide ${i + 1}: a No at step 1 did not skip to step 3`);
+      await tap(2, "yes"); await sleep(300); await tap(3, "no"); await sleep(900);
+      await measure(size, `slide ${i + 1} tree to step 4`);
+      if (!await js(`!!Deck.slides[Deck.i].querySelector(".tg-final.shown")`)) fail(`${size.name} slide ${i + 1}: step 4 did not reach an answer`);
+      await shot(`${tag}-no`);
+      await js(`Deck.slides[Deck.i].querySelector(".tg-final.shown .tree-final.zoomable").click(), true`);
+      await sleep(1400);
+      const z = await js(`(() => { const s = Deck.slides[Deck.i]; return { bubble: !!s.querySelector(".spec-bubble.open"), kept: !!s.querySelector(".tg-final.shown") }; })()`);
+      if (!z.bubble) fail(`${size.name} slide ${i + 1}: tapping the final answer did not open its examples`);
+      if (!z.kept) fail(`${size.name} slide ${i + 1}: tapping the final answer reset the tree`);
+      const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`);
+      if (out) fail(`${size.name} slide ${i + 1}: ${out}`);
+      await shot(`${tag}-zoom`);
+      await js(`document.body.click(), true`);
+      await sleep(600);
+    }
+    if (r.tree && !path && !gridTree) {
       // every Yes down to the end, then a No part-way
       for (let k = 0; k < r.tree - 1; k++) {
         await js(`Deck.slides[Deck.i].querySelectorAll(".tree-level")[${k}].querySelector(".tree-a.yes").click(), true`);

@@ -68,8 +68,8 @@ function buildTrees() {
   });
 }
 /* A tree laid out in rows. Each answer leads on to a step (the next, or a skip further down) or ends
-   on a final under its step; the answers chosen so far form a trail, and a line is drawn along it:
-   green for Yes, coral for No. A worked tree (data-path) checks the trail's answers in order. */
+   on a final under its step; the answers chosen so far form a trail, and a small arrow disc in each gap along
+   it points the way. A worked tree (data-path) checks the trail's answers in order. */
 function buildGridTree(tree) {
   const rules = JSON.parse(tree.dataset.steps), levels = $$(".tree-level", tree), finals = $$(".tg-final", tree);
   const zoom = makeZoom(tree.closest(".slide"));
@@ -82,7 +82,7 @@ function buildGridTree(tree) {
     trail.forEach(([i, a]) => { const r = rules[i][a]; if (r.step != null) shown.push(r.step); else end = [i, a]; });
     return { shown, end };
   };
-  // a line from the chosen answer to where it leads: down and across to a cell below, or across to one beside
+  // where each chosen answer leads, shown by an arrow in the gap between the two cells
   const drawLinks = () => {
     links.innerHTML = "";
     const box = tree.getBoundingClientRect(), k = box.width / tree.offsetWidth || 1;
@@ -93,11 +93,12 @@ function buildGridTree(tree) {
       const to = rule.step != null ? $(".tree-q", levels[rule.step]) : end && end[0] === i ? $(".tree-final", finals.find(f => +f.dataset.from === i && f.dataset.a === a)) : null;
       if (!btn || !to) return;
       const s = rel(btn), q = rel(pill), t = rel(to), cx = v => (v.l + v.r) / 2, cy = v => (v.t + v.b) / 2;
-      // below: down from the answer, across, and down into the next cell; beside: straight across from pill to pill
-      const d = t.t >= s.b - 2
-        ? `M${cx(s)} ${s.b} V${(s.b + t.t) / 2} H${cx(t)} V${t.t}`
-        : `M${q.r} ${cy(q)} H${t.l}`;
-      svgEl("path", { class: a, d, pathLength: 1 }, links);
+      // no lines: a small arrow disc in the gap points the way, down to a cell below or across to one beside
+      const below = t.t >= s.b - 2;
+      const [ax, ay, turn] = below ? [cx(t), (s.b + t.t) / 2, 90] : t.l >= q.r ? [(q.r + t.l) / 2, cy(t), 0] : [(t.r + q.l) / 2, cy(t), 180];
+      const g = svgEl("g", { class: "tg-arrow", transform: `translate(${ax} ${ay}) rotate(${turn})` }, links);
+      svgEl("circle", { r: 15 }, g);
+      svgEl("path", { d: "M-6 0 H6 M1 -5 L6 0 L1 5" }, g);
     });
   };
   const render = () => {

@@ -434,10 +434,12 @@ a.next-topic:hover{border-color:var(--primary)}
 .tree-grid .tree-level:first-child.shown>.tree-q{animation:none}
 .tg-final.shown>.tree-final{animation:finalIn .6s cubic-bezier(.34,1.56,.64,1) .35s both}
 .tree-grid .tree-label{font-size:clamp(19px,calc(2 * var(--u)),26px)}
-.tg-links{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:-1}
-.tg-links path{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:cvDraw .45s var(--ease) forwards}
-.tg-links .yes{stroke:var(--ok-bd)}
-.tg-links .no{stroke:var(--bad-bd)}
+.tg-links{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.tg-arrow{animation:fadeIn .35s ease .15s both}
+.tg-arrow circle{fill:var(--surface-2)}
+.tg-arrow path{fill:none;stroke:var(--primary);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.tree.tree-grid{row-gap:clamp(30px,calc(3.4 * var(--u)),42px)}
+.tree-grid .tree-answers{margin-top:clamp(14px,calc(1.6 * var(--u)),20px)}
 /* narrow: one column in reading order, each step followed by its finals; only what the trail reaches takes space */
 @container (max-width:700px){
   .tree.tree-grid{grid-template-columns:minmax(0,1fr)}
@@ -589,6 +591,15 @@ a.next-topic:hover{border-color:var(--primary)}
 .st-pt.st-d2 circle{fill:color-mix(in srgb,var(--ink) 36%,var(--page))}
 .st-pt.sum circle{animation:dpSum .6s var(--ease)}
 .st-pt.pulse circle{animation:stPulse .7s var(--ease)}
+/* the median story: values stay under the row until the readings fall onto the line; the wild one grows bolder */
+.st-numrow .st-pt:not(.down) .st-num{opacity:1}
+.st-farseg{transition:opacity .5s ease}
+.st-farhide .st-farseg{opacity:0}
+.st-pt circle,.st-pt .st-num{transition:fill .3s ease,transform .6s var(--ease),opacity .5s ease}
+.st-pt.w1 circle{transform:scale(1.35)}
+.st-pt.w2 circle{transform:scale(1.8)}
+.st-pt.w1 .st-num{font-size:28px;font-weight:850;transform:translateY(6px)}
+.st-pt.w2 .st-num{font-size:34px;transform:translateY(14px)}
 @keyframes stPulse{40%{transform:scale(1.5)}}
 .st-sum{fill:var(--ink);font:750 26px var(--sans);text-anchor:middle;animation:fadeIn .45s ease both}
 .st-row{transition:transform .8s var(--ease)}

@@ -145,6 +145,21 @@ learn:
       - { family: np, icon: ruler, label: Mean − 2 SD below zero, answer: "Skewed. A stay or a count cannot be negative, so mean ± SD misleads." }
       - { family: np, icon: middle, label: Skewed data, answer: "Median (IQR) and non-parametric tests. A log transform often makes right skew normal." }
 
+  # the whole algorithm on its own, to explore every branch (the next slide works it on the pneumonia stays)
+  - id: algorithm
+    pattern: decision-tree
+    title: Normal or skewed?
+    steps:
+      - { q: "Value can't be negative?", at: [1, 1], no: { to: 3 } }
+      - { q: "Mean − 2 SD below 0?",     at: [1, 2], yes: positive }
+      - { q: "Mean and median apart?",   at: [2, 1], no: normal }
+      - { q: "Mean above median?",       at: [2, 2], no: negative }
+    end: positive
+    examples:
+      normal: [Height, Haemoglobin, Serum sodium]
+      positive: [Length of stay, CRP, Alcohol units, Triglycerides]
+      negative: [Gestational age at birth, Age at death in the UK]
+
   - id: hook-solved
     pattern: decision-tree
     title: Back to the pneumonia stays
@@ -271,6 +286,25 @@ practise:
         answer: negative
         hint: Is the mean above or below the median?
         why: "The mean is below the median: a few younger deaths make a tail to the left."
+
+      # traps: mean − 2 SD is below 0, but the value can be negative, so that says nothing about skew
+      - id: c10
+        scene: case-glucose
+        twist: true
+        stem: In a trial of 240 adults with type 2 diabetes, [[the fall in HbA1c after 6 months had a mean of 8 mmol/mol (SD 10) and a median of 8 mmol/mol]].
+        question: What shape is the distribution of the fall in HbA1c?
+        answer: normal
+        hint: Can a fall in HbA1c be less than 0?
+        why: "Some patients' HbA1c rose, so a fall can be negative: 8 − 2 × 10 = −12 is no sign of skew. The mean and median match: normal."
+
+      - id: c11
+        scene: case-hip
+        twist: true
+        stem: In 250 women over 65 screened by DEXA, [[the hip T-score had a mean of −1.4 (SD 1.0) and a median of −1.4]].
+        question: What shape is the distribution of the hip T-score?
+        answer: normal
+        hint: Can a T-score be below 0?
+        why: "A T-score counts SDs from a young adult's mean, so it is often below 0: −1.4 − 2 × 1.0 = −3.4 says nothing about skew. The mean and median match: normal."
 
   - id: end
     pattern: end
