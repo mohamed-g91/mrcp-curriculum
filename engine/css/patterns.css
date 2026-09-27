@@ -223,6 +223,18 @@ mark.clue{cursor:pointer;background:var(--x-bg);color:var(--x-ink);border-bottom
 .rcard-label{font-family:var(--serif);font-weight:600;font-size:clamp(19px,calc(2.2 * var(--u)),28px);color:var(--x-ink);line-height:1.15}
 .rcard-answer{display:none;font-size:var(--fs-body);font-weight:600;color:var(--ink);padding-top:10px;border-top:1px solid var(--x-bd);width:100%;animation:specIn .35s var(--ease)}
 .rcard.on{background:var(--x-bg)}
+/* a card's figure: drawn in the card's family colour, over neutral greys */
+.rcard-fig{margin:0;width:100%}
+.rcard-fig svg{display:block;width:100%;height:auto;max-height:clamp(90px,calc(13 * var(--u)),130px)}
+.rfig .rf-axis,.rfig .rf-tick{stroke:var(--border-strong);stroke-width:2;fill:none}
+.rfig .rf-bar{fill:var(--surface-2);stroke:var(--border-strong);stroke-width:1.5}
+.rfig .rf-whisk,.rfig .rf-ci{stroke:var(--x-ink);stroke-width:4;fill:none;stroke-linecap:round}
+.rfig .rf-band{fill:var(--x-bd)}
+.rfig .rf-mean{stroke:var(--x-ink);stroke-width:2.5;stroke-dasharray:5 4}
+.rfig .rf-null{stroke:var(--border-strong);stroke-width:2;stroke-dasharray:5 4}
+.rfig .rf-other{stroke:var(--border-strong);stroke-width:3;stroke-linecap:round}
+.rfig .rf-other-sq{fill:var(--border-strong)}
+.rfig .rf-sq{fill:var(--x-solid);stroke:var(--sc-line);stroke-width:1.5}
 .rcard.on .rcard-answer{display:block}
 .rcard.on .rcard-ico{background:var(--x-solid);color:#fff}
 .next-topic{align-self:flex-start;display:inline-flex;align-items:center;gap:12px;margin-top:clamp(8px,calc(1.6 * var(--u)),20px);padding:12px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border-strong);color:var(--ink);text-decoration:none;box-shadow:var(--edge),var(--shadow);font-size:var(--fs-body)}
@@ -574,6 +586,14 @@ a.next-topic:hover{border-color:var(--primary)}
 .st-rowlayer{transition:opacity .4s ease}
 .st-chart{position:relative;width:100%;border-radius:var(--radius-lg);outline:none}
 .st-chart.stepper{cursor:pointer}
+/* Back and Next for a figure built step by step, small in its top-right corner */
+.step-ctl{position:absolute;top:0;right:0;display:flex;gap:6px;z-index:2}
+.step-btn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;border-radius:50%;border:1px solid var(--border-strong);background:var(--surface);color:var(--primary);cursor:pointer;box-shadow:var(--shadow)}
+.step-btn .ico{width:16px;height:16px}
+.step-btn:hover:not(:disabled){border-color:var(--primary)}
+.step-btn:disabled{opacity:.35;cursor:default;box-shadow:none}
+.step-btn:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+@container (max-width:900px){.st-chart{padding-top:44px}}
 .st-chart.stepper:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
 .st-svg{display:block;width:100%;height:auto;overflow:visible;transition:opacity .45s ease}
 .st-svg.st-next{position:absolute;left:0;top:0;animation:fadeIn .5s ease .2s both}
@@ -656,10 +676,10 @@ a.next-topic:hover{border-color:var(--primary)}
 .working{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(20px,calc(3 * var(--u)),44px);align-items:center;width:100%;max-width:1200px;margin-inline:auto}
 .wk-side{display:flex;flex-direction:column;gap:clamp(12px,calc(2 * var(--u)),24px);min-width:0}
 .wk-side .stem-scene{height:clamp(130px,calc(18 * var(--u)),230px)}
-.wk-steps{display:flex;flex-direction:column;gap:clamp(12px,calc(1.6 * var(--u)),20px);min-height:clamp(260px,calc(34 * var(--u)),430px);padding:clamp(6px,calc(1 * var(--u)),12px) clamp(14px,calc(2 * var(--u)),26px);border-radius:var(--radius-lg);outline:none}
+.wk-steps{position:relative;display:flex;flex-direction:column;gap:clamp(12px,calc(1.6 * var(--u)),20px);min-height:clamp(260px,calc(34 * var(--u)),430px);padding:clamp(6px,calc(1 * var(--u)),12px) clamp(14px,calc(2 * var(--u)),26px);border-radius:var(--radius-lg);outline:none}
 .wk-steps.stepper{cursor:pointer}
 .wk-steps.stepper:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
-.wk-q{margin:0;font-size:var(--fs-h3);line-height:1.3}
+.wk-q{margin:0;padding-right:84px;font-size:var(--fs-h3);line-height:1.3}
 .wk-lines{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:clamp(10px,calc(1.4 * var(--u)),18px)}
 .wk-line{display:flex;align-items:center;flex-wrap:wrap;gap:12px;font:800 clamp(20px,calc(2.3 * var(--u)),30px) var(--sans);color:var(--x-ink);font-variant-numeric:tabular-nums;visibility:hidden}
 .wk-line.on{visibility:visible;animation:specIn .45s var(--ease)}

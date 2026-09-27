@@ -88,14 +88,16 @@ learn:
         pct: [95% of women, 95% CI for the mean]
         tags: ["95%", 95% CI]
 
+  # each card pictures its idea as papers draw it: the same bar with a long (SD) or a short (SEM) error bar,
+  # a reference range on a ruler, and a forest-plot row
   - id: compare
     pattern: reveal-cards
     title: SD or SEM?
     cards:
-      - { concept: sd,  answer: "How much people differ. It stays about the same as the sample grows." }
-      - { concept: sem, answer: "How precise the mean is: SD ÷ √n. It shrinks as the sample grows." }
-      - { family: par, icon: spread, label: Mean ± 2 SD,  answer: "The reference range: where 95% of people lie." }
-      - { family: se,  icon: narrow, label: Mean ± 2 SEM, answer: "The 95% confidence interval: where the true mean probably lies." }
+      - { concept: sd,  figure: se-bar-sd,  answer: "How much people differ. It stays about the same as the sample grows." }
+      - { concept: sem, figure: se-bar-sem, answer: "How precise the mean is: SD ÷ √n. It shrinks as the sample grows." }
+      - { family: par, icon: spread, figure: se-range,  label: Mean ± 2 SD,  answer: "The reference range: where 95% of people lie." }
+      - { family: se,  icon: narrow, figure: se-forest, label: Mean ± 2 SEM, answer: "The 95% confidence interval: where the true mean probably lies." }
 
   - id: hook-solved
     pattern: working

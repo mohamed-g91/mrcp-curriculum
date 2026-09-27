@@ -1,0 +1,5 @@
+<svg class="rfig" viewBox="0 0 240 130" role="img" aria-label="A forest plot row: a mean with a short interval">
+  <path class="rf-axis" d="M20 118 H220"/><path class="rf-null" d="M120 14 V118"/>
+  <path class="rf-other" d="M58 44 H102"/><rect class="rf-other-sq" x="73" y="37" width="14" height="14"/>
+  <path class="rf-ci" d="M128 84 H172"/><rect class="rf-sq" x="142" y="76" width="16" height="16"/>
+</svg>

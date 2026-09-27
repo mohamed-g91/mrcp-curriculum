@@ -163,6 +163,16 @@ async function layoutPass(size) {
         await shot(`${tag}-beat${n + 1}`);
       }
       if (await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`)) fail(`${size.name} slide ${i + 1}: the story did not finish`);
+      // a stray click leaves it built; Back steps it back one; Next finishes it again
+      await js(`document.querySelector(".slide-title, .slide.active h2")?.click(), true`);
+      if (await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`)) fail(`${size.name} slide ${i + 1}: a stray click undid the steps`);
+      await js(`Deck.slides[Deck.i].querySelector(".step-btn").click(), true`);
+      await sleep(300);
+      if (!await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`)) fail(`${size.name} slide ${i + 1}: Back did not step back`);
+      await measure(size, `slide ${i + 1} back`);
+      await js(`Deck.slides[Deck.i].querySelectorAll(".step-btn")[1].click(), true`);
+      await sleep(1400);
+      if (await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`)) fail(`${size.name} slide ${i + 1}: Next did not finish it again`);
     }
     const r = await js(REVEALS);
     for (let k = 0; k < r.dots; k++) {

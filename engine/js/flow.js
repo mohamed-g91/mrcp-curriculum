@@ -1,7 +1,7 @@
 
 /* ---------- question flow ----------
    Questions are answered in order: each one unlocks the next and shows its "No" result.
-   Tapping an answered question steps back to it; a click anywhere else starts again.
+   Tapping an answered question steps back to it; a stray click leaves it as it is.
    With data-path (e.g. "yes,no") the flow works one example: only the branch taken lights,
    and the result it lands on stands out. */
 function buildQuestionFlows() {
@@ -35,7 +35,6 @@ function buildQuestionFlows() {
       k = i < k ? i : Math.min(i + 1, max);
       render();
     }));
-    ClickAway.add(e => { if (!e.target.closest(".qf-q") && k) { k = 0; render(); } });
     onEnter(qf, () => { k = 0; render(); });
     render();
   });

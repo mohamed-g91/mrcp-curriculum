@@ -1,0 +1,6 @@
+<svg class="rfig" viewBox="0 0 240 130" role="img" aria-label="A wide band on a ruler: a reference range">
+  <path class="rf-axis" d="M20 100 H220"/>
+  <path class="rf-tick" d="M20 100 v7 M45 100 v7 M70 100 v7 M95 100 v7 M120 100 v7 M145 100 v7 M170 100 v7 M195 100 v7 M220 100 v7"/>
+  <rect class="rf-band" x="44" y="66" width="152" height="18" rx="9"/>
+  <path class="rf-mean" d="M120 52 V100"/>
+</svg>

@@ -307,8 +307,12 @@ const STORIES = {
 function buildStories() {
   $$(".story").forEach(sb => {
     const S = JSON.parse(sb.dataset.story), chart = $(".st-chart", sb), scene = $(".st-scene", sb);
-    let beats = [], beat = 0, timers = [];
-    const later = (ms, f) => timers.push(setTimeout(f, REDUCED_MOTION ? 0 : ms));
+    let beats = [], beat = 0, timers = [], replay = null, buttons = () => {};
+    // while replaying to a step, the timers run at once, in the order they would have fired
+    const later = (ms, f) => {
+      if (replay) replay.q.push({ t: replay.now + ms, n: replay.n++, f });
+      else timers.push(setTimeout(f, REDUCED_MOTION ? 0 : ms));
+    };
     const setScene = () => {
       if (!scene) return;
       $$("[data-beat]", scene).forEach(g => g.classList.toggle("st-on", beat >= +g.dataset.beat));
@@ -321,21 +325,39 @@ function buildStories() {
     };
     const start = () => {
       timers.forEach(clearTimeout); timers = [];
-      chart.innerHTML = ""; beat = 0;
+      [...chart.children].forEach(c => { if (!c.classList.contains("step-ctl")) c.remove(); });
+      beat = 0;
       const svg = svgEl("svg", { class: "st-svg", viewBox: `0 0 ${ST.W} ${ST.H}`, role: "img", "aria-label": sb.closest(".slide").getAttribute("aria-label") }, chart);
       beats = STORIES[S.kind](svg, S, later, chart);
-      setScene(); stepper(true);
+      setScene(); stepper(true); buttons(false, true);
     };
     const next = () => {
       if (beat >= beats.length) return;
       beats[beat++]();
       setScene();
       if (beat >= beats.length) stepper(false);
+      buttons(true, beat < beats.length);
     };
+    // one step back: the story is built again, at once, up to the step before
+    const back = () => {
+      if (!beat) return;
+      const k = beat - 1;
+      start();
+      replay = { now: 0, n: 0, q: [] };
+      while (beat < k) {
+        beats[beat++]();
+        while (replay.q.length) {
+          replay.q.sort((a, b) => a.t - b.t || a.n - b.n);
+          const job = replay.q.shift(); replay.now = job.t; job.f();
+        }
+      }
+      replay = null;
+      setScene(); stepper(beat < beats.length); buttons(beat > 0, beat < beats.length);
+      sb.getAnimations({ subtree: true }).forEach(a => { try { a.finish(); } catch (err) {} });
+    };
+    buttons = stepButtons(chart, back, next);
     chart.addEventListener("click", next);
     chart.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && chart.classList.contains("stepper")) { e.preventDefault(); next(); } });
-    // a click anywhere else starts the story again
-    ClickAway.add(e => { if (beat && sb.closest(".slide").classList.contains("active") && !e.target.closest(".story")) start(); });
     onEnter(sb, start);
     start();
   });

@@ -7,7 +7,7 @@ This repo builds the whole MRCP curriculum as single-file, offline, interactive 
 Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rule, update DESIGN.md in the same change. Rules that are easy to miss:
 
 - Minimal text; examples, answers and explanations appear only on tap. No instruction sentences, no eyebrow labels above headings, no sub-labels under circles or choices.
-- Clicking anywhere else clears any open item; tapping an open item again closes it; only the tapped item grows.
+- Clicking anywhere else clears any open item, but never a figure built over several taps (it has small Back and Next buttons instead); drags, the top and bottom bars and near misses clear nothing; tapping an open item again closes it; only the tapped item grows.
 - One label, letter and colour per concept everywhere. Labels come from the topic's `concepts` block, never retyped on a slide.
 - A case gives nothing away: options shuffled per case, no hints until a wrong answer, the clue lit only after a wrong answer.
 - Practise deals the cases in a random order (the solved example first) and numbers them by their place in the run.

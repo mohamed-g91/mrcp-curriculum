@@ -1,7 +1,7 @@
 /* ---------- decision tree ----------
    Each question has Yes and No, centred beneath it. The chosen answer slides onto the centre line:
    Yes draws a green line down to the next question; No draws a coral line down to the final answer. Choosing the other answer re-routes the
-   branch, tapping a chosen answer again undoes it, and a click anywhere else starts again.
+   branch, and tapping a chosen answer again undoes it; a stray click leaves the answers as they are.
    A final answer with examples opens them in a zoom circle; tapping it again, or anywhere else, closes
    the circle and leaves the tree as it was.
    A worked tree (data-path, the right answers) marks a wrong answer, says why, and goes no further
@@ -59,8 +59,7 @@ function buildTrees() {
     });
     ClickAway.add(e => {
       if (e.target.closest(".tree-final.zoomable, .spec-bubble")) return;
-      if (open) openFinal(null);  // the first click away closes the circle only
-      else if (!e.target.closest(".tree-a") && (ans.length || miss)) { ans = []; miss = null; render(); }
+      if (open) openFinal(null);  // a click away closes the circle only
     });
     document.addEventListener("keydown", e => { if (e.key === "Escape" && open) openFinal(null); });
     onEnter(tree, () => { openFinal(null, true); ans = []; miss = null; render(); });
@@ -146,9 +145,7 @@ function buildGridTree(tree) {
   });
   ClickAway.add(e => {
     if (e.target.closest(".tree-final.zoomable, .spec-bubble")) return;
-    if (open) openFinal(null);
-    else if (tree.contains(e.target) || !tree.closest(".slide").classList.contains("active")) return;
-    else if (trail.length || miss) { trail = []; miss = null; render(); }
+    if (open) openFinal(null);  // a click away closes the circle only
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && open) openFinal(null); });
   addEventListener("resize", () => requestAnimationFrame(drawLinks));

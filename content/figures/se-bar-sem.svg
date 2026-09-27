@@ -1,0 +1,4 @@
+<svg class="rfig" viewBox="0 0 240 130" role="img" aria-label="The same bar with a short error bar">
+  <path class="rf-axis" d="M20 118 H220"/><rect class="rf-bar" x="94" y="58" width="52" height="60" rx="4"/>
+  <path class="rf-whisk" d="M120 44 V72 M108 44 H132 M108 72 H132"/>
+</svg>

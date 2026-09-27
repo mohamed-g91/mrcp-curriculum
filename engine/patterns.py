@@ -360,9 +360,11 @@ def p_reveal_cards(slide, topic):
         else:
             fam = cd["family"]
             label, ico = cd.get("label", topic["families"][fam]), cd.get("icon", "ruler")
+        # a picture of the idea above its name, in place of the icon
+        top = figure(cd["figure"], "rcard-fig") if cd.get("figure") else f'<span class="rcard-ico">{icon(ico)}</span>'
         cards.append(
             f'<div class="rcard f-{fam} reveal-item" role="button" tabindex="0" aria-expanded="false">'
-            f'<span class="rcard-ico">{icon(ico)}</span><b class="rcard-label">{e(label)}</b>'
+            f'{top}<b class="rcard-label">{e(label)}</b>'
             f'<span class="rcard-answer">{e(cd["answer"])}</span></div>')
     nxt = ""
     if slide.get("next"):
