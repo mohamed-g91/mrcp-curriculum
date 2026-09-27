@@ -203,6 +203,8 @@ def check_topic(t, expected_id):
         if p == "working":
             if "[[" not in s.get("stem", "") or not s.get("answer") or not s.get("lines"):
                 errs.append(f"{where}: a working slide needs a stem with a [[clue]], its lines and the answer")
+            if not s.get("question") and not any(h.get("pattern") == "hook" and h.get("question") for h in t["learn"]):
+                errs.append(f"{where}: a working slide needs a question, its own or the hook's")
             for ln in s.get("lines") or []:
                 if not ln.get("text") or ln.get("family") not in fams:
                     errs.append(f"{where}: each line of working needs its text and one of the topic's families")

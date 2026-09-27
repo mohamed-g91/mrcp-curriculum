@@ -317,7 +317,10 @@ def p_story(slide, topic):
 
 def p_working(slide, topic):
     """Solving the hook with a sum: the stem beside the working, one line per tap (engine/js/working.js).
+    The hook's question heads the working from the start, so the part to tap is never empty.
     A line's result sits on a pill in its family colour; the answer to the hook follows the last line."""
+    hook = next((s for s in topic.get("learn", []) if s.get("pattern") == "hook"), {})
+    question = slide.get("question") or hook.get("question", "")
     lines = []
     for i, ln in enumerate(slide["lines"]):
         res = f'<span class="wk-res">{e(ln["result"])}</span>' if ln.get("result") else ""
@@ -325,7 +328,7 @@ def p_working(slide, topic):
     stem = f'<div class="stem-card compact"><p class="stem-text">{stem_html(slide["stem"], lit=True)}</p></div>'
     scene = figure(slide["scene"], "stem-scene") if slide.get("scene") else ""
     return (heading(slide) + f'<div class="center-body"><div class="working"><div class="wk-side">{stem}{scene}</div>'
-            f'<div class="wk-steps"><ol class="wk-lines">{"".join(lines)}</ol>'
+            f'<div class="wk-steps"><p class="stem-q wk-q">{e(question)}</p><ol class="wk-lines">{"".join(lines)}</ol>'
             f'<p class="wk-answer">{e(slide["answer"])}</p></div></div></div>')
 
 
