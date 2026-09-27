@@ -226,7 +226,7 @@ const STORIES = {
       svgEl("circle", { r }, g);
       void g.getBoundingClientRect();
       g.style.transform = `translate(${cx}px, ${cy}px)`;
-      if (label) later(550, () => { if (many) return; labels.innerHTML = ""; svgEl("text", { class: "sp-mlab", x: cx, y: cy - 16 }, labels).textContent = num(Math.round(v * 10) / 10); });
+      if (label) later(400, () => { if (many) return; labels.innerHTML = ""; svgEl("text", { class: "sp-mlab", x: cx, y: cy - 16 }, labels).textContent = num(Math.round(v * 10) / 10); });
     };
     // a sample: a few of the crowd light up, standing in for the n picked, and their mean drops to the axis below
     const pick = () => {
@@ -235,7 +235,7 @@ const STORIES = {
       for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
       idx.slice(0, 7).forEach(i => F.crowd[i].classList.add("sp-pick"));
     };
-    const sample = i => { labels.innerHTML = ""; pick(); later(600, () => drop(i, true)); };
+    const sample = i => { labels.innerHTML = ""; pick(); later(300, () => drop(i, true)); };
     return [
       () => sample(0),
       () => sample(1),

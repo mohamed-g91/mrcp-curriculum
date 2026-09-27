@@ -637,7 +637,7 @@ a.next-topic:hover{border-color:var(--primary)}
 .sp-svg .cv-person{animation-duration:.5s}
 .sp-pick .cv-body{fill:var(--se-solid)}
 .sp-svg .cv-body{transition:fill .3s ease}
-.sp-dot{transition:transform .6s var(--ease)}
+.sp-dot{transition:transform .4s var(--ease)}
 .sp-dot circle{fill:var(--se-solid);stroke:var(--sc-line);stroke-width:1.5}
 .sp-mlab{fill:var(--se-ink);font:800 20px var(--sans);text-anchor:middle;animation:fadeIn .35s ease both}
 .sp-width{animation:fadeIn .45s ease .6s both}
