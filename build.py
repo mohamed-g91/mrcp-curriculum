@@ -315,8 +315,11 @@ def render_index(site, specs):
         for tp in spec["topics"]:
             status = tp.get("status", "planned")
             name = e(tp["title"])
-            link = f'<a href="{spec["id"]}/{tp["slug"]}.html">{name}</a>' if status != "planned" else f"<span>{name}</span>"
-            items.append(f'<li class="topic s-{status}">{link}<span class="status">{status}</span></li>')
+            # the whole row is the button, not just the name; a planned topic has nowhere to go yet
+            inner = f'<span class="topic-name">{name}</span><span class="status">{status}</span>'
+            row = (f'<a class="topic-row" href="{spec["id"]}/{tp["slug"]}.html">{inner}</a>' if status != "planned"
+                   else f'<div class="topic-row">{inner}</div>')
+            items.append(f'<li class="topic s-{status}">{row}</li>')
         rows.append(f'<section class="spec-block"><h2>{e(spec["title"])}</h2><ul class="topics">{"".join(items)}</ul></section>')
     css = fonts_css() + read(ENGINE, "css", "tokens.css") + read(ENGINE, "css", "index.css")
     d = datetime.date.today()

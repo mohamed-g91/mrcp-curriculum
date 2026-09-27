@@ -1,6 +1,8 @@
 /* ---------- base ---------- */
 *{box-sizing:border-box}
 html,body{margin:0}
+/* no grey-blue flash on phones when a tap lands on something tappable; keyboard focus keeps its outline */
+html{-webkit-tap-highlight-color:transparent}
 body{font-family:var(--sans);color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .frame{font-size:var(--fs-body);line-height:1.55}
 h1,h2,h3{font-family:var(--serif);font-weight:600;color:var(--ink);line-height:1.12;margin:0;text-wrap:balance}
