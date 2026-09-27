@@ -646,6 +646,8 @@ a.next-topic:hover{border-color:var(--primary)}
 .sp-still.cv-line{stroke-dasharray:none;stroke-dashoffset:0;animation:none}
 .sp-still.cv-area,.sp-curve .sp-width{animation:none}
 .sp-curve.sp-in{animation:fadeIn .4s ease both}
+/* the means' curve runs over teal dots, so its outline takes the SEM's dark ink to stand out from them */
+.sp-curve .cv-line{stroke:var(--se-ink)}
 .cv-one .cv-k-sem .cv-chart{max-width:680px}
 @media (prefers-reduced-motion:reduce){.sp-dot{transition:none}.sp-width,.sp-mlab{animation:none}}
 
