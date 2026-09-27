@@ -28,7 +28,7 @@ ENGINE = os.path.join(ROOT, "engine")
 DIST = os.path.join(ROOT, "dist")
 LOCK = os.path.join(ROOT, "content", "ids.lock")
 CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css"]
-JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "sort.js", "quiz.js", "deck.js"]
+JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "working.js", "sort.js", "quiz.js", "deck.js"]
 ITEM_ID = re.compile(r"^[a-z]\d{2,3}$")
 INSTRUCTION = re.compile(r"\b(tap|click|drag|press|select)\b", re.I)
 
@@ -143,10 +143,22 @@ def check_topic(t, expected_id):
                         errs.append(f"{where}: step {st.get('concept')!r} summary needs a family")
             else:
                 for pn in s.get("panels") or []:
-                    if pn.get("summary", {}).get("family") not in fams:
+                    if "summary" in pn and pn["summary"].get("family") not in fams:
                         errs.append(f"{where}: panel {pn.get('title')!r} summary needs a family")
+                    if pn.get("kind") not in ("sd", "dots", "sem"):
+                        errs.append(f"{where}: a panel's kind is sd, dots or sem, not {pn.get('kind')!r}")
                     if pn.get("kind") == "sd" and len(pn.get("pct") or []) != len(pn.get("chips") or []):
                         errs.append(f"{where}: an sd panel gives one pct per chip")
+                    if pn.get("kind") == "sd" and pn.get("tags") and len(pn["tags"]) != len(pn["chips"]):
+                        errs.append(f"{where}: an sd panel gives one tag per chip")
+                    if pn.get("kind") == "sd" and any("SEM" in ch for ch in pn.get("chips") or []) and not pn.get("sem"):
+                        errs.append(f"{where}: an SEM chip needs the panel's sem")
+                    if pn.get("kind") == "sem":
+                        # each chip names a sample size (n = 49); the SEM for it is worked out in the browser
+                        if not all(re.fullmatch(r"n = \d+", str(ch)) for ch in pn.get("chips") or []) or not pn.get("chips"):
+                            errs.append(f"{where}: an sem panel's chips are sample sizes, written n = 49")
+                        if any(k not in pn for k in ("mean", "sd", "unit", "axis", "means_axis")):
+                            errs.append(f"{where}: an sem panel needs mean, sd, unit, axis and means_axis")
                     if pn.get("kind") == "dots" and len(pn.get("chips") or []) != 3:
                         errs.append(f"{where}: a dots panel has three chips: IQR, range, mean ± 2 SD")
                 if not s.get("panels"):
@@ -157,8 +169,15 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr"):
-                errs.append(f"{where}: kind is mean, median, mode or iqr, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling"):
+                errs.append(f"{where}: kind is mean, median, mode, iqr or sampling, not {kind!r}")
+            elif kind == "sampling":
+                # samples of n drawn from a population (a bell, or a skew against a wall at 0): their means pile up
+                pop = s.get("population") or {}
+                if pop.get("shape") not in ("normal", "positive") or not all(isinstance(pop.get(k), (int, float)) for k in ("mean", "sd")):
+                    errs.append(f"{where}: a sampling story needs population: {{shape: normal or positive, mean, sd}}")
+                if not isinstance(s.get("n"), int) or s["n"] < 2 or any(not s.get(k) for k in ("unit", "axis", "means_axis")):
+                    errs.append(f"{where}: a sampling story needs a sample size n (2 or more), a unit, an axis and a means_axis")
             elif kind == "iqr" and (not nums(s.get("values")) or len(s["values"]) % 4 != 3 or not s.get("unit")):
                 # 3, 7, 11 … values: the median and both quartiles each land on one person
                 errs.append(f"{where}: an iqr story needs 4k + 3 whole-number values and a unit")
@@ -170,12 +189,23 @@ def check_topic(t, expected_id):
                 errs.append(f"{where}: a mode story needs counts, unit, categories and categories_unit")
             if kind == "iqr":
                 refs += ["median"]
+            if kind == "sampling":
+                refs += ["mean", "sd", "sem"]
             if kind in ("mean", "median", "mode"):
                 refs += [kind] + (["mean"] if kind != "mean" else []) + (["median"] if kind == "mode" else [])
         if p == "clue-stem":
             refs += list(s["clues"])
         if p == "reveal-cards":
             refs += [c["concept"] for c in s["cards"] if c.get("concept")]
+            for c in s["cards"]:
+                if not c.get("concept") and c.get("family") not in fams:
+                    errs.append(f"{where}: a card with no concept needs one of the topic's families")
+        if p == "working":
+            if "[[" not in s.get("stem", "") or not s.get("answer") or not s.get("lines"):
+                errs.append(f"{where}: a working slide needs a stem with a [[clue]], its lines and the answer")
+            for ln in s.get("lines") or []:
+                if not ln.get("text") or ln.get("family") not in fams:
+                    errs.append(f"{where}: each line of working needs its text and one of the topic's families")
         if p == "sort":
             refs += s["buckets"] + [it["answer"] for it in s["items"]]
         if p == "stem-quiz":

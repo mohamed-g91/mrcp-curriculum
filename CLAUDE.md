@@ -40,7 +40,7 @@ A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERN
 
 1. Edit the topic YAML (content) or the engine (behaviour and look). Never edit `dist/`.
 2. Build: `python build.py` (or `python build.py --check` to check content only).
-3. Check: `node checks/check.mjs dist/<specialty>/<slug>.html --shots <scratchpad>/shots`, then look at the screenshots. The check fails on overflow, a slide that scrolls on the stage, a case that does not solve, a wrong score, console errors or network requests.
+3. Check: `node checks/check.mjs dist/<specialty>/<slug>.html --shots <scratchpad>/shots`, then look at the screenshots. In a cloud container, point it at the browser there and run without the sandbox: `CHROME=/opt/pw-browsers/chromium CHROME_FLAGS=--no-sandbox`. The check fails on overflow, a slide that scrolls on the stage, a case that does not solve, a wrong score, console errors or network requests.
 4. Commit with a short message. Cloudflare Pages builds and publishes from `main`.
 
 Mockups go to the user as a picture: write a static SVG (no scripts), render it to PNG with headless Chrome (`chrome --headless=new --screenshot=<png> --window-size=W,H file:///<svg>`) and send the PNG. Inline widgets and HTML pages with scripts do not show for them.

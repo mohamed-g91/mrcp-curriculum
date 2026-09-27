@@ -1,5 +1,6 @@
 /* ---------- tokens ----------
-   Colours: one primary blue, one family per concept group (bg, ink, border, solid).
+   Colours: one primary blue, one family per concept group (bg, ink, border, solid): coral, green, purple,
+   and teal for the standard error (the mean's precision).
    Sizes: written as clamp(phone, n * --u, stage), where --u is 1% of the page width. The stage
    is a 1280 x 720 canvas, so on laptops and recordings every size sits at its stage value; on
    phones it scales down. Tablets (a fluid page 601-1099 px wide) use a larger unit, so sizes
@@ -13,6 +14,7 @@
   --cat-bg:#FDEEE8;--cat-ink:#5E1F0B;--cat-bd:#EBA88D;--cat-solid:#D85A30;
   --par-bg:#EEEDFE;--par-ink:#262066;--par-bd:#B3ACEE;--par-solid:#6A60D0;
   --np-bg:#E2F4EF;--np-ink:#053D30;--np-bd:#86CFB7;--np-solid:#1D9E75;
+  --se-bg:#DDF3F7;--se-ink:#073F4A;--se-bd:#7CCAD8;--se-solid:#1590A8;
   --gray-bg:#EEF1F5;--gray-ink:#1F2B3A;--gray-bd:#C0CAD6;
   --ok-bg:#E6F4EA;--ok-ink:#1E6B37;--ok-bd:#9ED3AE;--ok-solid:#2E8B4E;
   --bad-bg:#FCEBEB;--bad-ink:#9B2C2C;--bad-bd:#F0A8A8;--bad-solid:#C53A3A;
@@ -52,6 +54,7 @@
   --cat-bg:#3A1E14;--cat-ink:#FFD3C2;--cat-bd:#B5583A;--cat-solid:#E0764D;
   --par-bg:#252150;--par-ink:#E0DCFF;--par-bd:#6B62C8;--par-solid:#8A80F0;
   --np-bg:#0E3129;--np-ink:#B5F2DC;--np-bd:#2C8C6E;--np-solid:#2FB38A;
+  --se-bg:#0B2E36;--se-ink:#B3ECF5;--se-bd:#2A8597;--se-solid:#35B5CC;
   --gray-bg:#1D2C40;--gray-ink:#E1E8F1;--gray-bd:#44587A;
   --ok-bg:#0F3320;--ok-ink:#8FDDA8;--ok-bd:#2A7A48;--ok-solid:#3FB068;
   --bad-bg:#3A1616;--bad-ink:#FFA9A9;--bad-bd:#8A3434;--bad-solid:#E05A5A;
@@ -66,4 +69,5 @@
 .f-cat{--x-bg:var(--cat-bg);--x-ink:var(--cat-ink);--x-bd:var(--cat-bd);--x-solid:var(--cat-solid)}
 .f-np{--x-bg:var(--np-bg);--x-ink:var(--np-ink);--x-bd:var(--np-bd);--x-solid:var(--np-solid)}
 .f-par{--x-bg:var(--par-bg);--x-ink:var(--par-ink);--x-bd:var(--par-bd);--x-solid:var(--par-solid)}
+.f-se{--x-bg:var(--se-bg);--x-ink:var(--se-ink);--x-bd:var(--se-bd);--x-solid:var(--se-solid)}
 .f-gray{--x-bg:var(--gray-bg);--x-ink:var(--gray-ink);--x-bd:var(--gray-bd);--x-solid:var(--primary)}

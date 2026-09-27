@@ -492,6 +492,8 @@ a.next-topic:hover{border-color:var(--primary)}
 .hook-row{display:grid;grid-template-columns:minmax(0,1fr) clamp(220px,calc(30 * var(--u)),400px);gap:clamp(16px,calc(2.4 * var(--u)),32px);align-items:center;width:100%;max-width:1320px;margin-inline:auto}
 .hook-row>.stem-card.hook{max-width:none}
 .hook-row>.fig{margin:0}
+/* a tall cartoon (a portrait scene) keeps the hook on the stage */
+.hook-row>.fig svg{max-height:clamp(200px,calc(27 * var(--u)),345px)}
 .scene .sc-o{stroke:var(--sc-line);stroke-width:3;stroke-linejoin:round}
 .scene .sc-f{fill:none;stroke:#22303F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .scene .sc-bed{fill:var(--surface-2);stroke:var(--sc-line);stroke-width:3}
@@ -628,3 +630,39 @@ a.next-topic:hover{border-color:var(--primary)}
 .st-no path{stroke:var(--bad-solid);stroke-width:3.5;stroke-linecap:round}
 @media (prefers-reduced-motion:reduce){.st-pt,.st-mk{transition:none}.st-pt circle.drop,.st-star,.st-res,.st-sum,.st-shoe,.st-no{animation:none}}
 @container (max-width:900px){.story>.st-chart{grid-column:1;grid-row:2}.story>.st-tools{grid-column:1;grid-row:3}.story{grid-template-columns:minmax(0,1fr)}.story>.fig{width:min(45%,170px);margin-inline:auto}}
+
+/* ---------- sampling: the population above, the means of its samples below ---------- */
+.story:not(:has(>.fig)){grid-template-columns:minmax(0,1fr);max-width:860px}
+.story:not(:has(>.fig))>.st-chart{grid-column:1}
+.sp-svg .cv-person{animation-duration:.5s}
+.sp-pick .cv-body{fill:var(--se-solid)}
+.sp-svg .cv-body{transition:fill .3s ease}
+.sp-dot{transition:transform .8s var(--ease)}
+.sp-dot circle{fill:var(--se-solid);stroke:var(--sc-line);stroke-width:1.5}
+.sp-mlab{fill:var(--se-ink);font:800 20px var(--sans);text-anchor:middle;animation:fadeIn .35s ease both}
+.sp-width{animation:fadeIn .45s ease .6s both}
+.sp-wline{stroke:var(--x-solid);stroke-width:3;fill:none;stroke-linecap:round}
+.sp-wlab{fill:var(--x-ink);font:800 20px var(--sans);paint-order:stroke;stroke:var(--surface);stroke-width:6px;stroke-linejoin:round}
+.sp-still.cv-line{stroke-dasharray:none;stroke-dashoffset:0;animation:none}
+.sp-still.cv-area,.sp-curve .sp-width{animation:none}
+.sp-curve.sp-in{animation:fadeIn .4s ease both}
+.cv-one .cv-k-sem .cv-chart{max-width:680px}
+@media (prefers-reduced-motion:reduce){.sp-dot{transition:none}.sp-width,.sp-mlab{animation:none}}
+
+/* ---------- working: the hook solved as a sum, a line per tap ---------- */
+.working{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(20px,calc(3 * var(--u)),44px);align-items:center;width:100%;max-width:1200px;margin-inline:auto}
+.wk-side{display:flex;flex-direction:column;gap:clamp(12px,calc(2 * var(--u)),24px);min-width:0}
+.wk-side .stem-scene{height:clamp(130px,calc(18 * var(--u)),230px)}
+.wk-steps{display:flex;flex-direction:column;gap:clamp(12px,calc(1.6 * var(--u)),20px);min-height:clamp(260px,calc(34 * var(--u)),430px);padding:clamp(14px,calc(2 * var(--u)),26px);border-radius:var(--radius-lg);outline:none}
+.wk-steps.stepper{cursor:pointer}
+.wk-steps.stepper:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
+.wk-lines{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:clamp(10px,calc(1.4 * var(--u)),18px)}
+.wk-line{display:flex;align-items:center;flex-wrap:wrap;gap:12px;font:800 clamp(20px,calc(2.3 * var(--u)),30px) var(--sans);color:var(--x-ink);font-variant-numeric:tabular-nums;visibility:hidden}
+.wk-line.on{visibility:visible;animation:specIn .45s var(--ease)}
+.wk-line:nth-child(even){padding-left:clamp(24px,calc(4 * var(--u)),56px)}
+.wk-res{display:inline-flex;align-items:center;padding:4px 18px;border-radius:999px;background:var(--x-solid);color:#fff;box-shadow:var(--shadow)}
+.wk-line.on .wk-res{animation:pillIn .5s var(--ease) .25s both}
+.wk-answer{margin:0;padding:12px 18px;border-radius:var(--radius);background:var(--se-bg);border:1px solid var(--se-bd);color:var(--se-ink);font-size:var(--fs-body);font-weight:700;visibility:hidden}
+.wk-answer.on{visibility:visible;animation:specIn .45s var(--ease)}
+@media (prefers-reduced-motion:reduce){.wk-line.on,.wk-line.on .wk-res,.wk-answer.on{animation:none}}
+@container (max-width:900px){.working{grid-template-columns:minmax(0,1fr)}.wk-steps{min-height:0}}

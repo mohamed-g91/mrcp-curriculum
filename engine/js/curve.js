@@ -277,6 +277,7 @@ function buildCurves() {
   /* ---- panels: spread, shaded by chips ---- */
   $$(".cv-panel").forEach(pn => {
     const P = JSON.parse(pn.dataset.panel), chart = $(".cv-chart", pn), read = $(".cv-read", pn), chips = $$(".cv-chip", pn);
+    if (P.kind === "sem") return semPanel(pn, P, chart, chips);
     const W = 600, H = 270;
     let open = -1, layer, D, bell;
     const crowd = [];  // [position in SD, person]
@@ -324,13 +325,17 @@ function buildCurves() {
       crowd.forEach(([, g]) => g.classList.remove("cv-outside"));
       if (k < 0) return;
       if (P.kind === "sd") {
-        const n = k + 1, { x, y, f, BASE } = bell, lo = P.mean - n * P.sd, hi = P.mean + n * P.sd;
-        svgEl("path", { class: "cv-band", d: `${curvePath(f, -n, n, x, y, 60)} L${x(n)} ${BASE} L${x(-n)} ${BASE} Z` }, layer);
-        // the band's edges, and the people beyond them faded: the few outside ±n SD
-        [-n, n].forEach(t => svgEl("path", { class: "cv-edge", d: `M${x(t)} ${BASE} V${y(f(t)) - 16}` }, layer));
-        crowd.forEach(([c, g]) => g.classList.toggle("cv-outside", Math.abs(c) > n));
-        svgEl("text", { class: "cv-pct", x: x(2.6), y: BASE - 110 }, layer).textContent = P.pct[k];
-        read.innerHTML = `<b>${lo}–${hi} ${esc(P.unit)}</b> · ${esc(P.pct[k])}`;
+        // a chip names its band: ± 1 SD, Mean ± 2 SD, or Mean ± 2 SEM (the SEM's band is narrow, and teal)
+        const m = /(\d)\s*(SEM|SD)/.exec(P.chips[k]), n = m ? +m[1] : k + 1, sem = m && m[2] === "SEM";
+        const half = n * (sem ? P.sem : P.sd), w = half / P.sd, { x, y, f, BASE } = bell, lo = P.mean - half, hi = P.mean + half;
+        const g = svgEl("g", { class: sem ? "f-se" : "" }, layer);
+        svgEl("path", { class: "cv-band", d: `${curvePath(f, -w, w, x, y, 60)} L${x(w)} ${BASE} L${x(-w)} ${BASE} Z` }, g);
+        // the band's edges, and the people beyond them faded: the few outside ±n SD, or nearly all outside ± 2 SEM
+        [-w, w].forEach(t => svgEl("path", { class: "cv-edge", d: `M${x(t)} ${BASE} V${y(f(t)) - 16}` }, g));
+        crowd.forEach(([c, p]) => p.classList.toggle("cv-outside", Math.abs(c) > w + 1e-9));
+        const tag = (P.tags || P.pct)[k];
+        svgEl("text", { class: "cv-pct", x: x(2.6), y: BASE - 110 }, g).textContent = tag;
+        read.innerHTML = `<b class="${sem ? "f-se" : ""}">${num(lo)}–${num(hi)} ${esc(P.unit)}</b> · ${esc(P.pct[k])}`;
       } else {
         shadeStays(D, P, layer, k);
       }
@@ -346,4 +351,160 @@ function buildCurves() {
     onEnter(pn, () => set(-1));
     set(-1);
   });
+}
+
+/* ---------- sampling: a population above, the means of its samples below ----------
+   The top strip is the population: a crowd of 20 people stacked under its curve (the heights bell of
+   Centre, shape and spread, or a skew against a wall at 0), with its mean and its SD marked. The bottom
+   strip, on the same axis, holds the means of samples of n drawn from it: dots dropped one per sample,
+   or a curve for the SEM of any n. Every number is worked out here from the mean, SD and n:
+   SEM = SD ÷ √n, and the means are placed at the quantiles of their own distribution (a normal for
+   a bell; for a skew, the gamma the sample means follow), so the pile is the shape the maths gives. */
+const Sampling = {
+  G: { W: 1000, H: 505, L: 120, R: 40, B1: 222, B2: 440, STEP: 25, PEOPLE: 20, SAMPLES: 40 },
+  // the normal CDF (Abramowitz and Stegun 7.1.26) and its inverse, by bisection
+  cdf(z) {
+    const t = 1 / (1 + .3275911 * Math.abs(z) / Math.SQRT2), y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - .284496736) * t + .254829592) * t * Math.exp(-z * z / 2);
+    return z >= 0 ? (1 + y) / 2 : (1 - y) / 2;
+  },
+  inv(p) { let a = -8, b = 8; for (let i = 0; i < 60; i++) { const c = (a + b) / 2; Sampling.cdf(c) < p ? a = c : b = c; } return (a + b) / 2; },
+  // a population, and the distribution of the means of its samples of n
+  dist(pop, n = 1) {
+    const { mean: m, sd } = pop, se = sd / Math.sqrt(n);
+    if (pop.shape === "normal") {
+      return { m, sd: se, f: v => Math.exp(-(((v - m) / se) ** 2) / 2) / (se * Math.sqrt(2 * Math.PI)), q: p => m + Sampling.inv(p) * se };
+    }
+    // a positive skew as a gamma with this mean and SD; the mean of n of them is a gamma too, n times the shape
+    const k = (m / sd) ** 2 * n, th = sd * sd / m / n, lg = Sampling.lgamma(k);
+    return { m, sd: se, f: v => v > 0 ? Math.exp((k - 1) * Math.log(v) - v / th - lg - k * Math.log(th)) : 0,
+      // Wilson and Hilferty's cube-root normal approximation to the gamma quantile
+      q: p => Math.max(0, k * th * (1 - 1 / (9 * k) + Sampling.inv(p) / (3 * Math.sqrt(k))) ** 3) };
+  },
+  lgamma(z) {  // Lanczos
+    const c = [676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+    if (z < .5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - Sampling.lgamma(1 - z);
+    z -= 1; let x = .99999999999980993; c.forEach((ci, i) => { x += ci / (z + i + 1); });
+    const t = z + 7.5; return .5 * Math.log(2 * Math.PI) + (z + .5) * Math.log(t) - t + Math.log(x);
+  },
+  // numbers as a paper writes them: 1.75, 3.5, 1
+  fmt: v => String(+v.toFixed(2)),
+  unit: (v, u) => (Math.abs(v - 1) < 1e-9 && /s$/.test(u) ? u.slice(0, -1) : u),
+
+  /* the figure: the population in the top strip, an empty axis for the means below */
+  draw(svg, P) {
+    const G = Sampling.G, pop = P.population, skew = pop.shape !== "normal", D = Sampling.dist(pop);
+    const lo = skew ? 0 : pop.mean - 3.3 * pop.sd, hi = skew ? pop.mean + 3.5 * pop.sd : pop.mean + 3.3 * pop.sd;
+    const X0 = G.L + (skew ? 34 : 0), X1 = G.W - G.R, x = v => X0 + (v - lo) / (hi - lo) * (X1 - X0);
+    const F = { svg, P, pop, x, lo, hi, X0, X1 };
+    const top = svgEl("g", { class: "sp-pop f-par" }, svg);
+    // the people: the same crowd as the heights bell, or 20 people at the skew's quantiles in columns half an SD wide
+    let cols;
+    if (!skew) cols = [-2.1, -1.4, -.67, 0, .67, 1.4, 2.1].map((c, i) => [pop.mean + c * pop.sd, [1, 2, 4, 6, 4, 2, 1][i]]);
+    else {
+      const w = pop.sd / 2, c = new Map();
+      for (let i = 0; i < G.PEOPLE; i++) { const b = (Math.floor(D.q((i + .5) / G.PEOPLE) / w) + .5) * w; c.set(b, (c.get(b) || 0) + 1); }
+      cols = [...c];
+    }
+    F.crowd = [];
+    let k = 0;
+    cols.forEach(([v, n]) => { for (let r = 0; r < n; r++) F.crowd.push(drawPerson(top, x(v), G.B1 - 1 - r * G.STEP, k, k++ * 40, .58)); });
+    const tall = Math.max(...cols.map(c => c[1])), peak = tall * G.STEP + 8;
+    let fmax = 0; for (let i = 0; i <= 400; i++) fmax = Math.max(fmax, D.f(lo + (hi - lo) * i / 400));
+    // curvePath hands y a density; y1 finds the curve's height over a value
+    const yd = fv => G.B1 - fv / fmax * peak, y1 = v => yd(D.f(v));
+    const d = curvePath(D.f, skew ? lo + .02 : lo, hi, x, yd, 240);
+    svgEl("path", { class: "cv-area", d: `${d} L${x(hi)} ${G.B1} L${x(skew ? lo + .02 : lo)} ${G.B1} Z` }, top);
+    svgEl("path", { class: "cv-line", d, pathLength: 1 }, top);
+    if (skew) {
+      drawWall(top, x(0) - 14, 28, G.B1 - peak - 14, G.B1);
+      svgEl("text", { class: "cv-wlab", x: x(0) + 18, y: G.B1 - peak - 26, style: "text-anchor:start" }, top).textContent = P.wall_label || "";
+    }
+    // both strips share the value axis; each has its own share up the side
+    const ticks = skew ? Array.from({ length: Math.floor(hi / 5) + 1 }, (_, i) => i * 5) : [-3, -2, -1, 0, 1, 2, 3].map(t => pop.mean + t * pop.sd);
+    const axis = (g, base, title) => {
+      svgEl("path", { class: "cv-axis", d: `M${G.L - 24} ${base} H${G.W - G.R + 10}` }, g);
+      ticks.forEach(t => {
+        svgEl("path", { class: "dp-tick", d: `M${x(t)} ${base} v8` }, g);
+        svgEl("text", { class: "cv-tlab", x: x(t), y: base + 28 }, g).textContent = t;
+      });
+      svgEl("text", { class: "cv-alab sp-alab", x: (X0 + X1) / 2, y: base + 54 }, g).textContent = title;
+    };
+    const yAxis = (g, base, pxPer, tops, title) => {
+      const y = p => base - p * pxPer;
+      svgEl("path", { class: "cv-axis", d: `M${G.L - 24} ${base} V${y(tops[tops.length - 1]) - 8}` }, g);
+      tops.forEach(p => {
+        svgEl("path", { class: "dp-tick", d: `M${G.L - 30} ${y(p)} H${G.L - 24}` }, g);
+        svgEl("text", { class: "cv-ylab sm", x: G.L - 34, y: y(p) + 5 }, g).textContent = `${p}%`;
+      });
+      svgEl("text", { class: "cv-ytitle sm", transform: `translate(${G.L - 84} ${(base + y(tops[tops.length - 1])) / 2}) rotate(-90)` }, g).textContent = title;
+    };
+    axis(top, G.B1, P.axis);
+    // each of the 20 people is 5% of them
+    yAxis(top, G.B1, G.STEP / (100 / G.PEOPLE), [0, 10, 20, 30], "% of people");
+    // the mean, dotted, with its value; the SD as the half-width of the curve, from the mean to one SD out
+    const mg = svgEl("g", { class: "cv-mk cv-meanline f-par" }, top);
+    svgEl("path", { d: `M${x(pop.mean)} ${G.B1} V${G.B1 - peak - 22}` }, mg);
+    valuePill(mg, x(pop.mean), G.B1 - peak - 38, "f-par", `${concept("mean").label} ${num(pop.mean)} ${P.unit}`);
+    Sampling.width(top, "sd", x(pop.mean), x(pop.mean + pop.sd), y1(pop.mean + pop.sd), `${concept("sd").label} ${Sampling.fmt(pop.sd)} ${Sampling.unit(pop.sd, P.unit)}`);
+    F.bottom = svgEl("g", { class: "sp-means f-se" }, svg);
+    axis(F.bottom, G.B2, P.means_axis);
+    F.yAxis = (pxPer, tops) => yAxis(F.bottom, G.B2, pxPer, tops, "% of samples");
+    return F;
+  }
+};
+// a spread written as a width: a line from the mean to one SD (or SEM) out, at the curve's height there, and its name
+Sampling.width = function (parent, key, xa, xb, y, text) {
+  const g = svgEl("g", { class: `sp-width f-${concept(key).family}` }, parent);
+  svgEl("path", { class: "sp-wline", d: `M${xa} ${y} H${xb} M${xa} ${y - 9} v18 M${xb} ${y - 9} v18` }, g);
+  svgEl("text", { class: "sp-wlab", x: xb + 12, y: y + 7 }, g).textContent = text;
+  return g;
+};
+
+/* the SEM for any n: the people's bell stays put; the bell of the means narrows (and grows taller,
+   holding the same samples) as each chip's n is chosen, with its working on its half-width */
+function semPanel(pn, P, chart, chips) {
+  const G = Sampling.G, pop = { shape: "normal", mean: P.mean, sd: P.sd }, bin = P.bin || .5;
+  const svg = svgEl("svg", { class: "cv-svg sp-svg", viewBox: `0 0 ${G.W} ${G.H}`, role: "img", "aria-label": P.axis }, chart);
+  const F = Sampling.draw(svg, { ...P, population: pop }), x = F.x;
+  // the share of samples whose mean falls in each half-unit bin: 0 to 40%
+  const pxPer = 140 / 40;
+  F.yAxis(pxPer, [0, 10, 20, 30, 40]);
+  const layer = svgEl("g", { class: "sp-curve" }, F.bottom);
+  let open = -1, se = null, raf = 0;
+  const paint = s => {
+    layer.innerHTML = "";
+    const f = v => Math.exp(-(((v - P.mean) / s) ** 2) / 2) / (s * Math.sqrt(2 * Math.PI)), y = fv => G.B2 - fv * bin * 100 * pxPer;
+    const a = Math.max(F.lo, P.mean - 4.5 * s), b = Math.min(F.hi, P.mean + 4.5 * s), d = curvePath(f, a, b, x, y, 200);
+    svgEl("path", { class: "cv-area sp-still", d: `${d} L${x(b)} ${G.B2} L${x(a)} ${G.B2} Z` }, layer);
+    svgEl("path", { class: "cv-line sp-still", d }, layer);
+    const n = Math.round((P.sd / s) ** 2);
+    Sampling.width(layer, "sem", x(P.mean), x(P.mean + s), y(f(P.mean + s)),
+      `${concept("sem").label} = ${Sampling.fmt(P.sd)} ÷ √${n} = ${Sampling.fmt(s)} ${Sampling.unit(s, P.unit)}`);
+  };
+  // the curve slides from one n to the next; with reduced motion it jumps
+  const tween = to => {
+    cancelAnimationFrame(raf);
+    const from = se == null ? to : se, t0 = performance.now(), T = REDUCED_MOTION || from === to ? 0 : 600;
+    se = to;
+    const step = now => {
+      const t = T ? Math.min(1, (now - t0) / T) : 1, e = 1 - (1 - t) ** 3;
+      // ease the SEM on a log scale, so each halving takes the same time
+      paint(Math.exp(Math.log(from) + (Math.log(to) - Math.log(from)) * e));
+      if (t < 1) raf = requestAnimationFrame(step);
+    };
+    step(t0);
+  };
+  const set = k => {
+    open = k;
+    chips.forEach((c, i) => { c.classList.toggle("on", i === k); c.setAttribute("aria-pressed", String(i === k)); });
+    pn.classList.toggle("open", k >= 0);
+    if (k < 0) { cancelAnimationFrame(raf); se = null; layer.innerHTML = ""; return; }
+    const fresh = se == null;
+    tween(P.sd / Math.sqrt(+/\d+/.exec(P.chips[k])[0]));
+    layer.classList.toggle("sp-in", fresh);
+  };
+  chips.forEach((c, i) => c.addEventListener("click", () => set(open === i ? -1 : i)));
+  ClickAway.add(e => { if (open >= 0 && !e.target.closest(".cv-chip")) set(-1); });
+  onEnter(pn, () => set(-1));
+  set(-1);
 }

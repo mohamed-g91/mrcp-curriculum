@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
   buildDotPlots();
   buildCurves();
   buildStories();
+  buildWorkings();
   buildClueStems();
   buildRevealCards();
   buildSorts();

@@ -39,7 +39,9 @@ const fail = msg => { problems.push(msg); console.log("  FAIL " + msg); };
 const profile = mkdtempSync(join(tmpdir(), "mrcp-check-"));
 const chrome = spawn(CHROME, [
   "--headless=new", `--remote-debugging-port=${PORT}`, `--user-data-dir=${profile}`,
-  "--hide-scrollbars", "--no-first-run", "--no-default-browser-check", "--allow-file-access-from-files", "about:blank",
+  "--hide-scrollbars", "--no-first-run", "--no-default-browser-check", "--allow-file-access-from-files",
+  // extra flags from the environment, e.g. CHROME_FLAGS=--no-sandbox in a container running as root
+  ...(process.env.CHROME_FLAGS || "").split(" ").filter(Boolean), "about:blank",
 ], { stdio: "ignore" });
 
 async function connect() {
@@ -152,15 +154,15 @@ async function layoutPass(size) {
     const m = await measure(size, `slide ${i + 1}`);
     const tag = `${size.name}-${String(i + 1).padStart(2, "0")}-${m.id}`;
     await shot(tag);
-    // a story: tap its figure through every beat, measuring each
-    if (await js(`!!Deck.slides[Deck.i].querySelector(".st-chart.stepper")`)) {
-      for (let n = 0; n < 8 && await js(`!!Deck.slides[Deck.i].querySelector(".st-chart.stepper")`); n++) {
-        await js(`Deck.slides[Deck.i].querySelector(".st-chart.stepper").click(), true`);
+    // a story or a working: tap it through every beat, measuring each
+    if (await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`)) {
+      for (let n = 0; n < 8 && await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`); n++) {
+        await js(`Deck.slides[Deck.i].querySelector(".stepper").click(), true`);
         await sleep(1400);
         await measure(size, `slide ${i + 1} beat ${n + 1}`);
         await shot(`${tag}-beat${n + 1}`);
       }
-      if (await js(`!!Deck.slides[Deck.i].querySelector(".st-chart.stepper")`)) fail(`${size.name} slide ${i + 1}: the story did not finish`);
+      if (await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`)) fail(`${size.name} slide ${i + 1}: the story did not finish`);
     }
     const r = await js(REVEALS);
     for (let k = 0; k < r.dots; k++) {

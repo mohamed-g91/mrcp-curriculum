@@ -265,15 +265,19 @@ def p_dot_plot(slide, topic):
 
 def spread_panel(pn, i=0, extra=""):
     """One spread panel: its figure, a chip per spread and the summary card (engine/js/curve.js draws it)."""
-    sm = pn["summary"]
-    chips = "".join(f'<button class="cv-chip" type="button" aria-pressed="false" data-k="{e(ch)}">{e(ch)}</button>'
+    sm = pn.get("summary")
+    # a chip for the SEM is teal, whichever panel it sits on
+    chips = "".join(f'<button class="cv-chip{" f-se" if "SEM" in str(ch) else ""}" type="button" aria-pressed="false" data-k="{e(ch)}">{e(ch)}</button>'
                     for ch in pn["chips"])
+    # the panel takes its colour from its summary, else from the spread it shows (SD purple, SEM teal)
+    fam = sm["family"] if sm else ("se" if pn["kind"] == "sem" else "par")
+    card = f'<div class="cv-sum"><b>{e(sm["label"])}</b><span>{e(sm["note"])}</span></div>' if sm else ""
     # a dots panel writes its values on the figure; an sd panel reads them out below
     read = '<div class="cv-read" aria-live="polite"></div>' if pn["kind"] == "sd" else ""
     title = f'<h3 class="cv-title">{e(pn["title"])}</h3>' if pn.get("title") else ""
-    return (f'<div class="cv-panel cv-k-{pn["kind"]} f-{sm["family"]}{extra}" style="--g:{i}" data-panel="{e(json.dumps(pn, ensure_ascii=False))}">'
+    return (f'<div class="cv-panel cv-k-{pn["kind"]} f-{fam}{extra}" style="--g:{i}" data-panel="{e(json.dumps(pn, ensure_ascii=False))}">'
             f'{title}<div class="cv-chart"></div><div class="cv-chips">{chips}</div>'
-            f'{read}<div class="cv-sum"><b>{e(sm["label"])}</b><span>{e(sm["note"])}</span></div></div>')
+            f'{read}{card}</div>')
 
 
 def p_curve(slide, topic):
@@ -295,7 +299,8 @@ def p_curve(slide, topic):
 def p_story(slide, topic):
     """A scene beside one figure that builds a beat per tap (the story is told in the video).
     The figure is drawn in the browser from the slide's numbers (engine/js/story.js)."""
-    data = {k: slide[k] for k in ("kind", "values", "outlier", "counts", "unit", "categories", "categories_unit") if k in slide}
+    data = {k: slide[k] for k in ("kind", "values", "outlier", "counts", "unit", "categories", "categories_unit",
+                                  "population", "n", "axis", "means_axis", "wall_label") if k in slide}
     if slide.get("panel"):
         data["panel"] = slide["panel"]
     scene = figure(slide["scene"], "st-scene") if slide.get("scene") else ""
@@ -308,6 +313,20 @@ def p_story(slide, topic):
                  f'<div class="cv-sum"><b>{e(sm["label"])}</b><span>{e(sm["note"])}</span></div></div>')
     return (heading(slide) + f'<div class="story" data-story="{e(json.dumps(data, ensure_ascii=False))}">'
             f'{scene}<div class="st-chart"></div>{panel}</div>')
+
+
+def p_working(slide, topic):
+    """Solving the hook with a sum: the stem beside the working, one line per tap (engine/js/working.js).
+    A line's result sits on a pill in its family colour; the answer to the hook follows the last line."""
+    lines = []
+    for i, ln in enumerate(slide["lines"]):
+        res = f'<span class="wk-res">{e(ln["result"])}</span>' if ln.get("result") else ""
+        lines.append(f'<li class="wk-line f-{ln["family"]}"><span class="wk-text">{e(ln["text"])}</span>{res}</li>')
+    stem = f'<div class="stem-card compact"><p class="stem-text">{stem_html(slide["stem"], lit=True)}</p></div>'
+    scene = figure(slide["scene"], "stem-scene") if slide.get("scene") else ""
+    return (heading(slide) + f'<div class="center-body"><div class="working"><div class="wk-side">{stem}{scene}</div>'
+            f'<div class="wk-steps"><ol class="wk-lines">{"".join(lines)}</ol>'
+            f'<p class="wk-answer">{e(slide["answer"])}</p></div></div></div>')
 
 
 def p_clue_stem(slide, topic):
@@ -387,6 +406,7 @@ PATTERNS = {
     "dot-plot": p_dot_plot,
     "curve": p_curve,
     "story": p_story,
+    "working": p_working,
     "clue-stem": p_clue_stem,
     "reveal-cards": p_reveal_cards,
     "sort": p_sort,
@@ -395,7 +415,7 @@ PATTERNS = {
 }
 
 # patterns whose slides are centred in the space under the heading
-CENTRED = {"hook", "question-flow", "reveal-cards", "end"}
+CENTRED = {"hook", "question-flow", "reveal-cards", "working", "end"}
 
 
 def topic_data(topic):

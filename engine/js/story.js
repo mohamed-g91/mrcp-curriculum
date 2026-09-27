@@ -9,6 +9,9 @@
    iqr     the ward's stays in a row line up in order; the middle one is the median, with a half boxed on each
            side; the middle of each half is a quartile; a box between the quartiles holds the middle half; then
            the same people stack on their days under their curve, with a chip per spread
+   sampling a population (a crowd under its curve, its SD marked) and an empty axis below; a few of the crowd
+           light up as a sample and its mean drops to the axis, then another, then many; the means pile up and
+           the curve they make is drawn, with its half-width, the SEM, worked out (SD ÷ √n)
    mode    shoe sizes stack up, the mean is a size nobody wears, the mode is the tallest stack;
            then the same question for blood groups, where only the mode makes sense */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -196,6 +199,60 @@ const STORIES = {
         D.svg.classList.remove("st-rowmode");
         D.place(v);
         later(700, () => { dressStays(D, P, AX); tools.hidden = false; });
+      }
+    ];
+  },
+
+  sampling(svg, S, later, chart) {
+    svg.remove();
+    const G = Sampling.G, pop = S.population, N = G.SAMPLES;
+    const root = svgEl("svg", { class: "st-svg sp-svg", viewBox: `0 0 ${G.W} ${G.H}`, role: "img", "aria-label": chart.closest(".slide").getAttribute("aria-label") }, chart);
+    const F = Sampling.draw(root, S), x = F.x, M = Sampling.dist(pop, S.n), se = M.sd, bin = se / 2;
+    // the means of N samples, at the quantiles of their distribution, dealt in a fixed shuffled order
+    let seed = 7;
+    const rand = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const means = Array.from({ length: N }, (_, i) => M.q((i + .5) / N));
+    for (let i = N - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [means[i], means[j]] = [means[j], means[i]]; }
+    // each mean drops into a bin half an SEM wide; each sample is 100 / N % of them
+    const binPx = x(pop.mean + bin) - x(pop.mean), step = Math.min(binPx * .96, 18), r = step * .46;
+    F.yAxis(step * N / 100, [0, 10, 20]);
+    const dotsLayer = svgEl("g", {}, F.bottom), labels = svgEl("g", {}, F.bottom), stacks = new Map();
+    let many = false;  // once the many samples start, a late label from an earlier one stays away
+    const drop = (i, label) => {
+      const v = means[i], b = Math.round((v - pop.mean) / bin), c = stacks.get(b) || 0;
+      stacks.set(b, c + 1);
+      const cx = x(pop.mean + b * bin), cy = G.B2 - (c + .5) * step;
+      const g = svgEl("g", { class: "sp-dot", style: `transform:translate(${cx}px, ${G.B1}px)` }, dotsLayer);
+      svgEl("circle", { r }, g);
+      void g.getBoundingClientRect();
+      g.style.transform = `translate(${cx}px, ${cy}px)`;
+      if (label) later(700, () => { if (many) return; labels.innerHTML = ""; svgEl("text", { class: "sp-mlab", x: cx, y: cy - 16 }, labels).textContent = num(Math.round(v * 10) / 10); });
+    };
+    // a sample: a few of the crowd light up, standing in for the n picked, and their mean drops to the axis below
+    const pick = () => {
+      F.crowd.forEach(p => p.classList.remove("sp-pick"));
+      const idx = F.crowd.map((_, i) => i);
+      for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+      idx.slice(0, 7).forEach(i => F.crowd[i].classList.add("sp-pick"));
+    };
+    const sample = i => { labels.innerHTML = ""; pick(); later(600, () => drop(i, true)); };
+    return [
+      () => sample(0),
+      () => sample(1),
+      // many more samples: their means pile up
+      () => {
+        many = true; labels.innerHTML = "";
+        F.crowd.forEach(p => p.classList.remove("sp-pick"));
+        for (let i = 2; i < N; i++) later((i - 2) * 70, () => drop(i));
+      },
+      // the curve the means make, and its half-width: the standard error, worked out
+      () => {
+        const y = fv => G.B2 - fv * bin * N * step, a = Math.max(F.lo + .02, pop.mean - 4.5 * se), b = Math.min(F.hi, pop.mean + 4.5 * se);
+        const d = curvePath(M.f, a, b, x, y, 200), g = svgEl("g", { class: "sp-curve" }, F.bottom);
+        svgEl("path", { class: "cv-area", d: `${d} L${x(b)} ${G.B2} L${x(a)} ${G.B2} Z` }, g);
+        svgEl("path", { class: "cv-line", d, pathLength: 1 }, g);
+        Sampling.width(g, "sem", x(pop.mean), x(pop.mean + se), y(M.f(pop.mean + se)),
+          `${concept("sem").label} = ${Sampling.fmt(pop.sd)} ÷ √${S.n} = ${Sampling.fmt(se)} ${Sampling.unit(se, S.unit)}`);
       }
     ];
   },
