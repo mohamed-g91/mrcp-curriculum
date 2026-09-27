@@ -235,7 +235,7 @@ const STORIES = {
       for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
       idx.slice(0, 7).forEach(i => F.crowd[i].classList.add("sp-pick"));
     };
-    const sample = i => { labels.innerHTML = ""; pick(); later(300, () => drop(i, true)); };
+    const sample = i => { labels.innerHTML = ""; pick(); later(100, () => drop(i, true)); };
     return [
       () => sample(0),
       () => sample(1),
