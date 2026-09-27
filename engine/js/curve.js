@@ -455,7 +455,9 @@ const Sampling = {
 // a spread written as a width: a line from the mean to one SD (or SEM) out, at the curve's height there, and its name
 Sampling.width = function (parent, key, xa, xb, y, text) {
   const g = svgEl("g", { class: `sp-width f-${concept(key).family}` }, parent);
-  svgEl("path", { class: "sp-wline", d: `M${xa} ${y} H${xb} M${xa} ${y - 9} v18 M${xb} ${y - 9} v18` }, g);
+  const d = `M${xa} ${y} H${xb} M${xa} ${y - 9} v18 M${xb} ${y - 9} v18`;
+  svgEl("path", { class: "sp-whalo", d }, g);  // a light edge, so the line reads over the dots it crosses
+  svgEl("path", { class: "sp-wline", d }, g);
   svgEl("text", { class: "sp-wlab", x: xb + 12, y: y + 7 }, g).textContent = text;
   return g;
 };

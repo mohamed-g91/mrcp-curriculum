@@ -637,17 +637,18 @@ a.next-topic:hover{border-color:var(--primary)}
 .sp-svg .cv-person{animation-duration:.5s}
 .sp-pick .cv-body{fill:var(--se-solid)}
 .sp-svg .cv-body{transition:fill .3s ease}
-.sp-dot{transition:transform .8s var(--ease)}
+.sp-dot{transition:transform .6s var(--ease)}
 .sp-dot circle{fill:var(--se-solid);stroke:var(--sc-line);stroke-width:1.5}
 .sp-mlab{fill:var(--se-ink);font:800 20px var(--sans);text-anchor:middle;animation:fadeIn .35s ease both}
 .sp-width{animation:fadeIn .45s ease .6s both}
 .sp-wline{stroke:var(--x-solid);stroke-width:3;fill:none;stroke-linecap:round}
+.sp-whalo{stroke:var(--surface);stroke-width:8;fill:none;stroke-linecap:round}
 .sp-wlab{fill:var(--x-ink);font:800 20px var(--sans);paint-order:stroke;stroke:var(--surface);stroke-width:6px;stroke-linejoin:round}
 .sp-still.cv-line{stroke-dasharray:none;stroke-dashoffset:0;animation:none}
 .sp-still.cv-area,.sp-curve .sp-width{animation:none}
 .sp-curve.sp-in{animation:fadeIn .4s ease both}
 /* the means' curve runs over teal dots, so its outline takes the SEM's dark ink to stand out from them */
-.sp-curve .cv-line{stroke:var(--se-ink)}
+.sp-curve .cv-line,.sp-curve .sp-wline{stroke:var(--se-ink)}
 .cv-one .cv-k-sem .cv-chart{max-width:680px}
 @media (prefers-reduced-motion:reduce){.sp-dot{transition:none}.sp-width,.sp-mlab{animation:none}}
 

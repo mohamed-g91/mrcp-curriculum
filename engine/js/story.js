@@ -226,7 +226,7 @@ const STORIES = {
       svgEl("circle", { r }, g);
       void g.getBoundingClientRect();
       g.style.transform = `translate(${cx}px, ${cy}px)`;
-      if (label) later(700, () => { if (many) return; labels.innerHTML = ""; svgEl("text", { class: "sp-mlab", x: cx, y: cy - 16 }, labels).textContent = num(Math.round(v * 10) / 10); });
+      if (label) later(550, () => { if (many) return; labels.innerHTML = ""; svgEl("text", { class: "sp-mlab", x: cx, y: cy - 16 }, labels).textContent = num(Math.round(v * 10) / 10); });
     };
     // a sample: a few of the crowd light up, standing in for the n picked, and their mean drops to the axis below
     const pick = () => {
@@ -243,7 +243,7 @@ const STORIES = {
       () => {
         many = true; labels.innerHTML = "";
         F.crowd.forEach(p => p.classList.remove("sp-pick"));
-        for (let i = 2; i < N; i++) later((i - 2) * 70, () => drop(i));
+        for (let i = 2; i < N; i++) later((i - 2) * 55, () => drop(i));
       },
       // the curve the means make, and its half-width: the standard error, worked out
       () => {
