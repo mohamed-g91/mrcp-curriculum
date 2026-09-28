@@ -4,7 +4,8 @@
 //
 // For each window size (1280 x 720 stage, 1920 x 1080 recording, 1920 x 940 browser, 768 x 1024 and 1024 x 768 tablet, 375 x 812 phone) it visits
 // every slide, opens every reveal on it, and checks there is no sideways overflow and, on the
-// stage, no vertical scrolling. Then it solves every case, sorts the warm-up, and fails on any
+// stage, no vertical scrolling. Then it solves every case, sorts the warm-up, tries the recording
+// view's pen and zoom on a 16:10 tablet, and fails on any
 // console error or network request. --shots saves a screenshot of every slide and open state.
 import { spawn } from "node:child_process";
 import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
@@ -390,6 +391,81 @@ async function solvePass() {
   await shot("stage-end-scored");
 }
 
+// the recording view on a 16:10 tablet (Galaxy Tab S10 FE): the frame sits at the top with the
+// tray below; the pen writes without opening anything, the highlighter and undo work, ink
+// belongs to its slide, two fingers zoom without turning the page, and a resting palm taps nothing
+async function presentPass() {
+  const TAB = { name: "present", width: 1152, height: 720, mobile: true };
+  await load(TAB);
+  await send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 5 });
+  const tap = ".spec-dot, .reveal-item, .qf-q, .tree-a";
+  const i = await js(`Deck.slides.findIndex(s => s.dataset.part === "Learn" && s.querySelector("${tap}"))`);
+  if (i < 0) { console.log("  --   recording view: no Learn slide with a tappable item"); return; }
+  await js(`Deck.go(${i}), Present.enter(false), true`);
+  await sleep(700);
+  const box = await js(`(() => { const a = document.getElementById("app").getBoundingClientRect(), t = document.getElementById("tray").getBoundingClientRect();
+    return { top: a.top, h: a.height, w: a.width, tray: t.height, bar: getComputedStyle(document.querySelector(".topbar")).display }; })()`);
+  if (Math.abs(box.top) > 1 || Math.abs(box.w / box.h - 16 / 9) > .01) fail(`recording view: the frame is not 16:9 at the top (${JSON.stringify(box)})`);
+  if (box.tray < 55) fail(`recording view: the tray is only ${box.tray}px tall`);
+  if (box.bar !== "none") fail("recording view: the top bar still shows");
+  const open = `document.querySelectorAll(".slide.active .open, .slide.active .on, .slide.active [aria-expanded=true], .slide.active [aria-pressed=true]").length`;
+  const target = await js(`(() => { const r = Deck.slides[Deck.i].querySelector("${tap}").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
+  const pen = async (pts, button = "left") => {
+    const ev = (type, [x, y]) => send("Input.dispatchMouseEvent", { type, x, y, button, buttons: type === "mouseReleased" ? 0 : 1, clickCount: 1, pointerType: "pen" });
+    await ev("mousePressed", pts[0]);
+    for (const p of pts.slice(1)) await ev("mouseMoved", p);
+    await ev("mouseReleased", pts[pts.length - 1]);
+    await sleep(100);
+  };
+  const before = await js(open);
+  await pen([target, [target[0] + 40, target[1] + 10], [target[0] + 80, target[1] - 10]]);
+  await pen([target]);  // a pen tap on the item itself
+  await sleep(400);
+  if (await js(open) !== before) fail("recording view: the pen opened an item on the slide");
+  if (await js(`document.querySelectorAll("#inkPen path").length`) !== 2) fail("recording view: the pen did not draw two strokes");
+  await js(`document.querySelector("[data-tool=marker]").click(), true`);
+  await pen([[300, 200], [500, 205]]);
+  if (await js(`document.querySelectorAll("#inkMarker path").length`) !== 1) fail("recording view: the highlighter did not draw");
+  await shot("present-ink");
+  await js(`document.getElementById("inkUndo").click(), true`);
+  if (await js(`document.querySelectorAll("#inkMarker path").length`) !== 0) fail("recording view: undo left the highlighter stroke");
+  await js(`document.getElementById("trayNext").click(), true`);
+  await sleep(300);
+  if (await js(`document.querySelectorAll("#inkPen path").length`) !== 0) fail("recording view: ink followed onto the next slide");
+  await js(`document.getElementById("trayPrev").click(), true`);
+  await sleep(300);
+  if (await js(`document.querySelectorAll("#inkPen path").length`) !== 2) fail("recording view: the slide's ink did not come back");
+  // two fingers pinch out: the slide zooms and stays put
+  const touch = (type, pts) => send("Input.dispatchTouchEvent", { type, touchPoints: pts.map(([x, y], id) => ({ x, y, id })) });
+  await touch("touchStart", [[520, 300]]);
+  await touch("touchStart", [[520, 300], [620, 300]]);
+  for (let k = 1; k <= 6; k++) await touch("touchMove", [[520 - k * 20, 300], [620 + k * 20, 300]]);
+  await touch("touchEnd", []);
+  await sleep(400);
+  const z = await js(`[Present.z, Deck.i]`);
+  if (!(z[0] > 1.5)) fail(`recording view: the pinch zoomed only to ${z[0]}`);
+  if (z[1] !== i) fail("recording view: the pinch turned the page");
+  if (await js(open) !== before) fail("recording view: the pinch opened an item on the slide");
+  await shot("present-zoom");
+  await js(`document.getElementById("zoomReset").click(), true`);
+  if (await js(`Present.z`) !== 1) fail("recording view: the whole-slide button did not reset the zoom");
+  // a palm resting while the pen hovers taps nothing
+  await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 600, y: 400, pointerType: "pen", buttons: 0 });
+  await touch("touchStart", [target]);
+  await touch("touchEnd", []);
+  await sleep(400);
+  if (await js(open) !== before) fail("recording view: a palm near the pen opened an item");
+  // a finger on its own still works the slide
+  await sleep(700);
+  await touch("touchStart", [target]);
+  await touch("touchEnd", []);
+  await sleep(400);
+  if (await js(open) === before) fail("recording view: a finger tap no longer opens an item");
+  await js(`Present.leave(), true`);
+  await send("Emulation.setTouchEmulationEnabled", { enabled: false });
+  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, highlighter, undo, ink per slide, pinch zoom, palm");
+}
+
 // dark mode: screenshots of every slide on the stage, for a look (layout is the same as light)
 async function darkPass() {
   if (!shotDir) return;
@@ -411,6 +487,7 @@ async function darkPass() {
 try {
   for (const size of SIZES) await layoutPass(size);
   await solvePass();
+  await presentPass();
   await darkPass();
 } catch (e) {
   fail(e.message);

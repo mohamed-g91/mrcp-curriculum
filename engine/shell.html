@@ -29,6 +29,7 @@
     <span class="top-count" id="topCount"></span>
     <button class="icon-btn top-home" id="homeTop" type="button" aria-label="Go to the first slide"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg></button>
     <span class="score-pill" id="scorePill" title="Correct first attempts">Score 0 / 0</span>
+    <button class="icon-btn" id="presentBtn" type="button" aria-label="Recording view: pen, highlighter and zoom"><svg class="ico" aria-hidden="true"><use href="#i-present"/></svg></button>
     <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch light or dark mode"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></button>
   </header>
   <div class="progress" aria-hidden="true"><div id="progressBar"></div></div>
@@ -45,7 +46,32 @@
       <button class="btn primary" id="nextBtn" type="button">Next<svg class="ico" aria-hidden="true"><use href="#i-right"/></svg></button>
     </div>
   </nav>
+  <svg class="ink ink-marker" id="inkMarker" aria-hidden="true"></svg>
+  <svg class="ink" id="inkPen" aria-hidden="true"></svg>
 </div>
+</div>
+<div class="tray" id="tray" hidden>
+  <div class="tray-group">
+    <button class="tray-btn" id="trayPrev" type="button" aria-label="Previous slide"><svg class="ico" aria-hidden="true"><use href="#i-left"/></svg></button>
+    <span class="tray-count" id="trayCount"></span>
+    <button class="tray-btn" id="trayNext" type="button" aria-label="Next slide"><svg class="ico" aria-hidden="true"><use href="#i-right"/></svg></button>
+  </div>
+  <div class="tray-group tray-tools" role="toolbar" aria-label="Ink">
+    <button class="tray-btn" data-tool="pen" type="button" aria-label="Pen"><svg class="ico" aria-hidden="true"><use href="#i-pen"/></svg></button>
+    <button class="tray-btn" data-tool="marker" type="button" aria-label="Highlighter"><svg class="ico" aria-hidden="true"><use href="#i-marker"/></svg></button>
+    <span class="tray-gap"></span>
+    <button class="swatch c0" data-colour="0" type="button" aria-label="Red pen"></button>
+    <button class="swatch c1" data-colour="1" type="button" aria-label="Blue pen"></button>
+    <button class="swatch c2" data-colour="2" type="button" aria-label="Black pen"></button>
+    <span class="tray-gap"></span>
+    <button class="tray-btn" data-tool="eraser" type="button" aria-label="Eraser"><svg class="ico" aria-hidden="true"><use href="#i-eraser"/></svg></button>
+    <button class="tray-btn" id="inkUndo" type="button" aria-label="Undo"><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg></button>
+    <button class="tray-btn" id="inkClear" type="button" aria-label="Clear the slide's ink"><svg class="ico" aria-hidden="true"><use href="#i-trash"/></svg></button>
+  </div>
+  <div class="tray-group tray-end">
+    <button class="tray-btn" id="zoomReset" type="button" aria-label="Show the whole slide" disabled><svg class="ico" aria-hidden="true"><use href="#i-zoom-out"/></svg></button>
+    <button class="tray-btn" id="presentExit" type="button" aria-label="Leave the recording view"><svg class="ico" aria-hidden="true"><use href="#i-cross"/></svg></button>
+  </div>
 </div>
 <script>const TOPIC = {{DATA}};</script>
 <script>

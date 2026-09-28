@@ -1,11 +1,22 @@
 
 /* ---------- stage: scale the canvas to fill the window, or reflow on small screens ---------- */
+const TRAY_MIN = 56;  // the recording view's tray is at least this tall, in screen pixels
 const Stage = {
   s: 1,
   fit() {
     // clientWidth, not innerWidth: a tablet widens innerWidth to fit the 1280 canvas before we measure.
     // Portrait windows reflow too, since a 16:9 canvas would leave most of the screen empty.
     const d = document.documentElement, w = d.clientWidth, h = d.clientHeight;
+    const app = $("#app");
+    // the recording view: an exact 1280 x 720 frame at the top, the tray in the strip below it
+    if (d.classList.contains("present")) {
+      d.classList.remove("fluid", "sideways");
+      this.s = Math.min(w / 1280, (h - TRAY_MIN) / 720);
+      app.style.setProperty("--s", this.s);
+      app.style.width = "1280px"; app.style.height = "720px";
+      d.style.setProperty("--tray", (h - 720 * this.s) + "px");
+      return;
+    }
     const fluid = w < 900 || h < 480 || h > w;
     document.documentElement.classList.toggle("fluid", fluid);
     // a touch phone held sideways: no bottom bar; swipe moves between slides, the top bar keeps Home and the count
@@ -13,7 +24,6 @@ const Stage = {
     this.s = fluid ? 1 : Math.min(w / 1280, h / 720);
     // the canvas is at least 1280 x 720 and grows to the window's shape, so it fills the window
     // with no letterbox; a 16:9 window (and every recording) still gets exactly 1280 x 720
-    const app = $("#app");
     app.style.setProperty("--s", this.s);
     app.style.width = fluid ? "" : Math.floor(w / this.s) + "px";
     app.style.height = fluid ? "" : Math.floor(h / this.s) + "px";
@@ -66,10 +76,12 @@ const Deck = {
     if (this.shown !== s) {
       this.shown = s;
       s.dispatchEvent(new CustomEvent("slideenter"));
+      Present.show(s);
       $("#deck").scrollTop = 0;
       if (document.documentElement.classList.contains("fluid")) window.scrollTo({ top: 0 });
       record("view", { topic: TOPIC.id, slide: s.dataset.case || s.dataset.id });
     }
+    Present.tray();
     try { history.replaceState(null, "", "#" + (this.i + 1)); } catch (e) {}
     try { localStorage.setItem(`mrcp-slide:${TOPIC.id}`, String(this.i)); } catch (e) {}
   },
@@ -102,6 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let start = parseInt(location.hash.slice(1), 10) - 1;
   if (!Number.isFinite(start)) { try { start = parseInt(localStorage.getItem(`mrcp-slide:${TOPIC.id}`), 10); } catch (e) {} }
   Deck.go(Number.isFinite(start) ? start : 0);
+  if (new URLSearchParams(location.search).has("present")) Present.enter(false);
 
   $("#nextBtn").addEventListener("click", () => Deck.next());
   $("#prevBtn").addEventListener("click", () => Deck.prev());
@@ -110,10 +123,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // swipe left for Next, right for Back (any touch screen; a sort chip's drag is left alone)
   let touch = null;
   $("#deck").addEventListener("touchstart", e => {
-    touch = e.touches.length === 1 && !e.target.closest(".chip, .spec-bubble") ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+    // the pen, a resting palm and a pinch never turn the page
+    touch = e.touches.length === 1 && e.touches[0].touchType !== "stylus" && !Present.busy() && !e.target.closest(".chip, .spec-bubble") ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
   }, { passive: true });
   $("#deck").addEventListener("touchend", e => {
-    if (!touch) return;
+    if (!touch || Present.busy()) { touch = null; return; }
     const dx = e.changedTouches[0].clientX - touch.x, dy = e.changedTouches[0].clientY - touch.y;
     touch = null;
     if (Math.abs(dx) > 60 && Math.abs(dx) > 1.6 * Math.abs(dy)) dx < 0 ? Deck.next() : Deck.prev();

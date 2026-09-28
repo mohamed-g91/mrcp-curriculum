@@ -101,7 +101,7 @@ Every interactive element behaves the same way, so learners never have to relear
 - **A case has a cartoon.** One cast member with one prop for the case's subject (a painkiller, a cigarette, a walking stick), never its type, sits beside the stem card, and above it on phones.
 - **A right answer explains.** It shows why, and lights the bar's Next with a soft pulse. On a case the bar's Next reads "Next case" (or "See your score" after the last case); there is no second Next inside the case. In a multi-step case, a correct step moves on by itself after about 0.75 s.
 - **Learn and Practise are separate paths.** Next, Back and the arrow keys never cross from one into the other: each part's first slide has no Back and its last slide has no Next, and the slide count and progress bar count within the part. Home returns to the title.
-- **Navigation is always there.** Back, Home and Next sit in a bottom bar, the arrow keys move between slides, and swipes do the same on touch screens (on a phone held sideways, swipes replace the bar; see below). The title slide has none of them. A hidden button takes no space.
+- **Navigation is always there.** Back, Home and Next sit in a bottom bar, the arrow keys move between slides, and swipes do the same on touch screens (on a phone held sideways, swipes replace the bar; see below). The title slide has none of them. A hidden button takes no space. In the recording view the tray holds Back and Next instead (see below).
 - **Hidden slides.** A slide with `hidden: true` stays in the YAML and is still checked, but is left out of the page.
 - **Keyboard and screen readers.** Every clickable element is a button or has a button role, is reachable with Tab, and opens with Enter or Space.
 - **Every event goes through `record()`.** Views and answers are reported with permanent IDs through one function in the engine, so analytics and a results database can plug in later.
@@ -118,6 +118,17 @@ Every interactive element behaves the same way, so learners never have to relear
 - **Question flows** run left to right on the stage and turn vertical on phones and portrait tablets.
 - **Bottom bar on phones:** buttons show an icon only, except Next.
 
+## Recording view
+
+The presenter's mode for recording a video on a tablet with a stylus (built for a Galaxy Tab S10 FE and its S Pen). It opens from the screen button in the top bar (full screen), from the P key, or from a link ending `?present`; the top-bar button is hidden on phones and small windows. Viewers never see it unless they open it.
+
+- **A clean 16:9 frame.** The slide is an exact 1280 × 720 frame at the top of the screen with no top bar, progress bar or bottom bar, so a recording crops to a clean 16:9. The tray fills the strip below it (at least 56 px; on a 16:10 tablet the strip left over).
+- **The tray** (one row, in the letterbox colour): Back, the slide count and Next on the left; pen, highlighter, three pen colours (red, blue, black: none of them a concept's colour), eraser, undo and clear in the middle; whole slide (zoom out) and leave on the right.
+- **The pen only writes.** A stylus draws on every part of the slide and never opens, closes or swipes anything; its side button (or eraser end) rubs out while held. Fingers and the mouse work the slide as usual. A touch while the pen is on or near the screen (within 0.6 s) is a resting palm and does nothing.
+- **Pen and highlighter.** The pen is a 4 px line; the highlighter is a wide band in the highlight colour, blended under the text so the words stay sharp. The eraser takes whole strokes. Undo steps back through strokes, rubbing out and clearing.
+- **Ink belongs to its slide.** It goes when the slide changes and comes back when the slide is shown again. It is kept for the session only.
+- **Zoom.** Two fingers pinch in (up to 4×) and out and move the slide about; the ink zooms with the slide, and new ink written while zoomed keeps its on-screen width. Changing slide, or the whole-slide button, returns to the full slide.
+
 ## Slide blueprint and checklist
 
 A single-decision topic runs: title → hook → teach each step (one slide per step) → solve the hook → why it matters → practise (warm-up, solved example, cases) → end. A topic with several question types adds a hub and routes (to be ported).
@@ -125,7 +136,7 @@ A single-decision topic runs: title → hook → teach each step (one slide per 
 Before publishing:
 
 - [ ] `python build.py` passes: labels come from `concepts`, every case answer is an option, IDs are valid and none was dropped without retiring it
-- [ ] `node checks/check.mjs dist/<specialty>/<topic>.html` passes: no overflow at 1280 × 720, 1920 × 1080 and 375 px with every reveal open, every case solves, the score adds up, no console errors or network requests
+- [ ] `node checks/check.mjs dist/<specialty>/<topic>.html` passes: no overflow at 1280 × 720, 1920 × 1080 and 375 px with every reveal open, every case solves, the score adds up, the recording view's pen, highlighter, zoom and palm rejection work, no console errors or network requests
 - [ ] The screenshots (`--shots`) look right, in light and dark mode
 - [ ] Nothing on a case gives the answer away
 - [ ] The same example has the same numbers on every slide (principle 8)

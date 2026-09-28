@@ -28,7 +28,7 @@ ENGINE = os.path.join(ROOT, "engine")
 DIST = os.path.join(ROOT, "dist")
 LOCK = os.path.join(ROOT, "content", "ids.lock")
 CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css"]
-JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "working.js", "sort.js", "quiz.js", "deck.js"]
+JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "working.js", "sort.js", "quiz.js", "present.js", "deck.js"]
 ITEM_ID = re.compile(r"^[a-z]\d{2,3}$")
 INSTRUCTION = re.compile(r"\b(tap|click|drag|press|select)\b", re.I)
 
