@@ -113,8 +113,13 @@ document.addEventListener("DOMContentLoaded", () => {
   Deck.refresh();
   let start = parseInt(location.hash.slice(1), 10) - 1;
   if (!Number.isFinite(start)) { try { start = parseInt(localStorage.getItem(`mrcp-slide:${TOPIC.id}`), 10); } catch (e) {} }
-  Deck.go(Number.isFinite(start) ? start : 0);
-  if (new URLSearchParams(location.search).has("present")) Present.enter(false);
+  // the first slide waits for the embedded fonts, so its entrance is not upset by text
+  // swapping from the fallback font halfway through (at most 1.5 s, then it goes anyway)
+  const fonts = document.fonts ? Promise.all(['400 20px "Inter"', '800 20px "Inter"', '600 44px "Source Serif 4"'].map(f => document.fonts.load(f))) : Promise.resolve();
+  Promise.race([fonts, new Promise(r => setTimeout(r, 1500))]).catch(() => {}).then(() => requestAnimationFrame(() => {
+    Deck.go(Number.isFinite(start) ? start : 0);
+    if (new URLSearchParams(location.search).has("present")) Present.enter(false);
+  }));
 
   $("#nextBtn").addEventListener("click", () => Deck.next());
   $("#prevBtn").addEventListener("click", () => Deck.prev());

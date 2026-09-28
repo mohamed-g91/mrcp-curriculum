@@ -26,14 +26,17 @@ html.sideways .tree-scene,html.sideways .case-fig{display:none}  /* the screen i
 html.fluid .deck{overflow:visible}
 
 /* ---------- the recording view (html.present) ----------
-   An exact 1280 x 720 frame at the top of the screen, with no bars, so a recording crops to a
-   clean 16:9; the tray fills the strip below. The pen's ink sits over the slide in two layers,
+   An exact 1280 x 720 frame at the top of the screen, with the top bar and no bottom bar, so a
+   recording crops to a clean 16:9; the tray fills the strip below. The pen's ink sits over the slide in two layers,
    the highlighter under the pen, and zooms with it (present.js moves .frame). */
 html.fluid #presentBtn,html.present #presentBtn{display:none}
 .frame{position:relative;transform-origin:0 0}
 html.present body{touch-action:none}
 html.present .app{top:0;transform-origin:50% 0;transform:translateX(-50%) scale(var(--s,1));box-shadow:none;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-html.present .topbar,html.present .progress,html.present .navbar{display:none}
+/* the top bar stays (wordmark, topic, score); the tray does the bottom bar's job, and the slide
+   moves down by half the bar it lost, so its content and any zoom circle sit centred below the top bar */
+html.present .navbar{display:none}
+html.present .deck{padding-top:calc(clamp(18px,calc(2.5 * var(--u)),32px) + 32px)}
 .ink{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;display:none}
 html.present .ink{display:block}
 .ink path{fill:none;stroke-linecap:round;stroke-linejoin:round}

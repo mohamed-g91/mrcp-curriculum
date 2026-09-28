@@ -407,7 +407,16 @@ async function presentPass() {
     return { top: a.top, h: a.height, w: a.width, tray: t.height, bar: getComputedStyle(document.querySelector(".topbar")).display }; })()`);
   if (Math.abs(box.top) > 1 || Math.abs(box.w / box.h - 16 / 9) > .01) fail(`recording view: the frame is not 16:9 at the top (${JSON.stringify(box)})`);
   if (box.tray < 55) fail(`recording view: the tray is only ${box.tray}px tall`);
-  if (box.bar !== "none") fail("recording view: the top bar still shows");
+  if (box.bar === "none") fail("recording view: the top bar is hidden");
+  // every Learn slide still fits the frame, lowered under the top bar
+  const over = await js(`(async () => { const out = [], deck = document.getElementById("deck");
+    for (const [k, s] of Deck.slides.entries()) { if (s.dataset.part !== "Learn") continue;
+      Deck.go(k); await new Promise(r => setTimeout(r, 150));
+      if (deck.scrollHeight > deck.clientHeight + 1) out.push(s.dataset.id + " by " + (deck.scrollHeight - deck.clientHeight) + "px"); }
+    return out; })()`);
+  if (over.length) fail(`recording view: slides scroll: ${over.join(", ")}`);
+  await js(`Deck.go(${i}), true`);
+  await sleep(700);
   const open = `document.querySelectorAll(".slide.active .open, .slide.active .on, .slide.active [aria-expanded=true], .slide.active [aria-pressed=true]").length`;
   const target = await js(`(() => { const r = Deck.slides[Deck.i].querySelector("${tap}").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
   const pen = async (pts, button = "left") => {
