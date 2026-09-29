@@ -8,10 +8,17 @@ const PALM_MS = 600;      // a touch this soon after the pen was seen is the han
 const PEN_W = [2, 4, 7, 11];  // fine, medium (the default), thick, very thick
 const HOLD_MS = 450;          // a press on the pen this long opens its sizes
 const MARKER_W = 24;
+// the distance from (x, y) to the line segment from a to b
+const segDist = (x, y, [ax, ay], [bx, by]) => {
+  const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy;
+  const t = L ? Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / L)) : 0;
+  return Math.hypot(x - ax - t * dx, y - ay - t * dy);
+};
 const Present = {
   on: false, tool: "pen", colour: 0, size: 1,
   ink: new WeakMap(),     // slide -> { strokes, history }
   slide: null, stroke: null, erasing: false,
+  rubbed: null,          // what the eraser has cut so far in this rub: one undo puts it all back
   lastPen: 0, swallowUntil: 0,
   touches: new Map(), pinch: null,
   drag: null,            // one finger scrolling the slide (the page scrolls it: the browser may not pan, or it would cut the pen off)
@@ -42,7 +49,7 @@ const Present = {
 
   // a new slide: its own ink, the full slide, and the tray's count and arrows
   show(s) {
-    this.slide = s;
+    this.slide = s; this.rubbed = null;
     this.resetZoom();
     this.paint();
     this.tray();
@@ -98,7 +105,13 @@ const Present = {
   },
   end() {
     if (this.stroke) { const p = this.page(); p.strokes.push(this.stroke); p.history.push({ add: this.stroke }); }
-    this.stroke = null; this.erasing = false;
+    this.stroke = null; this.erasing = false; this.rubbed = null;
+  },
+  // a new stroke like k (same tool, colour and width) through the points pts
+  like(k, pts) {
+    const el = k.el.cloneNode(false), c = { tool: k.tool, el, pts };
+    this.draw(c);
+    return c;
   },
   // a smooth line through the points: curves from midpoint to midpoint; a single tap is a dot
   draw(k) {
@@ -112,22 +125,39 @@ const Present = {
     if (p.length > 1) d += `L${p[p.length - 1][0].toFixed(1)} ${p[p.length - 1][1].toFixed(1)}`;
     k.el.setAttribute("d", d);
   },
-  // the eraser takes whole strokes: any it passes over
+  // the eraser rubs out only the ink under it, like a real one: a stroke it crosses is cut in two
   rub([x, y]) {
-    const p = this.page(), R = 10 / this.z;
+    const p = this.page(), R = 12 / this.z;
     p.strokes.slice().forEach(k => {
-      const w = +k.el.getAttribute("stroke-width") / 2 + R;
-      if (!k.pts.some(([a, b]) => Math.hypot(a - x, b - y) < w)) return;
+      const w = +k.el.getAttribute("stroke-width") / 2 + R, pts = k.pts;
+      const near = ([a, b]) => Math.hypot(a - x, b - y) < w;
+      // does any part of the line come within reach (not just its points)?
+      let hit = pts.length === 1 && near(pts[0]);
+      for (let i = 1; i < pts.length && !hit; i++) hit = segDist(x, y, pts[i - 1], pts[i]) < w;
+      if (!hit) return;
+      // points at most 2 px apart, so the cut follows the eraser's edge; then keep the runs outside it
+      const dense = [pts[0]];
+      for (let i = 1; i < pts.length; i++) {
+        const [a0, b0] = pts[i - 1], [a1, b1] = pts[i], n = Math.ceil(Math.hypot(a1 - a0, b1 - b0) / 2);
+        for (let j = 1; j <= n; j++) dense.push([a0 + (a1 - a0) * j / n, b0 + (b1 - b0) * j / n]);
+      }
+      const runs = [];
+      let run = [];
+      dense.forEach(q => { if (near(q)) { if (run.length) runs.push(run); run = []; } else run.push(q); });
+      if (run.length) runs.push(run);
+      const parts = runs.filter(r => r.length > 1 || pts.length === 1).map(r => this.like(k, r));
       const at = p.strokes.indexOf(k);
-      p.strokes.splice(at, 1); k.el.remove();
-      p.history.push({ erase: k, at });
+      p.strokes.splice(at, 1, ...parts);
+      k.el.after(...parts.map(c => c.el)); k.el.remove();
+      if (!this.rubbed) { this.rubbed = []; p.history.push({ rub: this.rubbed }); }
+      this.rubbed.push({ was: k, parts, at });
     });
   },
   undo() {
     const p = this.page(), h = p.history.pop();
     if (!h) return;
     if (h.add) { p.strokes.splice(p.strokes.indexOf(h.add), 1); h.add.el.remove(); }
-    if (h.erase) p.strokes.splice(h.at, 0, h.erase);
+    if (h.rub) h.rub.slice().reverse().forEach(r => p.strokes.splice(r.at, r.parts.length, r.was));
     if (h.clear) p.strokes.push(...h.clear);
     if (!h.add) this.paint();
   },
@@ -195,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const lines = [];
   const log = e => {
     if (!box) return;
-    const l = `${e.type} ${e.pointerType || ""} button=${e.button} buttons=${e.buttons}` + (e.pressure !== undefined ? ` p=${e.pressure.toFixed(2)}` : "");
+    const l = `${e.type.replace("pointer", "")} ${e.pointerType || ""} id=${e.pointerId} b=${e.button} bs=${e.buttons}` + (e.pressure !== undefined ? ` p=${e.pressure.toFixed(2)} ${Math.round(e.width)}x${Math.round(e.height)}` : "");
     if (e.type === "pointermove" && l === last) return;  // a move is logged only when something changed
     last = l; lines.push(l); if (lines.length > 14) lines.shift();
     box.textContent = lines.join("\n");
@@ -244,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
       else if ((e.buttons & 1) && e.pressure === 0 && onSlide(e)) {
         stop(e);
         (e.getCoalescedEvents ? e.getCoalescedEvents() : [e]).forEach(c => P.rub(P.at(c)));
-      }
+      } else P.rubbed = null;  // the button let go: the next rub is its own undo step
     } else if (P.touches.has(e.pointerId)) {
       P.touches.set(e.pointerId, [e.clientX, e.clientY]);
       if (P.pinch) { stop(e); P.pinchMove(); }

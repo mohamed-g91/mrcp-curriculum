@@ -455,21 +455,27 @@ async function presentPass() {
   await pen([target, [target[0] + 40, target[1] + 10], [target[0] + 80, target[1] - 10]]);
   if (await js(`document.querySelector("#inkPen path:last-child").getAttribute("stroke-width")`) !== "7") fail("recording view: the thick pen did not draw a thick line");
   await js(`Present.size = 1, true`);
-  // the side button pressed mid-stroke turns the pen into the eraser: it rubs out all the ink it passes
+  // the eraser rubs out only what it passes over: across a line it cuts it in two, and one undo mends it
+  const paths = () => js(`document.querySelectorAll("#inkPen path").length`);
+  await js(`document.getElementById("inkClear").click(), true`);
+  await pen([[300, 150], [400, 150], [500, 150], [600, 150], [700, 150]]);
   const side = (type, [x, y], buttons) => send("Input.dispatchMouseEvent", { type, x, y, button: "left", buttons, clickCount: 1, pointerType: "pen" });
-  await side("mousePressed", [target[0] - 150, target[1]], 1);
-  await side("mouseMoved", [target[0] - 100, target[1]], 1);
-  for (const dx of [-100, -50, 0, 40, 80]) await side("mouseMoved", [target[0] + dx, target[1] + (dx === 40 ? 10 : dx === 80 ? -10 : 0)], 3);
-  await side("mouseReleased", [target[0] + 80, target[1] - 10], 0);
+  // the side button pressed mid-stroke: the stroke so far stays, then the pen rubs out
+  await side("mousePressed", [620, 60], 1);
+  await side("mouseMoved", [620, 90], 1);
+  for (const y of [120, 140, 150, 160, 180]) await side("mouseMoved", [620, y], 3);
+  await side("mouseReleased", [620, 180], 0);
   await sleep(100);
-  if (await js(`document.querySelectorAll("#inkPen path").length`) !== 0) fail("recording view: the side button did not rub the ink out");
-  // the S Pen's side button as Chrome on Android reports it: moves marked pressed, with no pressure and no pen-down
+  if (await paths() !== 3) fail(`recording view: the side button did not cut the line in two (${await paths()} lines, not 3)`);
   await js(`document.getElementById("inkUndo").click(), true`);
-  if (await js(`document.querySelectorAll("#inkPen path").length`) !== 1) fail("recording view: undo did not bring a rubbed-out stroke back");
-  for (const dx of [-60, -30, 0, 40, 80]) await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: target[0] + dx, y: target[1] + (dx === 40 ? 10 : dx === 80 ? -10 : 0), button: "left", buttons: 1, force: 0, pointerType: "pen" });
+  if (await paths() !== 2) fail("recording view: undo did not mend the cut line");
+  // the S Pen's side button as Chrome on Android reports it: moves marked pressed, with no pressure and no pen-down
+  for (const y of [120, 140, 150, 160, 180]) await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 400, y, button: "left", buttons: 1, force: 0, pointerType: "pen" });
+  await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 400, y: 200, buttons: 0, pointerType: "pen" });
   await sleep(100);
-  if (await js(`document.querySelectorAll("#inkPen path").length`) !== 0) fail("recording view: the S Pen's side button (no pressure) did not rub the ink out");
-  await js(`document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), true`);
+  if (await paths() !== 3) fail(`recording view: the S Pen's side button (no pressure) did not cut the line (${await paths()} lines, not 3)`);
+  await js(`document.getElementById("inkUndo").click(), true`);
+  if (await paths() !== 2) fail("recording view: undo did not mend the line the side button cut");
   await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
   await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
   // two fingers pinch out: the slide zooms and stays put
