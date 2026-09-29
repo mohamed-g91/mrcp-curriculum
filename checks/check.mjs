@@ -464,6 +464,21 @@ async function presentPass() {
   if (await paths() !== 2) fail(`recording view: the eraser did not cut the line in two (${await paths()} lines, not 2)`);
   await js(`document.getElementById("inkUndo").click(), document.querySelector("[data-tool=pen]").click(), true`);
   if (await paths() !== 1) fail("recording view: undo did not mend the cut line");
+  // a press of the S Pen's side button while hovering (as Chrome for Android reports it: moves marked
+  // pressed with no pressure) selects the eraser, and the next press the pen, even from the highlighter
+  const hoverPen = (y, buttons) => js(`(() => { document.elementFromPoint(400, ${y}).dispatchEvent(new PointerEvent("pointermove", { bubbles: true,
+    pointerType: "pen", pointerId: 77, clientX: 400, clientY: ${y}, buttons: ${buttons}, pressure: 0, width: 1, height: 1 })); return Present.tool; })()`);
+  await js(`document.querySelector("[data-tool=marker]").click(), true`);
+  await hoverPen(100, 0); await sleep(250);
+  await hoverPen(100, 1);
+  if (await js(`Present.tool`) !== "eraser" || await js(`document.querySelector("[data-tool=eraser]").getAttribute("aria-pressed")`) !== "true") fail("recording view: a press of the side button did not select the eraser");
+  // the button held: a flicker in what the pen reports is not a second press
+  await hoverPen(102, 0); await hoverPen(104, 1);
+  if (await js(`Present.tool`) !== "eraser") fail("recording view: a flicker while the side button was held counted as a second press");
+  await hoverPen(106, 0); await sleep(250);
+  await hoverPen(108, 1);
+  if (await js(`Present.tool`) !== "pen") fail("recording view: a second press of the side button did not select the pen");
+  await hoverPen(110, 0);
   await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
   await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
   // two fingers pinch out: the slide zooms and stays put
@@ -508,7 +523,7 @@ async function presentPass() {
   await js(`document.getElementById("tallSpacer").remove(), true`);
   await js(`Present.leave(), true`);
   await send("Emulation.setTouchEmulationEnabled", { enabled: false });
-  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, sizes panel, eraser, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
+  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, sizes panel, eraser, side button, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
 }
 
 // dark mode: screenshots of every slide on the stage, for a look (layout is the same as light)

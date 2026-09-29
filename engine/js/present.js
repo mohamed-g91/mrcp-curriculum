@@ -7,6 +7,7 @@
 const PALM_MS = 600;      // a touch this soon after the pen was seen is the hand, not a tap
 const PEN_W = [2, 4, 7, 11];  // fine, medium (the default), thick, very thick
 const HOLD_MS = 450;          // a press on the pen this long opens its sizes
+const SIDE_UP_MS = 150;       // the side button must be seen up this long before a press counts again
 const MARKER_W = 24;
 // every point a pointer move carries (a synthetic event carries none but its own)
 const each = e => { const c = e.getCoalescedEvents ? e.getCoalescedEvents() : []; return c.length ? c : [e]; };
@@ -22,6 +23,7 @@ const Present = {
   slide: null, stroke: null, erasing: false,
   rubbed: null,          // what the eraser has cut so far in this rub: one undo puts it all back
   lastPen: 0, swallowUntil: 0,
+  sideUpSince: 0,        // since when the S Pen's side button has been up (null while it is held)
   touches: new Map(), pinch: null,
   drag: null,            // one finger scrolling the slide (the page scrolls it: the browser may not pan, or it would cut the pen off)
   pinched: new Set(),    // touches whose lifting the slide must not see: a pinch's fingers, a palm
@@ -49,6 +51,11 @@ const Present = {
   page(s = this.slide) { if (!this.ink.has(s)) this.ink.set(s, { strokes: [], history: [] }); return this.ink.get(s); },
   busy() { return this.on && (!!this.stroke || this.erasing || !!this.pinch || !!(this.drag && this.drag.moved) || performance.now() - this.lastPen < PALM_MS); },
 
+  // a press of the S Pen's side button: the eraser, and the next press the pen
+  side() {
+    this.tool = this.tool === "eraser" ? "pen" : "eraser";
+    this.tray();
+  },
   // a new slide: its own ink, the full slide, and the tray's count and arrows
   show(s) {
     this.slide = s; this.rubbed = null;
@@ -241,6 +248,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.pointerType === "pen") {
       P.lastPen = performance.now();
       if (P.stroke || P.erasing) { stop(e); P.extend(e); }
+      // the side button pressed while the pen hovers: Chrome for Android reports moves marked pressed
+      // with no pressure. A press counts only once the button was seen up for a moment, since what the
+      // pen reports can flicker while the button is held.
+      else if ((e.buttons & 1) && e.pressure === 0) {
+        if (P.sideUpSince !== null && performance.now() - P.sideUpSince >= SIDE_UP_MS) P.side();
+        P.sideUpSince = null;
+      } else if (!e.buttons && P.sideUpSince === null) P.sideUpSince = performance.now();
     } else if (P.touches.has(e.pointerId)) {
       P.touches.set(e.pointerId, [e.clientX, e.clientY]);
       if (P.pinch) { stop(e); P.pinchMove(); }
