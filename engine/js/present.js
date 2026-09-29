@@ -26,6 +26,7 @@ const Present = {
   drag: null,            // one finger scrolling the slide (the page scrolls it: the browser may not pan, or it would cut the pen off)
   pinched: new Set(),    // touches whose lifting the slide must not see: a pinch's fingers, a palm
   z: 1, tx: 0, ty: 0,
+  note() {},             // the pen readout's own lines: what the page made of the pen
 
   enter(full) {
     if (this.on) return;
@@ -153,6 +154,7 @@ const Present = {
       k.el.after(...parts.map(c => c.el)); k.el.remove();
       if (!this.rubbed) { this.rubbed = []; p.history.push({ rub: this.rubbed }); }
       this.rubbed.push({ was: k, parts, at });
+      this.note(`→ cut a line (${this.rubbed.length} this rub)`);
     });
   },
   undo() {
@@ -232,8 +234,10 @@ document.addEventListener("DOMContentLoaded", () => {
     last = l; lines.push(l); if (lines.length > 14) lines.shift();
     box.textContent = lines.join("\n");
   };
+  const note = l => { if (!box || l === last) return; last = l; lines.push(l); if (lines.length > 14) lines.shift(); box.textContent = lines.join("\n"); };
   const readout = on => {
-    if (!on) { if (box) box.remove(); box = null; return; }
+    if (!on) { if (box) box.remove(); box = null; Present.note = () => {}; return; }
+    Present.note = note;
     box = document.createElement("pre");
     box.style.cssText = "position:fixed;left:8px;top:8px;z-index:99;margin:0;padding:6px 8px;font:13px/1.35 monospace;background:rgba(0,0,0,.8);color:#fff;border-radius:6px;pointer-events:none;white-space:pre";
     box.textContent = "pen readout: draw, then draw holding the side button";
@@ -263,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // no contact size (a real finger or palm has one), while the pen hovers, or just after it hovered
       // with the button held. It rubs out, and is no finger or palm.
       const now = performance.now(), penTip = e.width === 0 && e.height === 0 && now - P.lastPen < PALM_MS;
-      if (P.barrel || penTip || now - P.barrelAt < BARREL_MS) { stop(e); P.barrel = true; P.rub(P.at(e)); return; }
+      if (P.barrel || penTip || now - P.barrelAt < BARREL_MS) { stop(e); P.barrel = true; P.note(`→ eraser (touch ${e.pointerId})`); P.rub(P.at(e)); return; }
       if (P.busy()) { stop(e); P.pinched.add(e.pointerId); P.swallowUntil = Infinity; return; }
       P.touches.set(e.pointerId, [e.clientX, e.clientY]);
       // a sort chip keeps its own drag
