@@ -1,6 +1,6 @@
 # MRCP curriculum: interactive teaching pages
 
-This repo builds the whole MRCP curriculum as single-file, offline, interactive pages, one per topic. Each page is the visual for a short YouTube video ("Learn") and a practice page viewers come back to ("Practise"). Later the same site gains a question bank, video lectures, login, payments and progress tracking; see "Future" below before making choices that would block them.
+This repo builds the whole MRCP curriculum as single-file, offline, interactive pages, one per topic. Each topic builds twice from one YAML: the candidate's page (Learn is the recorded YouTube video with a chapter per slide, then Practise, which viewers come back to) and the presenter's deck (the Learn slides, for recording the video; password-protected on the live site). Later the same site gains a question bank, video lectures, login, payments and progress tracking; see "Future" below before making choices that would block them.
 
 ## Design rules
 
@@ -24,14 +24,15 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 
 | Path | Holds |
 | --- | --- |
-| `curriculum.yaml` | The spine: site credits, specialties, their topics, status and video IDs |
-| `content/<specialty>/<slug>.yaml` | One topic: concepts, the Learn slides, the Practise slides, cases, sources |
+| `curriculum.yaml` | The spine: site credits, specialties, their topics, status and video IDs (`video:` the YouTube ID once recorded) |
+| `content/<specialty>/<slug>.yaml` | One topic: concepts, the Learn slides (each with `at: "m:ss"`, its chapter's start in the video, once recorded), the Practise slides, cases, sources |
 | `content/ids.lock` | Every permanent item ID ever built (written by `build.py`) |
 | `engine/patterns.py` | One Python function per slide pattern, turning YAML into HTML |
 | `engine/shell.html`, `engine/icons.svg` | The page frame and the icon set |
 | `engine/css/` | `tokens` (colours, sizes), `base`, `stage` (16:9 canvas), `patterns`, `index` (home page) |
 | `engine/js/` | `core` (helpers, theme, score, `record()`, click-away), one file per pattern, `deck` (stage, navigation, start-up) |
-| `build.py` | Checks every topic, then builds `dist/<specialty>/<slug>.html` and `dist/index.html` |
+| `build.py` | Checks every topic, then builds the candidate's `dist/<specialty>/<slug>.html`, the presenter's `dist/present/<specialty>/<slug>.html`, `dist/index.html` and `dist/_headers` |
+| `functions/present/_middleware.js` | Cloudflare Pages Function: the password on `/present/*` (secret `PRESENTER_PASSWORD`) |
 | `checks/check.mjs` | Drives headless Chrome through a built page: layout at three sizes, every case solved |
 
 A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERNS`), its CSS in `engine/css/patterns.css`, its behaviour in a new `engine/js/<name>.js` (added to `JS_FILES` in `build.py`), its checks in `build.py`, and a row in the DESIGN.md pattern table.
@@ -40,8 +41,9 @@ A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERN
 
 1. Edit the topic YAML (content) or the engine (behaviour and look). Never edit `dist/`.
 2. Build: `python build.py` (or `python build.py --check` to check content only).
-3. Check: `node checks/check.mjs dist/<specialty>/<slug>.html --shots <scratchpad>/shots`, then look at the screenshots. In a cloud container, point it at the browser there and run without the sandbox: `CHROME=/opt/pw-browsers/chromium CHROME_FLAGS=--no-sandbox`. The check fails on overflow, a slide that scrolls on the stage, a case that does not solve, a wrong score, console errors or network requests.
+3. Check both builds: `node checks/check.mjs dist/<specialty>/<slug>.html --shots <scratchpad>/shots` (the candidate's page) and the same for `dist/present/<specialty>/<slug>.html` (the Learn slides and the recording view), then look at the screenshots. In a cloud container, point it at the browser there and run without the sandbox: `CHROME=/opt/pw-browsers/chromium CHROME_FLAGS=--no-sandbox`. The check fails on overflow, a slide that scrolls on the stage, a case that does not solve, a wrong score, console errors or network requests.
 4. Commit with a short message. Cloudflare Pages builds and publishes from `main`.
+5. After recording: put the YouTube ID in the topic's `video:` in `curriculum.yaml`, and each Learn slide's start time as `at: "m:ss"`.
 
 Mockups go to the user as a picture: write a static SVG (no scripts), render it to PNG with headless Chrome (`chrome --headless=new --screenshot=<png> --window-size=W,H file:///<svg>`) and send the PNG. Inline widgets and HTML pages with scripts do not show for them.
 
@@ -81,4 +83,4 @@ Opus plans the change, reviews what comes back, and lands it.
 - Hosting: Cloudflare Pages (static now; serverless functions later for payment webhooks).
 - Login and results database (e.g. Supabase), payments (Stripe), traffic analytics (cookie-free, e.g. Plausible or Cloudflare Web Analytics). All plug in through `record()` and permanent IDs.
 - The full question bank and paid content must not ship inside static files (anyone can read a static file's answers); they will be served after login. Free sample questions can stay static.
-- Videos are hosted on YouTube (free) or Cloudflare Stream (paid); only their IDs go in `curriculum.yaml`.
+- Videos are hosted on YouTube (free) or Cloudflare Stream (paid); only their IDs go in `curriculum.yaml`. The player lives in `engine/js/video.js`; another host changes only that file and the poster, not the chapters.

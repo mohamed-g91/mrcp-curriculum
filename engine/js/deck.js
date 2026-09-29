@@ -74,6 +74,7 @@ const Deck = {
     nb.innerHTML = this.nextLabel(s);
     nb.classList.remove("ready");
     if (this.shown !== s) {
+      if (this.shown) this.shown.dispatchEvent(new CustomEvent("slideleave"));
       this.shown = s;
       s.dispatchEvent(new CustomEvent("slideenter"));
       Present.show(s);
@@ -98,6 +99,7 @@ const Deck = {
 document.addEventListener("DOMContentLoaded", () => {
   Stage.fit();
   window.addEventListener("resize", () => Stage.fit());
+  buildVideo();
   buildSpectra();
   buildQuestionFlows();
   buildTrees();
@@ -118,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const fonts = document.fonts ? Promise.all(['400 20px "Inter"', '800 20px "Inter"', '600 44px "Source Serif 4"'].map(f => document.fonts.load(f))) : Promise.resolve();
   Promise.race([fonts, new Promise(r => setTimeout(r, 1500))]).catch(() => {}).then(() => requestAnimationFrame(() => {
     Deck.go(Number.isFinite(start) ? start : 0);
-    if (new URLSearchParams(location.search).has("present")) Present.enter(false);
+    if (PRESENTER && new URLSearchParams(location.search).has("present")) Present.enter(false);
   }));
 
   $("#nextBtn").addEventListener("click", () => Deck.next());

@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $$("[data-tool]").forEach(b => b.addEventListener("click", () => { P.tool = b.dataset.tool; P.tray(); }));
   $$("[data-colour]").forEach(b => b.addEventListener("click", () => { P.colour = +b.dataset.colour; P.tool = "pen"; P.tray(); }));
   document.addEventListener("keydown", e => {
-    if (e.altKey || e.ctrlKey || e.metaKey || e.key.toLowerCase() !== "p") return;
+    if (!PRESENTER || e.altKey || e.ctrlKey || e.metaKey || e.key.toLowerCase() !== "p") return;
     P.on ? P.leave() : P.enter(true);
   });
 });

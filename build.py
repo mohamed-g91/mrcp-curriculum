@@ -4,8 +4,14 @@
   python build.py --check    only check the content
 
 Each topic in curriculum.yaml has a content file, content/<specialty>/<slug>.yaml,
-and builds to dist/<specialty>/<slug>.html: one self-contained offline file with
-the engine's CSS, JavaScript, icons and fonts embedded.
+and builds to two self-contained offline files with the engine's CSS, JavaScript,
+icons and fonts embedded:
+
+  dist/<specialty>/<slug>.html          the candidate's page: Learn is the recorded video
+                                        with a chapter per slide, then Practise
+  dist/present/<specialty>/<slug>.html  the presenter's deck: every Learn slide, for
+                                        recording; behind a password on the live site
+                                        (functions/present/_middleware.js)
 
 Permanent IDs: every case and practice item ID ever built is listed in
 content/ids.lock. The check fails if a listed ID disappears without being
@@ -21,15 +27,17 @@ import sys
 import yaml
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from engine.patterns import CENTRED, PATTERNS, e, p_title, topic_data, wordmark  # noqa: E402
+from engine.patterns import CENTRED, PATTERNS, e, p_title, p_video, topic_data, wordmark  # noqa: E402
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 ENGINE = os.path.join(ROOT, "engine")
 DIST = os.path.join(ROOT, "dist")
 LOCK = os.path.join(ROOT, "content", "ids.lock")
 CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css"]
-JS_FILES = ["core.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "working.js", "sort.js", "quiz.js", "present.js", "deck.js"]
+JS_FILES = ["core.js", "video.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "working.js", "sort.js", "quiz.js", "present.js", "deck.js"]
 ITEM_ID = re.compile(r"^[a-z]\d{2,3}$")
+YOUTUBE_ID = re.compile(r"^[A-Za-z0-9_-]{11}$")
+CHAPTER_AT = re.compile(r"^(\d+:)?[0-5]?\d:[0-5]\d$")
 INSTRUCTION = re.compile(r"\b(tap|click|drag|press|select)\b", re.I)
 
 
@@ -83,6 +91,8 @@ def check_topic(t, expected_id):
         if s.get("pattern") not in PATTERNS:
             errs.append(f"{where}: unknown pattern {s.get('pattern')!r}")
             continue
+        if s.get("at") is not None and not CHAPTER_AT.match(str(s["at"])):
+            errs.append(f"{where}: at is {s['at']!r}: write where its chapter starts in the video as m:ss (2:15)")
         if INSTRUCTION.search(s.get("title", "")):
             warns.append(f"{where}: title reads like an instruction ({s['title']!r})")
         refs = []
@@ -283,9 +293,14 @@ def section(slide, part, inner):
             f'aria-label="{e(slide["title"])}">{inner}</section>')
 
 
-def render_topic(t, spec, site):
-    slides = [section({"id": "title", "pattern": "title", "title": "Title"}, "", p_title({}, t))]
+def render_topic(t, spec, site, present=False):
+    """The candidate's page, or with present=True the presenter's deck (every Learn slide)."""
+    slides = [section({"id": "title", "pattern": "title", "title": "Title"}, "", p_title({"present": present}, t))]
+    if not present:
+        slides.append(section({"id": "video", "pattern": "video", "title": "Video"}, "Learn", p_video({}, t)))
     for part, key in (("Learn", "learn"), ("Practise", "practise")):
+        if part == "Learn" and not present:
+            continue
         for s in t[key]:
             if s.get("hidden"):  # kept in the YAML and checked, but left out of the page
                 continue
@@ -301,6 +316,8 @@ def render_topic(t, spec, site):
     page_title = f'{t["title"]} · {site["title"]}'
     for k, v in {
         "{{PAGE_TITLE}}": e(page_title), "{{DESCRIPTION}}": e(t["description"]), "{{AUTHOR}}": e(site["author"]),
+        "{{MODE}}": "present-deck" if present else "site", "{{ROBOTS}}": '<meta name="robots" content="noindex, nofollow">\n' if present else "",
+        "{{HOME}}": "../../index.html" if present else "../index.html",
         "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{SITE}}": e(site["title"]), "{{WORDMARK}}": wordmark(site["title"]), "{{ICONS}}": read(ENGINE, "icons.svg"),
         "{{SLIDES}}": "\n".join(slides), "{{DATA}}": data, "{{CSS}}": css, "{{JS}}": js,
     }.items():
@@ -360,7 +377,9 @@ def main():
             errs, warns = check_topic(t, tid)
             errors += [f"{tid}: {x}" for x in errs]
             warnings += [f"{tid}: {x}" for x in warns]
-            t["_site"], t["_links"] = site, links
+            if tp.get("video") is not None and not YOUTUBE_ID.match(str(tp["video"])):
+                errors.append(f"{tid}: video is {tp['video']!r}: give the YouTube video ID (11 letters, digits, - or _)")
+            t["_site"], t["_links"], t["_video"] = site, links, tp.get("video")
             d = t["updated"] if isinstance(t["updated"], datetime.date) else datetime.date.fromisoformat(str(t["updated"]))
             t["_updated_text"] = f"{d.day} {d.strftime('%B %Y')}"
             topics.append((spec, tp, t))
@@ -377,11 +396,15 @@ def main():
     if only_check:
         return
     for spec, tp, t in topics:
-        out = os.path.join(DIST, spec["id"], tp["slug"] + ".html")
-        os.makedirs(os.path.dirname(out), exist_ok=True)
-        with open(out, "w", encoding="utf-8", newline="\n") as f:
-            f.write(render_topic(t, spec, site))
-        print(f"Built {os.path.relpath(out, ROOT)} ({os.path.getsize(out):,} bytes)")
+        for present, out in ((False, os.path.join(DIST, spec["id"], tp["slug"] + ".html")),
+                             (True, os.path.join(DIST, "present", spec["id"], tp["slug"] + ".html"))):
+            os.makedirs(os.path.dirname(out), exist_ok=True)
+            with open(out, "w", encoding="utf-8", newline="\n") as f:
+                f.write(render_topic(t, spec, site, present))
+            print(f"Built {os.path.relpath(out, ROOT)} ({os.path.getsize(out):,} bytes)")
+    # search engines leave the presenter's decks alone (Cloudflare Pages reads _headers)
+    with open(os.path.join(DIST, "_headers"), "w", encoding="utf-8", newline="\n") as f:
+        f.write("/present/*\n  X-Robots-Tag: noindex, nofollow\n")
     with open(os.path.join(DIST, "index.html"), "w", encoding="utf-8", newline="\n") as f:
         f.write(render_index(site, specs))
     with open(LOCK, "w", encoding="utf-8", newline="\n") as f:

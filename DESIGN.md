@@ -10,7 +10,7 @@ Every page teaches one decision process: show the skeleton first, and let the le
 2. **Minimal text on screen.** Show names and labels only. Examples, answers and explanations stay hidden until tapped.
 3. **No instruction sentences.** Slides never say "Tap a circle…" or "Drag…"; the circles, cards and buckets make the interaction obvious. `build.py` warns when a slide title reads like an instruction.
 4. **Hook with a real question.** The first slide after the title is an exam-style stem and its question, with no options or answer. A later slide comes back to it and solves it.
-5. **Learn, then practise.** "Learn" is the video deck; "Practise" applies the same steps to cases on the page.
+5. **Learn, then practise.** On the candidate's page "Learn" is the recorded video, with a chapter for each slide; the Learn slides themselves live in the presenter's deck, which is only for recording. "Practise" applies the same steps to cases on the page.
 6. **Same order everywhere.** Question flows, cases and summaries use one order and one wording.
 7. **Every page is illustrated.** Each topic gets figures that picture its own content, so the page is pleasant to look at and each idea has an image to remember it by. Figures:
    - **stand for the topic:** each one shows what its slide is about. In *Types of data*, the concept icons sit above the title; slide 2 shows labels, a podium and a ruler above the three families; slide 3 has an icon beside each question and a chart beside each answer; and the hook, the tree and every case have a cartoon from the recurring cast;
@@ -56,7 +56,8 @@ Each slide is one pattern, named in the topic's YAML (`pattern:`). Pick the one 
 
 | Pattern (`pattern:`) | Use it for | What the learner does |
 | --- | --- | --- |
-| Title (`title`, automatic) | Every page | Taps Learn (open-book icon: the video deck) or Practise (pencil icon: the cases). The title, its rule (fading out at both ends) and the two cards are centred. With `cover: concepts`, each concept's icon sits in a row above the title in its family colour, rising in one by one |
+| Title (`title`, automatic) | Every page | Taps Learn (play icon on the candidate's page: the video; open-book icon in the presenter's deck: the slides) or Practise (pencil icon: the cases). The title, its rule (fading out at both ends) and the two cards are centred. With `cover: concepts`, each concept's icon sits in a row above the title in its family colour, rising in one by one |
+| Video (`video`, automatic) | Learn on the candidate's page | Sees the player on the left and a chapter for each Learn slide on the right (under the player on phones). The player is a drawn poster (the concept icons, the topic's name, a white play button on the primary blue) until tapped, so nothing loads from YouTube and no cookie is set before then; the tap loads the privacy-enhanced player (youtube-nocookie) and plays. A chapter with a time (the slide's `at`, m:ss) plays from there, or seeks the player once it is in. Before the video is recorded (`video: null`) the poster is grey and dashed, reads Video coming soon, and the chapters are listed by number with no times, as a preview. Leaving the slide pauses the video. The player is capped by the height under the bars, so it never pushes the slide past the stage |
 | Hook (`hook`) | The opening exam question | Reads it; nothing to tap. Optional `figure` (a diagram inside the card, such as the pain scale) and `scene` (a cartoon beside the card) |
 | Tap-to-reveal circles (`spectrum`) | A set of types or categories on a spectrum | Taps a circle; its examples appear beneath, one by one. A group's `figure` puts a small picture of what the family means above its name (labels in no order, a podium, a ruler), in the family colour. As the slide opens each family rises as one (its picture, its name and its circles together), left to right. The circles stand on their own, with no line joining them |
 | Zoom circle (`spectrum` with `open: zoom`) | A spectrum whose examples deserve the whole slide | Taps a circle; the rest of the slide fades back and the circle grows out of its dot into a large centred circle holding its letter, its name (large serif, family ink) and its examples as soft pills (white, thin family border, family dot, dark ink; popping in one by one; sized as a share of the circle so they scale with it; a long name stays on one line at a smaller size, and a long list takes smaller pills, so nothing spills out of the circle), over a fine dot texture that shows only near the rim and a thin dashed inner ring. Tapping outside, or Esc, shrinks it back into its dot; tapping another dot swaps to that one |
@@ -118,9 +119,13 @@ Every interactive element behaves the same way, so learners never have to relear
 - **Question flows** run left to right on the stage and turn vertical on phones and portrait tablets.
 - **Bottom bar on phones:** buttons show an icon only, except Next.
 
+## Presenter's deck
+
+Every topic builds twice from the same YAML: the candidate's page (`dist/<specialty>/<slug>.html`: title, video, Practise) and the presenter's deck (`dist/present/<specialty>/<slug>.html`: title, every Learn slide, Practise). The deck is never linked from the site; on the live site it sits behind a password (`functions/present/_middleware.js`, the `PRESENTER_PASSWORD` secret) and tells search engines to stay away. Every design rule for Learn slides still applies to it, since the slides are what the video shows.
+
 ## Recording view
 
-The presenter's mode for recording a video on a tablet with a stylus (built for a Galaxy Tab S10 FE and its S Pen). It opens from the screen button in the top bar (full screen), from the P key, or from a link ending `?present`; the top-bar button is hidden on phones and small windows. Viewers never see it unless they open it.
+The presenter's mode for recording a video on a tablet with a stylus (built for a Galaxy Tab S10 FE and its S Pen), in the presenter's deck only. It opens from the screen button in the top bar (full screen), from the P key, or from a link ending `?present`; the top-bar button is hidden on phones and small windows, and on the candidate's page.
 
 - **A clean 16:9 frame.** The slide is an exact 1280 × 720 frame at the top of the screen, so a recording crops to a clean 16:9. The top bar (wordmark, topic, score) and the progress bar stay; the bottom bar goes, and the slide moves down by half its height, so the content and any zoom circle sit centred below the top bar. The tray fills the strip below it (at least 56 px; on a 16:10 tablet the strip left over).
 - **The tray** (one row, in the letterbox colour): Back, the slide count and Next on the left; pen, highlighter, three pen colours (red, blue, black: none of them a concept's colour), eraser, undo and clear in the middle; whole slide (zoom out) and leave on the right.
@@ -131,7 +136,7 @@ The presenter's mode for recording a video on a tablet with a stylus (built for 
 
 ## Slide blueprint and checklist
 
-A single-decision topic runs: title → hook → teach each step (one slide per step) → solve the hook → why it matters → practise (warm-up, solved example, cases) → end. A topic with several question types adds a hub and routes (to be ported).
+A single-decision topic runs (in the presenter's deck; the candidate sees these as the video's chapters): title → hook → teach each step (one slide per step) → solve the hook → why it matters → practise (warm-up, solved example, cases) → end. A topic with several question types adds a hub and routes (to be ported).
 
 Before publishing:
 

@@ -17,6 +17,10 @@ const concept = key => TOPIC.concepts[key];
 // what a concept's circle holds: its letter, or its icon when it has no letter
 const conceptMark = c => c.letter ? esc(c.letter) : c.icon ? icon(c.icon) : "";
 
+/* the presenter's deck (dist/present/…) has the Learn slides and the recording view;
+   the candidate's page has the video in their place */
+const PRESENTER = document.documentElement.classList.contains("present-deck");
+
 /* ---------- record ----------
    Every learner event passes through here: slide views and answers, keyed by permanent IDs.
    It does nothing yet. Later it will send events to the traffic analytics and the results database. */

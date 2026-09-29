@@ -29,7 +29,7 @@ html.fluid .deck{overflow:visible}
    An exact 1280 x 720 frame at the top of the screen, with the top bar and no bottom bar, so a
    recording crops to a clean 16:9; the tray fills the strip below. The pen's ink sits over the slide in two layers,
    the highlighter under the pen, and zooms with it (present.js moves .frame). */
-html.fluid #presentBtn,html.present #presentBtn{display:none}
+html.fluid #presentBtn,html.present #presentBtn,html.site #presentBtn{display:none}  /* the recording view is the presenter's deck only */
 .frame{position:relative;transform-origin:0 0}
 html.present body{touch-action:none}
 html.present .app{top:0;transform-origin:50% 0;transform:translateX(-50%) scale(var(--s,1));box-shadow:none;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}

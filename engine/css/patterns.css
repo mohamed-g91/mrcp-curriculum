@@ -16,6 +16,40 @@
 .part-ico .ico{width:45%;height:45%}
 @container (max-width:600px){.part-cards{grid-template-columns:minmax(0,1fr)}}
 
+/* ---------- video (Learn on the candidate's page) ----------
+   The player on the left, a chapter for each Learn slide on the right; on phones the chapters go under it.
+   The poster is drawn here, not fetched, so the page loads nothing from YouTube until it is tapped. */
+.vid-wrap{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(240px,calc(24 * var(--u)),310px);gap:clamp(16px,calc(2.4 * var(--u)),32px);align-items:center;padding-bottom:clamp(8px,calc(1.2 * var(--u)),16px)}
+.vid-player{aspect-ratio:16/9;width:100%;justify-self:end;border-radius:var(--radius-lg);overflow:hidden;background:var(--surface-2);box-shadow:var(--shadow);animation:figUp .5s var(--ease) both;animation-delay:.1s}
+/* on the stage the canvas can be wider than 16:9, so the player is capped by the height left under the bars */
+html:not(.fluid) .vid-player{width:min(100%,calc((100vh / var(--s,1) - 236px) * 16 / 9))}
+html:not(.fluid) .vid-chapters{max-height:calc(100vh / var(--s,1) - 236px)}
+.vid-player iframe{display:block;width:100%;height:100%;border:0}
+.vid-poster{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,calc(1.8 * var(--u)),24px);padding:24px;border:0;border-radius:0;color:#fff;
+  background:radial-gradient(120% 90% at 50% 0%,#2D66B0 0%,#1F4E8C 45%,#0E1F35 100%)}
+button.vid-poster{cursor:pointer}
+.vid-cover{display:flex;gap:clamp(12px,calc(1.8 * var(--u)),22px)}
+.vid-cover .ico{width:clamp(22px,calc(2.6 * var(--u)),34px);height:clamp(22px,calc(2.6 * var(--u)),34px)}
+.vid-poster .vid-cover>span{display:flex;color:color-mix(in srgb,var(--x-solid) 45%,#fff)}
+.vid-title{color:inherit;font-family:var(--serif);font-weight:600;font-size:clamp(24px,calc(3.2 * var(--u)),40px);line-height:1.15;text-align:center;max-width:18ch}
+.vid-play{display:inline-flex;align-items:center;justify-content:center;width:clamp(56px,calc(6.25 * var(--u)),80px);height:clamp(56px,calc(6.25 * var(--u)),80px);border-radius:50%;background:#fff;color:#1F4E8C;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:transform .25s var(--ease)}
+.vid-play .ico{width:44%;height:44%;margin-left:6%}
+button.vid-poster:hover .vid-play{transform:scale(1.08)}
+button.vid-poster:focus-visible{outline:3px solid #fff;outline-offset:-6px}
+.vid-soon{background:var(--surface-2);color:var(--ink);border:1px dashed var(--border-strong);border-radius:inherit}
+.vid-soon .vid-cover>span{display:flex;color:var(--x-solid)}
+.vid-note{font-size:var(--fs-label);font-weight:750;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.vid-chapters{list-style:none;margin:0;padding:0;align-self:stretch;overflow-y:auto;display:flex;flex-direction:column;justify-content:center;animation:figUp .5s var(--ease) both;animation-delay:.26s}
+.vid-ch{display:grid;grid-template-columns:clamp(40px,calc(4.4 * var(--u)),56px) 1fr;align-items:baseline;gap:8px;width:100%;padding:clamp(7px,calc(.8 * var(--u)),10px) 4px;border:0;border-bottom:1px solid var(--border);background:none;text-align:left;font:inherit;font-size:var(--fs-small);line-height:1.35;color:var(--text)}
+.vid-chapters li:last-child .vid-ch{border-bottom:0}
+.vid-at{font-size:var(--fs-label);font-variant-numeric:tabular-nums;color:var(--muted)}
+button.vid-ch{cursor:pointer;color:var(--ink)}
+button.vid-ch .vid-at{color:var(--primary);font-weight:650}
+button.vid-ch:hover .vid-name,button.vid-ch.on .vid-name{color:var(--primary)}
+button.vid-ch.on{font-weight:650}
+@container (max-width:900px){.vid-wrap{grid-template-columns:minmax(0,1fr);align-items:start}.vid-chapters{justify-content:flex-start}}
+@media (prefers-reduced-motion:reduce){.vid-player,.vid-chapters{animation:none}}
+
 /* ---------- stems ---------- */
 .stem-card{background:var(--surface);border:1px solid var(--border);border-top:6px solid var(--primary);border-radius:var(--radius-lg);padding:clamp(18px,calc(2.4 * var(--u)),32px) clamp(18px,calc(2.8 * var(--u)),36px);box-shadow:var(--edge),var(--shadow);max-width:960px}
 .stem-text{font-size:var(--fs-stem);line-height:1.6;color:var(--ink)}

@@ -57,10 +57,12 @@ def heading(slide):
 # ---------------------------------------------------------------- learn patterns
 
 def p_title(slide, topic):
+    # on the candidate's page Learn is the video (a play icon); in the presenter's deck, the slides (a book)
+    learn = "book" if slide.get("present") else "play"
     cards = "".join(
         f'<button type="button" class="part-card" data-go="{go}">'
         f'<span class="part-ico">{icon(ico)}</span><b>{label}</b>{icon("right")}</button>'
-        for go, ico, label in (("learn", "book", "Learn"), ("practise", "pencil", "Practise"))
+        for go, ico, label in (("learn", learn, "Learn"), ("practise", "pencil", "Practise"))
     )
     # a picture of the whole topic above its name
     # cover: concepts puts each concept's icon, in its family colour, in a row above the name
@@ -71,6 +73,36 @@ def p_title(slide, topic):
             for i, c in enumerate(topic["concepts"].values())) + "</div>"
     return (f'<div class="title-wrap">{cover}<h1>{e(topic["title"])}</h1>'
             f'<div class="part-cards">{cards}</div></div>{credits(topic)}')
+
+
+def chapter_seconds(at):
+    """'2:15' or '1:02:15' as seconds into the video."""
+    secs = 0
+    for part in str(at).split(":"):
+        secs = secs * 60 + int(part)
+    return secs
+
+
+def p_video(slide, topic):
+    """Learn on the candidate's page: the recorded video, and a chapter for each Learn slide.
+    Nothing loads from YouTube until the poster or a chapter is tapped, so the page stays offline
+    and cookie-free until then. With no video yet, the poster says so and the chapters show what is coming."""
+    vid = topic.get("_video") or ""
+    cover = "".join(f'<span class="f-{c["family"]}">{icon(c["icon"])}</span>' for c in topic["concepts"].values())
+    face = f'<span class="vid-cover" aria-hidden="true">{cover}</span><b class="vid-title">{e(topic["title"])}</b>'
+    if vid:
+        poster = (f'<button type="button" class="vid-poster" aria-label="Play the video: {e(topic["title"])}">{face}'
+                  f'<span class="vid-play">{icon("play")}</span></button>')
+    else:
+        poster = f'<div class="vid-poster vid-soon">{face}<span class="vid-note">Video coming soon</span></div>'
+    rows = []
+    for k, s in enumerate(x for x in topic["learn"] if not x.get("hidden")):
+        at = s.get("at")
+        stamp = f'<span class="vid-at">{e(at) if at is not None else k + 1}</span><span class="vid-name">{e(s["title"])}</span>'
+        rows.append(f'<li><button type="button" class="vid-ch" data-at="{chapter_seconds(at)}">{stamp}</button></li>'
+                    if vid and at is not None else f'<li><span class="vid-ch">{stamp}</span></li>')
+    return (f'<div class="vid-wrap"><div class="vid-player" data-video="{e(vid)}">{poster}</div>'
+            f'<ol class="vid-chapters" aria-label="Chapters">{"".join(rows)}</ol></div>{credits(topic)}')
 
 
 def svg(name):
