@@ -29,9 +29,11 @@ html.fluid .deck{overflow:visible}
    An exact 1280 x 720 frame at the top of the screen, with the top bar and no bottom bar, so a
    recording crops to a clean 16:9; the tray fills the strip below. The pen's ink sits over the slide in two layers,
    the highlighter under the pen, and zooms with it (present.js moves .frame). */
-html.fluid #presentBtn,html.present #presentBtn,html.site #presentBtn{display:none}  /* the recording view is the presenter's deck only */
+html.phone #presentBtn,html.present #presentBtn,html.site #presentBtn{display:none}  /* the recording view is the presenter's deck only */
 .frame{position:relative;transform-origin:0 0}
-html.present body{touch-action:none}
+/* every element, not just the frame: a scroller (the deck) turns panning back on for what is inside it,
+   and a pan would cancel the pen halfway through a stroke */
+html.present body,html.present .app *{touch-action:none}
 html.present .app{top:0;transform-origin:50% 0;transform:translateX(-50%) scale(var(--s,1));box-shadow:none;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 /* the top bar stays (wordmark, topic, score); the tray does the bottom bar's job, and the slide
    moves down by half the bar it lost, so its content and any zoom circle sit centred below the top bar */
@@ -43,9 +45,6 @@ html.present .ink{display:block}
 .ink-marker{mix-blend-mode:multiply}
 .ink-marker path{stroke:var(--hl)}
 :root[data-theme="dark"] .ink-marker{mix-blend-mode:screen}
-.ink .c0,.swatch.c0{--c:var(--bad-solid);stroke:var(--c)}
-.ink .c1,.swatch.c1{--c:var(--primary);stroke:var(--c)}
-.ink .c2,.swatch.c2{--c:var(--ink);stroke:var(--c)}
 
 .tray{position:fixed;left:0;right:0;bottom:0;height:var(--tray,56px);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 16px;background:var(--letterbox);color:var(--ink);touch-action:manipulation;user-select:none;-webkit-user-select:none;z-index:10}
 .tray[hidden]{display:none}
@@ -53,10 +52,22 @@ html.present .ink{display:block}
 .tray-end{justify-self:end}
 .tray-gap{width:14px}
 .tray-count{min-width:56px;text-align:center;font-size:15px;color:var(--muted);font-variant-numeric:tabular-nums}
-.tray-btn,.swatch{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:none;color:var(--ink)}
+.tray-btn,.swatch,.size{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:none;color:var(--ink)}
 .tray-btn .ico{width:22px;height:22px}
 .tray-btn[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
 .tray-btn:disabled{opacity:.3;cursor:default}
 .swatch{width:36px}
 .swatch::before{content:"";width:20px;height:20px;border-radius:50%;background:var(--c)}
-.swatch[aria-pressed="true"]::before{box-shadow:0 0 0 3px var(--letterbox),0 0 0 5px var(--ink)}
+.swatch[aria-checked="true"]::before{box-shadow:0 0 0 3px var(--page),0 0 0 5px var(--ink)}
+#colourBtn::before{width:24px;height:24px;box-shadow:0 0 0 2px var(--letterbox),0 0 0 3.5px var(--line)}
+/* the pop-ups above the tray: the pen's sizes (a tap on the pen when it is in hand; each dot is its
+   line's width) and the colour ring (a tap on the colour). A tap anywhere else closes them. */
+.size-panel,.colour-ring{position:absolute;bottom:calc(100% + 8px);left:var(--at,50%);transform:translateX(-50%);background:var(--page);box-shadow:0 6px 24px rgba(14,31,53,.18)}
+.size-panel{display:flex;gap:2px;padding:4px;border-radius:26px}
+.size-panel[hidden],.colour-ring[hidden]{display:none}
+.colour-ring{width:176px;height:176px;border-radius:50%}
+.colour-ring .swatch{position:absolute;left:50%;top:50%;margin:-22px 0 0 -22px;width:44px;transform:rotate(var(--a)) translateY(-60px) rotate(calc(-1 * var(--a)))}
+.colour-ring .swatch::before{width:28px;height:28px}
+.size::before{content:"";width:var(--d);height:var(--d);border-radius:50%;background:var(--ink)}
+.size.s0{--d:4px}.size.s1{--d:7px}.size.s2{--d:11px}.size.s3{--d:16px}
+.size[aria-checked="true"]{background:var(--hl)}

@@ -444,6 +444,74 @@ async function presentPass() {
   await js(`document.getElementById("trayPrev").click(), true`);
   await sleep(300);
   if (await js(`document.querySelectorAll("#inkPen path").length`) !== 2) fail("recording view: the slide's ink did not come back");
+  // a tap on the pen when it is in hand opens its sizes; the thick one draws a thick line
+  const tapBtn = async sel => {
+    const at = await js(`(() => { const r = document.querySelector("${sel}").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
+    await send("Input.dispatchMouseEvent", { type: "mousePressed", x: at[0], y: at[1], button: "left", buttons: 1, clickCount: 1 });
+    await send("Input.dispatchMouseEvent", { type: "mouseReleased", x: at[0], y: at[1], button: "left", buttons: 0, clickCount: 1 });
+    await sleep(100);
+  };
+  const shown = id => js(`!document.getElementById("${id}").hidden`);
+  await tapBtn("[data-tool=marker]");
+  await tapBtn("[data-tool=pen]");
+  if (await shown("sizePanel")) fail("recording view: a tap on the pen from the highlighter opened its sizes");
+  await tapBtn("[data-tool=pen]");
+  if (!(await shown("sizePanel"))) fail("recording view: a tap on the pen in hand did not open its sizes");
+  // a pen stroke on the slide closes them
+  await pen([[300, 420], [340, 420]]);
+  if (await shown("sizePanel")) fail("recording view: a pen stroke on the slide did not close the sizes");
+  await js(`document.getElementById("inkUndo").click(), true`);
+  await tapBtn("[data-tool=pen]");
+  await js(`document.querySelector("[data-size='2']").click(), true`);
+  if (await shown("sizePanel")) fail("recording view: choosing a size did not close the panel");
+  // the colour ring: eight pen colours; the green one draws green, and a tap on the tray closes the ring
+  await tapBtn("#colourBtn");
+  if (!(await shown("colourPanel"))) fail("recording view: a tap on the colour did not open the ring");
+  if (await js(`document.querySelectorAll("#colourPanel .swatch").length`) !== 8) fail("recording view: the pen's colour ring does not hold eight colours");
+  await js(`document.querySelectorAll("#colourPanel .swatch")[3].click(), true`);
+  if (await shown("colourPanel")) fail("recording view: choosing a colour did not close the ring");
+  await tapBtn("#colourBtn");
+  await tapBtn("#trayCount");
+  if (await shown("colourPanel")) fail("recording view: a tap elsewhere did not close the colour ring");
+  // the highlighter has its own ring
+  await tapBtn("[data-tool=marker]");
+  await tapBtn("#colourBtn");
+  if (await js(`document.querySelectorAll("#colourPanel .swatch").length`) !== 6) fail("recording view: the highlighter's colour ring does not hold six colours");
+  await shot("present-colours");
+  await js(`document.querySelectorAll("#colourPanel .swatch")[2].click(), true`);
+  await pen([[300, 460], [400, 460]]);
+  if (await js(`document.querySelector("#inkMarker path:last-child").style.stroke`) !== "rgb(116, 192, 252)") fail("recording view: the highlighter did not draw in the colour chosen");
+  await js(`document.getElementById("inkUndo").click(), document.querySelector("[data-tool=pen]").click(), true`);
+  await pen([target, [target[0] + 40, target[1] + 10], [target[0] + 80, target[1] - 10]]);
+  if (await js(`document.querySelector("#inkPen path:last-child").getAttribute("stroke-width")`) !== "7") fail("recording view: the thick pen did not draw a thick line");
+  if (await js(`document.querySelector("#inkPen path:last-child").style.stroke`) !== "rgb(47, 158, 68)") fail("recording view: the pen did not draw in the colour chosen");
+  await js(`Present.size = 1, true`);
+  // the eraser rubs out only what it passes over: across a line it cuts it in two, and one undo mends it
+  const paths = () => js(`document.querySelectorAll("#inkPen path").length`);
+  await js(`document.getElementById("inkClear").click(), true`);
+  await pen([[300, 150], [400, 150], [500, 150], [600, 150], [700, 150]]);
+  await js(`document.querySelector("[data-tool=eraser]").click(), true`);
+  await pen([[500, 110], [500, 130], [500, 150], [500, 170], [500, 190]]);
+  if (await paths() !== 2) fail(`recording view: the eraser did not cut the line in two (${await paths()} lines, not 2)`);
+  await js(`document.getElementById("inkUndo").click(), document.querySelector("[data-tool=pen]").click(), true`);
+  if (await paths() !== 1) fail("recording view: undo did not mend the cut line");
+  // a press of the S Pen's side button while hovering (as Chrome for Android reports it: moves marked
+  // pressed with no pressure) selects the eraser, and the next press the pen, even from the highlighter
+  const hoverPen = (y, buttons) => js(`(() => { document.elementFromPoint(400, ${y}).dispatchEvent(new PointerEvent("pointermove", { bubbles: true,
+    pointerType: "pen", pointerId: 77, clientX: 400, clientY: ${y}, buttons: ${buttons}, pressure: 0, width: 1, height: 1 })); return Present.tool; })()`);
+  await js(`document.querySelector("[data-tool=marker]").click(), true`);
+  await hoverPen(100, 0); await sleep(250);
+  await hoverPen(100, 1);
+  if (await js(`Present.tool`) !== "eraser" || await js(`document.querySelector("[data-tool=eraser]").getAttribute("aria-pressed")`) !== "true") fail("recording view: a press of the side button did not select the eraser");
+  // the button held: a flicker in what the pen reports is not a second press
+  await hoverPen(102, 0); await hoverPen(104, 1);
+  if (await js(`Present.tool`) !== "eraser") fail("recording view: a flicker while the side button was held counted as a second press");
+  await hoverPen(106, 0); await sleep(250);
+  await hoverPen(108, 1);
+  if (await js(`Present.tool`) !== "pen") fail("recording view: a second press of the side button did not select the pen");
+  await hoverPen(110, 0);
+  await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
+  await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
   // two fingers pinch out: the slide zooms and stays put
   const touch = (type, pts) => send("Input.dispatchTouchEvent", { type, touchPoints: pts.map(([x, y], id) => ({ x, y, id })) });
   await touch("touchStart", [[520, 300]]);
@@ -470,9 +538,23 @@ async function presentPass() {
   await touch("touchEnd", []);
   await sleep(400);
   if (await js(open) === before) fail("recording view: a finger tap no longer opens an item");
+  // one finger dragged up scrolls a long slide (the browser may not pan, so the page does it);
+  // a tall spacer makes the slide long when none is
+  await js(`(() => { const d = document.createElement("div"); d.id = "tallSpacer"; d.style.height = "1400px";
+    Deck.slides[Deck.i].appendChild(d); return true; })()`);
+  await sleep(700);
+  await js(`document.getElementById("deck").scrollTop = 0, true`);
+  await touch("touchStart", [[640, 500]]);
+  for (let k = 1; k <= 8; k++) await touch("touchMove", [[640, 500 - k * 25]]);
+  await touch("touchEnd", []);
+  await sleep(300);
+  const sc = await js(`[document.getElementById("deck").scrollTop, Deck.i]`);
+  if (!(sc[0] > 50)) fail(`recording view: a finger drag scrolled the slide only ${sc[0]}px`);
+  if (sc[1] !== i) fail("recording view: a finger drag turned the page");
+  await js(`document.getElementById("tallSpacer").remove(), true`);
   await js(`Present.leave(), true`);
   await send("Emulation.setTouchEmulationEnabled", { enabled: false });
-  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, highlighter, undo, ink per slide, pinch zoom, palm");
+  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, sizes, colours, eraser, side button, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
 }
 
 // dark mode: screenshots of every slide on the stage, for a look (layout is the same as light)
