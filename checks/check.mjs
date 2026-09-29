@@ -463,6 +463,12 @@ async function presentPass() {
   await side("mouseReleased", [target[0] + 80, target[1] - 10], 0);
   await sleep(100);
   if (await js(`document.querySelectorAll("#inkPen path").length`) !== 0) fail("recording view: the side button did not rub the ink out");
+  // the S Pen's side button as Chrome on Android reports it: moves marked pressed, with no pressure and no pen-down
+  await js(`document.getElementById("inkUndo").click(), true`);
+  if (await js(`document.querySelectorAll("#inkPen path").length`) !== 1) fail("recording view: undo did not bring a rubbed-out stroke back");
+  for (const dx of [-60, -30, 0, 40, 80]) await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: target[0] + dx, y: target[1] + (dx === 40 ? 10 : dx === 80 ? -10 : 0), button: "left", buttons: 1, force: 0, pointerType: "pen" });
+  await sleep(100);
+  if (await js(`document.querySelectorAll("#inkPen path").length`) !== 0) fail("recording view: the S Pen's side button (no pressure) did not rub the ink out");
   await js(`document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), true`);
   await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
   await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand

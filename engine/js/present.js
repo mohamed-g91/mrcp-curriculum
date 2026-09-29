@@ -239,6 +239,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.pointerType === "pen") {
       P.lastPen = performance.now();
       if (P.stroke || P.erasing) { stop(e); P.extend(e); }
+      // the S Pen's side button on Android: Chrome sends no pen-down, only moves marked pressed
+      // with no pressure (and right-clicks); those rub out wherever the pen goes
+      else if ((e.buttons & 1) && e.pressure === 0 && onSlide(e)) {
+        stop(e);
+        (e.getCoalescedEvents ? e.getCoalescedEvents() : [e]).forEach(c => P.rub(P.at(c)));
+      }
     } else if (P.touches.has(e.pointerId)) {
       P.touches.set(e.pointerId, [e.clientX, e.clientY]);
       if (P.pinch) { stop(e); P.pinchMove(); }
