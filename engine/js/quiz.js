@@ -32,25 +32,27 @@ function buildCaseSlide(Q, c, num) {
     const b = el("button", { class: `choice f-${k.family}`, type: "button", "data-key": key },
       (conceptMark(k) ? `<span class="choice-dot">${conceptMark(k)}</span>` : "") + `<span>${esc(k.label)}</span>` +
       `<svg class="ico mark mark-ok" aria-hidden="true"><use href="#i-check"/></svg><svg class="ico mark mark-bad" aria-hidden="true"><use href="#i-cross"/></svg>`);
-    b.addEventListener("click", () => {
+    // quiet: replaying a saved run, so nothing is reported, shaken or lit again
+    b._pick = quiet => {
       if (b.disabled) return;
       const ok = key === c.answer;
-      record("answer", { id: c.id, choice: key, correct: ok, firstTry: first });
+      if (!quiet) { record("answer", { id: c.id, choice: key, correct: ok, firstTry: first }); Run.pick(c.id, key); }
       if (ok) {
         if (!c.solved) Score.add(c.id, first);
         b.classList.add("correct");
         $$(".choice", grid).forEach(x => x.disabled = true);
         fb.className = "feedback show ok";
         fb.innerHTML = `${icon("check")}<span><b>Correct.</b> ${esc(c.why)}</span>`;
-        Deck.ready();
+        if (!quiet) Deck.ready();
       } else {
         first = false;
-        b.classList.add("wrong"); b.disabled = true; shake(b);
+        b.classList.add("wrong"); b.disabled = true; if (!quiet) shake(b);
         fb.className = "feedback show bad";
         fb.innerHTML = `${icon("cross")}<span><b>Not quite.</b> ${esc(c.hint)} The key phrase is highlighted in the stem.</span>`;
         $$("mark", sec).forEach(m => m.classList.add("lit"));
       }
-    });
+    };
+    b.addEventListener("click", () => b._pick(false));
     grid.appendChild(b);
   });
   sec.append(grid, fb);
@@ -58,18 +60,57 @@ function buildCaseSlide(Q, c, num) {
 }
 
 const Quiz = {
-  // deal every quiz on the page: solved example first, the rest shuffled
-  deal() {
+  // deal every quiz on the page: solved example first, the rest shuffled,
+  // or in a saved run's order (order: {quiz id: [case ids]}) when it still holds the same cases
+  deal(order) {
+    const dealt = {};
     $$(".case-anchor").forEach(anchor => {
       const Q = TOPIC.quizzes[anchor.dataset.quiz];
       $$(`.slide[data-quiz="${anchor.dataset.quiz}"]`).forEach(s => s.remove());
-      const rest = Q.cases.slice(1);
-      for (let i = rest.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
+      let rest = Q.cases.slice(1);
+      const saved = order && order[anchor.dataset.quiz], byId = Object.fromEntries(rest.map(c => [c.id, c]));
+      if (saved && saved.length === rest.length && saved.every(id => byId[id])) rest = saved.map(id => byId[id]);
+      else for (let i = rest.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
+      dealt[anchor.dataset.quiz] = rest.map(c => c.id);
       [Q.cases[0], ...rest].forEach((c, pos) => {
         const sec = buildCaseSlide(Q, c, pos);
         sec.dataset.quiz = anchor.dataset.quiz;
         anchor.parentNode.insertBefore(sec, anchor);
       });
     });
+    return dealt;
+  }
+};
+
+/* ---------- a saved run of Practise ----------
+   The cases' order, every answer given and the slide last shown, kept in this browser per topic,
+   so Practise can offer to carry on where the learner left off. Starting again forgets it. */
+const Run = {
+  data: null,
+  key: () => `mrcp-run:${TOPIC.id}`,
+  load() { try { return JSON.parse(localStorage.getItem(this.key())); } catch (e) { return null; } },
+  save() { if (this.data) try { localStorage.setItem(this.key(), JSON.stringify(this.data)); } catch (e) {} },
+  start(order) { this.data = { order, picks: {}, at: null }; this.save(); },
+  pick(id, key) { if (this.data) { (this.data.picks[id] = this.data.picks[id] || []).push(key); this.save(); } },
+  at(slide) { if (this.data && slide.dataset.part === "Practise") { this.data.at = slide.dataset.case || slide.dataset.id; this.save(); } },
+  // worth offering: something answered, and a scored case still to do; with its score so far
+  resumable() {
+    const d = this.load();
+    if (!d || !d.picks || !Object.keys(d.picks).length) return null;
+    const scored = Object.values(TOPIC.quizzes).flatMap(Q => Q.cases).filter(c => !c.solved);
+    const done = scored.filter(c => (d.picks[c.id] || []).includes(c.answer));
+    if (done.length === scored.length) return null;
+    return { ...d, got: done.filter(c => d.picks[c.id][0] === c.answer).length, total: done.length };
+  },
+  // deal the saved order, replay every answer quietly, and give back the slide to open
+  resume(d) {
+    Quiz.deal(d.order);
+    Score.reset();
+    this.data = d;
+    $$(".slide.case").forEach(sec => (d.picks[sec.dataset.case] || []).forEach(key => {
+      const b = $(`.choice[data-key="${CSS.escape(key)}"]`, sec);
+      if (b) b._pick(true);
+    }));
+    return d.at;
   }
 };

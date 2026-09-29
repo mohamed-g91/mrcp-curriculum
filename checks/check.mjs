@@ -557,6 +557,73 @@ async function presentPass() {
   if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, sizes, colours, eraser, side button, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
 }
 
+// the candidate's page opens on the title, even with a place saved by an older page or a link into the cases
+async function startPass() {
+  await load(SIZES[0]);
+  if (await js("PRESENTER")) return;
+  const n = await js("Deck.slides.length");
+  for (const [how, hash] of [["a saved place", ""], ["a link into the cases", "#" + n]]) {
+    await js(`localStorage.setItem("mrcp-slide:" + TOPIC.id, "${n - 1}"), true`);
+    await send("Page.navigate", { url: "about:blank" });
+    await sleep(300);
+    await send("Page.navigate", { url: url.split("#")[0] + hash });
+    await sleep(2000);
+    const at = await js("Deck.slides[Deck.i].dataset.id");
+    if (at !== "title") fail(`start: with ${how} the page opened on ${at}, not the title`);
+  }
+  if (!problems.some(p => p.startsWith("start"))) console.log("  ok   opens on the title, whatever was saved");
+}
+
+// Practise remembers a run left part-way: after a reload, Practise asks; Continue puts back the cases'
+// order, every answer and the score, on the slide last shown; Start again deals afresh at 0
+async function resumePass() {
+  await load(SIZES[0]);
+  const practise = `document.querySelector('[data-go=practise]').click(), true`;
+  await js(practise);
+  await sleep(400);
+  if (await js(`!document.getElementById("ask").hidden`)) fail("resume: asked with no run saved");
+  const plan = await js(`(() => {
+    const cases = [...document.querySelectorAll(".slide.case:not(.solved)")].slice(0, 2);
+    const answer = id => Object.values(TOPIC.quizzes).flatMap(Q => Q.cases).find(c => c.id === id).answer;
+    const [a, b] = cases;
+    // the first case wrong then right, the second right first time
+    const wrongA = [...a.querySelectorAll(".choice")].find(x => x.dataset.key !== answer(a.dataset.case));
+    wrongA.click(); a.querySelector('.choice[data-key="' + CSS.escape(answer(a.dataset.case)) + '"]').click();
+    b.querySelector('.choice[data-key="' + CSS.escape(answer(b.dataset.case)) + '"]').click();
+    Deck.go(Deck.slides.indexOf(b));
+    return { order: [...document.querySelectorAll(".slide.case")].map(s => s.dataset.case), at: b.dataset.case, score: Score.got + "/" + Score.total };
+  })()`);
+  await send("Page.reload", {});
+  await sleep(1500);
+  // the candidate's page opens on the title; the presenter's deck reopens where it was left
+  if (!(await js("PRESENTER")) && await js("Deck.slides[Deck.i].dataset.id") !== "title") fail("resume: the reload did not open on the title");
+  await js(`Deck.go(0), true`);
+  await js(practise);
+  await sleep(400);
+  if (await js(`document.getElementById("ask").hidden`)) { fail("resume: Practise did not ask about the run left part-way"); return; }
+  await shot("resume-ask");
+  await js(`document.querySelector('[data-ask=carry]').click(), true`);
+  await sleep(600);
+  const back = await js(`({ order: [...document.querySelectorAll(".slide.case")].map(s => s.dataset.case), at: Deck.slides[Deck.i].dataset.case,
+    score: Score.got + "/" + Score.total, lit: document.querySelectorAll(".slide.case .choice.correct").length, wrong: document.querySelectorAll(".slide.case .choice.wrong").length })`);
+  if (back.order.join() !== plan.order.join()) fail("resume: Continue dealt the cases in a new order");
+  if (back.at !== plan.at) fail(`resume: Continue opened on ${back.at}, not ${plan.at}`);
+  if (back.score !== plan.score || plan.score !== "1/2") fail(`resume: the score came back as ${back.score}, was ${plan.score}`);
+  if (back.lit !== 2 || back.wrong !== 1) fail(`resume: the answers came back as ${back.lit} right and ${back.wrong} wrong, not 2 and 1`);
+  await js(`Deck.go(0), true`);
+  await js(practise);
+  await sleep(400);
+  await js(`document.querySelector('[data-ask=again]').click(), true`);
+  await sleep(400);
+  const fresh = await js(`({ score: Score.got + "/" + Score.total, lit: document.querySelectorAll(".slide.case .choice.correct").length, part: Deck.slides[Deck.i].dataset.part })`);
+  if (fresh.score !== "0/0" || fresh.lit || fresh.part !== "Practise") fail(`resume: Start again left ${JSON.stringify(fresh)}`);
+  await js(`Deck.go(0), true`);
+  await js(practise);
+  await sleep(400);
+  if (await js(`!document.getElementById("ask").hidden`)) fail("resume: asked again after Start again, with nothing answered");
+  if (!problems.some(p => p.startsWith("resume"))) console.log("  ok   Practise asks to carry on a run left part-way; Continue and Start again");
+}
+
 // dark mode: screenshots of every slide on the stage, for a look (layout is the same as light)
 async function darkPass() {
   if (!shotDir) return;
@@ -579,6 +646,8 @@ try {
   for (const size of SIZES) await layoutPass(size);
   await solvePass();
   await presentPass();
+  await startPass();
+  await resumePass();
   await darkPass();
 } catch (e) {
   fail(e.message);

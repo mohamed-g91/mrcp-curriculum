@@ -75,6 +75,7 @@ const Deck = {
     nb.hidden = home || this.i === last;
     nb.innerHTML = this.nextLabel(s);
     nb.classList.remove("ready");
+    Run.at(s);
     if (this.shown !== s) {
       if (this.shown) this.shown.dispatchEvent(new CustomEvent("slideleave"));
       this.shown = s;
@@ -86,15 +87,27 @@ const Deck = {
     }
     Present.tray();
     try { history.replaceState(null, "", "#" + (this.i + 1)); } catch (e) {}
-    try { localStorage.setItem(`mrcp-slide:${TOPIC.id}`, String(this.i)); } catch (e) {}
+    if (PRESENTER) try { localStorage.setItem(`mrcp-slide:${TOPIC.id}`, String(this.i)); } catch (e) {}
   },
   // Practise, or New cases: deal a fresh run and start the score again
   deal(target) {
-    Quiz.deal();
+    Run.start(Quiz.deal());
     Score.reset();
     this.refresh();
     this.shown = null;
     this.go(target === "cases" ? this.slides.findIndex(s => s.classList.contains("case")) : this.firstOf("Practise"));
+  },
+  // Practise from the title: a run left part-way asks whether to carry on
+  practise() {
+    const d = Run.resumable();
+    if (!d) return this.deal();
+    Ask.open(d, () => {
+      const at = Run.resume(d);
+      this.refresh();
+      this.shown = null;
+      const k = this.slides.findIndex(s => (s.dataset.case || s.dataset.id) === at);
+      this.go(k >= 0 ? k : this.firstOf("Practise"));
+    }, () => this.deal());
   }
 };
 
@@ -115,8 +128,16 @@ document.addEventListener("DOMContentLoaded", () => {
   Quiz.deal();
   Score.render();
   Deck.refresh();
+  // the presenter's deck reopens where it was left (the link's #slide, else the last slide shown);
+  // the candidate's page always opens on the title, or on the video after a reload there:
+  // its cases are dealt afresh on every visit, so an old place in them means nothing
   let start = parseInt(location.hash.slice(1), 10) - 1;
-  if (!Number.isFinite(start)) { try { start = parseInt(localStorage.getItem(`mrcp-slide:${TOPIC.id}`), 10); } catch (e) {} }
+  if (PRESENTER) {
+    if (!Number.isFinite(start)) { try { start = parseInt(localStorage.getItem(`mrcp-slide:${TOPIC.id}`), 10); } catch (e) {} }
+  } else {
+    if (!(start >= 0 && Deck.slides[start] && Deck.slides[start].dataset.part !== "Practise")) start = 0;
+    try { localStorage.removeItem(`mrcp-slide:${TOPIC.id}`); } catch (e) {}  // left by the old page
+  }
   // the first slide waits for the embedded fonts, so its entrance is not upset by text
   // swapping from the fallback font halfway through (at most 1.5 s, then it goes anyway)
   const fonts = document.fonts ? Promise.all(['400 20px "Inter"', '800 20px "Inter"', '600 44px "Source Serif 4"'].map(f => document.fonts.load(f))) : Promise.resolve();
@@ -142,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (Math.abs(dx) > 60 && Math.abs(dx) > 1.6 * Math.abs(dy)) dx < 0 ? Deck.next() : Deck.prev();
   }, { passive: true });
   $$("[data-go]").forEach(b => b.addEventListener("click", () =>
-    b.dataset.go === "practise" ? Deck.deal() : Deck.go(Deck.firstOf("Learn"))));
+    b.dataset.go === "practise" ? Deck.practise() : Deck.go(Deck.firstOf("Learn"))));
   const restart = $("#restartBtn"), toStart = $("#toStartBtn");
   if (restart) restart.addEventListener("click", () => Deck.deal("cases"));
   if (toStart) toStart.addEventListener("click", () => Deck.go(0));

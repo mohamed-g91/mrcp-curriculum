@@ -86,6 +86,25 @@ const strayClick = e => {
 };
 document.addEventListener("click", e => { if (!strayClick(e)) ClickAway.fns.forEach(f => f(e)); });
 
+/* ---------- ask: carry on with a run of Practise, or start again ----------
+   A card over the title; a tap outside it, or Esc, closes it and leaves the title as it was. */
+const Ask = {
+  open(d, carryOn, again) {
+    const box = $("#ask");
+    $("#askScore").textContent = `Score ${d.got} / ${d.total}`;
+    const close = () => { box.hidden = true; box.onclick = null; document.removeEventListener("keydown", esc); };
+    const esc = e => { if (e.key === "Escape") close(); };
+    box.onclick = e => {
+      const b = e.target.closest("[data-ask]");
+      if (b) { close(); b.dataset.ask === "carry" ? carryOn() : again(); }
+      else if (!e.target.closest(".ask-card")) close();
+    };
+    document.addEventListener("keydown", esc);
+    box.hidden = false;
+    $("[data-ask=carry]", box).focus({ preventScroll: true });
+  }
+};
+
 /* small Back and Next buttons in the corner of a figure built step by step (a story, a worked sum):
    a stray click never undoes the steps, and these move one step either way */
 function stepButtons(host, back, next) {

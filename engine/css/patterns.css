@@ -443,13 +443,18 @@ a.next-topic:hover{border-color:var(--primary)}
 .case.solved .stem-card{border-top-color:var(--sol-solid)}
 .case .stem-card{max-width:none}
 /* a case's cartoon beside its stem card (above it, small, when the slide reflows) */
-.case-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(12px,calc(2 * var(--u)),24px);align-items:end}
+.case{--case-fig:clamp(110px,calc(13 * var(--u)),160px);--case-gap:clamp(12px,calc(2 * var(--u)),24px)}
+.case-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--case-gap);align-items:end}
 .case-row:not(:has(.case-fig)){grid-template-columns:minmax(0,1fr)}
-.case-fig{margin:0;width:clamp(110px,calc(13 * var(--u)),160px)}
+.case-fig{margin:0;width:var(--case-fig)}
 .case-fig svg{display:block;width:100%;height:auto}
 @container (max-width:900px){.case-row{grid-template-columns:minmax(0,1fr)}.case-fig{width:96px;margin-inline:auto}}
-.choices{display:grid;gap:12px;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:clamp(14px,calc(2 * var(--u)),24px)}
-@container (max-width:900px){.choices{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* the choices sit under the question card, not under the cartoon, centred there: each a quarter of the
+   card's width (a half when the slide reflows), so a short last row sits in the middle */
+.choices{--per:4;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:clamp(14px,calc(2 * var(--u)),24px)}
+.choice{flex:0 1 calc((100% - (var(--per) - 1) * 12px) / var(--per))}
+.case:has(.case-fig) .choices,.case:has(.case-fig) .feedback{margin-left:calc(var(--case-fig) + var(--case-gap))}
+@container (max-width:900px){.choices{--per:2}.case:has(.case-fig) .choices,.case:has(.case-fig) .feedback{margin-left:0}}
 .choice{position:relative;display:flex;align-items:center;gap:12px;text-align:left;padding:clamp(10px,calc(1.2 * var(--u)),16px) 14px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--surface);color:var(--ink);font-weight:650;font-size:var(--fs-body);box-shadow:var(--edge),0 1px 2px rgba(14,31,53,.08),0 4px 10px rgba(14,31,53,.06);transition:transform .2s var(--ease),box-shadow .2s ease,border-color .2s ease,background .2s ease}
 .choice-dot{display:inline-flex;align-items:center;justify-content:center;flex:none;width:clamp(28px,calc(2.8 * var(--u)),36px);height:clamp(28px,calc(2.8 * var(--u)),36px);border-radius:50%;border:3px solid var(--x-solid);color:var(--x-ink);font-size:var(--fs-small);font-weight:750;background:var(--surface)}
 .choice:not([disabled]):hover{transform:translateY(-2px);border-color:var(--primary);box-shadow:var(--edge),var(--shadow)}
@@ -462,6 +467,15 @@ a.next-topic:hover{border-color:var(--primary)}
 /* a solved case lights the bar's Next with one soft pulse */
 #nextBtn.ready{animation:readyPulse 1.2s var(--ease) 2}
 @keyframes readyPulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--primary) 45%,transparent)}100%{box-shadow:0 0 0 14px transparent}}
+
+/* ---------- ask: carry on with Practise, or start again ---------- */
+.ask{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:var(--pad);background:color-mix(in srgb,var(--page) 70%,transparent);backdrop-filter:blur(3px)}
+.ask[hidden]{display:none}
+.ask-card{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:clamp(20px,calc(3 * var(--u)),36px) clamp(20px,calc(3.4 * var(--u)),44px);background:var(--surface);border:1px solid var(--border);border-top:6px solid var(--primary);border-radius:var(--radius-lg);box-shadow:var(--edge),var(--shadow-lift);animation:figUp .5s var(--ease) both}
+.ask-q{font-family:var(--serif);font-weight:600;font-size:var(--fs-h3);color:var(--ink)}
+.ask-score{font-size:var(--fs-small);color:var(--muted);font-variant-numeric:tabular-nums}
+.ask .end-actions{justify-content:center}
+html.fluid .ask{position:fixed}
 
 /* ---------- end ---------- */
 .end-card{align-self:flex-start;display:flex;flex-direction:column;gap:12px;padding:clamp(20px,calc(3 * var(--u)),40px);background:var(--surface);border:1px solid var(--border);border-top:6px solid var(--primary);border-radius:var(--radius-lg);box-shadow:var(--edge),var(--shadow);min-width:min(100%,420px)}

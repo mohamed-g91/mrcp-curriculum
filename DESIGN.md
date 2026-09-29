@@ -96,6 +96,9 @@ Every interactive element behaves the same way, so learners never have to relear
 - **Only the target is clickable.** In circle groups, only the circle responds, not its label.
 - **No placeholders, no sub-labels.** Hidden answers leave no "?" marks; circles, cards, buckets and choices show only their name (and the concept's letter).
 - **Cases are dealt in a random order.** Practise (or New cases) reshuffles the cases, numbers them by their place in the run, keeps the solved example first and restarts the score.
+- **A page opens on its title.** The candidate's page always opens on Learn and Practise, whatever was open last (a reload keeps the video open, never a case). The presenter's deck reopens where it was left.
+- **Practise offers to carry on.** Each run is kept in the browser: the cases' order, every answer and the slide last shown. When a run was left with a scored case still to do, Practise asks "Continue where you left off?" over the title, with the score so far, and two buttons: Continue (the same cases in the same order, every answer and the score back as they were, on the slide last shown) and Start again (a fresh deal at 0). A tap outside the card, or Esc, closes it. A finished run is not offered.
+- **Choices sit under the question.** A case's choices are centred under its stem card, not under the cartoon, each a quarter of the card's width (a half when the page reflows), so a short last row sits in the middle.
 - **Answer positions are shuffled.** Each case fixes its own option order from its ID, so the answer is not always first and the order is the same every time that case is opened.
 - **A case gives nothing away.** The stem, question and choices carry no hints; the clue phrase is highlighted only after a wrong answer (and in the solved example).
 - **Wrong answers teach.** A wrong choice shakes, gives a one-line hint and lights the clue phrase. Scoring counts the first attempt only, once per case.

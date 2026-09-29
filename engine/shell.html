@@ -46,6 +46,16 @@
       <button class="btn primary" id="nextBtn" type="button">Next<svg class="ico" aria-hidden="true"><use href="#i-right"/></svg></button>
     </div>
   </nav>
+  <div class="ask" id="ask" hidden role="dialog" aria-modal="true" aria-labelledby="askQ">
+    <div class="ask-card">
+      <p class="ask-q" id="askQ">Continue where you left off?</p>
+      <p class="ask-score" id="askScore"></p>
+      <div class="end-actions">
+        <button class="btn primary" type="button" data-ask="carry">Continue<svg class="ico" aria-hidden="true"><use href="#i-right"/></svg></button>
+        <button class="btn" type="button" data-ask="again"><svg class="ico" aria-hidden="true"><use href="#i-refresh"/></svg>Start again</button>
+      </div>
+    </div>
+  </div>
   <svg class="ink ink-marker" id="inkMarker" aria-hidden="true"></svg>
   <svg class="ink" id="inkPen" aria-hidden="true"></svg>
 </div>
