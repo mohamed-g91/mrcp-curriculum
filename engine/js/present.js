@@ -6,7 +6,9 @@
    resting on the glass, and are ignored. */
 const PALM_MS = 600;      // a touch this soon after the pen was seen is the hand, not a tap
 const PEN_W = [2, 4, 7, 11];  // fine, medium (the default), thick, very thick
-const HOLD_MS = 450;          // a press on the pen this long opens its sizes
+// the colour rings: the pen's (the first follows the theme's ink) and the highlighter's, soft enough to read through
+const PEN_COLOURS = [["var(--ink)", "Black"], ["#e03131", "Red"], ["#f76707", "Orange"], ["#2f9e44", "Green"], ["#1c7ed6", "Blue"], ["#7048e8", "Purple"], ["#d6336c", "Pink"], ["#8d5524", "Brown"]];
+const MARKER_COLOURS = [["var(--hl)", "Yellow"], ["#8ce99a", "Green"], ["#74c0fc", "Blue"], ["#faa2c1", "Pink"], ["#ffc078", "Orange"], ["#b197fc", "Purple"]];
 const SIDE_UP_MS = 150;       // the side button must be seen up this long before a press counts again
 const MARKER_W = 24;
 // every point a pointer move carries (a synthetic event carries none but its own)
@@ -18,7 +20,8 @@ const segDist = (x, y, [ax, ay], [bx, by]) => {
   return Math.hypot(x - ax - t * dx, y - ay - t * dy);
 };
 const Present = {
-  on: false, tool: "pen", colour: 0, size: 1,
+  on: false, tool: "pen", size: 1,
+  colours: { pen: 1, marker: 0 },  // each tool keeps its own colour: red for the pen, yellow for the highlighter
   ink: new WeakMap(),     // slide -> { strokes, history }
   slide: null, stroke: null, erasing: false,
   rubbed: null,          // what the eraser has cut so far in this rub: one undo puts it all back
@@ -74,9 +77,13 @@ const Present = {
     $("#trayNext").disabled = $("#nextBtn").hidden && Deck.i !== 0;
     $("#zoomReset").disabled = this.z === 1;
     $$("[data-tool]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.tool === this.tool)));
-    $$("[data-colour]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.colour === this.colour && this.tool === "pen")));
+    $("#colourBtn").style.setProperty("--c", this.colourOf(this.inkTool()));
     $$("[data-size]").forEach(b => b.setAttribute("aria-checked", String(+b.dataset.size === this.size)));
   },
+
+  // the tool the colour belongs to: the highlighter's own, else the pen's (the eraser has none)
+  inkTool() { return this.tool === "marker" ? "marker" : "pen"; },
+  colourOf(tool) { return (tool === "marker" ? MARKER_COLOURS : PEN_COLOURS)[this.colours[tool]][0]; },
 
   // a point in the frame's own pixels (1280 x 720), whatever the zoom and the screen's scale
   at(e) {
@@ -95,7 +102,7 @@ const Present = {
     if (tool === "eraser") { this.erasing = true; this.rub(this.at(e)); return; }
     const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
     const k = { tool, el, pts: [this.at(e)] };
-    el.setAttribute("class", tool === "marker" ? "" : "c" + this.colour);
+    el.style.stroke = this.colourOf(tool);
     el.setAttribute("stroke-width", String((tool === "marker" ? MARKER_W : PEN_W[this.size]) / this.z));
     (tool === "marker" ? $("#inkMarker") : $("#inkPen")).appendChild(el);
     this.stroke = k;
@@ -226,6 +233,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const P = Present, stop = e => { e.preventDefault(); e.stopImmediatePropagation(); };
   const onSlide = e => !!e.target.closest && !!e.target.closest("#app");
 
+  // the pop-ups close on a tap anywhere else; registered first, so a pen stroke (which stops the event from going further) still closes them
+  window.addEventListener("pointerdown", e => { if (!pops.some(([p, a]) => p.contains(e.target) || a.contains(e.target))) shut(); }, true);
   // capture on the window, before any slide sees the event
   window.addEventListener("pointerdown", e => {
     if (!P.on) return;
@@ -297,21 +306,38 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#zoomReset").addEventListener("click", () => P.resetZoom());
   $("#inkUndo").addEventListener("click", () => P.undo());
   $("#inkClear").addEventListener("click", () => P.clear());
-  $$("[data-tool]").forEach(b => b.addEventListener("click", () => { if (b.held) { b.held = false; return; } P.tool = b.dataset.tool; P.tray(); }));
-  // a long press on the pen opens its sizes above it; a size, or a press anywhere else, closes them
-  const penBtn = $("[data-tool=pen]"), panel = $("#sizePanel");
-  const openSizes = () => {
-    const b = penBtn.getBoundingClientRect(), t = $("#tray").getBoundingClientRect();
+  // the pop-ups: a tap on the pen when it is already in hand opens its sizes, a tap on the colour its ring;
+  // the same tap again, a choice, or a tap anywhere else (the slide, the pen on the glass) closes them
+  const penBtn = $("[data-tool=pen]"), sizes = $("#sizePanel"), ring = $("#colourPanel"), colourBtn = $("#colourBtn");
+  const pops = [[sizes, penBtn], [ring, colourBtn]];
+  const shut = () => pops.forEach(([p]) => { p.hidden = true; });
+  const pop = (panel, anchor) => {
+    const open = !panel.hidden;
+    shut();
+    if (open) return;
+    const b = anchor.getBoundingClientRect(), t = $("#tray").getBoundingClientRect();
     panel.style.setProperty("--at", (b.left + b.width / 2 - t.left) + "px");
-    panel.hidden = false; P.tool = "pen"; P.tray();
+    panel.hidden = false;
   };
-  let hold = null;
-  penBtn.addEventListener("pointerdown", () => { clearTimeout(hold); hold = setTimeout(() => { penBtn.held = true; openSizes(); }, HOLD_MS); });
-  ["pointerup", "pointerleave", "pointercancel"].forEach(t => penBtn.addEventListener(t, () => clearTimeout(hold)));
-  penBtn.addEventListener("contextmenu", e => e.preventDefault());  // a long touch would open the browser's menu
-  window.addEventListener("pointerdown", e => { if (!panel.hidden && !panel.contains(e.target) && e.target.closest("[data-tool=pen]") !== penBtn) panel.hidden = true; }, true);
-  $$("[data-colour]").forEach(b => b.addEventListener("click", () => { P.colour = +b.dataset.colour; P.tool = "pen"; P.tray(); }));
-  $$("[data-size]").forEach(b => b.addEventListener("click", () => { P.size = +b.dataset.size; P.tool = "pen"; panel.hidden = true; P.tray(); }));
+  $$("[data-tool]").forEach(b => b.addEventListener("click", () => {
+    if (b === penBtn && P.tool === "pen") { pop(sizes, penBtn); return; }
+    shut(); P.tool = b.dataset.tool; P.tray();
+  }));
+  $$("[data-size]").forEach(b => b.addEventListener("click", () => { P.size = +b.dataset.size; P.tool = "pen"; shut(); P.tray(); }));
+  // the ring holds the colours of the tool in hand (the pen's while the eraser is)
+  colourBtn.addEventListener("click", () => {
+    const tool = P.inkTool(), list = tool === "marker" ? MARKER_COLOURS : PEN_COLOURS;
+    ring.replaceChildren(...list.map(([c, name], k) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "swatch"; b.setAttribute("role", "menuitemradio");
+      b.setAttribute("aria-label", `${name} ${tool === "marker" ? "highlighter" : "pen"}`);
+      b.setAttribute("aria-checked", String(k === P.colours[tool]));
+      b.style.setProperty("--c", c); b.style.setProperty("--a", (360 * k / list.length) + "deg");
+      b.addEventListener("click", () => { P.colours[tool] = k; P.tool = tool; shut(); P.tray(); });
+      return b;
+    }));
+    pop(ring, colourBtn);
+  });
   document.addEventListener("keydown", e => {
     if (e.altKey || e.ctrlKey || e.metaKey || e.key.toLowerCase() !== "p") return;
     P.on ? P.leave() : P.enter(true);

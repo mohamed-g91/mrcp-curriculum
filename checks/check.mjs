@@ -444,16 +444,47 @@ async function presentPass() {
   await js(`document.getElementById("trayPrev").click(), true`);
   await sleep(300);
   if (await js(`document.querySelectorAll("#inkPen path").length`) !== 2) fail("recording view: the slide's ink did not come back");
-  // a long press on the pen opens its sizes; the thick one draws a thick line
-  const penAt = await js(`(() => { const r = document.querySelector("[data-tool=pen]").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
-  await send("Input.dispatchMouseEvent", { type: "mousePressed", x: penAt[0], y: penAt[1], button: "left", buttons: 1, clickCount: 1 });
-  await sleep(700);
-  await send("Input.dispatchMouseEvent", { type: "mouseReleased", x: penAt[0], y: penAt[1], button: "left", buttons: 0, clickCount: 1 });
-  if (await js(`document.getElementById("sizePanel").hidden`)) fail("recording view: a long press on the pen did not open its sizes");
+  // a tap on the pen when it is in hand opens its sizes; the thick one draws a thick line
+  const tapBtn = async sel => {
+    const at = await js(`(() => { const r = document.querySelector("${sel}").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
+    await send("Input.dispatchMouseEvent", { type: "mousePressed", x: at[0], y: at[1], button: "left", buttons: 1, clickCount: 1 });
+    await send("Input.dispatchMouseEvent", { type: "mouseReleased", x: at[0], y: at[1], button: "left", buttons: 0, clickCount: 1 });
+    await sleep(100);
+  };
+  const shown = id => js(`!document.getElementById("${id}").hidden`);
+  await tapBtn("[data-tool=marker]");
+  await tapBtn("[data-tool=pen]");
+  if (await shown("sizePanel")) fail("recording view: a tap on the pen from the highlighter opened its sizes");
+  await tapBtn("[data-tool=pen]");
+  if (!(await shown("sizePanel"))) fail("recording view: a tap on the pen in hand did not open its sizes");
+  // a pen stroke on the slide closes them
+  await pen([[300, 420], [340, 420]]);
+  if (await shown("sizePanel")) fail("recording view: a pen stroke on the slide did not close the sizes");
+  await js(`document.getElementById("inkUndo").click(), true`);
+  await tapBtn("[data-tool=pen]");
   await js(`document.querySelector("[data-size='2']").click(), true`);
-  if (!(await js(`document.getElementById("sizePanel").hidden`))) fail("recording view: choosing a size did not close the panel");
+  if (await shown("sizePanel")) fail("recording view: choosing a size did not close the panel");
+  // the colour ring: eight pen colours; the green one draws green, and a tap on the tray closes the ring
+  await tapBtn("#colourBtn");
+  if (!(await shown("colourPanel"))) fail("recording view: a tap on the colour did not open the ring");
+  if (await js(`document.querySelectorAll("#colourPanel .swatch").length`) !== 8) fail("recording view: the pen's colour ring does not hold eight colours");
+  await js(`document.querySelectorAll("#colourPanel .swatch")[3].click(), true`);
+  if (await shown("colourPanel")) fail("recording view: choosing a colour did not close the ring");
+  await tapBtn("#colourBtn");
+  await tapBtn("#trayCount");
+  if (await shown("colourPanel")) fail("recording view: a tap elsewhere did not close the colour ring");
+  // the highlighter has its own ring
+  await tapBtn("[data-tool=marker]");
+  await tapBtn("#colourBtn");
+  if (await js(`document.querySelectorAll("#colourPanel .swatch").length`) !== 6) fail("recording view: the highlighter's colour ring does not hold six colours");
+  await shot("present-colours");
+  await js(`document.querySelectorAll("#colourPanel .swatch")[2].click(), true`);
+  await pen([[300, 460], [400, 460]]);
+  if (await js(`document.querySelector("#inkMarker path:last-child").style.stroke`) !== "rgb(116, 192, 252)") fail("recording view: the highlighter did not draw in the colour chosen");
+  await js(`document.getElementById("inkUndo").click(), document.querySelector("[data-tool=pen]").click(), true`);
   await pen([target, [target[0] + 40, target[1] + 10], [target[0] + 80, target[1] - 10]]);
   if (await js(`document.querySelector("#inkPen path:last-child").getAttribute("stroke-width")`) !== "7") fail("recording view: the thick pen did not draw a thick line");
+  if (await js(`document.querySelector("#inkPen path:last-child").style.stroke`) !== "rgb(47, 158, 68)") fail("recording view: the pen did not draw in the colour chosen");
   await js(`Present.size = 1, true`);
   // the eraser rubs out only what it passes over: across a line it cuts it in two, and one undo mends it
   const paths = () => js(`document.querySelectorAll("#inkPen path").length`);
@@ -523,7 +554,7 @@ async function presentPass() {
   await js(`document.getElementById("tallSpacer").remove(), true`);
   await js(`Present.leave(), true`);
   await send("Emulation.setTouchEmulationEnabled", { enabled: false });
-  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, sizes panel, eraser, side button, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
+  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, sizes, colours, eraser, side button, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
 }
 
 // dark mode: screenshots of every slide on the stage, for a look (layout is the same as light)

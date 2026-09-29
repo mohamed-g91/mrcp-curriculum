@@ -45,9 +45,6 @@ html.present .ink{display:block}
 .ink-marker{mix-blend-mode:multiply}
 .ink-marker path{stroke:var(--hl)}
 :root[data-theme="dark"] .ink-marker{mix-blend-mode:screen}
-.ink .c0,.swatch.c0{--c:var(--bad-solid);stroke:var(--c)}
-.ink .c1,.swatch.c1{--c:var(--primary);stroke:var(--c)}
-.ink .c2,.swatch.c2{--c:var(--ink);stroke:var(--c)}
 
 .tray{position:fixed;left:0;right:0;bottom:0;height:var(--tray,56px);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 16px;background:var(--letterbox);color:var(--ink);touch-action:manipulation;user-select:none;-webkit-user-select:none;z-index:10}
 .tray[hidden]{display:none}
@@ -61,10 +58,16 @@ html.present .ink{display:block}
 .tray-btn:disabled{opacity:.3;cursor:default}
 .swatch{width:36px}
 .swatch::before{content:"";width:20px;height:20px;border-radius:50%;background:var(--c)}
-.swatch[aria-pressed="true"]::before{box-shadow:0 0 0 3px var(--letterbox),0 0 0 5px var(--ink)}
-/* the pen sizes: a long press on the pen opens a small panel above it; each dot is its line's width */
-.size-panel{position:absolute;bottom:calc(100% + 8px);left:var(--at,50%);transform:translateX(-50%);display:flex;gap:2px;padding:4px;background:var(--page);border-radius:26px;box-shadow:0 6px 24px rgba(14,31,53,.18)}
-.size-panel[hidden]{display:none}
+.swatch[aria-checked="true"]::before{box-shadow:0 0 0 3px var(--page),0 0 0 5px var(--ink)}
+#colourBtn::before{width:24px;height:24px;box-shadow:0 0 0 2px var(--letterbox),0 0 0 3.5px var(--line)}
+/* the pop-ups above the tray: the pen's sizes (a tap on the pen when it is in hand; each dot is its
+   line's width) and the colour ring (a tap on the colour). A tap anywhere else closes them. */
+.size-panel,.colour-ring{position:absolute;bottom:calc(100% + 8px);left:var(--at,50%);transform:translateX(-50%);background:var(--page);box-shadow:0 6px 24px rgba(14,31,53,.18)}
+.size-panel{display:flex;gap:2px;padding:4px;border-radius:26px}
+.size-panel[hidden],.colour-ring[hidden]{display:none}
+.colour-ring{width:176px;height:176px;border-radius:50%}
+.colour-ring .swatch{position:absolute;left:50%;top:50%;margin:-22px 0 0 -22px;width:44px;transform:rotate(var(--a)) translateY(-60px) rotate(calc(-1 * var(--a)))}
+.colour-ring .swatch::before{width:28px;height:28px}
 .size::before{content:"";width:var(--d);height:var(--d);border-radius:50%;background:var(--ink)}
 .size.s0{--d:4px}.size.s1{--d:7px}.size.s2{--d:11px}.size.s3{--d:16px}
 .size[aria-checked="true"]{background:var(--hl)}
