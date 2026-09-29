@@ -259,9 +259,11 @@ document.addEventListener("DOMContentLoaded", () => {
       try { $(".frame").setPointerCapture(e.pointerId); } catch (x) {}
       P.begin(e);
     } else if (e.pointerType === "touch") {
-      // the S Pen touching with its side button held: Chrome for Android reports it as a finger,
-      // just after the pen hovered with the button held. It rubs out, and is no finger or palm.
-      if (P.barrel || performance.now() - P.barrelAt < BARREL_MS) { stop(e); P.barrel = true; P.rub(P.at(e)); return; }
+      // the S Pen touching with its side button held: Chrome for Android reports it as a finger with
+      // no contact size (a real finger or palm has one), while the pen hovers, or just after it hovered
+      // with the button held. It rubs out, and is no finger or palm.
+      const now = performance.now(), penTip = e.width === 0 && e.height === 0 && now - P.lastPen < PALM_MS;
+      if (P.barrel || penTip || now - P.barrelAt < BARREL_MS) { stop(e); P.barrel = true; P.rub(P.at(e)); return; }
       if (P.busy()) { stop(e); P.pinched.add(e.pointerId); P.swallowUntil = Infinity; return; }
       P.touches.set(e.pointerId, [e.clientX, e.clientY]);
       // a sort chip keeps its own drag

@@ -476,7 +476,7 @@ async function presentPass() {
   await sleep(100);
   if (await paths() !== 2) fail("recording view: the S Pen's side button rubbed out while the pen only hovered");
   await hover(130);
-  const finger = (type, pts) => send("Input.dispatchTouchEvent", { type, touchPoints: pts.map(([x, y], id) => ({ x, y, id })) });
+  const finger = (type, pts) => send("Input.dispatchTouchEvent", { type, touchPoints: pts.map(([x, y], id) => ({ x, y, id, radiusX: 8, radiusY: 8 })) });
   await finger("touchStart", [[400, 130]]);
   for (const y of [140, 150, 160, 180]) await finger("touchMove", [[400, y]]);
   await finger("touchEnd", []);
@@ -485,6 +485,23 @@ async function presentPass() {
   if (await js(`Deck.i`) !== i) fail("recording view: the side-button pen turned the page");
   await js(`document.getElementById("inkUndo").click(), true`);
   if (await paths() !== 2) fail("recording view: undo did not mend the line the side button cut");
+  // as the Galaxy Tab reports it: the pen hovering with no button shown, then a "finger" with no contact size
+  await sleep(500);
+  await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 400, y: 100, buttons: 0, pointerType: "pen" });
+  const tip = (type, pts) => send("Input.dispatchTouchEvent", { type, touchPoints: pts.map(([x, y], id) => ({ x, y, id, radiusX: 0, radiusY: 0 })) });
+  await tip("touchStart", [[400, 130]]);
+  for (const y of [140, 150, 160, 180]) await tip("touchMove", [[400, y]]);
+  await tip("touchEnd", []);
+  await sleep(100);
+  if (await paths() !== 3) fail(`recording view: the pen touching as a finger with no contact size did not cut the line (${await paths()} lines, not 3)`);
+  await js(`document.getElementById("inkUndo").click(), true`);
+  // a palm (with a contact size) while the pen hovers rubs out nothing
+  await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 400, y: 100, buttons: 0, pointerType: "pen" });
+  await finger("touchStart", [[400, 130]]);
+  for (const y of [140, 150, 160, 180]) await finger("touchMove", [[400, y]]);
+  await finger("touchEnd", []);
+  await sleep(100);
+  if (await paths() !== 2) fail("recording view: a resting palm rubbed out ink");
   await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
   await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
   // two fingers pinch out: the slide zooms and stays put
