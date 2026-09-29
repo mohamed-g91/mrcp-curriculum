@@ -469,11 +469,20 @@ async function presentPass() {
   if (await paths() !== 3) fail(`recording view: the side button did not cut the line in two (${await paths()} lines, not 3)`);
   await js(`document.getElementById("inkUndo").click(), true`);
   if (await paths() !== 2) fail("recording view: undo did not mend the cut line");
-  // the S Pen's side button as Chrome on Android reports it: moves marked pressed, with no pressure and no pen-down
-  for (const y of [120, 140, 150, 160, 180]) await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 400, y, button: "left", buttons: 1, force: 0, pointerType: "pen" });
-  await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 400, y: 200, buttons: 0, pointerType: "pen" });
+  // the S Pen's side button as Chrome for Android reports it: hovering, moves marked pressed with no
+  // pressure, which rub out nothing; then touching, a "finger", which rubs out
+  const hover = y => send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 400, y, button: "left", buttons: 1, force: 0, pointerType: "pen" });
+  for (const y of [120, 140, 150, 160, 180]) await hover(y);
   await sleep(100);
-  if (await paths() !== 3) fail(`recording view: the S Pen's side button (no pressure) did not cut the line (${await paths()} lines, not 3)`);
+  if (await paths() !== 2) fail("recording view: the S Pen's side button rubbed out while the pen only hovered");
+  await hover(130);
+  const finger = (type, pts) => send("Input.dispatchTouchEvent", { type, touchPoints: pts.map(([x, y], id) => ({ x, y, id })) });
+  await finger("touchStart", [[400, 130]]);
+  for (const y of [140, 150, 160, 180]) await finger("touchMove", [[400, y]]);
+  await finger("touchEnd", []);
+  await sleep(100);
+  if (await paths() !== 3) fail(`recording view: the S Pen touching with its side button did not cut the line (${await paths()} lines, not 3)`);
+  if (await js(`Deck.i`) !== i) fail("recording view: the side-button pen turned the page");
   await js(`document.getElementById("inkUndo").click(), true`);
   if (await paths() !== 2) fail("recording view: undo did not mend the line the side button cut");
   await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
