@@ -470,9 +470,25 @@ async function presentPass() {
   await touch("touchEnd", []);
   await sleep(400);
   if (await js(open) === before) fail("recording view: a finger tap no longer opens an item");
+  // one finger dragged up scrolls a long slide (the browser may not pan, so the page does it)
+  const long = await js(`(async () => { const deck = document.getElementById("deck");
+    for (const [k, s] of Deck.slides.entries()) { Deck.go(k); await new Promise(r => setTimeout(r, 150));
+      if (deck.scrollHeight > deck.clientHeight + 40) return k; }
+    return -1; })()`);
+  if (long >= 0) {
+    await sleep(700);
+    await js(`document.getElementById("deck").scrollTop = 0, true`);
+    await touch("touchStart", [[640, 500]]);
+    for (let k = 1; k <= 8; k++) await touch("touchMove", [[640, 500 - k * 25]]);
+    await touch("touchEnd", []);
+    await sleep(300);
+    const sc = await js(`[document.getElementById("deck").scrollTop, Deck.i]`);
+    if (!(sc[0] > 50)) fail(`recording view: a finger drag scrolled the slide only ${sc[0]}px`);
+    if (sc[1] !== long) fail("recording view: a finger drag turned the page");
+  }
   await js(`Present.leave(), true`);
   await send("Emulation.setTouchEmulationEnabled", { enabled: false });
-  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, highlighter, undo, ink per slide, pinch zoom, palm");
+  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
 }
 
 // dark mode: screenshots of every slide on the stage, for a look (layout is the same as light)

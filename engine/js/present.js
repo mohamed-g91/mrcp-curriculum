@@ -12,6 +12,7 @@ const Present = {
   slide: null, stroke: null, erasing: false,
   lastPen: 0, swallowUntil: 0,
   touches: new Map(), pinch: null,
+  drag: null,            // one finger scrolling the slide (the page scrolls it: the browser may not pan, or it would cut the pen off)
   pinched: new Set(),    // touches whose lifting the slide must not see: a pinch's fingers, a palm
   z: 1, tx: 0, ty: 0,
 
@@ -35,7 +36,7 @@ const Present = {
   },
   // this slide's ink, and whether busy hands should keep swipes and taps off the slide
   page(s = this.slide) { if (!this.ink.has(s)) this.ink.set(s, { strokes: [], history: [] }); return this.ink.get(s); },
-  busy() { return this.on && (!!this.stroke || this.erasing || !!this.pinch || performance.now() - this.lastPen < PALM_MS); },
+  busy() { return this.on && (!!this.stroke || this.erasing || !!this.pinch || !!(this.drag && this.drag.moved) || performance.now() - this.lastPen < PALM_MS); },
 
   // a new slide: its own ink, the full slide, and the tray's count and arrows
   show(s) {
@@ -130,6 +131,30 @@ const Present = {
     p.strokes = [];
   },
 
+  /* ---- scroll: one finger drags the slide up and down ---- */
+  // the nearest part under the finger that can scroll, else the deck
+  scroller(t) {
+    for (let el = t; el && el !== document.body; el = el.parentElement) {
+      if (el.scrollHeight > el.clientHeight + 1 && /auto|scroll/.test(getComputedStyle(el).overflowY)) return el;
+    }
+    return $("#deck");
+  },
+  dragStart(e) {
+    const el = this.scroller(e.target);
+    this.drag = { id: e.pointerId, x: e.clientX, y: e.clientY, el, top: el.scrollTop, moved: false };
+  },
+  dragMove(e) {
+    const D = this.drag, dy = e.clientY - D.y;
+    if (!D.moved) {
+      if (Math.abs(dy) < 10 || Math.abs(dy) < Math.abs(e.clientX - D.x)) return false;
+      D.moved = true; this.pinched.add(D.id);  // a scroll is not a tap: its lifting opens nothing
+    }
+    // screen pixels to the scroller's own, whatever the stage's scale and the zoom
+    const k = D.el.getBoundingClientRect().height / D.el.offsetHeight || 1;
+    D.el.scrollTop = D.top - dy / k;
+    return true;
+  },
+
   /* ---- zoom: two fingers pinch in and out and move the slide about ---- */
   pinchStart() {
     const [a, b] = [...this.touches.values()];
@@ -171,7 +196,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (e.pointerType === "touch") {
       if (P.busy()) { stop(e); P.pinched.add(e.pointerId); P.swallowUntil = Infinity; return; }
       P.touches.set(e.pointerId, [e.clientX, e.clientY]);
-      if (P.touches.size === 2) { stop(e); P.pinchStart(); P.swallowUntil = Infinity; }
+      // a sort chip or a spectrum bubble keeps its own drag
+      if (P.touches.size === 1 && !e.target.closest(".chip, .spec-bubble")) P.dragStart(e);
+      if (P.touches.size === 2) { stop(e); P.drag = null; P.pinchStart(); P.swallowUntil = Infinity; }
     }
   }, true);
   window.addEventListener("pointermove", e => {
@@ -182,6 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (P.touches.has(e.pointerId)) {
       P.touches.set(e.pointerId, [e.clientX, e.clientY]);
       if (P.pinch) { stop(e); P.pinchMove(); }
+      else if (P.drag && P.drag.id === e.pointerId && P.dragMove(e)) stop(e);
     }
   }, true);
   const up = e => {
@@ -193,6 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     P.touches.delete(e.pointerId);
+    if (P.drag && P.drag.id === e.pointerId) { if (P.drag.moved) P.swallowUntil = performance.now() + 350; P.drag = null; }
     if (P.pinched.delete(e.pointerId)) stop(e);
     if (P.touches.size < 2 && P.pinch) P.pinch = null;
     if (!P.touches.size && P.swallowUntil === Infinity) P.swallowUntil = performance.now() + 350;
