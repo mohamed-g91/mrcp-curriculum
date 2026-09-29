@@ -196,8 +196,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (e.pointerType === "touch") {
       if (P.busy()) { stop(e); P.pinched.add(e.pointerId); P.swallowUntil = Infinity; return; }
       P.touches.set(e.pointerId, [e.clientX, e.clientY]);
-      // a sort chip or a spectrum bubble keeps its own drag
-      if (P.touches.size === 1 && !e.target.closest(".chip, .spec-bubble")) P.dragStart(e);
+      // a sort chip keeps its own drag
+      if (P.touches.size === 1 && !e.target.closest(".chip")) P.dragStart(e);
       if (P.touches.size === 2) { stop(e); P.drag = null; P.pinchStart(); P.swallowUntil = Infinity; }
     }
   }, true);
