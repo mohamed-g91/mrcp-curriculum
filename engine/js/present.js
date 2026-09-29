@@ -75,7 +75,8 @@ const Present = {
 
   /* ---- strokes ---- */
   // the pen's side button (or its eraser end) rubs out while it is held
-  toolFor(e) { return (e.buttons & 34) ? "eraser" : this.tool; },
+  // (browsers report it either in buttons, as held, or in button, as the one that changed: 2 side, 5 eraser end)
+  toolFor(e) { return (e.buttons & 34) || e.button === 2 || e.button === 5 ? "eraser" : this.tool; },
   begin(e) {
     const tool = this.toolFor(e);
     if (tool === "eraser") { this.erasing = true; this.rub(this.at(e)); return; }
@@ -188,6 +189,20 @@ const Present = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  // ?pendebug: a readout of what the pen, fingers and mouse report, to set up a new stylus
+  if (new URLSearchParams(location.search).has("pendebug")) {
+    const box = document.createElement("pre"), lines = [];
+    box.style.cssText = "position:fixed;left:8px;top:8px;z-index:99;margin:0;padding:6px 8px;font:12px/1.35 monospace;background:rgba(0,0,0,.78);color:#fff;border-radius:6px;pointer-events:none";
+    document.body.appendChild(box);
+    let last = "";
+    const log = e => {
+      const l = `${e.type} ${e.pointerType || ""} button=${e.button} buttons=${e.buttons}` + (e.pressure !== undefined ? ` p=${e.pressure.toFixed(2)}` : "");
+      if (e.type === "pointermove" && l === last) return;  // a move is logged only when something changed
+      last = l; lines.push(l); if (lines.length > 12) lines.shift();
+      box.textContent = lines.join("\n");
+    };
+    ["pointerdown", "pointermove", "pointerup", "pointercancel", "contextmenu", "auxclick"].forEach(t => window.addEventListener(t, log, true));
+  }
   const P = Present, stop = e => { e.preventDefault(); e.stopImmediatePropagation(); };
   const onSlide = e => !!e.target.closest && !!e.target.closest("#app");
 
