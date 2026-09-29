@@ -495,6 +495,30 @@ async function presentPass() {
   await sleep(100);
   if (await paths() !== 3) fail(`recording view: the pen touching as a finger with no contact size did not cut the line (${await paths()} lines, not 3)`);
   await js(`document.getElementById("inkUndo").click(), true`);
+  // as the Galaxy Tab also reports it: the pen itself, pressed with no pressure; hovering (1 x 1) rubs out
+  // nothing, on the glass (0 x 0) it rubs out, with or without a pen-down first
+  await sleep(500);
+  const penEv = (type, x, y, size, pressure = 0) => js(`(() => { const t = document.elementFromPoint(${x}, ${y});
+    t.dispatchEvent(new PointerEvent("${type}", { bubbles: true, cancelable: true, pointerType: "pen", pointerId: 77, isPrimary: true,
+      clientX: ${x}, clientY: ${y}, buttons: ${type === "pointerup" ? 0 : 1}, button: ${type === "pointermove" ? -1 : 0}, pressure: ${pressure}, width: ${size}, height: ${size} })); return true; })()`);
+  for (const y of [120, 140, 150, 160, 180]) await penEv("pointermove", 400, y, 1);
+  if (await paths() !== 2) fail("recording view: the side-button pen rubbed out while it only hovered (1 x 1)");
+  for (const y of [120, 140, 150, 160, 180]) await penEv("pointermove", 400, y, 0);
+  if (await paths() !== 3) fail(`recording view: the side-button pen on the glass (0 x 0, no pressure) did not cut the line (${await paths()} lines, not 3)`);
+  await js(`document.getElementById("inkUndo").click(), true`);
+  await penEv("pointerdown", 400, 120, 0);
+  for (const y of [140, 150, 160, 180]) await penEv("pointermove", 400, y, 0);
+  await penEv("pointerup", 400, 180, 1);
+  if (await paths() !== 3) fail(`recording view: a pen-down with no pressure (the side button) did not rub out (${await paths()} lines, not 3)`);
+  await js(`document.getElementById("inkUndo").click(), true`);
+  // a normal stroke whose last point has no pressure is still a stroke, not an eraser
+  await penEv("pointerdown", 300, 300, 0, .4);
+  await penEv("pointermove", 350, 300, 0, .4);
+  await penEv("pointermove", 380, 300, 0, 0);
+  await penEv("pointerup", 380, 300, 1);
+  if (await paths() !== 3) fail("recording view: a stroke ending with no pressure did not stay a stroke");
+  await js(`document.getElementById("inkUndo").click(), true`);
+  await sleep(700);
   // a palm (with a contact size) while the pen hovers rubs out nothing
   await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 400, y: 100, buttons: 0, pointerType: "pen" });
   await finger("touchStart", [[400, 130]]);

@@ -9,6 +9,11 @@ const PEN_W = [2, 4, 7, 11];  // fine, medium (the default), thick, very thick
 const HOLD_MS = 450;
 const BARREL_MS = 400;        // a "finger" this soon after the pen hovered with its side button held is the pen itself          // a press on the pen this long opens its sizes
 const MARKER_W = 24;
+// every point a pointer move carries (a synthetic event carries none but its own)
+const each = e => { const c = e.getCoalescedEvents ? e.getCoalescedEvents() : []; return c.length ? c : [e]; };
+// the S Pen touching the glass with its side button held, as Chrome for Android reports it: pressed,
+// with no pressure, and no contact size (hovering has a 1 x 1 one)
+const sideOnGlass = e => (e.buttons & 1) && e.pressure === 0 && e.width === 0 && e.height === 0;
 // the distance from (x, y) to the line segment from a to b
 const segDist = (x, y, [ax, ay], [bx, by]) => {
   const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy;
@@ -86,8 +91,10 @@ const Present = {
   /* ---- strokes ---- */
   // the pen's side button (or its eraser end) rubs out while it is held
   // (browsers report it either in buttons, as held, or in button, as the one that changed: 2 side, 5 eraser end)
-  toolFor(e) { return (e.buttons & 34) || e.button === 2 || e.button === 5 ? "eraser" : this.tool; },
+  // a stroke begun with the S Pen's side button held (no pressure) rubs out to its end
+  toolFor(e) { return this.side || (e.buttons & 34) || e.button === 2 || e.button === 5 ? "eraser" : this.tool; },
   begin(e) {
+    if (e.type === "pointerdown" && sideOnGlass(e)) this.side = true;
     const tool = this.toolFor(e);
     if (tool === "eraser") { this.erasing = true; this.rub(this.at(e)); return; }
     const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -101,14 +108,14 @@ const Present = {
   extend(e) {
     // the side button pressed or let go mid-stroke: the stroke so far stays, and the pen changes over
     if ((this.toolFor(e) === "eraser") !== this.erasing) { this.end(); this.begin(e); return; }
-    if (this.erasing) { (e.getCoalescedEvents ? e.getCoalescedEvents() : [e]).forEach(c => this.rub(this.at(c))); return; }
+    if (this.erasing) { each(e).forEach(c => this.rub(this.at(c))); return; }
     const k = this.stroke;
-    (e.getCoalescedEvents ? e.getCoalescedEvents() : [e]).forEach(c => k.pts.push(this.at(c)));
+    each(e).forEach(c => k.pts.push(this.at(c)));
     this.draw(k);
   },
   end() {
     if (this.stroke) { const p = this.page(); p.strokes.push(this.stroke); p.history.push({ add: this.stroke }); }
-    this.stroke = null; this.erasing = false; this.rubbed = null;
+    this.stroke = null; this.erasing = false; this.rubbed = null; this.side = false;
   },
   // a new stroke like k (same tool, colour and width) through the points pts
   like(k, pts) {
@@ -282,10 +289,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (P.stroke || P.erasing) { stop(e); P.extend(e); }
       // the S Pen hovering with its side button held: Chrome for Android sends moves marked pressed
       // with no pressure. They rub out nothing (the pen is not on the glass) but mark the touch that follows
-      else if ((e.buttons & 1) && e.pressure === 0) P.barrelAt = performance.now();
+      else if ((e.buttons & 1) && e.pressure === 0) {
+        P.barrelAt = performance.now();
+        // on the glass (no contact size) it rubs out, even with no pen-down first; hovering rubs out nothing
+        if (sideOnGlass(e) && onSlide(e)) { stop(e); P.note("→ eraser (pen on the glass)"); each(e).forEach(c => P.rub(P.at(c))); }
+        else P.rubbed = null;
+      }
     } else if (P.barrel && e.pointerType === "touch") {
       stop(e);
-      (e.getCoalescedEvents ? e.getCoalescedEvents() : [e]).forEach(c => P.rub(P.at(c)));
+      each(e).forEach(c => P.rub(P.at(c)));
     } else if (P.touches.has(e.pointerId)) {
       P.touches.set(e.pointerId, [e.clientX, e.clientY]);
       if (P.pinch) { stop(e); P.pinchMove(); }
