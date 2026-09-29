@@ -121,7 +121,7 @@ Every interactive element behaves the same way, so learners never have to relear
 
 ## Presenter's deck
 
-Every topic builds twice from the same YAML: the candidate's page (`dist/<specialty>/<slug>.html`: title, video, Practise) and the presenter's deck (`dist/present/<specialty>/<slug>.html`: title, every Learn slide, Practise). The deck is never linked from the site; on the live site it sits behind a password (`functions/present/_middleware.js`, the `PRESENTER_PASSWORD` secret) and tells search engines to stay away. Every design rule for Learn slides still applies to it, since the slides are what the video shows.
+Every topic builds twice from the same YAML: the candidate's page (`dist/<specialty>/<slug>.html`: title, video, Practise) and the presenter's deck (`presenter/<specialty>/<slug>.html`: title, every Learn slide, Practise). The deck is built on the presenter's own computer only: `presenter/` is ignored by git, so it is never published. `presenter/index.html` lists every deck, and a deck's wordmark goes back to that list. Every design rule for Learn slides still applies to it, since the slides are what the video shows.
 
 ## Recording view
 

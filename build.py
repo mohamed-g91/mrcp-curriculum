@@ -9,9 +9,9 @@ icons and fonts embedded:
 
   dist/<specialty>/<slug>.html          the candidate's page: Learn is the recorded video
                                         with a chapter per slide, then Practise
-  dist/present/<specialty>/<slug>.html  the presenter's deck: every Learn slide, for
-                                        recording; behind a password on the live site
-                                        (functions/present/_middleware.js)
+  presenter/<specialty>/<slug>.html     the presenter's deck: every Learn slide, for
+                                        recording. Built beside dist/, never published;
+                                        presenter/index.html lists every deck
 
 Permanent IDs: every case and practice item ID ever built is listed in
 content/ids.lock. The check fails if a listed ID disappears without being
@@ -32,6 +32,7 @@ from engine.patterns import CENTRED, PATTERNS, e, p_title, p_video, topic_data, 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 ENGINE = os.path.join(ROOT, "engine")
 DIST = os.path.join(ROOT, "dist")
+PRESENTER = os.path.join(ROOT, "presenter")  # local only: git ignores it and Cloudflare never sees it
 LOCK = os.path.join(ROOT, "content", "ids.lock")
 CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css"]
 JS_FILES = ["core.js", "video.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "working.js", "sort.js", "quiz.js", "present.js", "deck.js"]
@@ -316,8 +317,7 @@ def render_topic(t, spec, site, present=False):
     page_title = f'{t["title"]} · {site["title"]}'
     for k, v in {
         "{{PAGE_TITLE}}": e(page_title), "{{DESCRIPTION}}": e(t["description"]), "{{AUTHOR}}": e(site["author"]),
-        "{{MODE}}": "present-deck" if present else "site", "{{ROBOTS}}": '<meta name="robots" content="noindex, nofollow">\n' if present else "",
-        "{{HOME}}": "../../index.html" if present else "../index.html",
+        "{{MODE}}": "present-deck" if present else "site",
         "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{SITE}}": e(site["title"]), "{{WORDMARK}}": wordmark(site["title"]), "{{ICONS}}": read(ENGINE, "icons.svg"),
         "{{SLIDES}}": "\n".join(slides), "{{DATA}}": data, "{{CSS}}": css, "{{JS}}": js,
     }.items():
@@ -325,7 +325,7 @@ def render_topic(t, spec, site, present=False):
     return shell
 
 
-def render_index(site, specs):
+def render_index(site, specs, label=""):
     rows = []
     for spec in specs:
         items = []
@@ -343,7 +343,7 @@ def render_index(site, specs):
     today = f"{d.day} {d.strftime('%B %Y')}"
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(site["title"])}</title><meta name="description" content="Interactive MRCP revision pages, one per topic.">
+<title>{e(site["title"] + label)}</title><meta name="description" content="Interactive MRCP revision pages, one per topic.">
 <style>{css}</style></head>
 <body><main class="index"><h1 class="wordmark" aria-label="{e(site["title"])}">{wordmark(site["title"])}</h1>{"".join(rows)}
 <p class="credits"><span>Created by {e(site["author"])}</span><span>{e(site["disclaimer"])}</span><span>Last updated {today}</span></p>
@@ -397,14 +397,14 @@ def main():
         return
     for spec, tp, t in topics:
         for present, out in ((False, os.path.join(DIST, spec["id"], tp["slug"] + ".html")),
-                             (True, os.path.join(DIST, "present", spec["id"], tp["slug"] + ".html"))):
+                             (True, os.path.join(PRESENTER, spec["id"], tp["slug"] + ".html"))):
             os.makedirs(os.path.dirname(out), exist_ok=True)
             with open(out, "w", encoding="utf-8", newline="\n") as f:
                 f.write(render_topic(t, spec, site, present))
             print(f"Built {os.path.relpath(out, ROOT)} ({os.path.getsize(out):,} bytes)")
-    # search engines leave the presenter's decks alone (Cloudflare Pages reads _headers)
-    with open(os.path.join(DIST, "_headers"), "w", encoding="utf-8", newline="\n") as f:
-        f.write("/present/*\n  X-Robots-Tag: noindex, nofollow\n")
+    # the presenter's home page: the same list of topics, each opening its deck
+    with open(os.path.join(PRESENTER, "index.html"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(render_index(site, specs, " · presenter"))
     with open(os.path.join(DIST, "index.html"), "w", encoding="utf-8", newline="\n") as f:
         f.write(render_index(site, specs))
     with open(LOCK, "w", encoding="utf-8", newline="\n") as f:

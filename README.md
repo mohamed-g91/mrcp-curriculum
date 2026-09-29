@@ -23,11 +23,11 @@ python build.py
 node checks/check.mjs dist/statistics/data-types.html
 ```
 
-The built pages land in `dist/`: `dist/index.html` is the home page, and each topic is at `dist/<specialty>/<topic>.html`, and its presenter's deck at `dist/present/<specialty>/<topic>.html`.
+The built pages land in `dist/`: `dist/index.html` is the home page, and each topic is at `dist/<specialty>/<topic>.html`, and its presenter's deck at `presenter/<specialty>/<topic>.html` (on your computer only; it is never published).
 
 ## Recording a video
 
-Open the topic's presenter's deck (`/present/<specialty>/<topic>.html`; on the live site it asks for the presenter password) in a full-screen browser window, or press P for the tablet recording view. On any screen of at least 900 × 480 the page is a fixed 16:9 stage, so a 1920 × 1080 recording frames the same every time. Use the arrow keys to move between slides.
+Run `python build.py`, then open `presenter/index.html` and pick the topic; its deck holds every Learn slide. Use a full-screen browser window, or press P for the tablet recording view. To record on the tablet, copy the topic's one file from `presenter/<specialty>/` to the tablet (USB, Google Drive or Quick Share) and open it in Chrome; it works offline. On any screen of at least 900 × 480 the page is a fixed 16:9 stage, so a 1920 × 1080 recording frames the same every time. Use the arrow keys to move between slides.
 
 ## Publishing on Cloudflare Pages
 
@@ -40,8 +40,6 @@ Connect this repository in Cloudflare (Workers & Pages → Create → Pages → 
 | Build output directory | `dist` |
 
 Every push to `main` then rebuilds and publishes the site.
-
-The presenter's decks under `/present/` need a password: in the Pages project, Settings → Variables and Secrets, add a **secret** named `PRESENTER_PASSWORD` (Production and Preview) and redeploy. Until it is set, `/present/` stays shut. The browser asks for a user name and password; any user name works.
 
 After recording a video, put its YouTube ID in the topic's `video:` in `curriculum.yaml` and each Learn slide's start time as `at: "m:ss"` in the topic's YAML.
 
