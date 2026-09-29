@@ -6,14 +6,10 @@
    resting on the glass, and are ignored. */
 const PALM_MS = 600;      // a touch this soon after the pen was seen is the hand, not a tap
 const PEN_W = [2, 4, 7, 11];  // fine, medium (the default), thick, very thick
-const HOLD_MS = 450;
-const BARREL_MS = 400;        // a "finger" this soon after the pen hovered with its side button held is the pen itself          // a press on the pen this long opens its sizes
+const HOLD_MS = 450;          // a press on the pen this long opens its sizes
 const MARKER_W = 24;
 // every point a pointer move carries (a synthetic event carries none but its own)
 const each = e => { const c = e.getCoalescedEvents ? e.getCoalescedEvents() : []; return c.length ? c : [e]; };
-// the S Pen touching the glass with its side button held, as Chrome for Android reports it: pressed,
-// with no pressure, and no contact size (hovering has a 1 x 1 one)
-const sideOnGlass = e => (e.buttons & 1) && e.pressure === 0 && e.width === 0 && e.height === 0;
 // the distance from (x, y) to the line segment from a to b
 const segDist = (x, y, [ax, ay], [bx, by]) => {
   const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy;
@@ -26,12 +22,10 @@ const Present = {
   slide: null, stroke: null, erasing: false,
   rubbed: null,          // what the eraser has cut so far in this rub: one undo puts it all back
   lastPen: 0, swallowUntil: 0,
-  barrelAt: 0, barrel: false,  // the S Pen hovering with its side button held, and touching the glass with it
   touches: new Map(), pinch: null,
   drag: null,            // one finger scrolling the slide (the page scrolls it: the browser may not pan, or it would cut the pen off)
   pinched: new Set(),    // touches whose lifting the slide must not see: a pinch's fingers, a palm
   z: 1, tx: 0, ty: 0,
-  note() {},             // the pen readout's own lines: what the page made of the pen
 
   enter(full) {
     if (this.on) return;
@@ -89,13 +83,8 @@ const Present = {
   },
 
   /* ---- strokes ---- */
-  // the pen's side button (or its eraser end) rubs out while it is held
-  // (browsers report it either in buttons, as held, or in button, as the one that changed: 2 side, 5 eraser end)
-  // a stroke begun with the S Pen's side button held (no pressure) rubs out to its end
-  toolFor(e) { return this.side || (e.buttons & 34) || e.button === 2 || e.button === 5 ? "eraser" : this.tool; },
   begin(e) {
-    if (e.type === "pointerdown" && sideOnGlass(e)) this.side = true;
-    const tool = this.toolFor(e);
+    const tool = this.tool;
     if (tool === "eraser") { this.erasing = true; this.rub(this.at(e)); return; }
     const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
     const k = { tool, el, pts: [this.at(e)] };
@@ -106,8 +95,6 @@ const Present = {
     this.draw(k);
   },
   extend(e) {
-    // the side button pressed or let go mid-stroke: the stroke so far stays, and the pen changes over
-    if ((this.toolFor(e) === "eraser") !== this.erasing) { this.end(); this.begin(e); return; }
     if (this.erasing) { each(e).forEach(c => this.rub(this.at(c))); return; }
     const k = this.stroke;
     each(e).forEach(c => k.pts.push(this.at(c)));
@@ -115,7 +102,7 @@ const Present = {
   },
   end() {
     if (this.stroke) { const p = this.page(); p.strokes.push(this.stroke); p.history.push({ add: this.stroke }); }
-    this.stroke = null; this.erasing = false; this.rubbed = null; this.side = false;
+    this.stroke = null; this.erasing = false; this.rubbed = null;
   },
   // a new stroke like k (same tool, colour and width) through the points pts
   like(k, pts) {
@@ -161,7 +148,6 @@ const Present = {
       k.el.after(...parts.map(c => c.el)); k.el.remove();
       if (!this.rubbed) { this.rubbed = []; p.history.push({ rub: this.rubbed }); }
       this.rubbed.push({ was: k, parts, at });
-      this.note(`→ cut a line (${this.rubbed.length} this rub)`);
     });
   },
   undo() {
@@ -230,33 +216,6 @@ const Present = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  // the pen readout: what the pen, fingers and mouse report, to set up a new stylus. It opens with
-  // "pendebug" anywhere in the link, or three quick taps on the tray's slide count, which also close it
-  let box = null, last = "", taps = [];
-  const lines = [];
-  const log = e => {
-    if (!box) return;
-    const l = `${e.type.replace("pointer", "")} ${e.pointerType || ""} id=${e.pointerId} b=${e.button} bs=${e.buttons}` + (e.pressure !== undefined ? ` p=${e.pressure.toFixed(2)} ${Math.round(e.width)}x${Math.round(e.height)}` : "");
-    if (e.type === "pointermove" && l === last) return;  // a move is logged only when something changed
-    last = l; lines.push(l); if (lines.length > 14) lines.shift();
-    box.textContent = lines.join("\n");
-  };
-  const note = l => { if (!box || l === last) return; last = l; lines.push(l); if (lines.length > 14) lines.shift(); box.textContent = lines.join("\n"); };
-  const readout = on => {
-    if (!on) { if (box) box.remove(); box = null; Present.note = () => {}; return; }
-    Present.note = note;
-    box = document.createElement("pre");
-    box.style.cssText = "position:fixed;left:8px;top:8px;z-index:99;margin:0;padding:6px 8px;font:13px/1.35 monospace;background:rgba(0,0,0,.8);color:#fff;border-radius:6px;pointer-events:none;white-space:pre";
-    box.textContent = "pen readout: draw, then draw holding the side button";
-    document.body.appendChild(box);
-  };
-  ["pointerdown", "pointermove", "pointerup", "pointercancel", "contextmenu", "auxclick"].forEach(t => window.addEventListener(t, log, true));
-  if (/pendebug/i.test(location.href)) readout(true);
-  $("#trayCount").addEventListener("pointerdown", () => {
-    const now = performance.now();
-    taps = taps.filter(t => now - t < 700); taps.push(now);
-    if (taps.length >= 3) { taps = []; readout(!box); }
-  });
   const P = Present, stop = e => { e.preventDefault(); e.stopImmediatePropagation(); };
   const onSlide = e => !!e.target.closest && !!e.target.closest("#app");
 
@@ -270,11 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
       try { $(".frame").setPointerCapture(e.pointerId); } catch (x) {}
       P.begin(e);
     } else if (e.pointerType === "touch") {
-      // the S Pen touching with its side button held: Chrome for Android reports it as a finger with
-      // no contact size (a real finger or palm has one), while the pen hovers, or just after it hovered
-      // with the button held. It rubs out, and is no finger or palm.
-      const now = performance.now(), penTip = e.width === 0 && e.height === 0 && now - P.lastPen < PALM_MS;
-      if (P.barrel || penTip || now - P.barrelAt < BARREL_MS) { stop(e); P.barrel = true; P.note(`→ eraser (touch ${e.pointerId})`); P.rub(P.at(e)); return; }
       if (P.busy()) { stop(e); P.pinched.add(e.pointerId); P.swallowUntil = Infinity; return; }
       P.touches.set(e.pointerId, [e.clientX, e.clientY]);
       // a sort chip keeps its own drag
@@ -287,17 +241,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.pointerType === "pen") {
       P.lastPen = performance.now();
       if (P.stroke || P.erasing) { stop(e); P.extend(e); }
-      // the S Pen hovering with its side button held: Chrome for Android sends moves marked pressed
-      // with no pressure. They rub out nothing (the pen is not on the glass) but mark the touch that follows
-      else if ((e.buttons & 1) && e.pressure === 0) {
-        P.barrelAt = performance.now();
-        // on the glass (no contact size) it rubs out, even with no pen-down first; hovering rubs out nothing
-        if (sideOnGlass(e) && onSlide(e)) { stop(e); P.note("→ eraser (pen on the glass)"); each(e).forEach(c => P.rub(P.at(c))); }
-        else P.rubbed = null;
-      }
-    } else if (P.barrel && e.pointerType === "touch") {
-      stop(e);
-      each(e).forEach(c => P.rub(P.at(c)));
     } else if (P.touches.has(e.pointerId)) {
       P.touches.set(e.pointerId, [e.clientX, e.clientY]);
       if (P.pinch) { stop(e); P.pinchMove(); }
@@ -312,8 +255,6 @@ document.addEventListener("DOMContentLoaded", () => {
       P.swallowUntil = performance.now() + 350;
       return;
     }
-    // the side-button pen lifted (a cancel is Android's long press: the touch events below carry on)
-    if (P.barrel && e.pointerType === "touch") { stop(e); if (e.type === "pointerup") { P.barrel = false; P.rubbed = null; P.swallowUntil = performance.now() + 350; } return; }
     P.touches.delete(e.pointerId);
     if (P.drag && P.drag.id === e.pointerId) { if (P.drag.moved) P.swallowUntil = performance.now() + 350; P.drag = null; }
     if (P.pinched.delete(e.pointerId)) stop(e);
@@ -331,17 +272,6 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#app").addEventListener("touchstart", e => {
     if (P.on && [...e.changedTouches].some(t => t.touchType === "stylus") && e.cancelable) e.preventDefault();
   }, { passive: false });
-  // the side-button pen on the glass: no long press, menu or scroll starts, and should Android cancel
-  // its pointer, its touch events carry on rubbing out until it lifts
-  window.addEventListener("touchstart", e => { if (P.on && P.barrel && e.cancelable) e.preventDefault(); }, { capture: true, passive: false });
-  window.addEventListener("touchmove", e => {
-    if (!P.on || !P.barrel) return;
-    if (e.cancelable) e.preventDefault();
-    [...e.changedTouches].forEach(t => P.rub(P.at(t)));
-  }, { capture: true, passive: false });
-  const barrelOff = () => { if (P.barrel) { P.barrel = false; P.rubbed = null; P.swallowUntil = performance.now() + 350; } };
-  window.addEventListener("touchend", e => { if (!e.touches.length) barrelOff(); }, true);
-  window.addEventListener("touchcancel", e => { if (!e.touches.length) barrelOff(); }, true);
   // the pen's side button would open the browser's menu
   window.addEventListener("contextmenu", e => { if (P.on && onSlide(e)) e.preventDefault(); }, true);
 

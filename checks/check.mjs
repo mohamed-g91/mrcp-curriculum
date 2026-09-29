@@ -459,73 +459,11 @@ async function presentPass() {
   const paths = () => js(`document.querySelectorAll("#inkPen path").length`);
   await js(`document.getElementById("inkClear").click(), true`);
   await pen([[300, 150], [400, 150], [500, 150], [600, 150], [700, 150]]);
-  const side = (type, [x, y], buttons) => send("Input.dispatchMouseEvent", { type, x, y, button: "left", buttons, clickCount: 1, pointerType: "pen" });
-  // the side button pressed mid-stroke: the stroke so far stays, then the pen rubs out
-  await side("mousePressed", [620, 60], 1);
-  await side("mouseMoved", [620, 90], 1);
-  for (const y of [120, 140, 150, 160, 180]) await side("mouseMoved", [620, y], 3);
-  await side("mouseReleased", [620, 180], 0);
-  await sleep(100);
-  if (await paths() !== 3) fail(`recording view: the side button did not cut the line in two (${await paths()} lines, not 3)`);
-  await js(`document.getElementById("inkUndo").click(), true`);
-  if (await paths() !== 2) fail("recording view: undo did not mend the cut line");
-  // the S Pen's side button as Chrome for Android reports it: hovering, moves marked pressed with no
-  // pressure, which rub out nothing; then touching, a "finger", which rubs out
-  const hover = y => send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 400, y, button: "left", buttons: 1, force: 0, pointerType: "pen" });
-  for (const y of [120, 140, 150, 160, 180]) await hover(y);
-  await sleep(100);
-  if (await paths() !== 2) fail("recording view: the S Pen's side button rubbed out while the pen only hovered");
-  await hover(130);
-  const finger = (type, pts) => send("Input.dispatchTouchEvent", { type, touchPoints: pts.map(([x, y], id) => ({ x, y, id, radiusX: 8, radiusY: 8 })) });
-  await finger("touchStart", [[400, 130]]);
-  for (const y of [140, 150, 160, 180]) await finger("touchMove", [[400, y]]);
-  await finger("touchEnd", []);
-  await sleep(100);
-  if (await paths() !== 3) fail(`recording view: the S Pen touching with its side button did not cut the line (${await paths()} lines, not 3)`);
-  if (await js(`Deck.i`) !== i) fail("recording view: the side-button pen turned the page");
-  await js(`document.getElementById("inkUndo").click(), true`);
-  if (await paths() !== 2) fail("recording view: undo did not mend the line the side button cut");
-  // as the Galaxy Tab reports it: the pen hovering with no button shown, then a "finger" with no contact size
-  await sleep(500);
-  await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 400, y: 100, buttons: 0, pointerType: "pen" });
-  const tip = (type, pts) => send("Input.dispatchTouchEvent", { type, touchPoints: pts.map(([x, y], id) => ({ x, y, id, radiusX: 0, radiusY: 0 })) });
-  await tip("touchStart", [[400, 130]]);
-  for (const y of [140, 150, 160, 180]) await tip("touchMove", [[400, y]]);
-  await tip("touchEnd", []);
-  await sleep(100);
-  if (await paths() !== 3) fail(`recording view: the pen touching as a finger with no contact size did not cut the line (${await paths()} lines, not 3)`);
-  await js(`document.getElementById("inkUndo").click(), true`);
-  // as the Galaxy Tab also reports it: the pen itself, pressed with no pressure; hovering (1 x 1) rubs out
-  // nothing, on the glass (0 x 0) it rubs out, with or without a pen-down first
-  await sleep(500);
-  const penEv = (type, x, y, size, pressure = 0) => js(`(() => { const t = document.elementFromPoint(${x}, ${y});
-    t.dispatchEvent(new PointerEvent("${type}", { bubbles: true, cancelable: true, pointerType: "pen", pointerId: 77, isPrimary: true,
-      clientX: ${x}, clientY: ${y}, buttons: ${type === "pointerup" ? 0 : 1}, button: ${type === "pointermove" ? -1 : 0}, pressure: ${pressure}, width: ${size}, height: ${size} })); return true; })()`);
-  for (const y of [120, 140, 150, 160, 180]) await penEv("pointermove", 400, y, 1);
-  if (await paths() !== 2) fail("recording view: the side-button pen rubbed out while it only hovered (1 x 1)");
-  for (const y of [120, 140, 150, 160, 180]) await penEv("pointermove", 400, y, 0);
-  if (await paths() !== 3) fail(`recording view: the side-button pen on the glass (0 x 0, no pressure) did not cut the line (${await paths()} lines, not 3)`);
-  await js(`document.getElementById("inkUndo").click(), true`);
-  await penEv("pointerdown", 400, 120, 0);
-  for (const y of [140, 150, 160, 180]) await penEv("pointermove", 400, y, 0);
-  await penEv("pointerup", 400, 180, 1);
-  if (await paths() !== 3) fail(`recording view: a pen-down with no pressure (the side button) did not rub out (${await paths()} lines, not 3)`);
-  await js(`document.getElementById("inkUndo").click(), true`);
-  // a normal stroke whose last point has no pressure is still a stroke, not an eraser
-  await penEv("pointerdown", 300, 300, 0, .4);
-  await penEv("pointermove", 350, 300, 0, .4);
-  await penEv("pointermove", 380, 300, 0, 0);
-  await penEv("pointerup", 380, 300, 1);
-  if (await paths() !== 3) fail("recording view: a stroke ending with no pressure did not stay a stroke");
-  await js(`document.getElementById("inkUndo").click(), true`);
-  await sleep(700);
-  // a palm (with a contact size) while the pen hovers rubs out nothing
-  await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 400, y: 100, buttons: 0, pointerType: "pen" });
-  await finger("touchStart", [[400, 130]]);
-  for (const y of [140, 150, 160, 180]) await finger("touchMove", [[400, y]]);
-  await finger("touchEnd", []);
-  await sleep(100);
-  if (await paths() !== 2) fail("recording view: a resting palm rubbed out ink");
+  await js(`document.querySelector("[data-tool=eraser]").click(), true`);
+  await pen([[500, 110], [500, 130], [500, 150], [500, 170], [500, 190]]);
+  if (await paths() !== 2) fail(`recording view: the eraser did not cut the line in two (${await paths()} lines, not 2)`);
+  await js(`document.getElementById("inkUndo").click(), document.querySelector("[data-tool=pen]").click(), true`);
+  if (await paths() !== 1) fail("recording view: undo did not mend the cut line");
   await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
   await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
   // two fingers pinch out: the slide zooms and stays put
@@ -570,7 +508,7 @@ async function presentPass() {
   await js(`document.getElementById("tallSpacer").remove(), true`);
   await js(`Present.leave(), true`);
   await send("Emulation.setTouchEmulationEnabled", { enabled: false });
-  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, sizes panel, side button, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
+  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, sizes panel, eraser, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
 }
 
 // dark mode: screenshots of every slide on the stage, for a look (layout is the same as light)
