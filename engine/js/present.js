@@ -203,6 +203,11 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("click", e => {
     if (P.on && onSlide(e) && (e.pointerType === "pen" || performance.now() < P.swallowUntil)) stop(e);
   }, true);
+  // belt and braces: the browser never turns a stylus touch into a scroll or a gesture, which
+  // would cancel the stroke partway (the pen's own pointer events still arrive)
+  $("#app").addEventListener("touchstart", e => {
+    if (P.on && [...e.changedTouches].some(t => t.touchType === "stylus") && e.cancelable) e.preventDefault();
+  }, { passive: false });
   // the pen's side button would open the browser's menu
   window.addEventListener("contextmenu", e => { if (P.on && onSlide(e)) e.preventDefault(); }, true);
 

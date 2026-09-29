@@ -31,7 +31,9 @@ html.fluid .deck{overflow:visible}
    the highlighter under the pen, and zooms with it (present.js moves .frame). */
 html.phone #presentBtn,html.present #presentBtn{display:none}
 .frame{position:relative;transform-origin:0 0}
-html.present body{touch-action:none}
+/* every element, not just the frame: a scroller (the deck) turns panning back on for what is inside it,
+   and a pan would cancel the pen halfway through a stroke */
+html.present body,html.present .app *{touch-action:none}
 html.present .app{top:0;transform-origin:50% 0;transform:translateX(-50%) scale(var(--s,1));box-shadow:none;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 /* the top bar stays (wordmark, topic, score); the tray does the bottom bar's job, and the slide
    moves down by half the bar it lost, so its content and any zoom circle sit centred below the top bar */
