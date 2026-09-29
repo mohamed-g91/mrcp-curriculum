@@ -120,7 +120,7 @@ Every interactive element behaves the same way, so learners never have to relear
 
 ## Recording view
 
-The presenter's mode for recording a video on a tablet with a stylus (built for a Galaxy Tab S10 FE and its S Pen). It opens from the screen button in the top bar (full screen), from the P key, or from a link ending `?present`; the top-bar button is hidden on phones and small windows. Viewers never see it unless they open it.
+The presenter's mode for recording a video on a tablet with a stylus (built for a Galaxy Tab S10 FE and its S Pen). It opens from the screen button in the top bar (full screen), from the P key, or from a link ending `?present`; the top-bar button shows on tablets either way up and on computers, and is hidden only on phones and windows under 600 px on their short side. Viewers never see it unless they open it.
 
 - **A clean 16:9 frame.** The slide is an exact 1280 × 720 frame at the top of the screen, so a recording crops to a clean 16:9. The top bar (wordmark, topic, score) and the progress bar stay; the bottom bar goes, and the slide moves down by half its height, so the content and any zoom circle sit centred below the top bar. The tray fills the strip below it (at least 56 px; on a 16:10 tablet the strip left over).
 - **The tray** (one row, in the letterbox colour): Back, the slide count and Next on the left; pen, highlighter, three pen colours (red, blue, black: none of them a concept's colour), eraser, undo and clear in the middle; whole slide (zoom out) and leave on the right.

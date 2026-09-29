@@ -8,6 +8,8 @@ const Stage = {
     // Portrait windows reflow too, since a 16:9 canvas would leave most of the screen empty.
     const d = document.documentElement, w = d.clientWidth, h = d.clientHeight;
     const app = $("#app");
+    // a phone (either way up) or a tiny window: no recording view button; a tablet held upright keeps it
+    d.classList.toggle("phone", Math.min(w, h) < 600);
     // the recording view: an exact 1280 x 720 frame at the top, the tray in the strip below it
     if (d.classList.contains("present")) {
       d.classList.remove("fluid", "sideways");
