@@ -189,20 +189,31 @@ const Present = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ?pendebug: a readout of what the pen, fingers and mouse report, to set up a new stylus
-  if (new URLSearchParams(location.search).has("pendebug")) {
-    const box = document.createElement("pre"), lines = [];
-    box.style.cssText = "position:fixed;left:8px;top:8px;z-index:99;margin:0;padding:6px 8px;font:12px/1.35 monospace;background:rgba(0,0,0,.78);color:#fff;border-radius:6px;pointer-events:none";
+  // the pen readout: what the pen, fingers and mouse report, to set up a new stylus. It opens with
+  // "pendebug" anywhere in the link, or three quick taps on the tray's slide count, which also close it
+  let box = null, last = "", taps = [];
+  const lines = [];
+  const log = e => {
+    if (!box) return;
+    const l = `${e.type} ${e.pointerType || ""} button=${e.button} buttons=${e.buttons}` + (e.pressure !== undefined ? ` p=${e.pressure.toFixed(2)}` : "");
+    if (e.type === "pointermove" && l === last) return;  // a move is logged only when something changed
+    last = l; lines.push(l); if (lines.length > 14) lines.shift();
+    box.textContent = lines.join("\n");
+  };
+  const readout = on => {
+    if (!on) { if (box) box.remove(); box = null; return; }
+    box = document.createElement("pre");
+    box.style.cssText = "position:fixed;left:8px;top:8px;z-index:99;margin:0;padding:6px 8px;font:13px/1.35 monospace;background:rgba(0,0,0,.8);color:#fff;border-radius:6px;pointer-events:none;white-space:pre";
+    box.textContent = "pen readout: draw, then draw holding the side button";
     document.body.appendChild(box);
-    let last = "";
-    const log = e => {
-      const l = `${e.type} ${e.pointerType || ""} button=${e.button} buttons=${e.buttons}` + (e.pressure !== undefined ? ` p=${e.pressure.toFixed(2)}` : "");
-      if (e.type === "pointermove" && l === last) return;  // a move is logged only when something changed
-      last = l; lines.push(l); if (lines.length > 12) lines.shift();
-      box.textContent = lines.join("\n");
-    };
-    ["pointerdown", "pointermove", "pointerup", "pointercancel", "contextmenu", "auxclick"].forEach(t => window.addEventListener(t, log, true));
-  }
+  };
+  ["pointerdown", "pointermove", "pointerup", "pointercancel", "contextmenu", "auxclick"].forEach(t => window.addEventListener(t, log, true));
+  if (/pendebug/i.test(location.href)) readout(true);
+  $("#trayCount").addEventListener("pointerdown", () => {
+    const now = performance.now();
+    taps = taps.filter(t => now - t < 700); taps.push(now);
+    if (taps.length >= 3) { taps = []; readout(!box); }
+  });
   const P = Present, stop = e => { e.preventDefault(); e.stopImmediatePropagation(); };
   const onSlide = e => !!e.target.closest && !!e.target.closest("#app");
 
