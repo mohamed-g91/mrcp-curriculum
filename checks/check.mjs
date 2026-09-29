@@ -444,6 +444,28 @@ async function presentPass() {
   await js(`document.getElementById("trayPrev").click(), true`);
   await sleep(300);
   if (await js(`document.querySelectorAll("#inkPen path").length`) !== 2) fail("recording view: the slide's ink did not come back");
+  // a long press on the pen opens its sizes; the thick one draws a thick line
+  const penAt = await js(`(() => { const r = document.querySelector("[data-tool=pen]").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
+  await send("Input.dispatchMouseEvent", { type: "mousePressed", x: penAt[0], y: penAt[1], button: "left", buttons: 1, clickCount: 1 });
+  await sleep(700);
+  await send("Input.dispatchMouseEvent", { type: "mouseReleased", x: penAt[0], y: penAt[1], button: "left", buttons: 0, clickCount: 1 });
+  if (await js(`document.getElementById("sizePanel").hidden`)) fail("recording view: a long press on the pen did not open its sizes");
+  await js(`document.querySelector("[data-size='2']").click(), true`);
+  if (!(await js(`document.getElementById("sizePanel").hidden`))) fail("recording view: choosing a size did not close the panel");
+  await pen([target, [target[0] + 40, target[1] + 10], [target[0] + 80, target[1] - 10]]);
+  if (await js(`document.querySelector("#inkPen path:last-child").getAttribute("stroke-width")`) !== "7") fail("recording view: the thick pen did not draw a thick line");
+  await js(`Present.size = 1, true`);
+  // the side button pressed mid-stroke turns the pen into the eraser: it rubs out all the ink it passes
+  const side = (type, [x, y], buttons) => send("Input.dispatchMouseEvent", { type, x, y, button: "left", buttons, clickCount: 1, pointerType: "pen" });
+  await side("mousePressed", [target[0] - 150, target[1]], 1);
+  await side("mouseMoved", [target[0] - 100, target[1]], 1);
+  for (const dx of [-100, -50, 0, 40, 80]) await side("mouseMoved", [target[0] + dx, target[1] + (dx === 40 ? 10 : dx === 80 ? -10 : 0)], 3);
+  await side("mouseReleased", [target[0] + 80, target[1] - 10], 0);
+  await sleep(100);
+  if (await js(`document.querySelectorAll("#inkPen path").length`) !== 0) fail("recording view: the side button did not rub the ink out");
+  await js(`document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), document.getElementById("inkUndo").click(), true`);
+  await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
+  await sleep(700);  // past the palm window, so the fingers below are not taken for a resting hand
   // two fingers pinch out: the slide zooms and stays put
   const touch = (type, pts) => send("Input.dispatchTouchEvent", { type, touchPoints: pts.map(([x, y], id) => ({ x, y, id })) });
   await touch("touchStart", [[520, 300]]);
@@ -486,7 +508,7 @@ async function presentPass() {
   await js(`document.getElementById("tallSpacer").remove(), true`);
   await js(`Present.leave(), true`);
   await send("Emulation.setTouchEmulationEnabled", { enabled: false });
-  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
+  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, sizes panel, side button, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
 }
 
 // dark mode: screenshots of every slide on the stage, for a look (layout is the same as light)

@@ -55,10 +55,16 @@ html.present .ink{display:block}
 .tray-end{justify-self:end}
 .tray-gap{width:14px}
 .tray-count{min-width:56px;text-align:center;font-size:15px;color:var(--muted);font-variant-numeric:tabular-nums}
-.tray-btn,.swatch{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:none;color:var(--ink)}
+.tray-btn,.swatch,.size{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:none;color:var(--ink)}
 .tray-btn .ico{width:22px;height:22px}
 .tray-btn[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
 .tray-btn:disabled{opacity:.3;cursor:default}
 .swatch{width:36px}
 .swatch::before{content:"";width:20px;height:20px;border-radius:50%;background:var(--c)}
 .swatch[aria-pressed="true"]::before{box-shadow:0 0 0 3px var(--letterbox),0 0 0 5px var(--ink)}
+/* the pen sizes: a long press on the pen opens a small panel above it; each dot is its line's width */
+.size-panel{position:absolute;bottom:calc(100% + 8px);left:var(--at,50%);transform:translateX(-50%);display:flex;gap:2px;padding:4px;background:var(--page);border-radius:26px;box-shadow:0 6px 24px rgba(14,31,53,.18)}
+.size-panel[hidden]{display:none}
+.size::before{content:"";width:var(--d);height:var(--d);border-radius:50%;background:var(--ink)}
+.size.s0{--d:4px}.size.s1{--d:7px}.size.s2{--d:11px}.size.s3{--d:16px}
+.size[aria-checked="true"]{background:var(--hl)}

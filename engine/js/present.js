@@ -5,9 +5,11 @@
    slide changes and comes back when the slide does. Touches while the pen is near are a palm
    resting on the glass, and are ignored. */
 const PALM_MS = 600;      // a touch this soon after the pen was seen is the hand, not a tap
-const INK_W = { pen: 4, marker: 24 };
+const PEN_W = [2, 4, 7, 11];  // fine, medium (the default), thick, very thick
+const HOLD_MS = 450;          // a press on the pen this long opens its sizes
+const MARKER_W = 24;
 const Present = {
-  on: false, tool: "pen", colour: 0,
+  on: false, tool: "pen", colour: 0, size: 1,
   ink: new WeakMap(),     // slide -> { strokes, history }
   slide: null, stroke: null, erasing: false,
   lastPen: 0, swallowUntil: 0,
@@ -57,6 +59,7 @@ const Present = {
     $("#zoomReset").disabled = this.z === 1;
     $$("[data-tool]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.tool === this.tool)));
     $$("[data-colour]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.colour === this.colour && this.tool === "pen")));
+    $$("[data-size]").forEach(b => b.setAttribute("aria-checked", String(+b.dataset.size === this.size)));
   },
 
   // a point in the frame's own pixels (1280 x 720), whatever the zoom and the screen's scale
@@ -71,18 +74,22 @@ const Present = {
   },
 
   /* ---- strokes ---- */
+  // the pen's side button (or its eraser end) rubs out while it is held
+  toolFor(e) { return (e.buttons & 34) ? "eraser" : this.tool; },
   begin(e) {
-    const tool = (e.buttons & 34) ? "eraser" : this.tool;  // the pen's side button (or eraser end) rubs out
+    const tool = this.toolFor(e);
     if (tool === "eraser") { this.erasing = true; this.rub(this.at(e)); return; }
     const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
     const k = { tool, el, pts: [this.at(e)] };
     el.setAttribute("class", tool === "marker" ? "" : "c" + this.colour);
-    el.setAttribute("stroke-width", String(INK_W[tool] / this.z));
+    el.setAttribute("stroke-width", String((tool === "marker" ? MARKER_W : PEN_W[this.size]) / this.z));
     (tool === "marker" ? $("#inkMarker") : $("#inkPen")).appendChild(el);
     this.stroke = k;
     this.draw(k);
   },
   extend(e) {
+    // the side button pressed or let go mid-stroke: the stroke so far stays, and the pen changes over
+    if ((this.toolFor(e) === "eraser") !== this.erasing) { this.end(); this.begin(e); return; }
     if (this.erasing) { (e.getCoalescedEvents ? e.getCoalescedEvents() : [e]).forEach(c => this.rub(this.at(c))); return; }
     const k = this.stroke;
     (e.getCoalescedEvents ? e.getCoalescedEvents() : [e]).forEach(c => k.pts.push(this.at(c)));
@@ -248,8 +255,21 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#zoomReset").addEventListener("click", () => P.resetZoom());
   $("#inkUndo").addEventListener("click", () => P.undo());
   $("#inkClear").addEventListener("click", () => P.clear());
-  $$("[data-tool]").forEach(b => b.addEventListener("click", () => { P.tool = b.dataset.tool; P.tray(); }));
+  $$("[data-tool]").forEach(b => b.addEventListener("click", () => { if (b.held) { b.held = false; return; } P.tool = b.dataset.tool; P.tray(); }));
+  // a long press on the pen opens its sizes above it; a size, or a press anywhere else, closes them
+  const penBtn = $("[data-tool=pen]"), panel = $("#sizePanel");
+  const openSizes = () => {
+    const b = penBtn.getBoundingClientRect(), t = $("#tray").getBoundingClientRect();
+    panel.style.setProperty("--at", (b.left + b.width / 2 - t.left) + "px");
+    panel.hidden = false; P.tool = "pen"; P.tray();
+  };
+  let hold = null;
+  penBtn.addEventListener("pointerdown", () => { clearTimeout(hold); hold = setTimeout(() => { penBtn.held = true; openSizes(); }, HOLD_MS); });
+  ["pointerup", "pointerleave", "pointercancel"].forEach(t => penBtn.addEventListener(t, () => clearTimeout(hold)));
+  penBtn.addEventListener("contextmenu", e => e.preventDefault());  // a long touch would open the browser's menu
+  window.addEventListener("pointerdown", e => { if (!panel.hidden && !panel.contains(e.target) && e.target.closest("[data-tool=pen]") !== penBtn) panel.hidden = true; }, true);
   $$("[data-colour]").forEach(b => b.addEventListener("click", () => { P.colour = +b.dataset.colour; P.tool = "pen"; P.tray(); }));
+  $$("[data-size]").forEach(b => b.addEventListener("click", () => { P.size = +b.dataset.size; P.tool = "pen"; panel.hidden = true; P.tray(); }));
   document.addEventListener("keydown", e => {
     if (e.altKey || e.ctrlKey || e.metaKey || e.key.toLowerCase() !== "p") return;
     P.on ? P.leave() : P.enter(true);
