@@ -180,8 +180,13 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide"):
-                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin, gap, line or slide, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci"):
+                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin, gap, line, slide or ci, not {kind!r}")
+            elif kind == "ci":
+                # our trial's gap ± 2 SE of the difference (two groups of n with the same SD), beside chance's bell round 0
+                if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n", "gap")) or len(s.get("labels") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
+                    errs.append(f"{where}: a ci story needs sd, n (in each group), gap, two labels, an axis and a y_axis")
+                refs += ["ci"]
             elif kind == "slide":
                 # each panel: a CI of half-width 2 SE (a difference, with se) or `half` (a ratio), at each place in `at`
                 for pn in s.get("panels") or [None]:

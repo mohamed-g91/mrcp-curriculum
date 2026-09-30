@@ -718,6 +718,21 @@ html.fluid .ask{position:fixed}
 .st-pile{transition:opacity .4s ease}
 .st-gdot{fill:var(--x-solid);animation:stDrop .45s var(--ease) both}
 .st-pileline{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-dasharray:7 6}
+/* the CI story: our trial's bell and its middle 95%, then chance's bell beside it */
+.st-cib{animation:fadeIn .5s ease both}
+.st-cib-a{opacity:.14}
+.st-cib-l{fill:none;stroke-width:3.5}
+.st-cib-t{font:750 19px var(--sans);text-anchor:middle}
+.st-cib-trial .st-cib-a{fill:var(--x-solid)}.st-cib-trial .st-cib-l{stroke:var(--x-solid)}.st-cib-trial .st-cib-t{fill:var(--x-ink)}
+.st-cib-null .st-cib-a{fill:#8B97A6}.st-cib-null .st-cib-l{stroke:#8B97A6}.st-cib-null .st-cib-t{fill:var(--text)}
+.st-ci95{animation:fadeIn .5s ease both}
+.st-ci95-a{fill:var(--x-solid);opacity:.3}
+.st-ci95-t{fill:var(--x-ink);font:800 24px var(--sans);text-anchor:middle}
+.st-cibar{animation:stDrop .5s var(--ease) both}
+.st-cibar path{stroke-width:5;stroke-linecap:round;fill:none}
+.st-cibar rect{stroke:var(--sc-line);stroke-width:2.5}
+.st-cibar-trial path{stroke:var(--x-solid)}.st-cibar-trial rect{fill:var(--x-solid)}
+.st-cibar-null path{stroke:#8B97A6}.st-cibar-null rect{fill:#8B97A6}
 /* the 0.05 line: a ruler of p-values, the line across it, each trial landing at its p */
 .st-rtick{fill:var(--text);font:700 20px var(--sans);text-anchor:end}
 .st-rname{fill:var(--ink);font:italic 800 26px var(--sans);text-anchor:middle}

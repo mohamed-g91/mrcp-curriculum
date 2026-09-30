@@ -24,6 +24,9 @@
            trial's gap lands (4 ÷ 1.5 = 2.7 SEs); last, the tails at least that far out fill in: p = 0.4% + 0.4%
    line    a ruler of p-values (1 at the top, 0.001 at the foot, a log scale); the dashed line at 0.05 = 1 in 20
            with the significant side below it shaded; then each trial lands on the ruler at its p
+   ci      our trial's bell of gaps (SE of the difference wide) round what we found; the 2 SE lines and its middle 95%;
+           the CI drops out beneath with its sum (4 ± 2 × 1.5 = 1 to 7); then chance's bell round 0 beside it, with
+           its own 95% (−3 to +3) beneath: 0 lies outside our CI just as our gap lies outside chance's
    slide   two panels, a difference (no effect = 0) and a ratio (no effect = 1); in each, one CI slides towards
            no effect, one place per tap, its p read out beneath: clear of it, touching it (p = 0.05), across it
    art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
@@ -87,6 +90,71 @@ function storyStar(parent, x, y) {
 const sumText = v => `${v.join(" + ")} = ${Stats.sum(v)}`;
 
 const STORIES = {
+  ci(svg, S) {
+    // our trial's bell of gaps (SE of the difference wide) round what we found; its middle 95% is the CI.
+    // Then chance's bell round 0 beside it: 0 lies outside our CI just as our gap lies outside chance's 95%.
+    const se = S.sd * Math.sqrt(2 / S.n), est = S.gap, lo = est - 2 * se, hi = est + 2 * se;
+    const r1 = v => (Math.round(v * 10) / 10).toFixed(1), num = v => Number.isInteger(+r1(v)) ? String(+r1(v)) : r1(v);
+    const H = 385, L = 80, R = 700, A = -5, B = 9, AX = 260, PY = 7, fam = `f-${concept("ci").family}`;
+    svg.setAttribute("viewBox", `0 0 ${ST.W} ${H}`);
+    svg.classList.add(fam);
+    const x = v => L + (v - A) / (B - A) * (R - L), dens = v => Math.exp(-v * v / (2 * se * se)) / (se * Math.sqrt(2 * Math.PI));
+    const y = (c, v) => AX - dens(v - c) * 100 * PY;
+    const pts = (c, a, b) => { const p = []; for (let v = a; v <= b + 1e-9; v += .05) p.push(`${x(v).toFixed(1)} ${y(c, v).toFixed(1)}`); return p; };
+    const area = (c, a, b) => `M${x(a)} ${AX} L${pts(c, a, b).join(" L")} L${x(b)} ${AX} Z`;
+    const curve = (c, a, b) => `M${pts(c, a, b).join(" L")}`;
+    const lim = c => [Math.max(A, c - 3.4 * se), Math.min(B, c + 3.4 * se)];
+    // both axes: the value (no minus signs: only 0 and the drug's side are labelled), and % of trials
+    svgEl("path", { class: "dp-axis", d: `M${L - 10} ${AX} H${R + 10}` }, svg);
+    svgEl("path", { class: "dp-axis", d: `M${L - 10} ${AX} V${AX - 30 * PY}` }, svg);
+    [0, 10, 20, 30].forEach(t => { svgEl("text", { class: "cv-ylab", x: L - 18, y: AX - t * PY + 6 }, svg).textContent = `${t}%`; });
+    const yt = svgEl("text", { class: "cv-ytitle", transform: `translate(${L - 62} ${AX - 15 * PY}) rotate(-90)` }, svg); yt.textContent = S.y_axis;
+    for (let v = 0; v <= B - 1; v += 2) svgEl("text", { class: "dp-tlab", x: x(v), y: AX + 28 }, svg).textContent = v;
+    svgEl("text", { class: "cv-alab", x: x((A + B) / 2), y: AX + 56 }, svg).textContent = S.axis;
+    const bellAt = (c, cls, label) => {
+      const g = svgEl("g", { class: `st-cib ${cls}` }, svg), [a, b] = lim(c);
+      svgEl("path", { class: "st-cib-a", d: area(c, a, b) }, g);
+      svgEl("path", { class: "st-cib-l", d: curve(c, a, b) }, g);
+      svgEl("text", { class: "st-cib-t", x: x(c), y: y(c, c) - 12 }, g).textContent = label;
+      return g;
+    };
+    const bar = (a, b, c, yy, cls) => {
+      const g = svgEl("g", { class: `st-cibar ${cls}` }, svg);
+      svgEl("path", { d: `M${x(a)} ${yy} H${x(b)} M${x(a)} ${yy - 10} V${yy + 10} M${x(b)} ${yy - 10} V${yy + 10}` }, g);
+      svgEl("rect", { x: x(c) - 9, y: yy - 9, width: 18, height: 18, rx: 3 }, g);
+      return g;
+    };
+    let trialBell;
+    return [
+      // our trial's gap, and the bell it could have come from: SE 1.5 either way
+      () => {
+        trialBell = bellAt(est, "st-cib-trial", S.labels[0]);
+        svgEl("circle", { class: "st-real", cx: x(est), cy: AX, r: 7 }, svg);
+      },
+      // 2 SE either side: its middle 95%
+      () => {
+        const g = svgEl("g", { class: "st-ci95" }, svg);
+        svgEl("path", { class: "st-ci95-a", d: area(est, lo, hi) }, g);
+        [lo, hi].forEach(v => svgEl("path", { class: "st-line2", d: `M${x(v)} ${AX} V${AX - 23 * PY}` }, g));
+        svgEl("text", { class: "st-ci95-t", x: x(est), y: AX - 60 }, g).textContent = "95%";
+        trialBell.parentNode.appendChild(trialBell);
+      },
+      // it drops out beneath as the CI, with its sum
+      () => {
+        bar(lo, hi, est, AX + 88, "st-cibar-trial");
+        const text = `${concept("ci").label} = ${num(est)} ± 2 × ${num(se)} = ${num(lo)} to ${num(hi)}`;
+        const g = svgEl("g", { class: "st-cpill f-se" }, svg), w = 30 + text.length * 12.5;
+        svgEl("rect", { x: ST.W / 2 - w / 2, y: -2, width: w, height: 44, rx: 22 }, g);
+        svgEl("text", { x: ST.W / 2, y: 28 }, g).textContent = text;
+      },
+      // chance's bell round 0 beside it, and its own 95%: neither reaches the other's centre
+      () => {
+        const g = bellAt(0, "st-cib-null", S.labels[1]);
+        svg.insertBefore(g, svg.querySelector(".st-cib-trial"));
+        bar(-2 * se, 2 * se, 0, AX + 116, "st-cibar-null");
+      }
+    ];
+  },
   slide(svg, S) {
     // two panels, a difference and a ratio; in each, one CI slides towards no effect, one place per tap.
     // A difference's p is worked out from its SE; a ratio's is read from where its CI stands against 1.
