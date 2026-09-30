@@ -31,7 +31,7 @@ families:
   gray: Neutral
 
 concepts:
-  null: { label: H₀,              family: test, icon: gavel }
+  h0:   { label: H₀,             family: test, icon: gavel }
   p:    { label: p-value,         family: test, icon: tails }
   ci:   { label: 95% CI,          family: se,   icon: narrow }
   # the warm-up's two buckets; they are verdicts, not ideas of their own, so they stay off the cover
@@ -46,7 +46,16 @@ learn:
     question: Could this be chance?
     scene: case-older
 
-  # To come, each as its own story figure (see the plan): the court (Guilty), the coin (the p-value),
+  # The court: the judge starts from H₀, the doctor brings the trial's 4 mmHg, p says how often
+  # a harmless drug would give that much, and the verdict follows. (The Not guilty story reuses this drawing.)
+  - id: court
+    pattern: story
+    title: Innocent until proven guilty
+    kind: art
+    art: ht-court
+    slots: { claim: "{h0}: no difference in BP", evidence: 4 mmHg, p: p = 0.008, verdict: Guilty, note: "Reject {h0}" }
+
+  # To come, each as its own story figure (see the plan): the coin (the p-value),
   # the standard error of a difference and the trial's 4 mmHg on its bell, then the court (Not guilty),
   # the 0.05 line and the sliding CI.
 

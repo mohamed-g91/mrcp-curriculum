@@ -180,8 +180,22 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling"):
-                errs.append(f"{where}: kind is mean, median, mode, iqr or sampling, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art"):
+                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling or art, not {kind!r}")
+            elif kind == "art":
+                # a drawing whose parts join beat by beat; its words come from slots, H₀ and the like from {concept}
+                path = os.path.join(ROOT, "content", "figures", f"{s.get('art')}.svg")
+                if not s.get("art") or not os.path.exists(path):
+                    errs.append(f"{where}: an art story needs art: a drawing in content/figures")
+                else:
+                    drawing = open(path, encoding="utf-8").read()
+                    want, slots = set(re.findall(r'data-slot="([^"]+)"', drawing)), s.get("slots") or {}
+                    if want != set(slots):
+                        errs.append(f"{where}: its slots must be exactly {sorted(want)}, the ones its drawing has")
+                    if not re.search(r'data-beat="\d+"', drawing):
+                        errs.append(f"{where}: its drawing has no data-beat parts to build")
+                    for text in slots.values():
+                        refs += re.findall(r"\{(\w+)\}", str(text))
             elif kind == "sampling":
                 # samples of n drawn from a population (a bell, or a skew against a wall at 0): their means pile up
                 pop = s.get("population") or {}

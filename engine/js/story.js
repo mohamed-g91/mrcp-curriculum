@@ -13,7 +13,9 @@
            light up as a sample and its mean drops to the axis, then another, then many; the means pile up and
            the curve they make is drawn, with its half-width, the SEM, worked out (SD ÷ √n)
    mode    shoe sizes stack up, the mean is a size nobody wears, the mode is the tallest stack;
-           then the same question for blood groups, where only the mode makes sense */
+           then the same question for blood groups, where only the mode makes sense
+   art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
+           from the slide's slots, with {key} standing for a concept's label (so H₀ is never retyped) */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
 
 // a number line with one slot per whole number from lo to hi, and one far slot past a break
@@ -73,6 +75,15 @@ function storyStar(parent, x, y) {
 const sumText = v => `${v.join(" + ")} = ${Stats.sum(v)}`;
 
 const STORIES = {
+  art(svg, S, later, chart) {
+    const src = $("template.st-art", chart.closest(".story")).content.querySelector("svg");
+    svg.setAttribute("viewBox", src.getAttribute("viewBox"));
+    svg.classList.add("scene", "st-art");
+    [...src.cloneNode(true).childNodes].forEach(n => svg.appendChild(n));
+    $$("[data-slot]", svg).forEach(t => { t.textContent = String(S.slots[t.dataset.slot]).replace(/\{(\w+)\}/g, (m, k) => concept(k).label); });
+    const last = Math.max(...$$("[data-beat]", svg).map(g => +g.dataset.beat));
+    return Array.from({ length: last }, (_, i) => () => $$(`[data-beat="${i + 1}"]`, svg).forEach(g => g.classList.add("st-on")));
+  },
   mean(svg, S, later) {
     const v = Stats.sorted(S.values), lo = v[0] - 1, hi = v[v.length - 1] + 1, m = Stats.mean(v);
     svg.classList.add(`f-${concept("mean").family}`);

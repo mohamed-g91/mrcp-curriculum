@@ -657,6 +657,19 @@ html.fluid .ask{position:fixed}
 .st-wait .dp-pt,.st-wait .dp-count{display:none}
 .scene [data-beat]{opacity:0;transition:opacity .5s ease}
 .scene [data-beat].st-on{opacity:1}
+/* an art story: one drawing across the figure's width, its parts joining beat by beat */
+.story.st-solo{grid-template-columns:minmax(0,1fr);max-width:1000px}
+.story.st-solo>.st-chart{grid-column:1}
+.st-art text{font:750 18px var(--sans);text-anchor:middle;fill:var(--x-ink,var(--ink))}
+.st-art .ct-plaque rect,.st-art .ct-p rect{fill:var(--x-bg);stroke:var(--x-solid);stroke-width:3}
+.st-art .ct-p text{font-size:22px}
+.st-art .ct-paper rect{fill:#FFFFFF}
+.st-art .ct-paper text{fill:#0E1F35;font-size:24px;font-weight:800}
+.st-art .ct-arrow{fill:none;stroke:#0E1F35;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.st-art .ct-verdict rect{fill:var(--surface);stroke:var(--x-solid);stroke-width:3.5}
+.st-art .ct-verdict text{fill:var(--text);font-size:18px;font-weight:650}
+.st-art .ct-verdict .ct-big{fill:var(--ink);font-size:28px;font-weight:850}
+.st-art .ct-strike{fill:none;stroke:var(--sc-line);stroke-width:3.5;stroke-linecap:round}
 .scene [data-until]{transition:opacity .5s ease}
 .scene [data-until].st-off{opacity:0}
 .st-pt{transition:transform .8s var(--ease),opacity .35s ease}
