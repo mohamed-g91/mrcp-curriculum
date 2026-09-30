@@ -16,9 +16,10 @@
            then the same question for blood groups, where only the mode makes sense
    coin    H₀ (the coin is fair); then the coins land one by one, all heads, each with the chance of heads every
            time so far (1/2, 1/4 … 1/1024); then all heads or all tails, 2 in 1,024; then p = 2 ÷ 1,024 ≈ 0.002
-   gap     the drug's mean in a soft band (± its SEM), the placebo's the same, then the gap between them in a
-           wider band (± the SE of the difference); the gap's band drops onto an axis and rises into the bell of gaps
-           that chance alone would give (both axes, its SE marked); the 2 SE lines with 2.5% beyond each; the
+   gap     where the placebo's mean and the drug's could land: two overlapping bells (SEM wide), the gap apart; one
+           trial's pair of means and its gap, dropped onto the axis below; many more trials' gaps pile up into a
+           wider bell (the SE of the difference); then the same bell slides to 0, the gaps chance alone would give
+           (both axes, its SE marked); the 2 SE lines with 2.5% beyond each; the
            trial's gap lands (4 ÷ 1.5 = 2.7 SEs); last, the tails at least that far out fill in: p = 0.4% + 0.4%
    line    a ruler of p-values (1 at the top, 0.001 at the foot, a log scale); the dashed line at 0.05 = 1 in 20
            with the significant side below it shaded; then each trial lands on the ruler at its p
@@ -162,27 +163,15 @@ const STORIES = {
     const L = 80, R = 680, AX = 300, SPAN = 6, PY = 8, X0 = (L + R) / 2;
     const x = v => X0 + v * (R - L) / (2 * SPAN), dens = v => Math.exp(-v * v / (2 * se * se)) / (se * Math.sqrt(2 * Math.PI));
     const y = v => AX - dens(v) * 100 * PY, fam = `f-${concept(S.family || "ci").family}`;
-    const uid = Math.random().toString(36).slice(2, 8);
-    svg.classList.add(fam);  // the bands' gradient takes its colour from the family too
-    const defs = svgEl("defs", {}, svg);
-    // a soft band: solid in the middle, fading out to 2 SEs either side
-    const grad = svgEl("linearGradient", { id: `gb${uid}` }, defs);
-    [[0, 0], [.25, .45], [.5, .7], [.75, .45], [1, 0]].forEach(([o, a]) => svgEl("stop", { offset: o, style: `stop-color:var(--x-solid);stop-opacity:${a}` }, grad));
-    const rowsG = svgEl("g", { class: `st-rows ${fam}` }, svg);
-    const band = (parent, cy, w, dotCls) => {
-      const g = svgEl("g", { class: "st-band", style: `transform:translate(${X0}px, ${cy}px)` }, parent);
-      svgEl("rect", { x: -w, y: -15, width: 2 * w, height: 30, rx: 15, fill: `url(#gb${uid})` }, g);
-      svgEl("circle", { r: 11, class: dotCls }, g);
-      return g;
+    svg.classList.add(fam);
+    // the top strip: where each group's mean could land (a bell, SEM wide), the placebo's on no effect and the drug's the gap along;
+    // a bell is cut where the axis ends
+    const TA = 120, TH = 78, lump = (c, s, h, base) => {
+      let d = ""; for (let k = -3.2 * s; k <= 3.2 * s + 1e-9; k += s / 20) if (Math.abs(c + k) <= SPAN + .8) d += `${d ? " L" : "M"}${x(c + k).toFixed(1)} ${(base - h * Math.exp(-k * k / (2 * s * s))).toFixed(1)}`;
+      return d;
     };
-    const row = (cy, label, spread, dotCls) => {
-      const g = svgEl("g", { class: "st-row-in" }, rowsG), w = 2 * spread * (R - L) / (2 * SPAN);
-      svgEl("text", { class: "st-rlab", x: 20, y: cy + 8 }, g).textContent = label;
-      const b = band(g, cy, w, dotCls);
-      svgEl("text", { class: "st-rpm", x: X0 + w + 22, y: cy + 8 }, g).textContent = `± ${r1(spread)}`;
-      return { g, b };
-    };
-    let calc, gapRow, bell;
+    const topG = svgEl("g", { class: "st-top" }, svg);
+    let calc, bell, one, pile;
     const say = (text, f) => {
       if (calc) calc.remove();
       calc = svgEl("g", { class: `st-cpill ${f}` }, svg);
@@ -196,30 +185,65 @@ const STORIES = {
       return d + ` L${x(b)} ${AX} Z`;
     };
     const curve = (a, b) => { let d = ""; for (let v = a; v <= b + 1e-9; v += .05) d += `${d ? " L" : "M"}${x(v).toFixed(1)} ${y(v).toFixed(1)}`; return d; };
+    // one trial's pair of means: the placebo's a little high, the drug's a little low, so its gap falls short of the true one
+    const pm = .6, dm = S.gap - .5, g1 = dm - pm, N = 60, BIN = .5, DOT = 12;
+    const bin = v => Math.round(v / BIN) * BIN;
     return [
-      () => row(60, S.labels[0], sem, "st-d-drug"),
-      () => row(135, S.labels[1], sem, "st-d-plac"),
-      () => { gapRow = row(225, S.labels[2], se, "st-d-gap"); },
-      // chance alone: the gap's band drops onto an axis and rises into the bell of gaps a harmless drug would give
+      // the two bells overlap, the gap apart
       () => {
-        $$(".st-row-in", rowsG).forEach(g => { if (g !== gapRow.g) g.classList.add("st-gone"); });
-        $$(".st-rlab, .st-rpm", gapRow.g).forEach(t => t.classList.add("st-gone"));
-        gapRow.b.style.transform = `translate(${X0}px, ${AX - 15}px)`;
-        bell = svgEl("g", { class: fam }, svg);
-        svgEl("path", { class: "dp-axis", d: `M${L - 10} ${AX} H${R + 10}` }, bell);
+        svgEl("path", { class: "dp-axis", d: `M${x(-3.4 * sem)} ${TA} H${x(S.gap + 3.4 * sem)}` }, topG);
+        [[0, "st-tb-plac", S.labels[0], "end", -1], [S.gap, "st-tb-drug", S.labels[1], "start", 1]].forEach(([c, cls, lab, anc, side]) => {
+          const g = svgEl("g", { class: `st-tb ${cls}` }, topG), d = lump(c, sem, TH, TA);
+          svgEl("path", { class: "st-tb-a", d: `${d} L${x(c + 3.2 * sem)} ${TA} L${x(c - 3.2 * sem)} ${TA} Z` }, g);
+          svgEl("path", { class: "st-tb-l", d }, g);
+          svgEl("text", { class: "st-tb-t", x: x(c) + side * 44, y: TA - TH + 14, "text-anchor": anc }, g).textContent = lab;
+        });
+        const b = svgEl("g", { class: "st-gapbr" }, topG), yb = TA - TH - 16;
+        svgEl("path", { d: `M${x(0)} ${yb} H${x(S.gap)} M${x(0)} ${yb - 7} V${yb + 7} M${x(S.gap)} ${yb - 7} V${yb + 7}` }, b);
+        svgEl("text", { x: x(S.gap / 2), y: yb - 10 }, b).textContent = `${S.gap} ${S.unit}`;
+      },
+      // one trial: its two means, and its gap dropping onto the axis below
+      () => {
+        const ax = svgEl("g", { class: "st-lowax" }, svg);
+        svgEl("path", { class: "dp-axis", d: `M${L - 10} ${AX} H${R + 10}` }, ax);
+        for (let v = 0; v <= SPAN; v += 2) svgEl("text", { class: "dp-tlab", x: x(v), y: AX + 30 }, ax).textContent = v;
+        svgEl("text", { class: "cv-alab", x: X0, y: AX + 62 }, ax).textContent = S.axis;
+        one = svgEl("g", { class: "st-one" }, svg);
+        svgEl("circle", { class: "st-m st-m-plac", cx: x(pm), cy: TA, r: 8 }, one);
+        svgEl("circle", { class: "st-m st-m-drug", cx: x(dm), cy: TA, r: 8 }, one);
+        const yb = TA + 24;
+        svgEl("path", { class: "st-onebr", d: `M${x(pm)} ${yb} H${x(dm)}` }, one);
+        svgEl("text", { class: "st-onet", x: x((pm + dm) / 2), y: yb + 24 }, one).textContent = `${S.labels[2]} ${r1(g1)}`;
+        pile = svgEl("g", { class: "st-pile" }, svg);
+        svgEl("circle", { class: "st-gdot st-first", cx: x(bin(g1)), cy: AX - DOT / 2 - 1, r: 5.5 }, pile);
+      },
+      // many more trials: their gaps pile up into a bell wider than either mean's
+      () => {
+        const counts = { [bin(g1)]: 1 };
+        for (let j = 0; j < N - 1; j++) {
+          const i = (j * 37) % (N - 1), v = bin(S.gap + se * Sampling.inv((i + .5) / (N - 1))), k = counts[v] || 0;
+          if (v > SPAN + .5) continue;  // past the end of the axis
+          counts[v] = k + 1;
+          svgEl("circle", { class: "st-gdot", cx: x(v), cy: AX - DOT / 2 - 1 - k * DOT, r: 5.5, style: `animation-delay:${REDUCED_MOTION ? 0 : j * 28}ms` }, pile);
+        }
+        const h = N * BIN * dens(0) * DOT;
+        svgEl("path", { class: "st-pileline", d: lump(S.gap, se, h, AX), style: `animation-delay:${REDUCED_MOTION ? 0 : N * 28 + 200}ms` }, pile);
+        one.classList.add("st-dim");
+      },
+      // chance alone: if the drug did nothing, the same bell of gaps would sit on 0
+      () => {
+        topG.classList.add("st-gone"); one.classList.add("st-gone");
+        pile.style.transform = `translateX(${x(0) - x(S.gap)}px)`; pile.classList.add("st-leave");
+        bell = svgEl("g", { class: `${fam} st-chance` }, svg);
         svgEl("path", { class: "dp-axis", d: `M${L - 10} ${AX} V${AX - 30 * PY}` }, bell);
         [0, 10, 20, 30].forEach(t => { svgEl("text", { class: "cv-ylab", x: L - 18, y: AX - t * PY + 6 }, bell).textContent = `${t}%`; });
         const yt = svgEl("text", { class: "cv-ytitle", transform: `translate(${L - 62} ${AX - 15 * PY}) rotate(-90)` }, bell); yt.textContent = S.y_axis;
-        // no minus signs: only no effect and the drug's side are labelled
-        for (let v = 0; v <= SPAN; v += 2) svgEl("text", { class: "dp-tlab", x: x(v), y: AX + 30 }, bell).textContent = v;
-        svgEl("text", { class: "cv-alab", x: X0, y: AX + 62 }, bell).textContent = S.axis;
         svgEl("path", { class: "cv-area", d: area(-SPAN, SPAN) }, bell);
         svgEl("path", { class: "cv-line", pathLength: 1, d: curve(-SPAN, SPAN) }, bell);
         const mk = svgEl("g", { class: "st-semk" }, bell), yy = y(se);
         svgEl("path", { d: `M${x(0)} ${yy} H${x(se)}` }, mk);
         svgEl("path", { class: "st-drop", d: `M${x(se)} ${yy} V${AX}` }, mk);
         svgEl("text", { x: x(se) + 10, y: yy - 10 }, mk).textContent = `SE ${r1(se)}`;
-        gapRow.b.classList.add("st-fade");
       },
       // the 2 SE lines: 2.5% of harmless trials land beyond each
       () => {

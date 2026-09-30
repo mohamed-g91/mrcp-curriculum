@@ -74,7 +74,8 @@ learn:
     sd: 15
     n: 200
     gap: 4
-    labels: [Drug mean, Placebo mean, Gap]
+    unit: mmHg
+    labels: [Placebo, Drug, Gap]
     axis: Extra fall on the drug (mmHg)
     y_axis: "% of trials"
 
