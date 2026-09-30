@@ -106,7 +106,6 @@ learn:
     pattern: story
     title: Why does size matter?
     kind: ncompare
-    start: 1
     sd: 15
     gap: 4
     ns: [200, 20]
