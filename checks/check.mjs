@@ -157,7 +157,7 @@ async function layoutPass(size) {
     await shot(tag);
     // a story or a working: tap it through every beat, measuring each
     if (await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`)) {
-      for (let n = 0; n < 8 && await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`); n++) {
+      for (let n = 0; n < 20 && await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`); n++) {
         await js(`Deck.slides[Deck.i].querySelector(".stepper").click(), true`);
         await sleep(1400);
         await measure(size, `slide ${i + 1} beat ${n + 1}`);

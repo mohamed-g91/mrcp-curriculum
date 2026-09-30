@@ -694,28 +694,30 @@ html.fluid .ask{position:fixed}
 .st-pedge{fill:none;stroke:var(--x-solid);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
 .st-ppct{fill:var(--x-ink);font:800 22px var(--sans);text-anchor:middle}
 /* the gap story's first beats: the two means' bells, one trial's gap, many gaps piling up */
-.st-top{animation:fadeIn .5s ease both;transition:opacity .4s ease}
 .st-tb-a{opacity:.2}
 .st-tb-l{fill:none;stroke-width:3.5}
 .st-tb-plac .st-tb-a{fill:#8B97A6}.st-tb-plac .st-tb-l{stroke:#8B97A6}.st-tb-plac .st-tb-t{fill:var(--text)}
 .st-tb-drug .st-tb-a{fill:var(--x-solid)}.st-tb-drug .st-tb-l{stroke:var(--x-solid)}.st-tb-drug .st-tb-t{fill:var(--x-ink)}
 .st-tb-t{font:750 20px var(--sans)}
+.st-tb{animation:fadeIn .5s ease both;transition:transform .8s var(--ease),opacity .4s ease}
+.st-tb .dp-axis,.st-tb-v,.st-tb-sem{transition:opacity .4s ease}
+.st-tb-mean{stroke:var(--ink);stroke-width:2;stroke-dasharray:5 5}
+.st-tb-v{fill:var(--text);font:700 18px var(--sans);text-anchor:middle}
+.st-tb-sem path{stroke:var(--ink);stroke-width:3}
+.st-tb-sem text{fill:var(--ink);font:750 17px var(--sans)}
+.st-trial{animation:fadeIn .4s ease both;transition:opacity .4s ease}
+.st-gapbr{animation:fadeIn .5s ease both;transition:opacity .4s ease}
+.st-pilemk{animation:fadeIn .5s ease both}
+.st-pilese{stroke:var(--ink);stroke-width:3}
+.st-pilet{fill:var(--ink);font:750 18px var(--sans)}
 .st-gapbr path{stroke:var(--ink);stroke-width:2.5;fill:none}
 .st-gapbr text{fill:var(--ink);font:800 19px var(--sans);text-anchor:middle}
 .st-lowax{animation:fadeIn .5s ease both}
-.st-one{animation:fadeIn .5s ease both;transition:opacity .4s ease}
-.st-one.st-dim{opacity:.35}
-.st-m{stroke:var(--sc-line);stroke-width:2.5;animation:pillIn .5s var(--ease) both}
-.st-m-plac{fill:#8B97A6}.st-m-drug{fill:var(--x-solid)}
 .st-onebr{stroke:var(--ink);stroke-width:2.5}
 .st-onet{fill:var(--ink);font:750 18px var(--sans);text-anchor:middle}
-.st-pile{transition:transform .8s var(--ease),opacity .5s ease .5s}
-.st-pile.st-leave{opacity:0}
+.st-pile{transition:opacity .4s ease}
 .st-gdot{fill:var(--x-solid);animation:stDrop .45s var(--ease) both}
-.st-gdot.st-first{animation-delay:.35s}
-.st-pileline{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-dasharray:7 6;animation:fadeIn .5s ease both}
-.st-chance .cv-line{animation-delay:.55s}
-.st-chance .cv-area{animation-delay:.7s}
+.st-pileline{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-dasharray:7 6}
 /* the 0.05 line: a ruler of p-values, the line across it, each trial landing at its p */
 .st-rtick{fill:var(--text);font:700 20px var(--sans);text-anchor:end}
 .st-rname{fill:var(--ink);font:italic 800 26px var(--sans);text-anchor:middle}
