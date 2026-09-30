@@ -25,6 +25,8 @@
    line    a ruler of p-values (1 at the top, 0.001 at the foot, a log scale); with an origin, first a small bell on the
            left: 2.5% beyond 2 SE each side, 5% = 1 in 20, and who chose the line (Fisher, 1925); the dashed line at
            0.05 = 1 in 20 with the significant side below it shaded; then each trial lands on the ruler at its p
+   ncompare the same gap in two trials of different sizes side by side: each one's SE (SD × √(2 ÷ n)), its chance bell
+           round 0 true to scale (the smaller trial's wider and lower), how many SEs out the gap is, then p with the tails filled
    ci      our trial's bell of gaps (SE of the difference wide) round what we found; the 2 SE lines and its middle 95%;
            the CI drops out beneath with its sum (4 ± 2 × 1.5 = 1 to 7); then chance's bell round 0 beside it, with
            its own 95% (−3 to +3) beneath: 0 lies outside our CI just as our gap lies outside chance's
@@ -91,6 +93,61 @@ function storyStar(parent, x, y) {
 const sumText = v => `${v.join(" + ")} = ${Stats.sum(v)}`;
 
 const STORIES = {
+  ncompare(svg, S) {
+    // the same gap in two trials of different sizes, side by side: each trial's SE (SD × √(2 ÷ n)), its chance bell round 0
+    // (true to scale, so the smaller trial's is wider and lower), how many SEs out the gap is, and its p with the tails filled
+    const H = 390, AX = 330, PY = 3.6, SPAN = 13, CW = 300, fam = `f-${concept("ci").family}`;
+    svg.setAttribute("viewBox", `0 0 ${ST.W} ${H}`);
+    svg.classList.add(fam);
+    const r1 = v => (Math.round(v * 10) / 10).toFixed(1);
+    const cols = S.ns.map((n, i) => {
+      const se = S.sd * Math.sqrt(2 / n), shown = +r1(se), z = S.gap / shown, zTrue = S.gap / se;
+      const p = 2 * (1 - Sampling.cdf(zTrue)), cx = i ? 575 : 205, x = v => cx + v * CW / (2 * SPAN);
+      const dens = v => Math.exp(-v * v / (2 * se * se)) / (se * Math.sqrt(2 * Math.PI)), y = v => AX - dens(v) * 100 * PY;
+      const pts = (a, b) => { const q = []; for (let v = a; v <= b + 1e-9; v += .1) q.push(`${x(v).toFixed(1)} ${y(v).toFixed(1)}`); return q; };
+      return { n, se, shown, z, p, cx, x, y, pts, label: S.labels[i] };
+    });
+    const pill = (cx, cy, text, f) => {
+      const g = svgEl("g", { class: `st-cpill ${f}` }, svg), w = 34 + text.length * 11.5;
+      svgEl("rect", { x: cx - w / 2, y: cy - 22, width: w, height: 40, rx: 20 }, g);
+      svgEl("text", { x: cx, y: cy + 5 }, g).textContent = text;
+    };
+    const text = (cx, cy, s, cls = "st-nc-t") => { svgEl("text", { class: cls, x: cx, y: cy }, svg).textContent = s; };
+    cols.forEach(c => text(c.cx, 24, c.label, "st-nc-h"));
+    const num = v => v < 1 ? v.toFixed(2) : r1(v);
+    return [
+      // each trial's SE of the gap: the smaller trial's is larger
+      () => cols.forEach(c => {
+        text(c.cx, 62, `SE = ${S.sd} × √(2 ÷ ${c.n})`);
+        pill(c.cx, 98, `${Math.abs(c.shown - c.se) < 1e-9 ? "=" : "≈"} ${r1(c.se)}`, fam);
+      }),
+      // chance's bell round 0 for each, true to scale, both axes; the gap lands on each
+      () => { text(ST.W / 2, AX + 52, S.axis, "cv-alab st-nc-ax"); cols.forEach((c, i) => {
+        const g = svgEl("g", { class: "st-nc-bell" }, svg), [a, b] = [-SPAN, SPAN];
+        svgEl("path", { class: "dp-axis", d: `M${c.x(a) - 6} ${AX} H${c.x(b) + 6}` }, g);
+        svgEl("path", { class: "dp-axis", d: `M${c.x(a) - 6} ${AX} V${AX - 30 * PY}` }, g);
+        [0, 10, 20, 30].forEach(t => { svgEl("text", { class: "cv-ylab sm", x: c.x(a) - 12, y: AX - t * PY + 5 }, g).textContent = `${t}%`; });
+        if (!i) { const yt = svgEl("text", { class: "cv-ytitle sm", transform: `translate(${c.x(a) - 52} ${AX - 15 * PY}) rotate(-90)` }, g); yt.textContent = S.y_axis; }
+        for (let v = 0; v <= 12; v += 4) svgEl("text", { class: "dp-tlab st-nc-tick", x: c.x(v), y: AX + 22 }, g).textContent = v;
+        svgEl("path", { class: "cv-area", d: `M${c.x(a)} ${AX} L${c.pts(a, b).join(" L")} L${c.x(b)} ${AX} Z` }, g);
+        svgEl("path", { class: "cv-line", pathLength: 1, d: `M${c.pts(a, b).join(" L")}` }, g);
+        c.bell = g;
+        svgEl("circle", { class: "st-real", cx: c.x(S.gap), cy: AX, r: 6 }, svg);
+      }); },
+      // how many SEs out the gap is
+      () => cols.forEach(c => text(c.cx, 140, `${S.gap} ÷ ${r1(c.shown)} = ${num(c.z)} SEs`)),
+      // p: the tails at least that far out, either way
+      () => cols.forEach(c => {
+        const g = svgEl("g", { class: "st-ptail f-test" }, c.bell);
+        // true to scale, so a thin tail is edged thick to show
+        [[S.gap, SPAN], [-SPAN, -S.gap]].forEach(([a, b]) => {
+          svgEl("path", { class: "st-pfill", d: `M${c.x(a)} ${AX} L${c.pts(a, b).join(" L")} L${c.x(b)} ${AX} Z` }, g);
+          svgEl("path", { class: "st-pedge", d: `M${c.pts(a, b).join(" L")} M${c.x(a)} ${AX} H${c.x(b)}` }, g);
+        });
+        pill(c.cx, 180, `p ≈ ${c.p.toPrecision(1)}`, "f-test");
+      })
+    ];
+  },
   ci(svg, S) {
     // our trial's bell of gaps (SE of the difference wide) round what we found; its middle 95% is the CI.
     // Then chance's bell round 0 beside it: 0 lies outside our CI just as our gap lies outside chance's 95%.

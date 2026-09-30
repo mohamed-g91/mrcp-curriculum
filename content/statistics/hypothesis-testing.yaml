@@ -100,6 +100,20 @@ learn:
     art: ht-court
     slots: { claim: "{h0}: no difference in BP", evidence: 4 mmHg, p: p = 0.4, verdict: Not guilty, note: ≠ innocent }
 
+  # Why size matters: the same 4 mmHg. 200 in each group: SE = 15 × √(2 ÷ 200) = 1.5, 4 ÷ 1.5 = 2.7 SEs, p ≈ 0.008.
+  # 20 in each group: SE = 15 × √(2 ÷ 20) ≈ 4.7, 4 ÷ 4.7 ≈ 0.85 SEs, p ≈ 0.4.
+  - id: size
+    pattern: story
+    title: Why does size matter?
+    kind: ncompare
+    start: 1
+    sd: 15
+    gap: 4
+    ns: [200, 20]
+    labels: [400 people, 40 people]
+    axis: Extra fall on the drug (mmHg)
+    y_axis: "% of trials"
+
   # The 0.05 line: both trials on one ruler (p from the gap story and the Not guilty story).
   # That the line is a convention (0.049 and 0.051 are almost the same evidence) is said aloud, not written.
   - id: line

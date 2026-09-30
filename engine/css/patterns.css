@@ -725,6 +725,13 @@ html.fluid .ask{position:fixed}
 .st-pile{transition:opacity .4s ease}
 .st-gdot{fill:var(--x-solid);animation:stDrop .45s var(--ease) both}
 .st-pileline{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-dasharray:7 6}
+/* the size story: two trials side by side, the same gap */
+.st-nc-h{fill:var(--ink);font:800 24px var(--sans);text-anchor:middle}
+.st-nc-t{fill:var(--text);font:700 20px var(--sans);text-anchor:middle;animation:fadeIn .5s ease both}
+.st-nc-bell{animation:fadeIn .5s ease both}
+.st-nc-tick{font-size:16px}
+.st-nc-ax{font-size:18px;animation:fadeIn .5s ease both}
+.st-nc-bell .st-pedge{stroke-width:3.5}
 /* the CI story: our trial's bell and its middle 95%, then chance's bell beside it */
 .st-cib{animation:fadeIn .5s ease both}
 .st-cib-a{opacity:.14}

@@ -180,8 +180,15 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci"):
-                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin, gap, line, slide or ci, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare"):
+                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin, gap, line, slide, ci or ncompare, not {kind!r}")
+            elif kind == "ncompare":
+                # the same gap in two trials: `ns` people in each group of each, the same SD
+                ns = s.get("ns") or []
+                if len(ns) != 2 or not all(isinstance(n, int) and n >= 2 for n in ns) or not all(isinstance(s.get(k), (int, float)) for k in ("sd", "gap")) \
+                        or len(s.get("labels") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
+                    errs.append(f"{where}: an ncompare story needs sd, gap, ns (two group sizes), two labels, an axis and a y_axis")
+                refs += ["ci", "p"]
             elif kind == "ci":
                 # our trial's gap ± 2 SE of the difference (two groups of n with the same SD), beside chance's bell round 0
                 if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n", "gap")) or len(s.get("labels") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
