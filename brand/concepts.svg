@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900"><style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&amp;display=swap');</style><rect width="1200" height="900" fill="#fff"/><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient></defs>
+<text x="40" y="60" font-family="Montserrat,Arial,sans-serif" font-weight="700" font-size="22" fill="#56657A">1  Heartbeat play</text>
+<g transform="translate(40,80)"><rect width="210" height="210" rx="48" fill="url(#bg)"/><g transform="translate(5,5)">
+<path d="M28,100 H56 L68,66 L82,134 L92,100 H100" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M104,66 L158,100 L104,134 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="12" stroke-linejoin="round"/></g></g>
+<text x="290" y="190" font-family="Montserrat,Arial,sans-serif" font-weight="800" font-size="78" fill="#12304F">MRCP <tspan font-weight="500" fill="#1F7FBF">Gafar</tspan></text>
+<text x="294" y="238" font-family="Montserrat,Arial,sans-serif" font-weight="500" font-size="24" fill="#56657A" letter-spacing="3">Internal Medicine Education</text>
+<g transform="translate(1000,120)"><rect width="64" height="64" rx="15" fill="url(#bg)"/><g transform="scale(0.32)">
+<path d="M28,100 H56 L68,66 L82,134 L92,100 H100" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M104,66 L158,100 L104,134 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="12" stroke-linejoin="round"/></g></g>
+<g transform="translate(1100,136)"><rect width="32" height="32" rx="8" fill="url(#bg)"/><g transform="scale(0.16)">
+<path d="M28,100 H56 L68,66 L82,134 L92,100 H100" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M104,66 L158,100 L104,134 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="12" stroke-linejoin="round"/></g></g>
+<text x="40" y="350" font-family="Montserrat,Arial,sans-serif" font-weight="700" font-size="22" fill="#56657A">2  Stethoscope</text>
+<g transform="translate(40,370)"><rect width="210" height="210" rx="48" fill="url(#bg)"/><g transform="translate(5,5)"><g transform="translate(-12,4)">
+<g fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round">
+<path d="M62,34 V70 C62,112 118,112 118,70 V34"/>
+<path d="M90,104 V126 C90,158 118,166 136,152"/></g>
+<circle cx="62" cy="30" r="8" fill="#fff"/><circle cx="118" cy="30" r="8" fill="#fff"/>
+<circle cx="146" cy="128" r="30" fill="#fff"/>
+<path d="M137,114 L159,128 L137,142 Z" fill="#1E6FAE" stroke="#1E6FAE" stroke-width="5" stroke-linejoin="round"/></g></g></g>
+<text x="290" y="480" font-family="Montserrat,Arial,sans-serif" font-weight="800" font-size="78" fill="#12304F">MRCP <tspan font-weight="500" fill="#1F7FBF">Gafar</tspan></text>
+<text x="294" y="528" font-family="Montserrat,Arial,sans-serif" font-weight="500" font-size="24" fill="#56657A" letter-spacing="3">Internal Medicine Education</text>
+<g transform="translate(1000,410)"><rect width="64" height="64" rx="15" fill="url(#bg)"/><g transform="scale(0.32)"><g transform="translate(-12,4)">
+<g fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round">
+<path d="M62,34 V70 C62,112 118,112 118,70 V34"/>
+<path d="M90,104 V126 C90,158 118,166 136,152"/></g>
+<circle cx="62" cy="30" r="8" fill="#fff"/><circle cx="118" cy="30" r="8" fill="#fff"/>
+<circle cx="146" cy="128" r="30" fill="#fff"/>
+<path d="M137,114 L159,128 L137,142 Z" fill="#1E6FAE" stroke="#1E6FAE" stroke-width="5" stroke-linejoin="round"/></g></g></g>
+<g transform="translate(1100,426)"><rect width="32" height="32" rx="8" fill="url(#bg)"/><g transform="scale(0.16)"><g transform="translate(-12,4)">
+<g fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round">
+<path d="M62,34 V70 C62,112 118,112 118,70 V34"/>
+<path d="M90,104 V126 C90,158 118,166 136,152"/></g>
+<circle cx="62" cy="30" r="8" fill="#fff"/><circle cx="118" cy="30" r="8" fill="#fff"/>
+<circle cx="146" cy="128" r="30" fill="#fff"/>
+<path d="M137,114 L159,128 L137,142 Z" fill="#1E6FAE" stroke="#1E6FAE" stroke-width="5" stroke-linejoin="round"/></g></g></g>
+<text x="40" y="640" font-family="Montserrat,Arial,sans-serif" font-weight="700" font-size="22" fill="#56657A">3  G monogram</text>
+<g transform="translate(40,660)"><rect width="210" height="210" rx="48" fill="url(#bg)"/><g transform="translate(5,5)">
+<path d="M137,63 A52,52 0 1 0 152,104" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round"/>
+<path d="M116,104 H152" stroke="#fff" stroke-width="22" stroke-linecap="round"/>
+<path d="M80,84 L106,100 L80,116 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="10" stroke-linejoin="round"/></g></g>
+<text x="290" y="770" font-family="Montserrat,Arial,sans-serif" font-weight="800" font-size="78" fill="#12304F">MRCP <tspan font-weight="500" fill="#1F7FBF">Gafar</tspan></text>
+<text x="294" y="818" font-family="Montserrat,Arial,sans-serif" font-weight="500" font-size="24" fill="#56657A" letter-spacing="3">Internal Medicine Education</text>
+<g transform="translate(1000,700)"><rect width="64" height="64" rx="15" fill="url(#bg)"/><g transform="scale(0.32)">
+<path d="M137,63 A52,52 0 1 0 152,104" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round"/>
+<path d="M116,104 H152" stroke="#fff" stroke-width="22" stroke-linecap="round"/>
+<path d="M80,84 L106,100 L80,116 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="10" stroke-linejoin="round"/></g></g>
+<g transform="translate(1100,716)"><rect width="32" height="32" rx="8" fill="url(#bg)"/><g transform="scale(0.16)">
+<path d="M137,63 A52,52 0 1 0 152,104" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round"/>
+<path d="M116,104 H152" stroke="#fff" stroke-width="22" stroke-linecap="round"/>
+<path d="M80,84 L106,100 L80,116 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="10" stroke-linejoin="round"/></g></g></svg>

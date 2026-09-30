@@ -60,6 +60,7 @@ learn:
     pattern: story
     title: Is the coin fair?
     kind: coin
+    start: 1
     tosses: 10
     claim: "{h0}: the coin is fair"
 
@@ -69,6 +70,7 @@ learn:
     pattern: story
     title: How big a gap can chance make?
     kind: gap
+    start: 1
     sd: 15
     n: 200
     gap: 4

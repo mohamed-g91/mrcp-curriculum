@@ -526,6 +526,7 @@ function buildStories() {
   $$(".story").forEach(sb => {
     const S = JSON.parse(sb.dataset.story), chart = $(".st-chart", sb), scene = $(".st-scene", sb);
     let beats = [], beat = 0, timers = [], replay = null, buttons = () => {};
+    const base = S.start || 0;
     // while replaying to a step, the timers run at once, in the order they would have fired
     const later = (ms, f) => {
       if (replay) replay.q.push({ t: replay.now + ms, n: replay.n++, f });
@@ -547,18 +548,20 @@ function buildStories() {
       beat = 0;
       const svg = svgEl("svg", { class: "st-svg", viewBox: `0 0 ${ST.W} ${ST.H}`, role: "img", "aria-label": sb.closest(".slide").getAttribute("aria-label") }, chart);
       beats = STORIES[S.kind](svg, S, later, chart);
-      setScene(); stepper(true); buttons(false, true);
+      // a story can open on its first beats already shown (`start`); Back stops there
+      while (beat < base) beats[beat++]();
+      setScene(); stepper(beat < beats.length); buttons(false, beat < beats.length);
     };
     const next = () => {
       if (beat >= beats.length) return;
       beats[beat++]();
       setScene();
       if (beat >= beats.length) stepper(false);
-      buttons(true, beat < beats.length);
+      buttons(beat > base, beat < beats.length);
     };
     // one step back: the story is built again, at once, up to the step before
     const back = () => {
-      if (!beat) return;
+      if (beat <= base) return;
       const k = beat - 1;
       start();
       replay = { now: 0, n: 0, q: [] };
@@ -570,7 +573,7 @@ function buildStories() {
         }
       }
       replay = null;
-      setScene(); stepper(beat < beats.length); buttons(beat > 0, beat < beats.length);
+      setScene(); stepper(beat < beats.length); buttons(beat > base, beat < beats.length);
       sb.getAnimations({ subtree: true }).forEach(a => { try { a.finish(); } catch (err) {} });
     };
     buttons = stepButtons(chart, back, next);
