@@ -1,4 +1,4 @@
-# mrcp_Gafar
+# MRCP Gafar
 
 Interactive MRCP revision pages, one per topic. Each page is the topic's YouTube video with a chapter per slide ("Learn") followed by exam-style practice ("Practise"), built as a single offline HTML file. The slides the video is recorded from build as a separate presenter's deck.
 

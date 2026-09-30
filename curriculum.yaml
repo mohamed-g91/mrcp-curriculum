@@ -4,7 +4,8 @@
 # video: the YouTube video ID once the video is live.
 
 site:
-  title: mrcp_Gafar
+  title: MRCP Gafar
+  tagline: Internal Medicine Education
   author: Mohamed Gafar
   disclaimer: Not affiliated with the Royal College of Physicians
 

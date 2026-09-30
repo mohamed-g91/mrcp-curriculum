@@ -23,9 +23,63 @@ def icon(name):
     return ICON.format(name)
 
 
+LOGO = os.path.join(os.path.dirname(__file__), "logo.svg")
+
+
+def logo_svg():
+    """The logo icon (a G, a heartbeat and a play button on a blue tile), as written in engine/logo.svg."""
+    with open(LOGO, encoding="utf-8") as f:
+        return f.read().strip()
+
+
+def favicon():
+    """The logo as the tab icon, inlined so the page makes no request."""
+    from urllib.parse import quote
+    return f'<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,{quote(logo_svg())}">'
+
+
+# The brand's own lettering: each letter is (advance, stroke path), drawn with round strokes like the logo's G.
+# Capitals stand 100 tall (y 0 to 100); lowercase has its x-height at y 36. Only the letters of the name are drawn.
+LETTERS = {
+    "M": (96, "M8,100 V6 L48,66 L88,6 V100"),
+    "R": (74, "M8,100 V4 H38 A25,25 0 0 1 38,54 H8 M40,54 L66,100"),
+    "C": (92, "M86,20 A48,48 0 1 0 86,80"),
+    "P": (70, "M8,100 V4 H38 A25,25 0 0 1 38,54 H8"),
+    "G": (100, "M86,18 A48,48 0 1 0 98,52 H62"),
+    "a": (76, "M66,36 V100 M66,68 A30,32 0 1 1 66,67.9"),
+    "f": (44, "M42,8 C30,-2 14,4 14,26 V100 M2,40 H38"),
+    "r": (46, "M8,100 V36 M8,70 C8,48 22,36 42,38"),
+}
+LETTER_WEIGHT = (20, 11)   # the first word bold (MRCP), the rest light (Gafar)
+WORD_GAP = 34
+
+
+def lettering(name):
+    """The site name drawn in the brand lettering, as one inline SVG (first word in the brand ink, the rest in the brand blue)."""
+    groups, x = [], 0
+    for i, word in enumerate(name.split()):
+        weight = LETTER_WEIGHT[min(i, 1)]
+        d = []
+        for ch in word:
+            adv, path = LETTERS[ch]
+            d.append(f'<path transform="translate({x:g},0)" d="{path}"/>')
+            x += adv + weight * 0.9
+        cls = "wm-caps" if i == 0 else "wm-name"
+        groups.append(f'<g class="{cls}" stroke-width="{weight}">{"".join(d)}</g>')
+        x += WORD_GAP
+    w = x - WORD_GAP
+    return (f'<svg class="wm-letters" viewBox="-12 -12 {w + 16:g} 124" aria-hidden="true" focusable="false" fill="none" '
+            f'stroke-linecap="round" stroke-linejoin="round">{"".join(groups)}</svg>')
+
+
+def logo_icon():
+    """The logo icon for inline use, hidden from screen readers (the name beside it is read instead)."""
+    return logo_svg().replace("<svg ", '<svg class="wm-logo" aria-hidden="true" focusable="false" ', 1)
+
+
 def wordmark(name):
-    """The brand name, with its underscore in the brand blue (mrcp_Gafar)."""
-    return e(name).replace("_", '<span class="wm-us">_</span>')
+    """The logo icon, then the site name in the brand lettering; the name itself is read from aria-label."""
+    return logo_icon() + lettering(name)
 
 
 def stem_html(text, cls="clue-mark", lit=False):

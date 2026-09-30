@@ -12,6 +12,7 @@
   --sc-line:#22303F;--wall:#A3AEBC;
   --ink:#0E1F35;--text:#2F3E52;--muted:#56657A;
   --primary:#1F4E8C;--primary-hover:#173D6E;--on-primary:#FFFFFF;
+  --brand-ink:#12304F;--brand:#1F7FBF;
   --cat-bg:#FDEEE8;--cat-ink:#5E1F0B;--cat-bd:#EBA88D;--cat-solid:#D85A30;
   --par-bg:#EEEDFE;--par-ink:#262066;--par-bd:#B3ACEE;--par-solid:#6A60D0;
   --np-bg:#E2F4EF;--np-ink:#053D30;--np-bd:#86CFB7;--np-solid:#1D9E75;
@@ -53,6 +54,7 @@
   --sc-line:#8FA3BD;--wall:#55657A;
   --ink:#F5F8FC;--text:#D3DCE7;--muted:#A5B3C5;
   --primary:#5B92DB;--primary-hover:#79A8E6;--on-primary:#0B1522;
+  --brand-ink:#F5F8FC;--brand:#6FB3E6;
   --cat-bg:#3A1E14;--cat-ink:#FFD3C2;--cat-bd:#B5583A;--cat-solid:#E0764D;
   --par-bg:#252150;--par-ink:#E0DCFF;--par-bd:#6B62C8;--par-solid:#8A80F0;
   --np-bg:#0E3129;--np-ink:#B5F2DC;--np-bd:#2C8C6E;--np-solid:#2FB38A;

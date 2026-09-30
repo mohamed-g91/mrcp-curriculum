@@ -27,7 +27,7 @@ import sys
 import yaml
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from engine.patterns import CENTRED, PATTERNS, e, p_title, p_video, topic_data, wordmark  # noqa: E402
+from engine.patterns import CENTRED, PATTERNS, e, favicon, lettering, logo_icon, p_title, p_video, topic_data, wordmark  # noqa: E402
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 ENGINE = os.path.join(ROOT, "engine")
@@ -360,7 +360,7 @@ def render_topic(t, spec, site, present=False):
     for k, v in {
         "{{PAGE_TITLE}}": e(page_title), "{{DESCRIPTION}}": e(t["description"]), "{{AUTHOR}}": e(site["author"]),
         "{{MODE}}": "present-deck" if present else "site",
-        "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{SITE}}": e(site["title"]), "{{WORDMARK}}": wordmark(site["title"]), "{{ICONS}}": read(ENGINE, "icons.svg"),
+        "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{SITE}}": e(site["title"]), "{{WORDMARK}}": wordmark(site["title"]), "{{FAVICON}}": favicon(), "{{ICONS}}": read(ENGINE, "icons.svg"),
         "{{SLIDES}}": "\n".join(slides), "{{DATA}}": data, "{{CSS}}": css, "{{JS}}": js,
     }.items():
         shell = shell.replace(k, v)
@@ -385,9 +385,9 @@ def render_index(site, specs, label=""):
     today = f"{d.day} {d.strftime('%B %Y')}"
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(site["title"] + label)}</title><meta name="description" content="Interactive MRCP revision pages, one per topic.">
+<title>{e(site["title"] + label)}</title>{favicon()}<meta name="description" content="Interactive MRCP revision pages, one per topic.">
 <style>{css}</style></head>
-<body><main class="index"><h1 class="wordmark" aria-label="{e(site["title"])}">{wordmark(site["title"])}</h1>{"".join(rows)}
+<body><main class="index"><header class="masthead">{logo_icon()}<h1 aria-label="{e(site["title"])}">{lettering(site["title"])}</h1><p class="tagline">{e(site["tagline"])}</p></header>{"".join(rows)}
 <p class="credits"><span>Created by {e(site["author"])}</span><span>{e(site["disclaimer"])}</span><span>Last updated {today}</span></p>
 </main></body></html>"""
 
