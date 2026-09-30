@@ -214,8 +214,8 @@ def check_topic(t, expected_id):
                 if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n", "gap")) or len(s.get("labels") or []) != 3 or not (s.get("axis") and s.get("y_axis")):
                     errs.append(f"{where}: a gap story needs sd, n (in each group), gap, three labels, an axis and a y_axis")
                 means = s.get("means") or []
-                if len(means) != 2 or not s.get("means_axis") or not all(isinstance(m, (int, float)) for m in means) or abs(means[1] - means[0] - s.get("gap", 0)) > 1e-9:
-                    errs.append(f"{where}: a gap story needs means: [placebo, drug], each group's own mean, the gap apart, and a means_axis")
+                if len(means) != 2 or not s.get("means_axis") or not all(isinstance(m, (int, float)) for m in means) or abs(means[0] - means[1] - s.get("gap", 0)) > 1e-9:
+                    errs.append(f"{where}: a gap story needs means: [placebo, drug], each group's mean blood pressure, the drug's the gap lower, and a means_axis")
                 elif not 0 < s["gap"] <= 3 * s["sd"] * (2 / s["n"]) ** .5 + 1e-9 or 4 * s["sd"] * (2 / s["n"]) ** .5 > 6.01:
                     errs.append(f"{where}: its axis runs 0 to 6: the gap must sit inside it, within 3 SEs, with 4 SEs no more than 6")
                 refs += ["p", s.get("family", "ci")]

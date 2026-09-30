@@ -1,8 +1,9 @@
 # Hypothesis testing: MRCP Part 1 statistics.
 # One trial runs through the Learn deck: 400 people with high blood pressure, a new drug or a placebo,
 # 200 in each group; systolic BP fell 4 mmHg more on the drug (SD of the fall 15 mmHg in each group).
-#   Each group's own mean fall (slide 4 only, chosen by the author): 2 mmHg on placebo (regression to the mean,
-#   getting used to being measured, lifestyle changes in a trial, a small placebo effect), 6 mmHg on the drug.
+#   Slide 4 shows each group's mean systolic BP at 8 weeks (chosen by the author): 140 mmHg on placebo, 136 on the drug,
+#   the same 4 mmHg gap (the groups start alike, being randomised). By the author's choice the SD of the final BP is taken
+#   as 15 mmHg too, so the SEM (1.1) and the SE of the difference (1.5) stay the same; in real trials it usually differs.
 #   SEM of each group = 15 ÷ √200 ≈ 1.1 mmHg; SE of the difference = 15 × √(2 ÷ 200) = 1.5 mmHg
 #   4 ÷ 1.5 ≈ 2.7 SEs from no effect, so p ≈ 0.008 (two-sided, normal: 0.0077)
 #   95% CI = 4 ± 2 × 1.5 = 1 to 7 mmHg
@@ -78,8 +79,8 @@ learn:
     n: 200
     gap: 4
     unit: mmHg
-    means: [2, 6]
-    means_axis: Fall in BP (mmHg)
+    means: [140, 136]
+    means_axis: Systolic BP (mmHg)
     labels: [Placebo, Drug, Gap]
     axis: Extra fall on the drug (mmHg)
     y_axis: "% of trials"

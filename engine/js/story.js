@@ -16,8 +16,8 @@
            then the same question for blood groups, where only the mode makes sense
    coin    H₀ (the coin is fair); then the coins land one by one, all heads, each with the chance of heads every
            time so far (1/2, 1/4 … 1/1024); then all heads or all tails, 2 in 1,024; then p = 2 ÷ 1,024 ≈ 0.002
-   gap     the placebo group's mean fall as a bell (its mean dashed and written, SEM marked), then the drug group's, the gap
-           further on; the two join on one axis with the gap bracketed; three trials, one per tap, each its own pair of
+   gap     the placebo group's mean blood pressure as a bell (its mean dashed and written, SEM marked), then the drug
+           group's, the gap lower; the two join on one axis with the gap bracketed; three trials, one per tap, each its own pair of
            bells with its gap dropped onto an axis below; many more gaps pile into a wider bell (the SE of the difference);
            then the drug bell slides back onto the placebo's (no effect), three trials, one per tap, still give gaps either way, many pile
            round 0, and the pile becomes the bell of chance (both axes, its SE marked); the 2 SE lines with 2.5% beyond each; the
@@ -320,30 +320,31 @@ const STORIES = {
     };
     const TOP = 110, ROW2 = 200, TH = 72, TB = 205, SH = 50, N = 60, BIN = .5, DOT = 12, dly = ms => REDUCED_MOTION ? 0 : ms;
     const bin = v => Math.round(v / BIN) * BIN;
-    // one group's bell: its mean dashed down to the axis with that group's own mean fall, and its SEM marked.
-    // It stands where its gap from the placebo falls on the axis below (the placebo over 0, the drug over the gap).
+    // the top strip is each group's blood pressure: the placebo's mean at PC, the drug's (lower) the gap to its left
+    const PC = S.gap / 2, DC = PC - S.gap;
+    // one group's bell: its mean dashed down to the axis with its value, its SEM marked, 2 SEM either side
     const groupBell = (c, base, cls, lab, side, mean) => {
       const g = svgEl("g", { class: `st-tb ${cls}`, style: `transform:translateY(0px)` }, svg), d = lump(c, sem, TH, base);
-      svgEl("path", { class: "dp-axis", d: `M${x(-3.4 * sem)} ${base} H${x(S.gap + 3.4 * sem)}` }, g);
+      svgEl("path", { class: "dp-axis", d: `M${x(DC - 3.4 * sem)} ${base} H${x(PC + 3.4 * sem)}` }, g);
       svgEl("path", { class: "st-tb-a", d: `${d} L${x(c + 3.2 * sem)} ${base} L${x(c - 3.2 * sem)} ${base} Z` }, g);
       svgEl("path", { class: "st-tb-l", d }, g);
       svgEl("path", { class: "st-tb-mean", d: `M${x(c)} ${base - TH} V${base}` }, g);
       // 2 SEM either side, dashed: they stay on the bell when the groups join and when the drug slides back
       [-1, 1].forEach(k => svgEl("path", { class: "st-line2", d: `M${x(c + k * 2 * sem)} ${base} V${base - TH - 4}` }, g));
-      // its name and "2 SEM" stand just outside its outer dashed line: the placebo's on the left, the drug's on the right
+      // its name and "2 SEM" stand just outside its outer dashed line: the drug's on the left, the placebo's on the right
       const out = x(c + side * 2 * sem) + side * 8, anchor = side < 0 ? "end" : "start";
       svgEl("text", { class: "st-tb-2", x: out, y: base - TH * .45 + 6, "text-anchor": anchor }, g).textContent = "2 SEM";
       svgEl("text", { class: "st-tb-t", x: out, y: base - TH + 12, "text-anchor": anchor }, g).textContent = lab;
       svgEl("text", { class: "st-tb-v", x: x(c), y: base + 22 }, g).textContent = mean;
-      svgEl("text", { class: "st-tb-ax", x: x(-3.4 * sem), y: base + 22 }, g).textContent = S.means_axis;
+      svgEl("text", { class: "st-tb-ax", x: x(PC + 3.4 * sem), y: base + 22, "text-anchor": "end" }, g).textContent = S.means_axis;
       const mk = svgEl("g", { class: "st-tb-sem" }, g), yy = base - TH * Math.exp(-.5);
       svgEl("path", { d: `M${x(c)} ${yy} H${x(c + sem)}` }, mk);
       svgEl("text", { x: x(c) + 7, y: yy - 9, "text-anchor": "start" }, mk).textContent = `SEM ${r1(sem)}`;
       return g;
     };
-    // one trial: its own pair of bells round its two means, the gap between them bracketed, and dropped onto the axis below
+    // one trial: its own pair of bells round its two means, the gap between them (placebo − drug) bracketed and dropped below
     const trial = (parent, pm, dm, stay) => {
-      const g = svgEl("g", { class: "st-trial" }, parent), gap = dm - pm;
+      const g = svgEl("g", { class: "st-trial" }, parent), gap = pm - dm;
       [[pm, "st-tb-plac"], [dm, "st-tb-drug"]].forEach(([c, cls]) => {
         const b = svgEl("g", { class: `st-tb ${cls}` }, g), d = lump(c, sem, SH, TB);
         svgEl("path", { class: "st-tb-a", d: `${d} L${x(c + 3.2 * sem)} ${TB} L${x(c - 3.2 * sem)} ${TB} Z` }, b);
@@ -385,20 +386,21 @@ const STORIES = {
       return d + ` L${x(b)} ${AX} Z`;
     };
     const curve = (a, b) => { let d = ""; for (let v = a; v <= b + 1e-9; v += .05) d += `${d ? " L" : "M"}${x(v).toFixed(1)} ${y(v).toFixed(1)}`; return d; };
-    // three trials with the drug working (gaps 2.9, 5.1, 3.6), and three with it doing nothing (gaps 1.2, -1.0, 0.6)
-    const TRIALS = [[.6, S.gap - .5], [-.4, S.gap + .7], [.3, S.gap - .1]], NULLS = [[-.3, .9], [.5, -.5], [-.2, .4]];
+    // each trial's two means [placebo, drug] on the top strip: three with the drug working (gaps 2.9, 5.1, 3.6),
+    // then three with it doing nothing, both round the placebo's mean (gaps 1.2, -1.0, 0.6)
+    const TRIALS = [[PC - .6, DC + .5], [PC + .4, DC - .7], [PC - .3, DC + .1]], NULLS = [[PC + .3, PC - .9], [PC - .5, PC + .5], [PC + .2, PC - .4]];
     // one trial per tap: its own pair of bells, its gap dropped onto the pile; the one before fades
     const trialBeat = (list, i, pileOf) => {
       if (strip) strip.classList.add("st-gone");
       strip = svgEl("g", {}, svg);
-      const [pm, dm] = list[i], gp = trial(strip, pm, dm, true), k = list.slice(0, i).filter(([a, b]) => bin(b - a) === bin(gp)).length;
+      const [pm, dm] = list[i], gp = trial(strip, pm, dm, true), k = list.slice(0, i).filter(([a, b]) => bin(a - b) === bin(gp)).length;
       later(600, () => drop(pileOf(), gp, k, 0));
     };
     return [
-      // the placebo group's mean: a bell round 0, SEM wide
-      () => { plac = groupBell(0, TOP, "st-tb-plac", S.labels[0], -1, S.means[0]); },
-      // the drug group's: the same width, round the gap
-      () => { drug = groupBell(S.gap, ROW2, "st-tb-drug", S.labels[1], 1, S.means[1]); },
+      // the placebo group's mean blood pressure: a bell, SEM wide
+      () => { plac = groupBell(PC, TOP, "st-tb-plac", S.labels[0], 1, S.means[0]); },
+      // the drug group's: the same width, the gap lower
+      () => { drug = groupBell(DC, ROW2, "st-tb-drug", S.labels[1], -1, S.means[1]); },
       // together on one axis: the gap between the means
       () => {
         drug.style.transform = `translateY(${TOP - ROW2}px)`;
@@ -407,8 +409,8 @@ const STORIES = {
         $(".dp-axis", plac).classList.remove("st-gone");
         gapBr = svgEl("g", { class: "st-gapbr" }, svg);
         const yb = TOP - TH - 16;
-        svgEl("path", { d: `M${x(0)} ${yb} H${x(S.gap)} M${x(0)} ${yb - 7} V${yb + 7} M${x(S.gap)} ${yb - 7} V${yb + 7}` }, gapBr);
-        svgEl("text", { x: x(S.gap / 2), y: yb - 10 }, gapBr).textContent = `${S.labels[2]} ${S.gap} ${S.unit}`;
+        svgEl("path", { d: `M${x(DC)} ${yb} H${x(PC)} M${x(DC)} ${yb - 7} V${yb + 7} M${x(PC)} ${yb - 7} V${yb + 7}` }, gapBr);
+        svgEl("text", { x: x((DC + PC) / 2), y: yb - 10 }, gapBr).textContent = `${S.labels[2]} ${S.gap} ${S.unit}`;
       },
       // three trials, one per tap: each its own pair of bells, its gap dropped onto the axis below
       ...TRIALS.map((_, i) => () => {
@@ -424,10 +426,10 @@ const STORIES = {
         trialBeat(TRIALS, i, () => pile4);
       }),
       // many more trials: the gaps pile into a bell wider than either mean's, the SE of the difference
-      () => { strip.classList.add("st-gone"); pileUp(pile4, S.gap, TRIALS.map(([pm, dm]) => dm - pm)); },
-      // if the drug did nothing: its bell slides back onto the placebo's, both at 0
+      () => { strip.classList.add("st-gone"); pileUp(pile4, S.gap, TRIALS.map(([pm, dm]) => pm - dm)); },
+      // if the drug did nothing: its bell slides over onto the placebo's
       () => {
-        drug.style.transform = `translateY(${TOP - ROW2}px) translateX(${x(0) - x(S.gap)}px)`;
+        drug.style.transform = `translateY(${TOP - ROW2}px) translateX(${x(PC) - x(DC)}px)`;
         gapBr.classList.add("st-gone"); pile4.classList.add("st-gone"); strip.classList.add("st-gone");
       },
       // three trials even so, one per tap: gaps either side of 0, by chance alone
@@ -436,7 +438,7 @@ const STORIES = {
         trialBeat(NULLS, i, () => pile0);
       }),
       // many trials: their gaps pile round 0, the same width as before
-      () => { strip.classList.add("st-gone"); pileUp(pile0, 0, NULLS.map(([pm, dm]) => dm - pm)); },
+      () => { strip.classList.add("st-gone"); pileUp(pile0, 0, NULLS.map(([pm, dm]) => pm - dm)); },
       // the pile becomes the bell of chance, with both axes
       () => {
         [plac, drug].forEach(g => g.classList.add("st-gone"));
