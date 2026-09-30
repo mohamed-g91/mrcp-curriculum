@@ -38,12 +38,13 @@ The user found one video too long. Decisions so far:
 
 1. Hook: the trial, "Could this be chance?"
 2. Court, Guilty: H₀, evidence, p = 0.008, verdict (the p is given; lecture 2 shows where it comes from)
-3. **1,000 placebo-only trials (proposed, replaces the coin):** run the trial 1,000 times with placebo in both groups;
-   about 8 give a gap of 4 mmHg or more either way (about 4 with the drug arm lower, 4 higher): p = 0.008.
-   A grid of 1,000 squares, the 8 lit in olive. **Three mockups still to draw.**
+3. **The p-value, shown with a case or trial scenario, not the coin. Agreed in principle; which scenario is still open,
+   to decide in the next session.** One proposal: run the trial 1,000 times with placebo in both groups; about 8 give
+   a gap of 4 mmHg or more either way (about 4 with the drug arm lower, 4 higher): p = 0.008. A grid of 1,000 squares,
+   the 8 lit in olive. Draw three mockups once the scenario is chosen.
 4. The line: 1 in 20 = 5 in 100 = **50 in 1,000** (Fisher, 1925), set beside the 8 in 1,000
 5. Court, Not guilty: the trial of 40, p = 0.4
-6. The same grid for the trial of 40: about 400 in 1,000 light up (200 each way)
+6. The same scenario for the trial of 40 (in the grid proposal, about 400 in 1,000 light up, 200 each way)
 
 Cases: new **c11 (solved)** "p = 0.008: significant at 5%?", then c02 (H₀), c03 (meaning of p = 0.03), c08 (pilot p = 0.2), c10 (p = 0.06 "no effect").
 
@@ -77,7 +78,8 @@ Add both new topics to `curriculum.yaml` after Standard error, `status: draft`.
 
 ## Waiting on the user
 
-1. The lecture 1 slide list with the 1,000-trial grid (then three mockups of the grid).
+1. Which case or trial scenario shows the p-value in lecture 1 (the 1,000 placebo-only trials grid is one proposal);
+   then the lecture 1 slide list and three mockups of the chosen figure.
 2. Titles and slugs for lectures 2 and 3 (slugs are permanent once published).
 3. Go-ahead to draft lecture 2's cases for review.
 
