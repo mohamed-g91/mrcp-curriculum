@@ -1,5 +1,6 @@
 /* ---------- curriculum home page ---------- */
 *{box-sizing:border-box}
+html{font-synthesis-weight:none}
 body{margin:0;background:var(--page);color:var(--text);font:18px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
 .index{max-width:880px;margin:0 auto;padding:56px 16px 40px}
 .index .masthead{display:grid;grid-template-columns:auto auto;justify-content:start;column-gap:clamp(14px,2.4vw,22px);margin:0 0 36px;padding-bottom:20px;position:relative}

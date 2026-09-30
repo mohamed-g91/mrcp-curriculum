@@ -323,10 +323,11 @@ def check_ids(topics):
 
 def fonts_css():
     b64 = {n: base64.b64encode(open(os.path.join(ENGINE, "fonts", n), "rb").read()).decode("ascii")
-           for n in ("inter.woff2", "serif.woff2")}
+           for n in ("inter.woff2", "outfit.woff2")}
     return ('@font-face{font-family:"Inter";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:100 900;font-display:swap}\n'
-            '@font-face{font-family:"Source Serif 4";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:600;font-display:swap}\n'
-            % (b64["inter.woff2"], b64["serif.woff2"]))
+            # Outfit is a variable font; declaring it at 500 alone pins every heading to Medium
+            '@font-face{font-family:"Outfit";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:500;font-display:swap}\n'
+            % (b64["inter.woff2"], b64["outfit.woff2"]))
 
 
 def section(slide, part, inner):

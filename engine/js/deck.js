@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   // the first slide waits for the embedded fonts, so its entrance is not upset by text
   // swapping from the fallback font halfway through (at most 1.5 s, then it goes anyway)
-  const fonts = document.fonts ? Promise.all(['400 20px "Inter"', '800 20px "Inter"', '600 44px "Source Serif 4"'].map(f => document.fonts.load(f))) : Promise.resolve();
+  const fonts = document.fonts ? Promise.all(['400 20px "Inter"', '800 20px "Inter"', '500 44px "Outfit"'].map(f => document.fonts.load(f))) : Promise.resolve();
   Promise.race([fonts, new Promise(r => setTimeout(r, 1500))]).catch(() => {}).then(() => requestAnimationFrame(() => {
     Deck.go(Number.isFinite(start) ? start : 0);
     if (PRESENTER && new URLSearchParams(location.search).has("present")) Present.enter(false);

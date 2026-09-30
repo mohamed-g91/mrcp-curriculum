@@ -29,7 +29,9 @@
   --rule:linear-gradient(90deg,var(--primary),color-mix(in srgb,var(--primary) 12%,transparent));
   --rule-centre:linear-gradient(90deg,color-mix(in srgb,var(--primary) 12%,transparent),var(--primary),color-mix(in srgb,var(--primary) 12%,transparent));
   --radius:10px;--radius-lg:16px;
-  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  /* --serif is the heading face: Outfit, embedded at Medium only, so every heading renders Medium whatever weight it asks for
+     (the name is kept from when headings were a serif) */
+  --serif:"Outfit","Inter","Segoe UI",system-ui,sans-serif;
   --sans:"Inter","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
   --ease:cubic-bezier(.16,1,.3,1);
   color-scheme:light;
