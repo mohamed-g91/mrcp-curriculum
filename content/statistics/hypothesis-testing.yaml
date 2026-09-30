@@ -63,9 +63,18 @@ learn:
     tosses: 10
     claim: "{h0}: the coin is fair"
 
-  # To come, each as its own story figure (see the plan):
-  # the standard error of a difference and the trial's 4 mmHg on its bell, then the court (Not guilty),
-  # the 0.05 line and the sliding CI.
+  # The standard error of a difference, then the trial's 4 mmHg on the bell of gaps chance alone would give:
+  # SEM 15 ÷ √200 ≈ 1.1 each; SE of the gap 15 × √(2 ÷ 200) = 1.5; 4 ÷ 1.5 = 2.7 SEs; each tail 0.4%, p ≈ 0.008.
+  - id: gap
+    pattern: story
+    title: How big a gap can chance make?
+    kind: gap
+    sd: 15
+    n: 200
+    gap: 4
+    labels: [Drug mean, Placebo mean, Gap]
+    axis: Extra fall on the drug (mmHg)
+    y_axis: "% of trials"
 
   - id: recap
     pattern: reveal-cards
@@ -74,6 +83,16 @@ learn:
       - { family: par, icon: spread, figure: ht-sd,  label: SD,                   answer: "People differ: 15 mmHg." }
       - { family: se,  icon: narrow, figure: ht-sem, label: SEM,                  answer: "Means differ: 15 ÷ √200 ≈ 1.1 mmHg." }
       - { family: se,  icon: narrow, figure: ht-gap, label: SE of the difference, answer: "Gaps differ: 15 × √(2 ÷ 200) ≈ 1.5 mmHg." }
+
+  # The same 4 mmHg in 40 people (20 in each group): SE 15 × √(2 ÷ 20) ≈ 4.7, 4 ÷ 4.7 ≈ 0.85 SEs, p ≈ 0.4.
+  - id: court-small
+    pattern: story
+    title: The same gap in 40 people
+    kind: art
+    art: ht-court
+    slots: { claim: "{h0}: no difference in BP", evidence: 4 mmHg, p: p = 0.4, verdict: Not guilty, note: ≠ innocent }
+
+  # To come, each as its own figure (see the plan): the 0.05 line and the sliding CI.
 
   - id: important
     pattern: reveal-cards

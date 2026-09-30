@@ -16,6 +16,10 @@
            then the same question for blood groups, where only the mode makes sense
    coin    H₀ (the coin is fair); then the coins land one by one, all heads, each with the chance of heads every
            time so far (1/2, 1/4 … 1/1024); then all heads or all tails, 2 in 1,024; then p = 2 ÷ 1,024 ≈ 0.002
+   gap     the drug's mean in a soft band (± its SEM), the placebo's the same, then the gap between them in a
+           wider band (± the SE of the difference); the gap's band drops onto an axis and rises into the bell of gaps
+           that chance alone would give (both axes, its SE marked); the 2 SE lines with 2.5% beyond each; the
+           trial's gap lands (4 ÷ 1.5 = 2.7 SEs); last, the tails at least that far out fill in: p = 0.4% + 0.4%
    art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
            from the slide's slots, with {key} standing for a concept's label (so H₀ is never retyped) */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -77,6 +81,103 @@ function storyStar(parent, x, y) {
 const sumText = v => `${v.join(" + ")} = ${Stats.sum(v)}`;
 
 const STORIES = {
+  gap(svg, S) {
+    // the numbers: each group's mean wobbles by its SEM, the gap between them by the SE of the difference
+    const sem = S.sd / Math.sqrt(S.n), se = S.sd * Math.sqrt(2 / S.n), z = S.gap / se;
+    const tail = 1 - Sampling.cdf(z), p = 2 * tail, r1 = v => (Math.round(v * 10) / 10).toFixed(1);
+    const pct = v => `${r1(v * 100)}%`, ps = p < .001 ? "< 0.001" : `= ${p.toFixed(3)}`;
+    const L = 80, R = 680, AX = 300, SPAN = 6, PY = 8, X0 = (L + R) / 2;
+    const x = v => X0 + v * (R - L) / (2 * SPAN), dens = v => Math.exp(-v * v / (2 * se * se)) / (se * Math.sqrt(2 * Math.PI));
+    const y = v => AX - dens(v) * 100 * PY, fam = `f-${concept(S.family || "ci").family}`;
+    const uid = Math.random().toString(36).slice(2, 8);
+    svg.classList.add(fam);  // the bands' gradient takes its colour from the family too
+    const defs = svgEl("defs", {}, svg);
+    // a soft band: solid in the middle, fading out to 2 SEs either side
+    const grad = svgEl("linearGradient", { id: `gb${uid}` }, defs);
+    [[0, 0], [.25, .45], [.5, .7], [.75, .45], [1, 0]].forEach(([o, a]) => svgEl("stop", { offset: o, style: `stop-color:var(--x-solid);stop-opacity:${a}` }, grad));
+    const rowsG = svgEl("g", { class: `st-rows ${fam}` }, svg);
+    const band = (parent, cy, w, dotCls) => {
+      const g = svgEl("g", { class: "st-band", style: `transform:translate(${X0}px, ${cy}px)` }, parent);
+      svgEl("rect", { x: -w, y: -15, width: 2 * w, height: 30, rx: 15, fill: `url(#gb${uid})` }, g);
+      svgEl("circle", { r: 11, class: dotCls }, g);
+      return g;
+    };
+    const row = (cy, label, spread, dotCls) => {
+      const g = svgEl("g", { class: "st-row-in" }, rowsG), w = 2 * spread * (R - L) / (2 * SPAN);
+      svgEl("text", { class: "st-rlab", x: 20, y: cy + 8 }, g).textContent = label;
+      const b = band(g, cy, w, dotCls);
+      svgEl("text", { class: "st-rpm", x: X0 + w + 22, y: cy + 8 }, g).textContent = `± ${r1(spread)}`;
+      return { g, b };
+    };
+    let calc, gapRow, bell;
+    const say = (text, f) => {
+      if (calc) calc.remove();
+      calc = svgEl("g", { class: `st-cpill ${f}` }, svg);
+      const w = 30 + text.length * 12.5;
+      svgEl("rect", { x: X0 - w / 2, y: -2, width: w, height: 44, rx: 22 }, calc);
+      svgEl("text", { x: X0, y: 28 }, calc).textContent = text;
+    };
+    const area = (a, b) => {
+      let d = `M${x(a)} ${AX}`;
+      for (let v = a; v <= b + 1e-9; v += .05) d += ` L${x(v).toFixed(1)} ${y(v).toFixed(1)}`;
+      return d + ` L${x(b)} ${AX} Z`;
+    };
+    const curve = (a, b) => { let d = ""; for (let v = a; v <= b + 1e-9; v += .05) d += `${d ? " L" : "M"}${x(v).toFixed(1)} ${y(v).toFixed(1)}`; return d; };
+    return [
+      () => row(60, S.labels[0], sem, "st-d-drug"),
+      () => row(135, S.labels[1], sem, "st-d-plac"),
+      () => { gapRow = row(225, S.labels[2], se, "st-d-gap"); },
+      // chance alone: the gap's band drops onto an axis and rises into the bell of gaps a harmless drug would give
+      () => {
+        $$(".st-row-in", rowsG).forEach(g => { if (g !== gapRow.g) g.classList.add("st-gone"); });
+        $$(".st-rlab, .st-rpm", gapRow.g).forEach(t => t.classList.add("st-gone"));
+        gapRow.b.style.transform = `translate(${X0}px, ${AX - 15}px)`;
+        bell = svgEl("g", { class: fam }, svg);
+        svgEl("path", { class: "dp-axis", d: `M${L - 10} ${AX} H${R + 10}` }, bell);
+        svgEl("path", { class: "dp-axis", d: `M${L - 10} ${AX} V${AX - 30 * PY}` }, bell);
+        [0, 10, 20, 30].forEach(t => { svgEl("text", { class: "cv-ylab", x: L - 18, y: AX - t * PY + 6 }, bell).textContent = `${t}%`; });
+        const yt = svgEl("text", { class: "cv-ytitle", transform: `translate(${L - 62} ${AX - 15 * PY}) rotate(-90)` }, bell); yt.textContent = S.y_axis;
+        // no minus signs: only no effect and the drug's side are labelled
+        for (let v = 0; v <= SPAN; v += 2) svgEl("text", { class: "dp-tlab", x: x(v), y: AX + 30 }, bell).textContent = v;
+        svgEl("text", { class: "cv-alab", x: X0, y: AX + 62 }, bell).textContent = S.axis;
+        svgEl("path", { class: "cv-area", d: area(-SPAN, SPAN) }, bell);
+        svgEl("path", { class: "cv-line", pathLength: 1, d: curve(-SPAN, SPAN) }, bell);
+        const mk = svgEl("g", { class: "st-semk" }, bell), yy = y(se);
+        svgEl("path", { d: `M${x(0)} ${yy} H${x(se)}` }, mk);
+        svgEl("path", { class: "st-drop", d: `M${x(se)} ${yy} V${AX}` }, mk);
+        svgEl("text", { x: x(se) + 10, y: yy - 10 }, mk).textContent = `SE ${r1(se)}`;
+        gapRow.b.classList.add("st-fade");
+      },
+      // the 2 SE lines: 2.5% of harmless trials land beyond each
+      () => {
+        const g = svgEl("g", { class: "st-2se" }, bell);
+        [-1, 1].forEach(s => {
+          svgEl("path", { class: "st-shade", d: s > 0 ? area(2 * se, SPAN) : area(-SPAN, -2 * se) }, g);
+          svgEl("path", { class: "st-line2", d: `M${x(s * 2 * se)} ${AX} V${AX - 29 * PY}` }, g);
+          svgEl("text", { class: "st-tailpct", x: x(s * 4.8), y: AX - 34 }, g).textContent = "2.5%";
+        });
+        svgEl("text", { class: "st-2lab", x: x(2 * se) + 8, y: AX - 26 * PY }, g).textContent = "2 SE";
+      },
+      // the trial's gap lands, and how many SEs out it is
+      () => {
+        svgEl("circle", { class: "st-real", cx: x(S.gap), cy: AX, r: 7 }, bell);
+        say(`${S.gap} ÷ ${r1(se)} = ${r1(z)} SEs`, fam);
+      },
+      // the tails at least that far out, either way: their share of the bell is p
+      () => {
+        $$(".st-shade, .st-tailpct", bell).forEach(t => t.classList.add("st-gone"));
+        const g = svgEl("g", { class: "st-ptail f-test" }, bell);
+        [-1, 1].forEach(s => {
+          const [a, b] = s > 0 ? [S.gap, SPAN] : [-SPAN, -S.gap];
+          svgEl("path", { class: "st-pfill", d: area(a, b) }, g);
+          svgEl("path", { class: "st-pedge", d: `${curve(a, b)} M${x(a)} ${AX} H${x(b)}` }, g);
+          svgEl("text", { class: "st-ppct", x: x(s * 5), y: AX - 30 }, g).textContent = pct(tail);
+        });
+        $("circle.st-real", bell).parentNode.appendChild($("circle.st-real", bell));
+        say(`p = ${pct(tail)} + ${pct(tail)} ${ps.replace("= ", "≈ ")}`, "f-test");
+      }
+    ];
+  },
   coin(svg, S, later) {
     const n = S.tosses, ways = 2 ** n, gap = 64, x0 = ST.W / 2 - gap * (n - 1) / 2, CY = 128;
     const fmt = v => v.toLocaleString("en-GB"), p = 2 / ways;

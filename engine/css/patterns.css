@@ -669,6 +669,30 @@ html.fluid .ask{position:fixed}
 .st-frac text{fill:var(--text);font:700 17px var(--sans);text-anchor:middle}
 .st-frac path{stroke:var(--text);stroke-width:2}
 .st-csum{fill:var(--ink);font:750 24px var(--sans);text-anchor:middle;animation:fadeIn .5s ease both}
+/* the gap story: two means and their gap in soft bands, then the bell of gaps chance alone would give */
+.st-row-in{animation:fadeIn .5s ease both;transition:opacity .4s ease}
+.st-rlab{fill:var(--ink);font:750 22px var(--sans)}
+.st-rpm{fill:var(--x-ink);font:800 24px var(--sans)}
+.st-band{transition:transform .8s var(--ease),opacity .6s ease}
+.st-band.st-fade{opacity:0;transition-delay:0s,.7s}
+.st-band circle{stroke:var(--sc-line);stroke-width:3}
+.st-band .st-d-drug{fill:#55657A}
+.st-band .st-d-plac{fill:#B9C3D0}
+.st-band .st-d-gap{fill:var(--x-solid)}
+.st-semk{animation:fadeIn .5s ease .6s both}
+.st-semk path{stroke:var(--ink);stroke-width:3.5}
+.st-semk .st-drop{stroke-width:2;stroke-dasharray:5 5}
+.st-semk text{fill:var(--ink);font:750 20px var(--sans)}
+.st-2se{animation:fadeIn .5s ease both}
+.st-shade{fill:color-mix(in srgb,var(--muted) 45%,transparent);transition:opacity .4s ease}
+.st-line2{stroke:var(--muted);stroke-width:2.5;stroke-dasharray:7 6}
+.st-2lab{fill:var(--text);font:700 18px var(--sans)}
+.st-tailpct{fill:var(--text);font:700 20px var(--sans);text-anchor:middle;transition:opacity .4s ease}
+.st-real{fill:var(--ink);stroke:var(--surface);stroke-width:2.5;animation:stDrop .5s var(--ease) both}
+.st-ptail{animation:fadeIn .5s ease both}
+.st-pfill{fill:var(--x-solid)}
+.st-pedge{fill:none;stroke:var(--x-solid);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+.st-ppct{fill:var(--x-ink);font:800 22px var(--sans);text-anchor:middle}
 /* an art story: one drawing across the figure's width, its parts joining beat by beat */
 .story.st-solo{grid-template-columns:minmax(0,1fr);max-width:1000px}
 .story.st-solo>.st-chart{grid-column:1}

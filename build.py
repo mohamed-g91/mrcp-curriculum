@@ -180,8 +180,15 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin"):
-                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art or coin, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap"):
+                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin or gap, not {kind!r}")
+            elif kind == "gap":
+                # two groups of n with the same SD, and the gap between their means; SEs and p are worked out in the browser
+                if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n", "gap")) or len(s.get("labels") or []) != 3 or not (s.get("axis") and s.get("y_axis")):
+                    errs.append(f"{where}: a gap story needs sd, n (in each group), gap, three labels, an axis and a y_axis")
+                elif not 0 < s["gap"] <= 3 * s["sd"] * (2 / s["n"]) ** .5 + 1e-9 or 4 * s["sd"] * (2 / s["n"]) ** .5 > 6.01:
+                    errs.append(f"{where}: its axis runs 0 to 6: the gap must sit inside it, within 3 SEs, with 4 SEs no more than 6")
+                refs += ["p", s.get("family", "ci")]
             elif kind == "coin":
                 # all heads in `tosses` tosses of a fair coin: p = 2 ÷ 2^tosses, worked out in the browser
                 if not isinstance(s.get("tosses"), int) or not 3 <= s["tosses"] <= 11 or not s.get("claim"):
