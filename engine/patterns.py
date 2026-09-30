@@ -68,7 +68,8 @@ def lettering(name):
         groups.append(f'<g class="{cls}" stroke-width="{weight}">{"".join(d)}</g>')
         x += WORD_GAP
     w = x - WORD_GAP
-    return (f'<svg class="wm-letters" viewBox="-12 -12 {w + 16:g} 124" aria-hidden="true" focusable="false" fill="none" '
+    # the viewBox hugs the ink: the C's and G's arcs reach y -8, the bold strokes' round ends y 110
+    return (f'<svg class="wm-letters" viewBox="-10 -8 {w + 14:g} 118" aria-hidden="true" focusable="false" fill="none" '
             f'stroke-linecap="round" stroke-linejoin="round">{"".join(groups)}</svg>')
 
 

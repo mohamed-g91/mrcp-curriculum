@@ -22,10 +22,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .wordmark{font-family:var(--sans);font-weight:800;font-size:clamp(15px,calc(1.45 * var(--u)),19px);letter-spacing:-.015em;color:var(--ink);white-space:nowrap}
 a.wordmark{text-decoration:none;border-radius:6px}
 .wordmark{display:inline-flex;align-items:center;gap:.45em}
-.wm-logo{width:1.6em;height:1.6em;flex:none}
+.wm-logo{width:1.3em;height:1.3em;flex:none}
 a.wordmark:hover{opacity:.8}
 a.wordmark:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
-.wm-letters{height:.95em;width:auto;flex:none}
+.wm-letters{height:.9em;width:auto;flex:none}
 .wm-caps{stroke:var(--brand-ink)}.wm-name{stroke:var(--brand)}
 .brand-sep{align-self:center;width:1px;height:22px;background:var(--border-strong)}
 .brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap;min-width:0}
