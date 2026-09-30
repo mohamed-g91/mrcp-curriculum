@@ -21,7 +21,7 @@
   </g>
   <!-- the doctor who ran the trial, bottom left -->
   <g class="sc-pop" style="--i:1">
-    <g transform="translate(92 394) scale(.72)">
+    <g transform="translate(47 394) scale(.72)">
       <rect class="sc-o" x="-24" y="-80" width="20" height="78" rx="6" fill="#2B3A55"/>
       <rect class="sc-o" x="4" y="-80" width="20" height="78" rx="6" fill="#2B3A55"/>
       <path class="sc-o" d="M-44 -150 C-40 -168 -18 -176 0 -176 C18 -176 40 -168 44 -150 L50 -72 L-50 -72 Z" fill="#F4F6F9"/>
@@ -50,18 +50,18 @@
   </g>
   <!-- 2: the doctor holds up the trial's result -->
   <g data-beat="2">
-    <path d="M110 280 L148 256" stroke="#22303F" stroke-width="15" stroke-linecap="round"/>
-    <path d="M110 280 L148 256" stroke="#F4F6F9" stroke-width="9" stroke-linecap="round"/>
+    <path d="M65 280 L103 256" stroke="#22303F" stroke-width="15" stroke-linecap="round"/>
+    <path d="M65 280 L103 256" stroke="#F4F6F9" stroke-width="9" stroke-linecap="round"/>
     <g class="ct-paper">
-      <rect class="sc-o" x="130" y="214" width="146" height="56" rx="6"/>
-      <path class="ct-arrow" d="M156 228 V256 M148 248 L156 257 L164 248"/>
-      <text x="220" y="251" data-slot="evidence"/>
+      <rect class="sc-o" x="85" y="214" width="146" height="56" rx="6"/>
+      <path class="ct-arrow" d="M111 228 V256 M103 248 L111 257 L119 248"/>
+      <text x="175" y="251" data-slot="evidence"/>
     </g>
   </g>
   <!-- 3: how often a harmless drug would give this -->
   <g data-beat="3" class="ct-p f-test">
-    <rect x="120" y="150" width="150" height="44" rx="22"/>
-    <text x="195" y="179" data-slot="p"/>
+    <rect x="75" y="150" width="150" height="44" rx="22"/>
+    <text x="150" y="179" data-slot="p"/>
   </g>
   <!-- 4: the verdict, beside the judge, and the gavel comes down -->
   <g data-beat="4">

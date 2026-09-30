@@ -180,8 +180,14 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art"):
-                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling or art, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin"):
+                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art or coin, not {kind!r}")
+            elif kind == "coin":
+                # all heads in `tosses` tosses of a fair coin: p = 2 ÷ 2^tosses, worked out in the browser
+                if not isinstance(s.get("tosses"), int) or not 3 <= s["tosses"] <= 11 or not s.get("claim"):
+                    errs.append(f"{where}: a coin story needs tosses (3 to 11) and a claim (H₀ as {{h0}}: …)")
+                else:
+                    refs += re.findall(r"\{(\w+)\}", s["claim"]) + ["p"]
             elif kind == "art":
                 # a drawing whose parts join beat by beat; its words come from slots, H₀ and the like from {concept}
                 path = os.path.join(ROOT, "content", "figures", f"{s.get('art')}.svg")

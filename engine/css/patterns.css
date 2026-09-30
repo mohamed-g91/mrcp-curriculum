@@ -657,6 +657,18 @@ html.fluid .ask{position:fixed}
 .st-wait .dp-pt,.st-wait .dp-count{display:none}
 .scene [data-beat]{opacity:0;transition:opacity .5s ease}
 .scene [data-beat].st-on{opacity:1}
+/* the coin story: ten coins land, each with the chance so far; the p-value in the testing colour */
+.st-cpill{animation:pillIn .5s var(--ease) both}
+.st-cpill rect{fill:var(--x-bg);stroke:var(--x-solid);stroke-width:3}
+.st-cpill text{fill:var(--x-ink);font:750 22px var(--sans);text-anchor:middle}
+.st-coin{animation:fadeIn .5s ease both}
+.st-coin circle{fill:#F2B84B;stroke:var(--sc-line);stroke-width:3}
+.st-coin .st-rim{fill:none;stroke:#C98F22;stroke-width:2}
+.st-coin text{fill:#6B4A0E;font:850 20px var(--sans);text-anchor:middle}
+.st-frac{animation:fadeIn .5s ease both}
+.st-frac text{fill:var(--text);font:700 17px var(--sans);text-anchor:middle}
+.st-frac path{stroke:var(--text);stroke-width:2}
+.st-csum{fill:var(--ink);font:750 24px var(--sans);text-anchor:middle;animation:fadeIn .5s ease both}
 /* an art story: one drawing across the figure's width, its parts joining beat by beat */
 .story.st-solo{grid-template-columns:minmax(0,1fr);max-width:1000px}
 .story.st-solo>.st-chart{grid-column:1}

@@ -14,6 +14,8 @@
            the curve they make is drawn, with its half-width, the SEM, worked out (SD ÷ √n)
    mode    shoe sizes stack up, the mean is a size nobody wears, the mode is the tallest stack;
            then the same question for blood groups, where only the mode makes sense
+   coin    H₀ (the coin is fair); then the coins land one by one, all heads, each with the chance of heads every
+           time so far (1/2, 1/4 … 1/1024); then all heads or all tails, 2 in 1,024; then p = 2 ÷ 1,024 ≈ 0.002
    art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
            from the slide's slots, with {key} standing for a concept's label (so H₀ is never retyped) */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -75,6 +77,37 @@ function storyStar(parent, x, y) {
 const sumText = v => `${v.join(" + ")} = ${Stats.sum(v)}`;
 
 const STORIES = {
+  coin(svg, S, later) {
+    const n = S.tosses, ways = 2 ** n, gap = 64, x0 = ST.W / 2 - gap * (n - 1) / 2, CY = 128;
+    const fmt = v => v.toLocaleString("en-GB"), p = 2 / ways;
+    const pill = (cls, y, text, w) => {
+      const g = svgEl("g", { class: `st-cpill ${cls}` }, svg);
+      svgEl("rect", { x: ST.W / 2 - w / 2, y: y - 30, width: w, height: 44, rx: 22 }, g);
+      svgEl("text", { x: ST.W / 2, y }, g).textContent = text;
+      return g;
+    };
+    return [
+      // the judge's starting point: nothing is going on, the coin is fair
+      () => pill("f-test", 36, S.claim.replace(/\{(\w+)\}/g, (m, k) => concept(k).label), 300),
+      // the tosses land, all heads; under each, the chance of heads every time so far
+      () => {
+        for (let i = 0; i < n; i++) {
+          const x = x0 + i * gap, d = `animation-delay:${REDUCED_MOTION ? 0 : i * 160}ms`;
+          const c = svgEl("g", { class: "st-coin", style: d, transform: `translate(${x} ${CY})` }, svg);
+          svgEl("circle", { r: 25 }, c); svgEl("circle", { r: 18, class: "st-rim" }, c);
+          svgEl("text", { y: 7 }, c).textContent = "H";
+          const f = svgEl("g", { class: "st-frac", style: d, transform: `translate(${x} ${CY + 58})` }, svg);
+          svgEl("text", { y: 0 }, f).textContent = "1";
+          svgEl("path", { d: "M-24 8 H24" }, f);
+          svgEl("text", { y: 30 }, f).textContent = fmt(2 ** (i + 1));
+        }
+      },
+      // as far out as this, either way
+      () => { const t = svgEl("text", { class: "st-csum", x: ST.W / 2, y: 272 }, svg); t.textContent = `All heads or all tails: 2 in ${fmt(ways)}`; },
+      // the p-value: how often a fair coin gives a result at least this extreme
+      () => pill("f-test st-cp", 330, `p = 2 ÷ ${fmt(ways)} ≈ ${p.toFixed(3)}`, 330)
+    ];
+  },
   art(svg, S, later, chart) {
     const src = $("template.st-art", chart.closest(".story")).content.querySelector("svg");
     svg.setAttribute("viewBox", src.getAttribute("viewBox"));

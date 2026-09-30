@@ -55,7 +55,15 @@ learn:
     art: ht-court
     slots: { claim: "{h0}: no difference in BP", evidence: 4 mmHg, p: p = 0.008, verdict: Guilty, note: "Reject {h0}" }
 
-  # To come, each as its own story figure (see the plan): the coin (the p-value),
+  # The coin: 10 heads in a row from a coin said to be fair. p = 2 ÷ 1,024 ≈ 0.002 (all heads or all tails).
+  - id: coin
+    pattern: story
+    title: Is the coin fair?
+    kind: coin
+    tosses: 10
+    claim: "{h0}: the coin is fair"
+
+  # To come, each as its own story figure (see the plan):
   # the standard error of a difference and the trial's 4 mmHg on its bell, then the court (Not guilty),
   # the 0.05 line and the sliding CI.
 
