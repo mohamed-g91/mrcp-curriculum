@@ -278,6 +278,11 @@ mark.clue{cursor:pointer;background:var(--x-bg);color:var(--x-ink);border-bottom
 .rfig .rf-grp2{fill:var(--border-strong);stroke:var(--sc-line);stroke-width:2}
 .rfig .rf-brace{fill:none;stroke:var(--x-solid);stroke-width:3;stroke-linejoin:round}
 .rfig .rf-sq-dot{fill:var(--x-solid);stroke:var(--sc-line);stroke-width:2}
+.rfig .rf-bell{fill:none;stroke:var(--x-solid);stroke-width:3;stroke-linejoin:round}
+.rfig .rf-bell-a{fill:var(--x-solid);opacity:.18}
+.rfig .rf-bellp{fill:none;stroke:#8B97A6;stroke-width:3;stroke-linejoin:round}
+.rfig .rf-bellp-a{fill:#8B97A6;opacity:.2}
+.rfig .rf-arrow{fill:none;stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .rcard.on .rcard-answer{display:block}
 .rcard.on .rcard-ico{background:var(--x-solid);color:#fff}
 .next-topic{align-self:flex-start;display:inline-flex;align-items:center;gap:12px;margin-top:clamp(8px,calc(1.6 * var(--u)),20px);padding:12px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border-strong);color:var(--ink);text-decoration:none;box-shadow:var(--edge),var(--shadow);font-size:var(--fs-body)}
@@ -739,6 +744,10 @@ html.fluid .ask{position:fixed}
 .st-rtick{fill:var(--text);font:700 20px var(--sans);text-anchor:end}
 .st-rname{fill:var(--ink);font:italic 800 26px var(--sans);text-anchor:middle}
 .st-cut{animation:fadeIn .5s ease both}
+.st-origin{animation:fadeIn .5s ease both}
+.st-orbell{fill:none;stroke:var(--se-solid);stroke-width:3.5}
+.st-orbell-a{fill:var(--se-solid);opacity:.14}
+.st-orwho{fill:var(--ink);font:750 22px var(--sans);text-anchor:middle}
 .st-sigzone{fill:var(--x-bg)}
 .st-cutline{stroke:var(--x-solid);stroke-width:3.5;stroke-dasharray:10 7}
 .st-cutlab{fill:var(--x-ink);font:800 24px var(--sans);text-anchor:end}

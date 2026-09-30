@@ -22,8 +22,9 @@
            then the drug bell slides back onto the placebo's (no effect), three trials, one per tap, still give gaps either way, many pile
            round 0, and the pile becomes the bell of chance (both axes, its SE marked); the 2 SE lines with 2.5% beyond each; the
            trial's gap lands (4 ÷ 1.5 = 2.7 SEs); last, the tails at least that far out fill in: p = 0.4% + 0.4%
-   line    a ruler of p-values (1 at the top, 0.001 at the foot, a log scale); the dashed line at 0.05 = 1 in 20
-           with the significant side below it shaded; then each trial lands on the ruler at its p
+   line    a ruler of p-values (1 at the top, 0.001 at the foot, a log scale); with an origin, first a small bell on the
+           left: 2.5% beyond 2 SE each side, 5% = 1 in 20, and who chose the line (Fisher, 1925); the dashed line at
+           0.05 = 1 in 20 with the significant side below it shaded; then each trial lands on the ruler at its p
    ci      our trial's bell of gaps (SE of the difference wide) round what we found; the 2 SE lines and its middle 95%;
            the CI drops out beneath with its sum (4 ± 2 × 1.5 = 1 to 7); then chance's bell round 0 beside it, with
            its own 95% (−3 to +3) beneath: 0 lies outside our CI just as our gap lies outside chance's
@@ -196,8 +197,9 @@ const STORIES = {
     return P.flatMap(Q => Q.pn.at.map((_, k) => () => place(Q, k)));
   },
   line(svg, S) {
-    // a ruler of p-values on a log scale, 1 at the top; one dashed line at the cut, the significant side below it
-    const X = 210, TOP = 34, BOT = 318, DEC = 3, R = 700, y = p => TOP + (-Math.log10(p)) / DEC * (BOT - TOP);
+    // a ruler of p-values on a log scale, 1 at the top; one dashed line at the cut, the significant side below it.
+    // With an `origin`, a small bell comes first on the left: beyond 2 SE lies half the cut each side (who drew the line, and when)
+    const X = S.origin ? 420 : 210, TOP = 34, BOT = 318, DEC = 3, R = S.origin ? 750 : 700, y = p => TOP + (-Math.log10(p)) / DEC * (BOT - TOP);
     const fmt = p => String(+p.toPrecision(2));
     svgEl("path", { class: "dp-axis", d: `M${X} ${TOP - 10} V${BOT + 10}` }, svg);
     for (let k = 0; k <= DEC; k++) {
@@ -212,14 +214,35 @@ const STORIES = {
       svgEl("rect", { x: X + 26, y: -22, width: w, height: 44, rx: 22 }, g);
       svgEl("text", { x: X + 26 + w / 2, y: 7 }, g).textContent = text;
     };
+    const origin = () => {
+      const g = svgEl("g", { class: "st-origin f-test" }, svg), cx = 180, sd = 30, h = 120, base = 230;
+      const yb = v => base - h * Math.exp(-v * v / 2), path = (a, b) => { let d = ""; for (let v = a; v <= b + 1e-9; v += .05) d += `${d ? " L" : "M"}${(cx + v * sd).toFixed(1)} ${yb(v).toFixed(1)}`; return d; };
+      svgEl("path", { class: "dp-axis", d: `M${cx - 3.6 * sd} ${base} H${cx + 3.6 * sd}` }, g);
+      svgEl("path", { class: "st-orbell-a", d: `${path(-3.4, 3.4)} L${cx + 3.4 * sd} ${base} L${cx - 3.4 * sd} ${base} Z` }, g);
+      [-1, 1].forEach(s => {
+        const [a, b] = s > 0 ? [2, 3.4] : [-3.4, -2];
+        svgEl("path", { class: "st-pfill", d: `${path(a, b)} L${cx + b * sd} ${base} L${cx + a * sd} ${base} Z` }, g);
+        svgEl("path", { class: "st-pedge", d: `${path(a, b)} M${cx + a * sd} ${base} H${cx + b * sd}` }, g);
+        svgEl("path", { class: "st-line2", d: `M${cx + s * 2 * sd} ${base} V${base - h - 8}` }, g);
+        svgEl("text", { class: "st-ppct", x: cx + s * 3.3 * sd, y: base - 44 }, g).textContent = `${+(S.cut * 50).toFixed(1)}%`;
+      });
+      svgEl("path", { class: "st-orbell", d: path(-3.4, 3.4) }, g);
+      svgEl("text", { class: "st-2lab", x: cx + 2 * sd + 6, y: base - h - 12 }, g).textContent = "2 SE";
+      const pill = svgEl("g", { class: "st-cpill f-test" }, g), text = `${+(S.cut * 100).toFixed(1)}% = 1 in ${Math.round(1 / S.cut)}`;
+      svgEl("rect", { x: cx - 90, y: base + 22, width: 180, height: 44, rx: 22 }, pill);
+      svgEl("text", { x: cx, y: base + 52 }, pill).textContent = text;
+      svgEl("text", { class: "st-orwho", x: cx, y: base + 100 }, g).textContent = S.origin;
+    };
     return [
+      ...(S.origin ? [origin] : []),
       () => {
         const g = svgEl("g", { class: "st-cut f-test" }, svg), yc = y(S.cut);
         svgEl("rect", { class: "st-sigzone", x: X, y: yc, width: R - X, height: BOT + 10 - yc }, g);
         svgEl("path", { class: "st-cutline", d: `M${X - 10} ${yc} H${R}` }, g);
-        svgEl("text", { class: "st-cutlab", x: R, y: yc - 12 }, g).textContent = `${fmt(S.cut)} = 1 in ${Math.round(1 / S.cut)}`;
+        // the line's value just under it; the two sides named either side of it, clear of the trials' chips
+        svgEl("text", { class: "st-cutlab", x: R - 10, y: yc + 32 }, g).textContent = `${fmt(S.cut)} = 1 in ${Math.round(1 / S.cut)}`;
         svgEl("text", { class: "st-zlab st-zsig", x: R - 14, y: BOT - 4 }, g).textContent = concept("sig").label;
-        svgEl("text", { class: "st-zlab", x: R - 14, y: TOP + 20 }, g).textContent = concept("ns").label;
+        svgEl("text", { class: "st-zlab", x: R - 14, y: yc - 14 }, g).textContent = concept("ns").label;
       },
       ...S.trials.map((t, i) => () => chip(t, i))
     ];

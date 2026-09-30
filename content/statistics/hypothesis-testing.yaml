@@ -21,6 +21,7 @@ sources:
   - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapters 6–8.
   - Petrie A, Sabin C. Medical Statistics at a Glance, 4th ed. Chapters 17–18.
   - Altman DG, Bland JM. Absence of evidence is not evidence of absence. BMJ 1995;311:485.
+  - Fisher RA. Statistical Methods for Research Workers. Edinburgh: Oliver and Boyd, 1925.
 retired: []
 cover: concepts
 
@@ -105,6 +106,8 @@ learn:
     pattern: story
     title: Where is the line?
     kind: line
+    # Fisher (1925) noted that p = 0.05 falls at 1.96, nearly 2, standard deviations and took it as a convenient limit
+    origin: Fisher, 1925
     cut: 0.05
     trials:
       - { label: Trial of 400, p: 0.008 }
