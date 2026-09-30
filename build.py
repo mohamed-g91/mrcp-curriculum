@@ -180,8 +180,17 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line"):
-                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin, gap or line, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide"):
+                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin, gap, line or slide, not {kind!r}")
+            elif kind == "slide":
+                # each panel: a CI of half-width 2 SE (a difference, with se) or `half` (a ratio), at each place in `at`
+                for pn in s.get("panels") or [None]:
+                    if not pn or not all(pn.get(k) is not None for k in ("label", "none", "axis", "range", "ticks", "at")) or (pn.get("se") is None) == (pn.get("half") is None):
+                        errs.append(f"{where}: a slide panel needs label, none, axis, range, ticks, at, and se (a difference) or half (a ratio)")
+                        continue
+                    h, (a, b) = 2 * pn["se"] if pn.get("se") is not None else pn["half"], pn["range"]
+                    if any(c - h < a or c + h > b for c in pn["at"]):
+                        errs.append(f"{where}: panel {pn['label']!r}: every CI must sit inside its range")
             elif kind == "line":
                 # the ruler runs from p = 1 down to 0.001
                 ok = lambda v: isinstance(v, (int, float)) and .001 <= v <= 1

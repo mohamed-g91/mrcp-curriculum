@@ -22,6 +22,8 @@
            trial's gap lands (4 ÷ 1.5 = 2.7 SEs); last, the tails at least that far out fill in: p = 0.4% + 0.4%
    line    a ruler of p-values (1 at the top, 0.001 at the foot, a log scale); the dashed line at 0.05 = 1 in 20
            with the significant side below it shaded; then each trial lands on the ruler at its p
+   slide   two panels, a difference (no effect = 0) and a ratio (no effect = 1); in each, one CI slides towards
+           no effect, one place per tap, its p read out beneath: clear of it, touching it (p = 0.05), across it
    art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
            from the slide's slots, with {key} standing for a concept's label (so H₀ is never retyped) */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -83,6 +85,46 @@ function storyStar(parent, x, y) {
 const sumText = v => `${v.join(" + ")} = ${Stats.sum(v)}`;
 
 const STORIES = {
+  slide(svg, S) {
+    // two panels, a difference and a ratio; in each, one CI slides towards no effect, one place per tap.
+    // A difference's p is worked out from its SE; a ratio's is read from where its CI stands against 1.
+    const PW = 330, GAP = 100, BY = 150, AX = 262, fam = `f-${concept("ci").family}`;
+    const P = S.panels.map((pn, i) => {
+      const L = i * (PW + GAP) + 20, [a, b] = pn.range, x = v => L + (v - a) / (b - a) * PW;
+      const g = svgEl("g", {}, svg);
+      svgEl("text", { class: "st-ptitle", x: L + PW / 2, y: 22 }, g).textContent = pn.label;
+      svgEl("path", { class: "dp-axis", d: `M${L} ${AX} H${L + PW}` }, g);
+      pn.ticks.forEach(t => {
+        svgEl("path", { class: "dp-tick", d: `M${x(t)} ${AX} V${AX + 8}` }, g);
+        svgEl("text", { class: "dp-tlab", x: x(t), y: AX + 32 }, g).textContent = t;
+      });
+      svgEl("text", { class: "cv-alab st-palab", x: L + PW / 2, y: AX + 66 }, g).textContent = pn.axis;
+      svgEl("path", { class: "st-none", d: `M${x(pn.none)} ${AX} V${62}` }, g);
+      svgEl("text", { class: "st-nonelab", x: x(pn.none), y: 52 }, g).textContent = `No effect = ${pn.none}`;
+      const half = pn.se != null ? 2 * pn.se : pn.half;
+      return { pn, x, half, L, g, bar: null, pill: null };
+    });
+    const pText = (Q, c) => {
+      if (Q.pn.se != null) return `p = ${(2 * (1 - Sampling.cdf(Math.abs(c - Q.pn.none) / Q.pn.se))).toPrecision(1)}`;
+      const d = Math.min(Math.abs(c - Q.half - Q.pn.none), Math.abs(c + Q.half - Q.pn.none)), across = c - Q.half < Q.pn.none && c + Q.half > Q.pn.none;
+      return d < 1e-9 ? "p = 0.05" : across ? "p > 0.05" : "p < 0.05";
+    };
+    const place = (Q, k) => {
+      const c = Q.pn.at[k], w = Q.x(c + Q.half) - Q.x(c - Q.half);
+      if (!Q.bar) {
+        Q.bar = svgEl("g", { class: `st-ci ${fam}` }, Q.g);
+        svgEl("path", { d: `M${-w / 2} 0 H${w / 2} M${-w / 2} -12 V12 M${w / 2} -12 V12` }, Q.bar);
+        svgEl("rect", { x: -11, y: -11, width: 22, height: 22, rx: 3 }, Q.bar);
+        // the pill sits just right of the no-effect line; it pops in with a CSS transform, so its place is set on a wrapper
+        Q.pill = svgEl("g", { class: "st-cpill f-test" }, svgEl("g", { transform: `translate(${Q.x(Q.pn.none) + 100} 218)` }, Q.g));
+        svgEl("rect", { x: -80, y: -30, width: 160, height: 44, rx: 22 }, Q.pill);
+        svgEl("text", { x: 0, y: 0 }, Q.pill);
+      }
+      Q.bar.style.transform = `translate(${Q.x(c)}px, ${BY}px)`;
+      $("text", Q.pill).textContent = pText(Q, c);
+    };
+    return P.flatMap(Q => Q.pn.at.map((_, k) => () => place(Q, k)));
+  },
   line(svg, S) {
     // a ruler of p-values on a log scale, 1 at the top; one dashed line at the cut, the significant side below it
     const X = 210, TOP = 34, BOT = 318, DEC = 3, R = 700, y = p => TOP + (-Math.log10(p)) / DEC * (BOT - TOP);

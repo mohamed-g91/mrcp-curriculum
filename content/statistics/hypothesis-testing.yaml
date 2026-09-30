@@ -103,7 +103,16 @@ learn:
       - { label: Trial of 400, p: 0.008 }
       - { label: Trial of 40,  p: 0.4 }
 
-  # To come (see the plan): the sliding CI.
+  # The CI and p agree. The difference keeps the trial's SE (1.5): at 4 (CI 1 to 7) p = 0.008; at 3 (CI 0 to 6)
+  # p = 0.05 (2 SE for 1.96); at 1.5 (CI −1.5 to 4.5) p = 0.3. The ratio is a relative risk, no effect = 1,
+  # its CI 0.4 wide: 0.45 to 0.85, then 0.6 to 1.0 (touching), then 0.8 to 1.2 (across).
+  - id: agree
+    pattern: story
+    title: The CI and p agree
+    kind: slide
+    panels:
+      - { label: A difference, none: 0, axis: Extra fall on the drug (mmHg), range: [-2, 8], ticks: [0, 2, 4, 6, 8], se: 1.5, at: [4, 3, 1.5] }
+      - { label: A ratio, none: 1, axis: Relative risk, range: [0.4, 1.6], ticks: [0.5, 1, 1.5], half: 0.2, at: [0.65, 0.8, 1.0] }
 
   - id: important
     pattern: reveal-cards

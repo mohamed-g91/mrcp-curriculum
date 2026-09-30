@@ -706,6 +706,14 @@ html.fluid .ask{position:fixed}
 .st-tchip circle{fill:var(--ink);stroke:var(--surface);stroke-width:2.5}
 .st-tchip rect{fill:var(--surface);stroke:var(--ink);stroke-width:2.5}
 .st-tchip text{fill:var(--ink);font:750 20px var(--sans);text-anchor:middle}
+/* the sliding CI: one bar per panel moves towards no effect */
+.st-ptitle{fill:var(--ink);font:750 24px var(--serif,var(--sans));text-anchor:middle}
+.st-palab{font-size:19px}
+.st-none{stroke:var(--ink);stroke-width:2.5;stroke-dasharray:7 6}
+.st-nonelab{fill:var(--ink);font:750 18px var(--sans);text-anchor:middle}
+.st-ci{transition:transform .8s var(--ease);animation:fadeIn .5s ease both}
+.st-ci path{stroke:var(--x-solid);stroke-width:5;stroke-linecap:round;fill:none}
+.st-ci rect{fill:var(--x-solid);stroke:var(--sc-line);stroke-width:2.5}
 /* an art story: one drawing across the figure's width, its parts joining beat by beat */
 .story.st-solo{grid-template-columns:minmax(0,1fr);max-width:1000px}
 .story.st-solo>.st-chart{grid-column:1}
