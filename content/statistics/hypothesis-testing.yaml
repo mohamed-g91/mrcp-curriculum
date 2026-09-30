@@ -92,7 +92,18 @@ learn:
     art: ht-court
     slots: { claim: "{h0}: no difference in BP", evidence: 4 mmHg, p: p = 0.4, verdict: Not guilty, note: ≠ innocent }
 
-  # To come, each as its own figure (see the plan): the 0.05 line and the sliding CI.
+  # The 0.05 line: both trials on one ruler (p from the gap story and the Not guilty story).
+  # That the line is a convention (0.049 and 0.051 are almost the same evidence) is said aloud, not written.
+  - id: line
+    pattern: story
+    title: Where is the line?
+    kind: line
+    cut: 0.05
+    trials:
+      - { label: Trial of 400, p: 0.008 }
+      - { label: Trial of 40,  p: 0.4 }
+
+  # To come (see the plan): the sliding CI.
 
   - id: important
     pattern: reveal-cards

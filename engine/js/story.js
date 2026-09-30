@@ -20,6 +20,8 @@
            wider band (± the SE of the difference); the gap's band drops onto an axis and rises into the bell of gaps
            that chance alone would give (both axes, its SE marked); the 2 SE lines with 2.5% beyond each; the
            trial's gap lands (4 ÷ 1.5 = 2.7 SEs); last, the tails at least that far out fill in: p = 0.4% + 0.4%
+   line    a ruler of p-values (1 at the top, 0.001 at the foot, a log scale); the dashed line at 0.05 = 1 in 20
+           with the significant side below it shaded; then each trial lands on the ruler at its p
    art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
            from the slide's slots, with {key} standing for a concept's label (so H₀ is never retyped) */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -81,6 +83,35 @@ function storyStar(parent, x, y) {
 const sumText = v => `${v.join(" + ")} = ${Stats.sum(v)}`;
 
 const STORIES = {
+  line(svg, S) {
+    // a ruler of p-values on a log scale, 1 at the top; one dashed line at the cut, the significant side below it
+    const X = 210, TOP = 34, BOT = 318, DEC = 3, R = 700, y = p => TOP + (-Math.log10(p)) / DEC * (BOT - TOP);
+    const fmt = p => String(+p.toPrecision(2));
+    svgEl("path", { class: "dp-axis", d: `M${X} ${TOP - 10} V${BOT + 10}` }, svg);
+    for (let k = 0; k <= DEC; k++) {
+      svgEl("path", { class: "dp-tick", d: `M${X - 10} ${y(10 ** -k)} H${X}` }, svg);
+      svgEl("text", { class: "st-rtick", x: X - 18, y: y(10 ** -k) + 7 }, svg).textContent = fmt(10 ** -k);
+    }
+    svgEl("text", { class: "st-rname", x: X, y: TOP - 22 }, svg).textContent = "p";
+    const chip = (t, i) => {
+      const g = svgEl("g", { class: "st-tchip", transform: `translate(0 ${y(t.p)})` }, svg);
+      svgEl("circle", { cx: X, cy: 0, r: 8 }, g);
+      const text = `${t.label} · p = ${fmt(t.p)}`, w = 30 + text.length * 11;
+      svgEl("rect", { x: X + 26, y: -22, width: w, height: 44, rx: 22 }, g);
+      svgEl("text", { x: X + 26 + w / 2, y: 7 }, g).textContent = text;
+    };
+    return [
+      () => {
+        const g = svgEl("g", { class: "st-cut f-test" }, svg), yc = y(S.cut);
+        svgEl("rect", { class: "st-sigzone", x: X, y: yc, width: R - X, height: BOT + 10 - yc }, g);
+        svgEl("path", { class: "st-cutline", d: `M${X - 10} ${yc} H${R}` }, g);
+        svgEl("text", { class: "st-cutlab", x: R, y: yc - 12 }, g).textContent = `${fmt(S.cut)} = 1 in ${Math.round(1 / S.cut)}`;
+        svgEl("text", { class: "st-zlab st-zsig", x: R - 14, y: BOT - 4 }, g).textContent = concept("sig").label;
+        svgEl("text", { class: "st-zlab", x: R - 14, y: TOP + 20 }, g).textContent = concept("ns").label;
+      },
+      ...S.trials.map((t, i) => () => chip(t, i))
+    ];
+  },
   gap(svg, S) {
     // the numbers: each group's mean wobbles by its SEM, the gap between them by the SE of the difference
     const sem = S.sd / Math.sqrt(S.n), se = S.sd * Math.sqrt(2 / S.n), z = S.gap / se;

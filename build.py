@@ -180,8 +180,14 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap"):
-                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin or gap, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line"):
+                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin, gap or line, not {kind!r}")
+            elif kind == "line":
+                # the ruler runs from p = 1 down to 0.001
+                ok = lambda v: isinstance(v, (int, float)) and .001 <= v <= 1
+                if not ok(s.get("cut")) or not s.get("trials") or not all(t.get("label") and ok(t.get("p")) for t in s["trials"]):
+                    errs.append(f"{where}: a line story needs a cut and trials [{{label, p}}], every p from 0.001 to 1")
+                refs += ["sig", "ns"]
             elif kind == "gap":
                 # two groups of n with the same SD, and the gap between their means; SEs and p are worked out in the browser
                 if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n", "gap")) or len(s.get("labels") or []) != 3 or not (s.get("axis") and s.get("y_axis")):

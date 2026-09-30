@@ -693,6 +693,19 @@ html.fluid .ask{position:fixed}
 .st-pfill{fill:var(--x-solid)}
 .st-pedge{fill:none;stroke:var(--x-solid);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
 .st-ppct{fill:var(--x-ink);font:800 22px var(--sans);text-anchor:middle}
+/* the 0.05 line: a ruler of p-values, the line across it, each trial landing at its p */
+.st-rtick{fill:var(--text);font:700 20px var(--sans);text-anchor:end}
+.st-rname{fill:var(--ink);font:italic 800 26px var(--sans);text-anchor:middle}
+.st-cut{animation:fadeIn .5s ease both}
+.st-sigzone{fill:var(--x-bg)}
+.st-cutline{stroke:var(--x-solid);stroke-width:3.5;stroke-dasharray:10 7}
+.st-cutlab{fill:var(--x-ink);font:800 24px var(--sans);text-anchor:end}
+.st-zlab{fill:var(--muted);font:750 20px var(--sans);text-anchor:end}
+.st-zlab.st-zsig{fill:var(--x-ink)}
+.st-tchip{animation:fadeIn .5s ease both}
+.st-tchip circle{fill:var(--ink);stroke:var(--surface);stroke-width:2.5}
+.st-tchip rect{fill:var(--surface);stroke:var(--ink);stroke-width:2.5}
+.st-tchip text{fill:var(--ink);font:750 20px var(--sans);text-anchor:middle}
 /* an art story: one drawing across the figure's width, its parts joining beat by beat */
 .story.st-solo{grid-template-columns:minmax(0,1fr);max-width:1000px}
 .story.st-solo>.st-chart{grid-column:1}
