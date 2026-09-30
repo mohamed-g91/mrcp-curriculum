@@ -66,11 +66,12 @@ def p_title(slide, topic):
     )
     # a picture of the whole topic above its name
     # cover: concepts puts each concept's icon, in its family colour, in a row above the name
+    # (a concept with cover: false, such as a bucket's name, is left out of the row)
     cover = ""
     if topic.get("cover") == "concepts":
         cover = '<div class="cover" aria-hidden="true">' + "".join(
             f'<span class="f-{c["family"]}" style="--i:{i}">{icon(c["icon"])}</span>'
-            for i, c in enumerate(topic["concepts"].values())) + "</div>"
+            for i, c in enumerate(c for c in topic["concepts"].values() if c.get("cover", True))) + "</div>"
     return (f'<div class="title-wrap">{cover}<h1>{e(topic["title"])}</h1>'
             f'<div class="part-cards">{cards}</div></div>{credits(topic)}')
 
@@ -88,7 +89,7 @@ def p_video(slide, topic):
     Nothing loads from YouTube until the poster or a chapter is tapped, so the page stays offline
     and cookie-free until then. With no video yet, the poster says so and the chapters show what is coming."""
     vid = topic.get("_video") or ""
-    cover = "".join(f'<span class="f-{c["family"]}">{icon(c["icon"])}</span>' for c in topic["concepts"].values())
+    cover = "".join(f'<span class="f-{c["family"]}">{icon(c["icon"])}</span>' for c in topic["concepts"].values() if c.get("cover", True))
     face = f'<span class="vid-cover" aria-hidden="true">{cover}</span><b class="vid-title">{e(topic["title"])}</b>'
     if vid:
         poster = (f'<button type="button" class="vid-poster" aria-label="Play the video: {e(topic["title"])}">{face}'

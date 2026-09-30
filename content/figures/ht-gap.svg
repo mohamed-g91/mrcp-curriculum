@@ -1,0 +1,9 @@
+<svg class="rfig" viewBox="0 0 240 130" role="img" aria-label="Two means joined by their gap, over the gap's wider soft band">
+  <defs><linearGradient id="ht-soft-gap" x1="0" x2="1">
+    <stop offset="0" class="rf-stop0"/><stop offset=".3" class="rf-stop1"/><stop offset=".5" class="rf-stop2"/><stop offset=".7" class="rf-stop1"/><stop offset="1" class="rf-stop0"/>
+  </linearGradient></defs>
+  <circle class="rf-grp1" cx="92" cy="30" r="9"/><circle class="rf-grp2" cx="148" cy="30" r="9"/>
+  <path class="rf-brace" d="M92 46 v8 h56 v-8"/>
+  <rect x="50" y="78" width="140" height="24" rx="12" fill="url(#ht-soft-gap)"/>
+  <circle class="rf-sq-dot" cx="120" cy="90" r="9"/>
+</svg>

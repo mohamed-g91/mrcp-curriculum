@@ -1,0 +1,11 @@
+<svg class="rfig" viewBox="0 0 240 130" role="img" aria-label="People spread along a line: how much people differ">
+  <g class="rf-people">
+    <circle cx="36" cy="58" r="8"/><path d="M24 88 q0 -18 12 -18 q12 0 12 18 Z"/>
+    <circle cx="70" cy="50" r="8"/><path d="M58 80 q0 -18 12 -18 q12 0 12 18 Z"/>
+    <circle cx="104" cy="60" r="8"/><path d="M92 90 q0 -18 12 -18 q12 0 12 18 Z"/>
+    <circle cx="136" cy="52" r="8"/><path d="M124 82 q0 -18 12 -18 q12 0 12 18 Z"/>
+    <circle cx="170" cy="58" r="8"/><path d="M158 88 q0 -18 12 -18 q12 0 12 18 Z"/>
+    <circle cx="204" cy="50" r="8"/><path d="M192 80 q0 -18 12 -18 q12 0 12 18 Z"/>
+  </g>
+  <path class="rf-ci" d="M24 106 H216"/>
+</svg>

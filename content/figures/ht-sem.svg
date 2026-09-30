@@ -1,0 +1,7 @@
+<svg class="rfig" viewBox="0 0 240 130" role="img" aria-label="One mean in a soft band: how much a mean differs from sample to sample">
+  <defs><linearGradient id="ht-soft-sem" x1="0" x2="1">
+    <stop offset="0" class="rf-stop0"/><stop offset=".3" class="rf-stop1"/><stop offset=".5" class="rf-stop2"/><stop offset=".7" class="rf-stop1"/><stop offset="1" class="rf-stop0"/>
+  </linearGradient></defs>
+  <rect x="70" y="54" width="100" height="24" rx="12" fill="url(#ht-soft-sem)"/>
+  <circle class="rf-grp1" cx="120" cy="66" r="10"/>
+</svg>

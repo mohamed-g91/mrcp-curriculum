@@ -269,6 +269,15 @@ mark.clue{cursor:pointer;background:var(--x-bg);color:var(--x-ink);border-bottom
 .rfig .rf-other{stroke:var(--border-strong);stroke-width:3;stroke-linecap:round}
 .rfig .rf-other-sq{fill:var(--border-strong)}
 .rfig .rf-sq{fill:var(--x-solid);stroke:var(--sc-line);stroke-width:1.5}
+/* Hypothesis testing's recap: people along a line, a mean (or two, and their gap) in a band that fades out at its ends */
+.rfig .rf-people circle,.rfig .rf-people path{fill:var(--x-bd);stroke:var(--sc-line);stroke-width:1.5}
+.rfig .rf-stop0{stop-color:var(--x-solid);stop-opacity:0}
+.rfig .rf-stop1{stop-color:var(--x-solid);stop-opacity:.35}
+.rfig .rf-stop2{stop-color:var(--x-solid);stop-opacity:.5}
+.rfig .rf-grp1{fill:var(--muted);stroke:var(--sc-line);stroke-width:2}
+.rfig .rf-grp2{fill:var(--border-strong);stroke:var(--sc-line);stroke-width:2}
+.rfig .rf-brace{fill:none;stroke:var(--x-solid);stroke-width:3;stroke-linejoin:round}
+.rfig .rf-sq-dot{fill:var(--x-solid);stroke:var(--sc-line);stroke-width:2}
 .rcard.on .rcard-answer{display:block}
 .rcard.on .rcard-ico{background:var(--x-solid);color:#fff}
 .next-topic{align-self:flex-start;display:inline-flex;align-items:center;gap:12px;margin-top:clamp(8px,calc(1.6 * var(--u)),20px);padding:12px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border-strong);color:var(--ink);text-decoration:none;box-shadow:var(--edge),var(--shadow);font-size:var(--fs-body)}

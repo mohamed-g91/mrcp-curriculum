@@ -1,0 +1,4 @@
+<svg class="rfig" viewBox="0 0 240 130" role="img" aria-label="A wide confidence interval round a big effect, crossing no effect">
+  <path class="rf-axis" d="M20 104 H220"/><path class="rf-null" d="M40 18 V104"/>
+  <path class="rf-ci" d="M28 60 H212 M28 50 V70 M212 50 V70"/><rect class="rf-sq" x="113" y="53" width="14" height="14"/>
+</svg>
