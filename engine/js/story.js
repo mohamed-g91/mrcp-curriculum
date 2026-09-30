@@ -248,12 +248,17 @@ const STORIES = {
       svgEl("path", { class: "st-tb-a", d: `${d} L${x(c + 3.2 * sem)} ${base} L${x(c - 3.2 * sem)} ${base} Z` }, g);
       svgEl("path", { class: "st-tb-l", d }, g);
       svgEl("path", { class: "st-tb-mean", d: `M${x(c)} ${base - TH} V${base}` }, g);
+      // 2 SEM either side, dashed: they stay on the bell when the groups join and when the drug slides back
+      [-1, 1].forEach(k => svgEl("path", { class: "st-line2", d: `M${x(c + k * 2 * sem)} ${base} V${base - TH - 4}` }, g));
+      // its name and "2 SEM" stand just outside its outer dashed line: the placebo's on the left, the drug's on the right
+      const out = x(c + side * 2 * sem) + side * 8, anchor = side < 0 ? "end" : "start";
+      svgEl("text", { class: "st-tb-2", x: out, y: base - TH * .45 + 6, "text-anchor": anchor }, g).textContent = "2 SEM";
+      svgEl("text", { class: "st-tb-t", x: out, y: base - TH + 12, "text-anchor": anchor }, g).textContent = lab;
       svgEl("text", { class: "st-tb-v", x: x(c), y: base + 22 }, g).textContent = mean;
       svgEl("text", { class: "st-tb-ax", x: x(-3.4 * sem), y: base + 22 }, g).textContent = S.means_axis;
-      svgEl("text", { class: "st-tb-t", x: x(c) + side * 40, y: base - TH + 12, "text-anchor": side < 0 ? "end" : "start" }, g).textContent = lab;
       const mk = svgEl("g", { class: "st-tb-sem" }, g), yy = base - TH * Math.exp(-.5);
       svgEl("path", { d: `M${x(c)} ${yy} H${x(c + sem)}` }, mk);
-      svgEl("text", { x: x(c + sem) + 8, y: yy + 6 }, mk).textContent = `SEM ${r1(sem)}`;
+      svgEl("text", { x: x(c) + 7, y: yy - 9, "text-anchor": "start" }, mk).textContent = `SEM ${r1(sem)}`;
       return g;
     };
     // one trial: its own pair of bells round its two means, the gap between them bracketed, and dropped onto the axis below
