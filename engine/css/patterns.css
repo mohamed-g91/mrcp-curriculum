@@ -700,7 +700,8 @@ html.fluid .ask{position:fixed}
 .st-tb-drug .st-tb-a{fill:var(--x-solid)}.st-tb-drug .st-tb-l{stroke:var(--x-solid)}.st-tb-drug .st-tb-t{fill:var(--x-ink)}
 .st-tb-t{font:750 20px var(--sans)}
 .st-tb{animation:fadeIn .5s ease both;transition:transform .8s var(--ease),opacity .4s ease}
-.st-tb .dp-axis,.st-tb-v,.st-tb-sem{transition:opacity .4s ease}
+.st-tb .dp-axis,.st-tb-v,.st-tb-ax,.st-tb-sem{transition:opacity .4s ease}
+.st-tb-ax{fill:var(--muted);font:600 16px var(--sans)}
 .st-tb-mean{stroke:var(--ink);stroke-width:2;stroke-dasharray:5 5}
 .st-tb-v{fill:var(--text);font:700 18px var(--sans);text-anchor:middle}
 .st-tb-sem path{stroke:var(--ink);stroke-width:3}
