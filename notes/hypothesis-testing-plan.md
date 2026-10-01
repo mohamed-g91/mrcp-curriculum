@@ -36,15 +36,20 @@ The user found one video too long. Decisions so far:
 
 ### Lecture 1 · Hypothesis testing (keeps `stats.hypothesis-testing`): the logic, no maths
 
-1. Hook: the trial, "Could this be chance?"
-2. Court, Guilty: H₀, evidence, p = 0.008, verdict (the p is given; lecture 2 shows where it comes from)
-3. **The p-value, shown with a case or trial scenario, not the coin. Agreed in principle; which scenario is still open,
-   to decide in the next session.** One proposal: run the trial 1,000 times with placebo in both groups; about 8 give
-   a gap of 4 mmHg or more either way (about 4 with the drug arm lower, 4 higher): p = 0.008. A grid of 1,000 squares,
-   the 8 lit in olive. Draw three mockups once the scenario is chosen.
-4. The line: 1 in 20 = 5 in 100 = **50 in 1,000** (Fisher, 1925), set beside the 8 in 1,000
-5. Court, Not guilty: the trial of 40, p = 0.4
-6. The same scenario for the trial of 40 (in the grid proposal, about 400 in 1,000 light up, 200 each way)
+Slide list agreed with the user 2026-10-02:
+
+| # | Slide | What it shows |
+| --- | --- | --- |
+| 1 | Could this be chance? (hook) | The trial: 400 people, BP fell 4 mmHg more on the drug |
+| 2 | Innocent until proven guilty (court, Guilty) | H₀, the evidence, p = 0.008 → Reject H₀ (the p is given) |
+| 3 | What does p = 0.008 mean? | 1,000 trials with placebo in both arms: about 8 give a gap of 4 mmHg or more, either way; p = 0.008 |
+| 4 | The same gap in 40 people (court, Not guilty) | p = 0.4 → Not guilty · ≠ innocent |
+| 5 | What does p = 0.4 mean? | The same grid for the trial of 40: about 400 in 1,000 light up (200 each way) |
+| 6 | Where is the line? | The two grids side by side and the line at 50 in 1,000 (1 in 20 = 0.05, Fisher, 1925): 400 people below it (significant), 40 above (not) |
+| 7 | Back to the trial (hook solved) | p = 0.008 < 0.05 → Reject H₀ |
+
+The grid figure (slides 3, 5, 6): three mockups sent 2026-10-02 (A scattered, B lined up by gap with the big ones at both ends,
+C ten blocks of 100); awaiting the user's choice.
 
 Cases: new **c11 (solved)** "p = 0.008: significant at 5%?", then c02 (H₀), c03 (meaning of p = 0.03), c08 (pilot p = 0.2), c10 (p = 0.06 "no effect").
 
@@ -78,8 +83,7 @@ Add both new topics to `curriculum.yaml` after Standard error, `status: draft`.
 
 ## Waiting on the user
 
-1. Which case or trial scenario shows the p-value in lecture 1 (the 1,000 placebo-only trials grid is one proposal);
-   then the lecture 1 slide list and three mockups of the chosen figure.
+1. Which grid mockup (A, B or C) for lecture 1's slides 3, 5 and 6.
 2. Titles and slugs for lectures 2 and 3 (slugs are permanent once published).
 3. Go-ahead to draft lecture 2's cases for review.
 
