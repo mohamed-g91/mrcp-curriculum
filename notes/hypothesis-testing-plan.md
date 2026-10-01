@@ -48,8 +48,10 @@ Slide list agreed with the user 2026-10-02:
 | 6 | Where is the line? | The two grids side by side and the line at 50 in 1,000 (1 in 20 = 0.05, Fisher, 1925): 400 people below it (significant), 40 above (not) |
 | 7 | Back to the trial (hook solved) | p = 0.008 < 0.05 → Reject H₀ |
 
-The grid figure (slides 3, 5, 6): three mockups sent 2026-10-02 (A scattered, B lined up by gap with the big ones at both ends,
-C ten blocks of 100); awaiting the user's choice.
+The grid figure (slides 3, 5, 6): the user chose **B** (2026-10-02): 1,000 grey squares (40 columns × 25), one per placebo-only trial,
+filled column by column in order of the gap, biggest fall first and biggest rise last, so the big gaps sit at both ends
+(4 and 4 lit in olive for 400 people; 200 and 200 for 40 people), with "8 in 1,000 · p = 0.008" beside it. On slide 6 the line
+(50 in 1,000) marks 25 trials at each end. Mockup script: the session scratchpad grid/make.py.
 
 Cases: new **c11 (solved)** "p = 0.008: significant at 5%?", then c02 (H₀), c03 (meaning of p = 0.03), c08 (pilot p = 0.2), c10 (p = 0.06 "no effect").
 
@@ -79,11 +81,10 @@ Hook ("4 mmHg, 95% CI 1 to 7: what does 1 to 7 tell us?") · Where could the tru
 · Back to the trial (CI = 4 ± 2 × 1.5). Cases c01, c04, c05, c06, c07, c09 move here with new IDs (retire them in lecture 1); warm-up items
 w03–w06, w08 move here with new IDs.
 
-Add both new topics to `curriculum.yaml` after Standard error, `status: draft`.
+Lessons 4, 5 and 6 of the series: both new topics are in `curriculum.yaml` after Hypothesis testing (`status: planned`; titles and slugs as proposed, still changeable until published).
 
 ## Waiting on the user
 
-1. Which grid mockup (A, B or C) for lecture 1's slides 3, 5 and 6.
 2. Titles and slugs for lectures 2 and 3 (slugs are permanent once published).
 3. Go-ahead to draft lecture 2's cases for review.
 

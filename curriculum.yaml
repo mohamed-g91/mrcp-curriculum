@@ -23,6 +23,8 @@ specialties:
       - { slug: standard-error,           title: Standard error,                       status: draft,   video: null }
       # B. Testing ideas
       - { slug: hypothesis-testing,       title: Hypothesis testing,                   status: draft,   video: null }
+      - { slug: testing-a-difference,     title: Testing a difference,                 status: planned, video: null }
+      - { slug: ci-and-p,                 title: Confidence intervals and p,           status: planned, video: null }
       - { slug: errors-and-power,         title: Errors and power,                     status: planned, video: null }
       - { slug: choose-the-right-test,    title: Choosing the right test,              status: planned, video: null }
       - { slug: correlation-regression,   title: Correlation and regression,           status: planned, video: null }
