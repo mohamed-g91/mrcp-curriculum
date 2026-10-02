@@ -1,0 +1,311 @@
+# Confidence intervals and p: MRCP Part 1 statistics. Lesson 6 of the series: how big is the effect?
+# Lesson 3 gave the 95% CI of a mean (mean ± 2 SEM); lesson 5 gave the SE of a difference. This lesson puts a CI round a gap,
+# says what 95% means, and shows why the CI and p always agree.
+# The same trial runs through: 400 people with high blood pressure, a new drug or a placebo, 200 in each group;
+# systolic BP fell 4 mmHg more on the drug (SD 15 mmHg in each group).
+#   SE of the difference = 15 × √(2 ÷ 200) = 1.5 mmHg; 95% CI = 4 ± 2 × 1.5 = 1 to 7 mmHg; p ≈ 0.008
+# The small trial: the same 4 mmHg in 40 people, 20 in each group: SE ≈ 4.7, 95% CI = 4 ± 9.4 = −5.4 to 13.4, p ≈ 0.4.
+# "2 SE" stands for 1.96 SE, as in lessons 3 to 5; the narration says "1.96, about 2". Two-sided throughout.
+# Say "we are 95% confident the true effect is 1 to 7", never "a 95% chance it is in 1 to 7": the true effect is fixed;
+# the 95% belongs to the method (about 95 in 100 CIs made this way catch it), not to one CI.
+# IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
+
+id: stats.ci-and-p
+title: Confidence intervals and p
+description: How big is the effect? The 95% confidence interval round a difference, what 95% means, why the CI and p always agree, ratios whose no-effect value is 1, and significant against important. Learn from one blood pressure trial, then practise on exam-style stems.
+status: draft
+updated: 2026-10-03
+sources:
+  - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapters 6–8, 16.
+  - Petrie A, Sabin C. Medical Statistics at a Glance, 4th ed. Chapters 11, 17.
+  - Gardner MJ, Altman DG. Confidence intervals rather than P values: estimation rather than hypothesis testing. BMJ 1986;292:746–50.
+  - Altman DG, Bland JM. Absence of evidence is not evidence of absence. BMJ 1995;311:485.
+  # the narration's reason for 5 mmHg as worth having: about 10% fewer major cardiovascular events per 5 mmHg lower systolic BP
+  - Blood Pressure Lowering Treatment Trialists' Collaboration. Pharmacological blood pressure lowering for primary and secondary prevention of cardiovascular disease across different levels of blood pressure. Lancet 2021;397:1625–36.
+retired: []
+cover: concepts
+
+# Teal goes with the estimate and how sure it is (the SE and the CI), olive with testing (H₀'s no effect, the p-value, significance).
+families:
+  se: The estimate
+  test: Testing
+  gray: Neutral
+
+concepts:
+  # the SE of the difference; figures write "SE 1.5", "2 SE"
+  se:   { label: SE,      family: se,   icon: narrow }
+  ci:   { label: 95% CI,  family: se,   icon: spread }
+  p:    { label: p-value, family: test, icon: tails }
+  # the two verdicts; they are not ideas of their own, so they stay off the cover
+  sig:  { label: Significant,     family: test, icon: check, cover: false }
+  ns:   { label: Not significant, family: gray, icon: dash,  cover: false }
+
+learn:
+  - id: hook
+    pattern: hook
+    title: How big is the effect?
+    stem: "400 people with high blood pressure took a new drug or a placebo, 200 in each group. Systolic BP fell [[4 mmHg]] more on the drug (SD 15 mmHg), [[p = 0.008]]."
+    question: Unlikely to be chance. But how big is the effect?
+    scene: case-older
+
+  # Our trial's bell of gaps round 4 (SE 1.5): the 2 SE lines, its middle 95%, then the CI with its sum: 4 ± 2 × 1.5 = 1 to 7.
+  # Lesson 3's mean ± 2 SEM, now round a gap.
+  - id: where
+    pattern: story
+    title: Where could the true effect be?
+    kind: ci
+    start: 1
+    chance: false
+    sd: 15
+    n: 200
+    gap: 4
+    labels: [Our trial, No effect]
+    axis: Extra fall on the drug (mmHg)
+    y_axis: "% of trials"
+
+  # 20 runs of the same trial, made up as a computer would, round a true effect we pretend to know (3 mmHg, by the author's
+  # choice: never our 4, which would look like the truth). Each CI is its centre ± 2 × 1.5. Ours (4: 1 to 7) comes first;
+  # 19 catch 3, one (7.6: 4.6 to 10.6) misses on the high side. The narration: a high miss overstates the drug, misses
+  # fall either side, and in a real trial the truth is never seen.
+  - id: runs
+    pattern: story
+    title: What does 95% mean?
+    kind: runs
+    start: 1
+    se: 1.5
+    truth: 3
+    truth_label: Say the truth is 3
+    centres: [4, 2.1, 3.8, 1.2, 5.0, 2.6, 0.7, 3.3, 4.6, 7.6, 2.9, 1.8, 3.9, 2.4, 5.4, 0.9, 3.1, 4.2, 1.5, 2.2]
+    range: [-4, 12]
+    label: Our trial
+    axis: Extra fall on the drug (mmHg)
+
+  # Our bell round 4 and chance's bell round 0 (H₀), the same width (SE 1.5), each with its middle 95% (1 to 7; −3 to 3).
+  # 4 is 4 from 0, more than 2 SE (3) either way: 4 lies outside chance's 95% exactly when 0 lies outside ours.
+  - id: agree
+    pattern: story
+    title: Why do the CI and p agree?
+    kind: mirror
+    start: 1
+    sd: 15
+    n: 200
+    gap: 4
+    range: [-6, 10]
+    labels: [Our trial, No effect]
+    chips: ["4 outside chance’s 95%", "0 outside our 95%"]
+    axis: Extra fall on the drug (mmHg)
+    y_axis: "% of trials"
+
+  # One CI of the trial's width (± 2 × 1.5) slides towards 0: at 4 (1 to 7) p = 0.008; at 3 (0 to 6) p = 0.05 (2 SE for 1.96);
+  # at 1.5 (−1.5 to 4.5) p = 0.3.
+  - id: slide
+    pattern: story
+    title: Sliding towards 0
+    kind: slide
+    panels:
+      - { none: 0, axis: Extra fall on the drug (mmHg), range: [-2, 8], ticks: [-2, 0, 2, 4, 6, 8], se: 1.5, at: [4, 3, 1.5] }
+
+  # The same 4 mmHg in 400 and 40 people (lesson 5): 4 ± 2 × 1.5 = 1 to 7; 4 ± 2 × 4.7 = −5.4 to 13.4. Wide means unsure;
+  # crossing 0 means not significant.
+  - id: wider
+    pattern: story
+    title: Same gap, wider CI
+    kind: cibars
+    start: 1
+    sd: 15
+    sums: true
+    range: [-8, 16]
+    none_label: No effect
+    axis: Extra fall on the drug (mmHg)
+    rows:
+      - { label: 400 people, n: 200, gap: 4 }
+      - { label: 40 people,  n: 20,  gap: 4 }
+
+  # A ratio (relative risk = risk on the drug ÷ risk on placebo; an odds ratio works the same way): no effect is 1.
+  # Its CI is even on a log axis: c ÷ 1.25 to c × 1.25. At 0.6 (0.48 to 0.75) p < 0.05; at 0.8 (0.64 to 1.0) p = 0.05;
+  # at 1.0 (0.8 to 1.25) p > 0.05. Risk and odds are taught in lesson 13.
+  - id: ratio
+    pattern: story
+    title: "A ratio: no effect is 1"
+    kind: slide
+    panels:
+      - { none: 1, axis: Relative risk, range: [0.4, 1.6], ticks: [0.5, 0.75, 1, 1.5], factor: 1.25, at: [0.6, 0.8, 1.0] }
+
+  # Against the smallest effect worth having (5 mmHg, the author's choice; see the BPLTTC source). 10,000 in each group:
+  # SE = 15 × √(2 ÷ 10,000) ≈ 0.2, 1 ± 0.4 = 0.6 to 1.4, p < 0.001. Ours: 1 to 7, straddling 5, so it may or may not be
+  # worth having. 15 in each group: SE = 15 × √(2 ÷ 15) ≈ 5.5, 10 ± 11 = −1 to 21, p ≈ 0.07.
+  - id: important
+    pattern: story
+    title: Significant or important?
+    kind: cibars
+    sd: 15
+    range: [-4, 22]
+    none_label: No effect
+    worth: { at: 5, label: Worth having, below: Too small, above: Worth having }
+    axis: Extra fall on the drug (mmHg)
+    rows:
+      - { label: "20,000 people", n: 10000, gap: 1,  verdict: sig, note: small }
+      - { label: 400 people,      n: 200,   gap: 4,  verdict: sig, note: may be worth having }
+      - { label: 30 people,       n: 15,    gap: 10, verdict: ns,  note: not proven }
+
+  - id: hook-solved
+    pattern: working
+    title: Back to the trial
+    scene: doctor-think
+    stem: "[[200 people in each group]]. Systolic BP fell [[4 mmHg more on the drug (SD 15 mmHg)]]."
+    lines:
+      - { family: se,   text: "SE = 15 × √(2 ÷ 200) =", result: 1.5 mmHg }
+      - { family: se,   text: "95% CI = 4 ± 2 × 1.5 =", result: 1 to 7 mmHg }
+      - { family: test, text: "It misses 0, so",        result: "p < 0.05" }
+    answer: "We are 95% confident the drug lowers systolic BP by 1 to 7 mmHg more than placebo."
+
+practise:
+  - id: warmup
+    pattern: sort
+    title: Significant or not?
+    buckets: [sig, ns]
+    retry: "Ask: does the CI miss no effect? For a difference that is 0; for a ratio it is 1."
+    done: "A CI that misses no effect is significant at 5%: 0 for a difference, 1 for a ratio."
+    items:
+      - { id: w01, label: "Difference 5 mmHg (95% CI 2 to 8)",            answer: sig, why: "The CI misses 0, the no-effect value for a difference." }
+      - { id: w02, label: "Difference 2 kg (95% CI −1 to 5)",             answer: ns,  why: "The CI crosses 0." }
+      - { id: w03, label: "Relative risk 0.7 (95% CI 0.5 to 0.9)",        answer: sig, why: "The CI misses 1, the no-effect value for a ratio." }
+      - { id: w04, label: "Odds ratio 1.2 (95% CI 0.8 to 1.9)",           answer: ns,  why: "The CI crosses 1." }
+      - { id: w05, label: "Relative risk 1.1 (95% CI 0.9 to 1.3)",        answer: ns,  why: "The CI crosses 1." }
+      - { id: w06, label: "Difference −4 mmol/mol (95% CI −7 to −1)",     answer: sig, why: "The whole CI is below 0, so it misses 0." }
+      - { id: w07, label: "Odds ratio 2.5 (95% CI 1.1 to 5.6)",           answer: sig, why: "The whole CI is above 1." }
+      - { id: w08, label: "Difference 0.5 mmol/L (95% CI −0.1 to 1.1)",   answer: ns,  why: "The CI crosses 0." }
+
+  - id: cases
+    pattern: stem-quiz
+    title: Confidence intervals and p
+    options: [sig, ns]
+    # The first case is the solved example; the rest are dealt in a random order.
+    # Every case brings its own options; the scenes are the nearest cartoons from the cast.
+    cases:
+      - id: c01
+        scene: case-older
+        solved: true
+        stem: 400 people with high blood pressure took a new drug or a placebo, [[200 in each group]]. Systolic BP fell [[4 mmHg more on the drug]], with an [[SE of the difference of 1.5 mmHg]].
+        question: What is the 95% confidence interval for the difference?
+        options: ["1 to 7 mmHg", "2.5 to 5.5 mmHg", "−26 to 34 mmHg"]
+        answer: "1 to 7 mmHg"
+        hint: "95% CI = the difference ± 2 SE."
+        why: "4 ± 2 × 1.5 = 4 ± 3 = 1 to 7 mmHg. 2.5 to 5.5 is only ± 1 SE; −26 to 34 is ± 2 SD, where the people lie."
+        tutor: "95% CI = 4 ± 2 × 1.5 = 1 to 7 mmHg. We are 95% confident the true effect lies between 1 and 7 mmHg. It misses 0, so p is below 0.05 (here p = 0.008)."
+
+      - id: c02
+        scene: case-older
+        stem: In a trial of 400 people with high blood pressure, systolic BP fell [[4 mmHg more on a new drug than on placebo (95% CI 1 to 7 mmHg)]].
+        question: Is the result statistically significant at the 5% level?
+        options: ["Yes: the CI misses 0", "No: the CI does not include 1", "Not without the p-value"]
+        answer: "Yes: the CI misses 0"
+        hint: For a difference, no effect is 0. Does the CI include it?
+        why: "The whole CI, 1 to 7 mmHg, is above 0, so p is below 0.05: the CI and p always agree."
+
+      - id: c03
+        scene: case-people
+        stem: In a trial of a weight-loss drug, patients lost [[2 kg more than on placebo (95% CI −0.5 to 4.5 kg)]].
+        question: Is the difference statistically significant at the 5% level?
+        options: ["No: the CI includes 0", "Yes: the CI does not include 1", "Yes: they lost 2 kg more"]
+        answer: "No: the CI includes 0"
+        hint: For a difference, no effect is 0.
+        why: "The CI runs from −0.5 to 4.5 kg, so it includes 0: p is above 0.05."
+
+      - id: c04
+        scene: case-head
+        stem: A statin trial reports a [[relative risk of stroke of 0.80 (95% CI 0.65 to 0.98)]].
+        question: Is the result statistically significant at the 5% level?
+        options: ["Yes: the CI misses 1", "No: the CI does not include 0", "No: the CI is too wide"]
+        answer: "Yes: the CI misses 1"
+        hint: For a ratio, no effect is 1.
+        why: "A relative risk of 1 means the same risk in both groups. The CI, 0.65 to 0.98, stays below 1, so p is below 0.05."
+
+      - id: c05
+        scene: case-xray
+        stem: A case–control study of lung cancer reports an [[odds ratio of 1.3 for exposure to a solvent at work (95% CI 0.9 to 1.8)]].
+        question: Is the result statistically significant at the 5% level?
+        options: ["No: the CI includes 1", "Yes: the odds ratio is above 1", "Yes: the CI misses 0"]
+        answer: "No: the CI includes 1"
+        hint: For a ratio, no effect is 1.
+        why: "The CI, 0.9 to 1.8, includes 1 (no effect), so p is above 0.05."
+
+      - id: c06
+        scene: case-older
+        stem: A trial in [[20,000 people]] finds that a new drug lowers systolic BP by [[1 mmHg more than placebo (95% CI 0.6 to 1.4 mmHg), p < 0.001]].
+        question: What is the best conclusion?
+        options: ["Statistically significant, but too small to matter", "Not statistically significant", "A large and important effect"]
+        answer: "Statistically significant, but too small to matter"
+        hint: A very large trial can detect a very small difference.
+        why: "With 20,000 people even 1 mmHg is unlikely to be chance, but the whole CI, 0.6 to 1.4 mmHg, is a fall too small to matter to patients."
+
+      - id: c07
+        scene: doctor-think
+        stem: A new statin lowered LDL cholesterol by [[0.5 mmol/L more than the old one]], with an [[SE of the difference of 0.1 mmol/L]].
+        question: What is the 95% confidence interval for the difference?
+        options: ["0.3 to 0.7 mmol/L", "0.4 to 0.6 mmol/L", "0.1 to 0.9 mmol/L"]
+        answer: "0.3 to 0.7 mmol/L"
+        hint: "95% CI = the difference ± 2 SE."
+        why: "0.5 ± 2 × 0.1 = 0.3 to 0.7 mmol/L. 0.4 to 0.6 is only ± 1 SE; 0.1 to 0.9 is ± 4 SE."
+
+      - id: c08
+        scene: doctor-think
+        stem: A trial reports that a drug lowered systolic BP by [[4 mmHg more than placebo (95% CI 1 to 7 mmHg)]].
+        question: What does the 95% mean?
+        options: ["If trials like this were repeated, about 95% of their CIs would include the true effect", "There is a 95% chance that the true effect lies between 1 and 7 mmHg", "BP fell by 1 to 7 mmHg in 95% of the patients"]
+        answer: "If trials like this were repeated, about 95% of their CIs would include the true effect"
+        hint: The true effect is fixed. What changes from trial to trial?
+        why: "The 95% belongs to the method: about 95 in 100 CIs made this way catch the true effect. This one has either caught it or missed it, so we say we are 95% confident. The CI is about the mean difference, not about each patient."
+
+      - id: c09
+        scene: case-older
+        stem: A trial with [[200 per group]] finds a 4 mmHg fall in systolic BP (95% CI 1 to 7 mmHg). It is repeated with [[800 per group]], the same SD and the same 4 mmHg fall.
+        question: What is the new 95% CI likely to be?
+        options: ["2.5 to 5.5 mmHg", "3.25 to 4.75 mmHg", "1 to 7 mmHg"]
+        answer: "2.5 to 5.5 mmHg"
+        hint: The SE shrinks with the square root of n.
+        why: "4 times the people, and √4 = 2, so the SE halves (1.5 → 0.75) and the CI is half as wide: 4 ± 1.5 = 2.5 to 5.5 mmHg."
+
+      - id: c10
+        scene: doctor-think
+        stem: A trial reports a difference of [[6 mmHg (95% CI 2 to 10 mmHg)]].
+        question: What is the SE of the difference?
+        options: ["2 mmHg", "4 mmHg", "8 mmHg"]
+        answer: "2 mmHg"
+        hint: The CI reaches 2 SE either side of the difference.
+        why: "The CI reaches 4 mmHg either side of 6, and that is 2 SE, so the SE is 2 mmHg. 4 is the half-width; 8 is the whole width."
+
+      # 5 mmol/mol as the smallest fall that matters is given in the stem (the authors' choice), not stated as a fact
+      - id: c11
+        scene: case-glucose
+        stem: In a diabetes trial, HbA1c fell [[3 mmol/mol (0.3%) more on a new drug than on placebo (95% CI 1 to 5 mmol/mol)]]. The authors set [[5 mmol/mol (0.5%) as the smallest fall that matters]].
+        question: What is the best conclusion?
+        options: ["Significant, but it may be too small to matter", "Significant and clinically important", "Not significant"]
+        answer: "Significant, but it may be too small to matter"
+        hint: Where does the CI lie against 0, and against 5?
+        why: "The CI misses 0, so it is significant. But it runs only up to 5: the true fall could be as small as 1 mmol/mol, so it may not matter."
+
+      - id: c12
+        scene: case-older
+        twist: true
+        stem: A small trial finds systolic BP fell [[3 mmHg more on a new drug than on placebo (95% CI −2 to 8 mmHg)]]. The authors conclude that [[the drug has no effect]].
+        question: What is the best response?
+        options: ["Not proven: the CI still includes falls of up to 8 mmHg", "Agreed: the CI includes 0", "Agreed: p is above 0.05"]
+        answer: "Not proven: the CI still includes falls of up to 8 mmHg"
+        hint: Not significant is not the same as no effect.
+        why: "The CI includes 0, so chance could explain it, but it also includes falls of up to 8 mmHg, which would matter. Absence of evidence is not evidence of absence: the trial was too small to tell."
+
+      # p = 0.04 gives 2.05 SE, so SE ≈ 1.46 and the CI ≈ 0.1 to 5.9; 0.2 to 5.8 is kept as the nearest round answer
+      - id: c13
+        scene: case-bloodbag
+        twist: true
+        stem: A trial reports that a drug raised haemoglobin by [[3 g/L more than placebo, p = 0.04]].
+        question: Which 95% CI fits this result?
+        options: ["0.2 to 5.8 g/L", "−0.3 to 6.3 g/L", "−3 to 9 g/L"]
+        answer: "0.2 to 5.8 g/L"
+        hint: p below 0.05 means the 95% CI must miss 0.
+        why: "Only 0.2 to 5.8 g/L misses 0, which is what p = 0.04 requires. The others include 0, so they would give p above 0.05."
+
+  - id: end
+    pattern: end
+    title: Your score

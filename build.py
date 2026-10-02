@@ -180,8 +180,8 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows"):
-                errs.append(f"{where}: kind is one of {', '.join(("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows"))}, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows", "runs", "mirror", "cibars"):
+                errs.append(f"{where}: kind is one of {', '.join(("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows", "runs", "mirror", "cibars"))}, not {kind!r}")
             elif kind == "samples":
                 # people's values in two samples: the same SD, the means a little apart
                 if not isinstance(s.get("sd"), (int, float)) or len(s.get("means") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
@@ -243,14 +243,49 @@ def check_topic(t, expected_id):
                     errs.append(f"{where}: a ci story needs sd, n (in each group), gap, two labels, an axis and a y_axis")
                 refs += ["ci"]
             elif kind == "slide":
-                # each panel: a CI of half-width 2 SE (a difference, with se) or `half` (a ratio), at each place in `at`
-                for pn in s.get("panels") or [None]:
-                    if not pn or not all(pn.get(k) is not None for k in ("label", "none", "axis", "range", "ticks", "at")) or (pn.get("se") is None) == (pn.get("half") is None):
-                        errs.append(f"{where}: a slide panel needs label, none, axis, range, ticks, at, and se (a difference) or half (a ratio)")
+                # each panel: a CI of half-width 2 SE (a difference, with se), of `half`, or from c ÷ factor to c × factor on a log
+                # axis (a ratio); two panels each need a label
+                panels = s.get("panels") or [None]
+                for pn in panels:
+                    if not pn or not all(pn.get(k) is not None for k in ("none", "axis", "range", "ticks", "at"))                             or sum(pn.get(k) is not None for k in ("se", "half", "factor")) != 1 or (len(panels) > 1 and not pn.get("label")):
+                        errs.append(f"{where}: a slide panel needs none, axis, range, ticks, at, a label when there are two, and se (a difference), half or factor (a ratio)")
                         continue
-                    h, (a, b) = 2 * pn["se"] if pn.get("se") is not None else pn["half"], pn["range"]
-                    if any(c - h < a or c + h > b for c in pn["at"]):
-                        errs.append(f"{where}: panel {pn['label']!r}: every CI must sit inside its range")
+                    a, b = pn["range"]
+                    if pn.get("factor"):
+                        ends = lambda c, f=pn["factor"]: (c / f, c * f)
+                    else:
+                        ends = lambda c, h=2 * pn["se"] if pn.get("se") is not None else pn["half"]: (c - h, c + h)
+                    if any(ends(c)[0] < a - 1e-9 or ends(c)[1] > b + 1e-9 for c in pn["at"]):
+                        errs.append(f"{where}: panel {pn.get('label') or pn['axis']!r}: every CI must sit inside its range")
+                refs += ["ci"]
+            elif kind == "runs":
+                # repeat trials round a made-up true effect, each CI its centre ± 2 SE; ours first
+                cs, rg = s.get("centres") or [], s.get("range") or []
+                if not all(isinstance(s.get(k), (int, float)) for k in ("se", "truth")) or not 2 <= len(cs) <= 30 or len(rg) != 2                         or not all(s.get(k) for k in ("axis", "label", "truth_label")):
+                    errs.append(f"{where}: a runs story needs se, truth, centres (2 to 30 trials, ours first), a range, an axis, a label and a truth_label")
+                elif any(c - 2 * s["se"] < rg[0] or c + 2 * s["se"] > rg[1] for c in cs):
+                    errs.append(f"{where}: every trial's CI must sit inside the range")
+            elif kind == "mirror":
+                # our trial's bell round its gap and chance's round 0, the same SE (two groups of n with the same SD)
+                rg = s.get("range") or []
+                if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n", "gap")) or len(rg) != 2 or len(s.get("labels") or []) != 2                         or len(s.get("chips") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
+                    errs.append(f"{where}: a mirror story needs sd, n (in each group), gap, a range, two labels, two chips, an axis and a y_axis")
+                elif not rg[0] <= -2 * s["sd"] * (2 / s["n"]) ** .5 or s["gap"] + 2 * s["sd"] * (2 / s["n"]) ** .5 > rg[1]:
+                    errs.append(f"{where}: both 95% bands must sit inside the range")
+            elif kind == "cibars":
+                # trials as CI bars: each row's gap ± 2 SE (SD × √(2 ÷ n), in tenths), its p or its verdict and a note
+                rows, rg = s.get("rows") or [], s.get("range") or []
+                if not isinstance(s.get("sd"), (int, float)) or len(rg) != 2 or not (s.get("axis") and s.get("none_label")) or not 1 <= len(rows) <= 4                         or not all(r.get("label") and isinstance(r.get("n"), int) and isinstance(r.get("gap"), (int, float)) and bool(r.get("verdict")) == bool(r.get("note")) for r in rows):
+                    errs.append(f"{where}: a cibars story needs sd, a range, an axis, a none_label and rows (1 to 4) of label, n, gap and, together, verdict and note")
+                else:
+                    for r in rows:
+                        h = 2 * round(s["sd"] * (2 / r["n"]) ** .5, 1)
+                        if r["gap"] - h < rg[0] - 1e-9 or r["gap"] + h > rg[1] + 1e-9:
+                            errs.append(f"{where}: row {r['label']!r}: its CI must sit inside the range")
+                        if r.get("verdict"):
+                            refs.append(r["verdict"])
+                    if s.get("worth") and not (isinstance(s["worth"].get("at"), (int, float)) and all(s["worth"].get(k) for k in ("label", "below", "above"))):
+                        errs.append(f"{where}: worth needs at, a label, and names for the ground below and above it")
             elif kind == "line":
                 # the ruler runs from p = 1 down to 0.001
                 ok = lambda v: isinstance(v, (int, float)) and .001 <= v <= 1

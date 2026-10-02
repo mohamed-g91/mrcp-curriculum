@@ -950,3 +950,38 @@ html.fluid .ask{position:fixed}
 .wk-chip.wk-after::before{content:"";position:absolute;top:50%;right:calc(100% + 12px);width:calc(var(--cg) - 20px);height:3px;margin-top:-1.5px;background:var(--muted)}
 .wk-chip.wk-after::after{content:"";position:absolute;top:50%;right:calc(100% + 4px);margin-top:-6px;border:6px solid transparent;border-left:9px solid var(--muted);border-right:0}
 @media (prefers-reduced-motion:reduce){.wk-chain .wk-line.on>*{animation:none}}
+/* story kinds for Confidence intervals and p: runs, mirror, cibars */
+.st-truth{stroke:var(--ink);stroke-width:2.5;stroke-dasharray:7 6}
+.st-truth-t{fill:var(--ink);font:750 18px var(--sans);text-anchor:middle}
+.st-run{animation:stDrop .5s var(--ease) both}
+.st-run path{stroke:var(--x-solid);stroke-width:7;stroke-linecap:round}
+.st-run circle{fill:var(--surface);stroke:var(--x-solid);stroke-width:3}
+.st-run-k{fill:var(--x-solid);font:800 18px var(--sans);text-anchor:middle}
+.st-run-t{fill:var(--x-ink);font:750 16px var(--sans);text-anchor:end}
+.st-run-t.st-run-r{text-anchor:start}
+.st-run-gap{stroke:var(--x-solid);stroke-width:2;stroke-dasharray:3 4}
+.st-mir{animation:fadeIn .5s ease both}
+.st-mir-95{fill:var(--x-solid);opacity:.28}
+.st-mir-l{fill:none;stroke:var(--x-solid);stroke-width:3.5}
+.st-mir-t{fill:var(--x-ink);font:750 19px var(--sans);text-anchor:middle}
+.st-zdot{fill:var(--surface);stroke:var(--ink);stroke-width:3;animation:stDrop .5s var(--ease) both}
+.st-zone-lo{fill:var(--gray-bg)}
+.st-zone-hi{fill:var(--se-bg);opacity:.6}
+.st-zone-t{fill:var(--gray-ink);font:650 14px var(--sans);text-anchor:middle}
+.st-zone-t.st-zone-th{fill:var(--se-ink)}
+.st-worth{stroke:var(--ink);stroke-width:3}
+.st-worth-t{fill:var(--ink);font:800 18px var(--sans)}
+.st-cirow{animation:stDrop .5s var(--ease) both}
+.st-cirow-n{fill:var(--ink);font:800 19px var(--sans);text-anchor:end}
+.st-cirow-bar{stroke:var(--x-solid);stroke-width:10;stroke-linecap:round}
+.st-cirow-dot{fill:var(--surface);stroke:var(--x-solid);stroke-width:3}
+.st-cirow.f-gray .st-cirow-bar,.st-cirow.f-gray .st-cirow-dot{stroke:#8B97A6}
+.st-cirow-sum{fill:var(--se-ink);font:750 18px var(--sans);text-anchor:middle}
+.st-cirow-br path{stroke:var(--se-ink);stroke-width:2}
+.st-cirow-br text{fill:var(--se-ink);font-size:18px}
+.st-vchip rect{fill:var(--x-bg);stroke:var(--x-solid);stroke-width:3}
+.st-vchip.f-gray rect{stroke:var(--border-strong)}
+.st-vchip text{fill:var(--x-ink);text-anchor:middle}
+.st-vchip-a{font:800 20px var(--sans)}
+.st-vchip-b{font:650 17px var(--sans)}
+@media (prefers-reduced-motion:reduce){.st-run,.st-cirow,.st-zdot{animation:none}}

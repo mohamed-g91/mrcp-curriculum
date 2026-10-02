@@ -388,7 +388,8 @@ def p_story(slide, topic):
     """A scene beside one figure that builds a beat per tap (the story is told in the video).
     The figure is drawn in the browser from the slide's numbers (engine/js/story.js)."""
     data = {k: slide[k] for k in ("kind", "values", "outlier", "counts", "unit", "categories", "categories_unit",
-                                  "population", "n", "axis", "means_axis", "wall_label", "slots", "tosses", "claim", "sd", "gap", "labels", "y_axis", "family", "cut", "trials", "panels", "start", "means", "origin", "ns", "heading", "pairs") if k in slide}
+                                  "population", "n", "axis", "means_axis", "wall_label", "slots", "tosses", "claim", "sd", "gap", "labels", "y_axis", "family", "cut", "trials", "panels", "start", "means", "origin", "ns", "heading", "pairs",
+                                  "chance", "se", "truth", "truth_label", "centres", "range", "label", "chips", "sums", "rows", "none_label", "worth", "step") if k in slide}
     if slide.get("panel"):
         data["panel"] = slide["panel"]
     scene = figure(slide["scene"], "st-scene") if slide.get("scene") else ""

@@ -34,7 +34,7 @@
    ci      our trial's bell of gaps (SE of the difference wide) round what we found; the 2 SE lines and its middle 95%;
            the CI drops out beneath with its sum (4 ± 2 × 1.5 = 1 to 7); then chance's bell round 0 beside it, with
            its own 95% (−3 to +3) beneath: 0 lies outside our CI just as our gap lies outside chance's
-   slide   two panels, a difference (no effect = 0) and a ratio (no effect = 1); in each, one CI slides towards
+   slide   one or two panels, a difference (no effect = 0) and a ratio (no effect = 1, on a log axis with `factor`); in each, one CI slides towards
            no effect, one place per tap, its p read out beneath: clear of it, touching it (p = 0.05), across it
    samples one sample's people as a bell (± SD shaded, its mean written), then a second beside it: the mean moves, the SD stays
    means   the two samples' means as dots on an axis of means, then many more samples piling up; their bell, SEM wide (SD ÷ √n)
@@ -44,6 +44,12 @@
    far     the trial's gap on chance's bell with the 1, 2 and 3 SE lines; how many SEs out it lands; the tails beyond it: p
    nrows   the same gap in two trials, one row each on one axis, true to scale; 2 SE lines on the bigger, 1 SE on the smaller;
            the gap drops through both rows, then the tails and each p
+   runs    the same trial repeated, each run's CI as a bar round a true effect we pretend to know, ours first; the rest drop in,
+           each ticked or crossed; the one that misses is named; how many in 20 catch it, then the share (95%)
+   mirror  our trial's bell round its gap and chance's round 0, the same width, each with its middle 95%: the gap lies outside
+           chance's 95% exactly when 0 lies outside ours
+   cibars  trials as CI bars on one axis with the no-effect line, one row per tap, with their sums and half-widths, or with a
+           line at the smallest effect worth having; each row's p, or its verdict and a note, on the right
    art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
            from the slide's slots, with {key} standing for a concept's label (so H₀ is never retyped) */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -388,6 +394,121 @@ const STORIES = {
       })
     ];
   },
+  runs(svg, S) {
+    // the same trial repeated, each run's CI (its gap ± 2 SE) as a bar round a true effect we pretend to know: ours first,
+    // then the rest drop in one after another, each ticked if it catches the truth or crossed if not; then the one that
+    // misses is named, then how many catch it, and the share
+    const half = 2 * S.se, n = S.centres.length, [lo, hi] = S.range, L = 60, R = 500, TOP = 56, STEP = 12.5, AX = TOP + n * STEP + 8;
+    const x = v => L + (v - lo) / (hi - lo) * (R - L), yr = i => TOP + (i + .5) * STEP, num = v => minus(+v.toFixed(1));
+    const caught = c => Math.abs(c - S.truth) <= half + 1e-9, hits = S.centres.filter(caught).length;
+    svg.setAttribute("viewBox", `0 0 ${ST.W} ${AX + 64}`);
+    svg.classList.add("f-se");
+    svgEl("path", { class: "dp-axis", d: `M${L - 6} ${AX} H${R + 6}` }, svg);
+    for (let t = lo; t <= hi; t += 2) svgEl("text", { class: "dp-tlab st-smt", x: x(t), y: AX + 26 }, svg).textContent = minus(t);
+    svgEl("text", { class: "cv-alab st-sma", x: (L + R) / 2, y: AX + 56 }, svg).textContent = S.axis;
+    svgEl("path", { class: "st-truth", d: `M${x(S.truth)} ${TOP - 10} V${AX}` }, svg);
+    svgEl("text", { class: "st-truth-t", x: x(S.truth), y: TOP - 22 }, svg).textContent = S.truth_label;
+    const row = (c, i, delay) => {
+      const g = svgEl("g", { class: `st-run${caught(c) ? "" : " f-test"}`, style: `animation-delay:${REDUCED_MOTION ? 0 : delay}ms` }, svg), y = yr(i);
+      svgEl("path", { d: `M${x(c - half)} ${y} H${x(c + half)}` }, g);
+      svgEl("circle", { cx: x(c), cy: y, r: 5 }, g);
+      svgEl("text", { class: "st-run-k", x: R + 34, y: y + 6 }, g).textContent = caught(c) ? "✓" : "✕";
+      return g;
+    };
+    return [
+      () => {
+        const g = row(S.centres[0], 0, 0), c = S.centres[0];
+        svgEl("text", { class: "st-run-t", x: x(c - half) - 12, y: yr(0) + 5 }, g).textContent = `${S.label} · ${num(c - half)} to ${num(c + half)}`;
+      },
+      () => S.centres.slice(1).forEach((c, j) => row(c, j + 1, j * 160)),
+      () => S.centres.forEach((c, i) => {
+        if (caught(c)) return;
+        const g = svgEl("g", { class: "st-in f-test" }, svg), y = yr(i), edge = c > S.truth ? c - half : c + half;
+        svgEl("path", { class: "st-run-gap", d: `M${x(S.truth)} ${y} H${x(edge)}` }, g);
+        svgEl("text", { class: `st-run-t${c > S.truth ? "" : " st-run-r"}`, x: x(S.truth) + (c > S.truth ? -12 : 12), y: y + 5 }, g).textContent = `Misses ${S.truth}`;
+      }),
+      () => stPill(svg, 650, AX / 2 - 10, `${hits} in ${n} catch ${S.truth}`, "f-se"),
+      () => stPill(svg, 650, AX / 2 + 50, `${Math.round(100 * hits / n)}%`, "f-se")
+    ];
+  },
+  mirror(svg, S) {
+    // our trial's bell round its gap and chance's bell round 0, the same width (the SE of the difference), each with its
+    // middle 95% shaded: the gap lies outside chance's 95% exactly when 0 lies outside ours
+    const se = S.sd * Math.sqrt(2 / S.n), f = c => normPct(c, se, .5), ymax = Math.ceil(f(0)(0) / 5) * 5, AX = 300, [lo, hi] = S.range;
+    svg.setAttribute("viewBox", `0 0 ${ST.W} 390`);
+    const ticks = []; for (let t = lo; t <= hi; t += 2) ticks.push(t);
+    const P = storyPlot(svg, { L: 110, R: 720, AX, H: 220, lo, hi, ymax, ticks, yticks: [...Array(ymax / 5 + 1).keys()].map(k => k * 5), ytitle: S.y_axis, xtitle: S.axis });
+    const bell = (c, fam, label) => {
+      const g = svgEl("g", { class: `st-mir ${fam}` }, P.g), a = Math.max(lo, c - 3.6 * se), b = Math.min(hi, c + 3.6 * se);
+      svgEl("path", { class: "st-mir-95", d: P.area(f(c), c - 2 * se, c + 2 * se) }, g);
+      svgEl("path", { class: "st-mir-l", d: P.curve(f(c), a, b) }, g);
+      svgEl("text", { class: "st-mir-t", x: P.x(c), y: P.y(f(c)(c)) - 14 }, g).textContent = label;
+      return g;
+    };
+    let ours;
+    return [
+      () => {
+        ours = bell(S.gap, "f-se", S.labels[0]);
+        svgEl("circle", { class: "st-real", cx: P.x(S.gap), cy: AX, r: 8 }, svg);
+      },
+      () => {
+        P.g.insertBefore(bell(0, "f-test", S.labels[1]), ours);
+        svgEl("circle", { class: "st-zdot", cx: P.x(0), cy: AX, r: 8 }, svg);
+      },
+      () => stPill(svg, 210, 34, S.chips[0], "f-test"),
+      () => stPill(svg, 530, 34, S.chips[1], "f-se")
+    ];
+  },
+  cibars(svg, S) {
+    // trials as CI bars (gap ± 2 SE, SE = SD × √(2 ÷ n) in whole tenths) on one axis with the dashed no-effect line, one row per
+    // tap; a bar that crosses no effect is grey. With `sums`, each bar's sum above it and its half-width bracketed below.
+    // Each row's p on a pill on the right, or its verdict (a concept) and a note. With `worth`, a solid line at the smallest
+    // effect worth having, the ground either side shaded and named
+    const [lo, hi] = S.range, L = 170, R = 540, TOP = 70, AX = 320, n = S.rows.length, step = (AX - 20 - TOP) / n;
+    const x = v => L + (v - lo) / (hi - lo) * (R - L), num = v => minus(+v.toFixed(1));
+    svg.setAttribute("viewBox", `0 0 ${ST.W} ${AX + 66}`);
+    svg.classList.add("f-se");
+    if (S.worth) {
+      const w = S.worth;
+      svgEl("rect", { class: "st-zone-lo", x: x(0), y: TOP - 30, width: x(w.at) - x(0), height: AX - TOP + 30 }, svg);
+      svgEl("rect", { class: "st-zone-hi", x: x(w.at), y: TOP - 30, width: R - x(w.at), height: AX - TOP + 30 }, svg);
+      svgEl("text", { class: "st-zone-t", x: (x(0) + x(w.at)) / 2, y: AX - 12 }, svg).textContent = w.below;
+      svgEl("text", { class: "st-zone-t st-zone-th", x: (x(w.at) + R) / 2, y: AX - 12 }, svg).textContent = w.above;
+    }
+    svgEl("path", { class: "dp-axis", d: `M${L - 6} ${AX} H${R + 6}` }, svg);
+    for (let t = lo; t <= hi; t += S.step || 2) svgEl("text", { class: "dp-tlab st-smt", x: x(t), y: AX + 26 }, svg).textContent = minus(t);
+    svgEl("text", { class: "cv-alab st-sma", x: (L + R) / 2, y: AX + 56 }, svg).textContent = S.axis;
+    svgEl("path", { class: "st-none", d: `M${x(0)} ${AX} V${TOP - 30}` }, svg);
+    svgEl("text", { class: "st-nonelab", x: x(0), y: TOP - 40 }, svg).textContent = S.none_label;
+    if (S.worth) {
+      svgEl("path", { class: "st-worth", d: `M${x(S.worth.at)} ${AX} V${TOP - 30}` }, svg);
+      svgEl("text", { class: "st-worth-t", x: x(S.worth.at) + 8, y: TOP - 40 }, svg).textContent = `${S.worth.label} · ${S.worth.at}`;
+    }
+    return S.rows.map((r, i) => () => {
+      const se = S.sd * Math.sqrt(2 / r.n), shown = +r1(se), h = 2 * shown, a = r.gap - h, b = r.gap + h, y = TOP + (i + .5) * step;
+      const p = 2 * (1 - Sampling.cdf(r.gap / se)), across = a < 0 && b > 0;
+      const g = svgEl("g", { class: `st-cirow${across ? " f-gray" : ""}` }, svg);
+      svgEl("text", { class: "st-cirow-n", x: L - 18, y: y + 7 }, g).textContent = r.label;
+      svgEl("path", { class: "st-cirow-bar", d: `M${x(a)} ${y} H${x(b)}` }, g);
+      // a narrow CI keeps its bar in sight: its dot shrinks to fit
+      svgEl("circle", { class: "st-cirow-dot", cx: x(r.gap), cy: y, r: Math.max(4, Math.min(9, (x(b) - x(a)) / 2 - 2)) }, g);
+      if (S.sums) {
+        svgEl("text", { class: "st-cirow-sum", x: x(r.gap), y: y - 22 }, g).textContent = `${r.gap} ± 2 × ${r1(shown)}`;
+        const by = y + 18, br = svgEl("g", { class: "st-gbr st-cirow-br" }, g);
+        svgEl("path", { d: `M${x(r.gap)} ${by - 7} V${by} H${x(b)} V${by - 7}` }, br);
+        svgEl("text", { x: (x(r.gap) + x(b)) / 2, y: by + 24 }, br).textContent = num(h);
+      }
+      if (r.verdict) {
+        const c = concept(r.verdict), w = 30 + Math.max(c.label.length * 11, r.note.length * 9.6), v = svgEl("g", { class: `st-vchip f-${c.family}` }, g);
+        svgEl("rect", { x: 650 - w / 2, y: y - 31, width: w, height: 62, rx: 22 }, v);
+        svgEl("text", { class: "st-vchip-a", x: 650, y: y - 5 }, v).textContent = c.label;
+        svgEl("text", { class: "st-vchip-b", x: 650, y: y + 19 }, v).textContent = r.note;
+      } else {
+        const pt = p < .001 ? "p < 0.001" : `p ≈ ${p < .01 ? p.toFixed(3) : p.toPrecision(1)}`;
+        stPill(g, 650, y, pt, p < .05 ? "f-test" : "f-gray");
+      }
+    });
+  },
   grid(svg, S) {
     // the trial run 1,000 times with placebo in both groups: one square per run, lined up by its gap (the biggest fall
     // first, the biggest rise last), so the runs with a gap at least as big as ours light up at both ends; p = how many
@@ -556,7 +677,7 @@ const STORIES = {
       return g;
     };
     let trialBell;
-    return [
+    const beats = [
       // our trial's gap, and the bell it could have come from: SE 1.5 either way
       () => {
         trialBell = bellAt(est, "st-cib-trial", S.labels[0]);
@@ -585,43 +706,48 @@ const STORIES = {
         bar(-2 * se, 2 * se, 0, AX + 116, "st-cibar-null");
       }
     ];
+    // with chance: false the story stops at our CI
+    return S.chance === false ? beats.slice(0, 3) : beats;
   },
   slide(svg, S) {
-    // two panels, a difference and a ratio; in each, one CI slides towards no effect, one place per tap.
+    // one or two panels, a difference and a ratio; in each, one CI slides towards no effect, one place per tap.
     // A difference's p is worked out from its SE; a ratio's is read from where its CI stands against 1.
-    const PW = 330, GAP = 100, BY = 150, AX = 262, fam = `f-${concept("ci").family}`;
+    // A ratio's CI runs from c ÷ factor to c × factor on a log axis (or c ± half on a plain one); one panel fills the width
+    const one = S.panels.length === 1, PW = one ? 560 : 330, GAP = 100, BY = 150, AX = 262, fam = `f-${concept("ci").family}`;
     const P = S.panels.map((pn, i) => {
-      const L = i * (PW + GAP) + 20, [a, b] = pn.range, x = v => L + (v - a) / (b - a) * PW;
+      const L = one ? (ST.W - PW) / 2 : i * (PW + GAP) + 20, [a, b] = pn.range, log = pn.factor != null, t = log ? Math.log : v => v;
+      const x = v => L + (t(v) - t(a)) / (t(b) - t(a)) * PW;
       const g = svgEl("g", {}, svg);
-      svgEl("text", { class: "st-ptitle", x: L + PW / 2, y: 22 }, g).textContent = pn.label;
+      if (pn.label) svgEl("text", { class: "st-ptitle", x: L + PW / 2, y: 22 }, g).textContent = pn.label;
       svgEl("path", { class: "dp-axis", d: `M${L} ${AX} H${L + PW}` }, g);
-      pn.ticks.forEach(t => {
-        svgEl("path", { class: "dp-tick", d: `M${x(t)} ${AX} V${AX + 8}` }, g);
-        svgEl("text", { class: "dp-tlab", x: x(t), y: AX + 32 }, g).textContent = t;
+      pn.ticks.forEach(k => {
+        svgEl("path", { class: "dp-tick", d: `M${x(k)} ${AX} V${AX + 8}` }, g);
+        svgEl("text", { class: "dp-tlab", x: x(k), y: AX + 32 }, g).textContent = minus(k);
       });
       svgEl("text", { class: "cv-alab st-palab", x: L + PW / 2, y: AX + 66 }, g).textContent = pn.axis;
       svgEl("path", { class: "st-none", d: `M${x(pn.none)} ${AX} V${62}` }, g);
       svgEl("text", { class: "st-nonelab", x: x(pn.none), y: 52 }, g).textContent = `No effect = ${pn.none}`;
-      const half = pn.se != null ? 2 * pn.se : pn.half;
-      return { pn, x, half, L, g, bar: null, pill: null };
+      const ends = log ? c => [c / pn.factor, c * pn.factor] : c => { const h = pn.se != null ? 2 * pn.se : pn.half; return [c - h, c + h]; };
+      return { pn, x, ends, L, g, bar: null, pill: null };
     });
     const pText = (Q, c) => {
       if (Q.pn.se != null) return `p = ${(2 * (1 - Sampling.cdf(Math.abs(c - Q.pn.none) / Q.pn.se))).toPrecision(1)}`;
-      const d = Math.min(Math.abs(c - Q.half - Q.pn.none), Math.abs(c + Q.half - Q.pn.none)), across = c - Q.half < Q.pn.none && c + Q.half > Q.pn.none;
+      const [lo, hi] = Q.ends(c), d = Math.min(Math.abs(lo - Q.pn.none), Math.abs(hi - Q.pn.none)), across = lo < Q.pn.none && hi > Q.pn.none;
       return d < 1e-9 ? "p = 0.05" : across ? "p > 0.05" : "p < 0.05";
     };
     const place = (Q, k) => {
-      const c = Q.pn.at[k], w = Q.x(c + Q.half) - Q.x(c - Q.half);
+      const c = Q.pn.at[k], [lo, hi] = Q.ends(c), xc = Q.x(c), l = Q.x(lo) - xc, r = Q.x(hi) - xc;
       if (!Q.bar) {
         Q.bar = svgEl("g", { class: `st-ci ${fam}` }, Q.g);
-        svgEl("path", { d: `M${-w / 2} 0 H${w / 2} M${-w / 2} -12 V12 M${w / 2} -12 V12` }, Q.bar);
+        svgEl("path", {}, Q.bar);
         svgEl("rect", { x: -11, y: -11, width: 22, height: 22, rx: 3 }, Q.bar);
         // the pill sits just right of the no-effect line; it pops in with a CSS transform, so its place is set on a wrapper
         Q.pill = svgEl("g", { class: "st-cpill f-test" }, svgEl("g", { transform: `translate(${Q.x(Q.pn.none) + 100} 218)` }, Q.g));
         svgEl("rect", { x: -80, y: -30, width: 160, height: 44, rx: 22 }, Q.pill);
         svgEl("text", { x: 0, y: 0 }, Q.pill);
       }
-      Q.bar.style.transform = `translate(${Q.x(c)}px, ${BY}px)`;
+      $("path", Q.bar).setAttribute("d", `M${l} 0 H${r} M${l} -12 V12 M${r} -12 V12`);
+      Q.bar.style.transform = `translate(${xc}px, ${BY}px)`;
       $("text", Q.pill).textContent = pText(Q, c);
     };
     return P.flatMap(Q => Q.pn.at.map((_, k) => () => place(Q, k)));
