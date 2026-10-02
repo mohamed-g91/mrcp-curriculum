@@ -241,15 +241,14 @@ const STORIES = {
     return [
       ...S.pairs.map(pr => () => trial(pr)),
       () => {
-        // the pair and its axis have had their say: the pile takes over
-        [shown, left, arrow].forEach(g => g && g.classList.add("st-gone"));
+        // the last trial stays on the left beside the pile
         quantiles(N - S.pairs.length).forEach((q, j) => pile.add(se * q, j * 28));
       },
       () => {
         const g = svgEl("g", { class: "st-in" }, svg), exact = Math.abs(se - +r1(se)) < 1e-9;
         svgEl("path", { class: "cv-line", pathLength: 1, d: P.curve(f) }, g);
         stArrow(g, P, 0, se, P.y(f(se)) - 4, `${concept("se").label} ${r1(se)}`);
-        svgEl("text", { class: "st-formula st-fmid", x: (ML + MR) / 2, y: 120 }, g).textContent = `${S.sd} × √(2 ÷ ${S.n}) ${exact ? "=" : "≈"} ${r1(se)}`;
+        svgEl("text", { class: "st-formula st-fmid", x: (ML + MR) / 2, y: 80 }, g).textContent = `${S.sd} × √(2 ÷ ${S.n}) ${exact ? "=" : "≈"} ${r1(se)}`;
       }
     ];
   },
@@ -359,8 +358,10 @@ const STORIES = {
         r.tails = svgEl("g", {}, r.P.g);
         svgEl("path", { class: "cv-line", pathLength: 1, d: r.P.curve(r.f) }, r.P.g);
         svgEl("path", { class: "st-zero", d: `M${r.P.x(0)} ${r.AX} V${r.AX - H - 8}` }, r.P.g);
-        svgEl("text", { class: "st-rowh", x: 690, y: r.AX - 82 }, r.P.g).textContent = r.label;
-        svgEl("text", { class: "st-rowse", x: 690, y: r.AX - 52 }, r.P.g).textContent = `${SE} ${r1(r.se)}`;
+        svgEl("text", { class: "st-rowh", x: 690, y: r.AX - 100 }, r.P.g).textContent = r.label;
+        svgEl("text", { class: "st-rowse", x: 690, y: r.AX - 72 }, r.P.g).textContent = `${SE} ${r1(r.se)}`;
+        // its sum beneath: the trial's own n in each group
+        svgEl("text", { class: "st-rowsum", x: 690, y: r.AX - 48 }, r.P.g).textContent = `${S.sd} × √(2 ÷ ${r.n})`;
       }),
       () => rows.forEach(r => {
         const g = svgEl("g", { class: "st-in" }, svg);
@@ -383,7 +384,7 @@ const STORIES = {
           svgEl("path", { class: "st-pfill", d: r.P.area(r.f, a, b) }, g);
           svgEl("path", { class: "st-pedge st-thin", d: `${r.P.curve(r.f, a, b)} M${r.P.x(a)} ${r.AX} H${r.P.x(b)}` }, g);
         });
-        stPill(svg, 690, r.AX - 12, `p ≈ ${r.p < .01 ? r.p.toFixed(3) : r.p.toPrecision(1)}`, "f-test");
+        stPill(svg, 690, r.AX - 6, `p ≈ ${r.p < .01 ? r.p.toFixed(3) : r.p.toPrecision(1)}`, "f-test");
       })
     ];
   },

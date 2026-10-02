@@ -932,6 +932,7 @@ html.fluid .ask{position:fixed}
 .st-dotline{stroke:var(--ink);stroke-width:2;stroke-dasharray:2 6;stroke-linecap:round}
 .st-rowh{fill:var(--ink);font:800 21px var(--sans);text-anchor:middle}
 .st-rowse{fill:var(--se-ink);font:750 19px var(--sans);text-anchor:middle}
+.st-rowsum{fill:var(--se-ink);font:650 15px var(--sans);text-anchor:middle}
 @media (prefers-reduced-motion:reduce){.st-mdot,.st-mring{animation:none}}
 .st-pair-f{opacity:.15}
 .st-pair-l{fill:none;stroke-width:3}
