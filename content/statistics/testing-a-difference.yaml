@@ -16,7 +16,7 @@
 id: stats.testing-a-difference
 title: Testing a difference
 description: Where does p come from? How far means and gaps move by chance, the standard error of a difference, why 2 SEs, and why the same gap gives a smaller p in a bigger trial. Learn from one blood pressure trial, then practise on exam-style stems.
-status: draft
+status: reviewed
 updated: 2026-10-02
 sources:
   - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapters 6–8.
