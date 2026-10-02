@@ -42,7 +42,7 @@ learn:
   - id: hook
     pattern: hook
     title: Could this be chance?
-    stem: 400 people with high blood pressure took a new drug or a placebo, 200 in each group. After 8 weeks, systolic BP had fallen 4 mmHg more on the drug (SD 15 mmHg).
+    stem: 400 people with high blood pressure took a new drug or a placebo, 200 in each group. After 8 weeks, systolic BP had fallen 4 mmHg more on the drug (SD 15 mmHg), p = 0.008.
     question: Could this be chance?
     scene: case-older
 
@@ -106,7 +106,7 @@ learn:
     pattern: working
     title: Back to the trial
     scene: doctor-think
-    stem: "[[200 people took a new drug and 200 a placebo]]. Systolic BP fell [[4 mmHg more on the drug]]."
+    stem: "[[200 people took a new drug and 200 a placebo]]. Systolic BP fell [[4 mmHg more on the drug, p = 0.008]]."
     lines:
       - { family: test, text: "If the drug did nothing:", result: "about 8 in 1,000" }
       - { family: test, text: "p =", result: "0.008" }
