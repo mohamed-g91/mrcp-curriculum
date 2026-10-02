@@ -413,20 +413,28 @@ def p_working(slide, topic):
     hook = next((s for s in topic.get("learn", []) if s.get("pattern") == "hook"), {})
     question = slide.get("question") or hook.get("question", "")
     lines = []
-    # with `columns`, each line holds one result per column (two trials side by side), under a row of their names
-    cols = slide.get("columns")
-    head = ("<li class=\"wk-head\"><span></span>" + "".join(f"<span>{e(c)}</span>" for c in cols) + "</li>") if cols else ""
+    # with `rows` (two trials), the working is a chain per trial: each line is a step, a column headed by its name (`head`)
+    # and its sum (`text`), with one chip per trial (`results`) and an arrow into it from the step before
+    rows = slide.get("rows")
+    if rows:
+        lines.append('<li class="wk-names">' + "".join(
+            f'<span class="wk-rowname" style="grid-row:{r + 2}">{e(name.split(" ", 1)[0])}<small>{e((name.split(" ", 1) + [""])[1])}</small></span>'
+            for r, name in enumerate(rows)) + "</li>")
     for i, ln in enumerate(slide["lines"]):
-        if cols:
-            res = "".join(f'<span class="wk-cell"><span class="wk-res">{e(r)}</span></span>' for r in ln["results"])
-        else:
-            res = f'<span class="wk-res">{e(ln["result"])}</span>' if ln.get("result") else ""
+        if rows:
+            col = f"grid-column:{i + 2}"
+            sub = f'<small>{e(ln["text"])}</small>' if ln.get("text") else ""
+            cells = f'<span class="wk-head" style="{col}">{e(ln["head"])}{sub}</span>' + "".join(
+                f'<span class="wk-chip{" wk-after" if i else ""}" style="{col};grid-row:{r + 2}">{e(v)}</span>' for r, v in enumerate(ln["results"]))
+            lines.append(f'<li class="wk-line f-{ln["family"]}">{cells}</li>')
+            continue
+        res = f'<span class="wk-res">{e(ln["result"])}</span>' if ln.get("result") else ""
         lines.append(f'<li class="wk-line f-{ln["family"]}"><span class="wk-text">{e(ln["text"])}</span>{res}</li>')
-    lines = [head] + lines if head else lines
+    chain = f' wk-chain" style="--steps:{len(slide["lines"])}' if rows else ""
     stem = f'<div class="stem-card compact"><p class="stem-text">{stem_html(slide["stem"], lit=True)}</p></div>'
     scene = figure(slide["scene"], "stem-scene") if slide.get("scene") else ""
     return (heading(slide) + f'<div class="center-body"><div class="working"><div class="wk-side">{stem}{scene}</div>'
-            f'<div class="wk-steps"><p class="stem-q wk-q">{e(question)}</p><ol class="wk-lines{" wk-cols" if cols else ""}">{"".join(lines)}</ol>'
+            f'<div class="wk-steps"><p class="stem-q wk-q">{e(question)}</p><ol class="wk-lines{chain}">{"".join(lines)}</ol>'
             f'<p class="wk-answer">{e(slide["answer"])}</p></div></div></div>')
 
 

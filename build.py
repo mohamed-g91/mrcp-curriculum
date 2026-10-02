@@ -315,10 +315,10 @@ def check_topic(t, expected_id):
             if not s.get("question") and not any(h.get("pattern") == "hook" and h.get("question") for h in t["learn"]):
                 errs.append(f"{where}: a working slide needs a question, its own or the hook's")
             for ln in s.get("lines") or []:
-                if not ln.get("text") or ln.get("family") not in fams:
-                    errs.append(f"{where}: each line of working needs its text and one of the topic's families")
-                if s.get("columns") and len(ln.get("results") or []) != len(s["columns"]):
-                    errs.append(f"{where}: with columns, each line of working needs one result per column")
+                if not (ln.get("head") if s.get("rows") else ln.get("text")) or ln.get("family") not in fams:
+                    errs.append(f"{where}: each line of working needs its {'head' if s.get('rows') else 'text'} and one of the topic's families")
+                if s.get("rows") and len(ln.get("results") or []) != len(s["rows"]):
+                    errs.append(f"{where}: with rows, each line of working needs one result per row")
         if p == "sort":
             refs += s["buckets"] + [it["answer"] for it in s["items"]]
         if p == "stem-quiz":

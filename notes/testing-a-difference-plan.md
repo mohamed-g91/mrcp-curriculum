@@ -1,6 +1,6 @@
 # Testing a difference (lesson 5): plan
 
-Planned with the user 2026-10-02. **Built 2026-10-02** as `content/statistics/testing-a-difference.yaml` (status draft), cases c01–c10 approved as drafted. New story kinds `samples`, `means`, `gaps`, `twose`, `far`, `nrows` (engine/js/story.js) and two-column `working` (`columns`, `results`). Next: user review of the built deck, then approval, recording, push. Same trial and numbers as lesson 4: SD 15, 200 per group, gap 4 mmHg,
+Planned with the user 2026-10-02. **Built 2026-10-02** as `content/statistics/testing-a-difference.yaml` (status draft), cases c01–c10 approved as drafted. New story kinds `samples`, `means`, `gaps`, `twose`, `far`, `nrows` (engine/js/story.js) and the chained `working` (`rows`, `head`, `results`). Next: user review of the built deck, then approval, recording, push. Same trial and numbers as lesson 4: SD 15, 200 per group, gap 4 mmHg,
 SEM 15 ÷ √200 ≈ 1.1, SE of the difference 15 × √(2 ÷ 200) = 1.5, 4 ÷ 1.5 = 2.7 SEs, p ≈ 0.008; 40 people: SE 4.7, 0.85 SEs, p ≈ 0.4.
 No warm-up.
 
@@ -15,7 +15,7 @@ No warm-up.
 | 5 | Why 2 SEs? | Mockup 6B: bell in SEs from 0, dashed 2 SE lines, 2.5% olive beyond each, chips "5% = 1 in 20" and "Past 2 SE → p < 0.05", "Fisher, 1925"; no trial dot (the 4 first lands on slide 6); under the "SEs from 0" axis a double-headed teal arrow from −2 to +2 SE, "95% of trials", so the 5% left is 2.5% each side. Taps: bell, 2 SE lines, 95% arrow, the two 2.5% tails, "5% = 1 in 20" + Fisher, "Past 2 SE → p < 0.05". 1.96 said aloud only |
 | 6 | How far out is 4? | Mockup 5A: labels "1 SE", "2 SE", "3 SE" over the lines, dot labelled "2.7 SEs", tails olive (thickened) labelled 0.4% each, chip "p ≈ 0.008"; dashed line at 0. The chance bell with dashed vertical lines at 1, 2 and 3 SE of the difference, both sides; our trial's 4 lands, lit, at 2.7 SEs (shown, not calculated on the slide); tails, p ≈ 0.008 |
 | 7 | Why does size matter? | Mockup 7C: two rows on one shared gap axis (−15 to 15), true to scale; 400 people (SE 1.5) above with dashed 2 SE lines, 40 people (SE 4.7) below with dashed 1 SE lines only (4 sits inside even 1 SE); a dotted line drops from 4 through both rows; "2.7 SEs" / "0.85 SEs" beside the dots (not calculated); olive tails; p pills ≈ 0.008 and ≈ 0.4 on the right. Rework of kind `ncompare` |
-| 8 | Back to the trial | Worked sum in two columns, 400 and 40 people (engine change: the working pattern takes two columns): SE = 15 × √(2 ÷ n) = 1.5 / ≈ 4.7; 4 ÷ SE = 2.7 / 0.85 SEs; p = 0.008 / 0.4. Answer: "Same gap. More people, smaller SE: 4 lands further out, so p is smaller." No CI line (lesson 6) |
+| 8 | Back to the trial | Mockup 8C (chosen 2026-10-02 over the first build's two columns of pills): a chain per trial, SE → SEs out → p, equal chips joined by arrows, steps heading the columns (`rows`, `head`): SE = 15 × √(2 ÷ n) = 1.5 / ≈ 4.7; 4 ÷ SE = 2.7 / 0.85 SEs; p = 0.008 / 0.4. Answer: "Same gap. More people, smaller SE: 4 lands further out, so p is smaller." No CI line (lesson 6) |
 
 Order swapped by the user 2026-10-02: Why 2 SEs? before How far out is 4?. Slides 3, 4 and 6 replace the old 16-tap gap slide (no drug-and-placebo pairs: chance gaps only, as in lesson 4's placebo-only trials).
 

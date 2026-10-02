@@ -933,8 +933,14 @@ html.fluid .ask{position:fixed}
 .st-rowh{fill:var(--ink);font:800 21px var(--sans);text-anchor:middle}
 .st-rowse{fill:var(--se-ink);font:750 19px var(--sans);text-anchor:middle}
 @media (prefers-reduced-motion:reduce){.st-mdot,.st-mring{animation:none}}
-/* the working with two columns: a row of their names, then each line's result under each */
-.wk-cols .wk-line,.wk-cols .wk-head{display:grid;grid-template-columns:minmax(0,1fr) repeat(2,minmax(120px,auto));column-gap:clamp(10px,calc(1.4 * var(--u)),18px);align-items:center}
-.wk-cols .wk-line:nth-child(even){padding-left:0}
-.wk-head span{font:750 var(--fs-body) var(--sans);color:var(--muted);text-align:center}
-.wk-cell{display:flex;justify-content:center}
+/* the working as chains: one row per trial, one column per step (its name and sum on top), chips joined by arrows */
+.wk-chain{--cg:clamp(28px,calc(3.4 * var(--u)),44px);display:grid;grid-template-columns:auto repeat(var(--steps),minmax(0,1fr));column-gap:var(--cg);row-gap:clamp(16px,calc(2.6 * var(--u)),34px);align-items:center}
+.wk-chain .wk-line,.wk-chain .wk-names{display:contents}
+.wk-chain .wk-line.on>*{animation:specIn .45s var(--ease)}
+.wk-head{grid-row:1;display:flex;flex-direction:column;align-items:center;gap:2px;font:800 var(--fs-body) var(--sans);color:var(--ink);text-align:center}
+.wk-head small,.wk-rowname small{font:600 var(--fs-small) var(--sans);color:var(--muted);white-space:nowrap}
+.wk-rowname{grid-column:1;display:flex;flex-direction:column;font:800 clamp(20px,calc(2 * var(--u)),26px) var(--sans);color:var(--ink);line-height:1.1}
+.wk-chip{position:relative;display:flex;justify-content:center;align-items:center;padding:clamp(6px,calc(.8 * var(--u)),10px) 4px;border-radius:999px;background:var(--x-bg);border:2.5px solid var(--x-solid);color:var(--x-ink);font:800 clamp(19px,calc(2 * var(--u)),26px) var(--sans);font-variant-numeric:tabular-nums}
+.wk-chip.wk-after::before{content:"";position:absolute;top:50%;right:calc(100% + 12px);width:calc(var(--cg) - 20px);height:3px;margin-top:-1.5px;background:var(--muted)}
+.wk-chip.wk-after::after{content:"";position:absolute;top:50%;right:calc(100% + 4px);margin-top:-6px;border:6px solid transparent;border-left:9px solid var(--muted);border-right:0}
+@media (prefers-reduced-motion:reduce){.wk-chain .wk-line.on>*{animation:none}}

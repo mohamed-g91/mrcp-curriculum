@@ -131,11 +131,12 @@ learn:
     title: Back to the trials
     scene: doctor-think
     stem: "Systolic BP fell [[4 mmHg]] more on the drug (SD 15 mmHg): in [[200 people in each group]], and in [[20 in each group]]."
-    columns: [400 people, 40 people]
+    # a chain per trial: SE → how many SEs out → p
+    rows: [400 people, 40 people]
     lines:
-      - { family: se,   text: "SE = 15 × √(2 ÷ n)", results: [1.5, 4.7] }
-      - { family: se,   text: "4 ÷ SE", results: [2.7 SEs, 0.85 SEs] }
-      - { family: test, text: "p", results: ["0.008", "0.4"] }
+      - { family: se,   head: SE,      text: "15 × √(2 ÷ n)", results: [1.5, 4.7] }
+      - { family: se,   head: SEs out, text: "4 ÷ SE",        results: [2.7, 0.85] }
+      - { family: test, head: p,       results: ["0.008", "0.4"] }
     answer: "The same gap. More people give a smaller SE, so 4 lands further out and p is smaller."
 
 practise:
