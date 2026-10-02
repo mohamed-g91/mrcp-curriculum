@@ -19,7 +19,7 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 - One figure builds in one motion: moving from one view of the same data to another never swaps to a second figure.
 - Distribution graphs show both axes (value, and % of people); neutral items stay grey, with no colour flashes.
 - Reading order, one control per job, and lines only where they mean something (see DESIGN.md, Behaviour rules).
-- The logo has a small (flat) and a large (glossy) finish; use the right one for the size (see DESIGN.md, Brand and Logo sizes).
+- The logo is the open-book G in one flat finish: `engine/logo.svg` on the pages, `logo/open-knowledge/` for large uses (see DESIGN.md, Brand and Logo sizes).
 
 ## How it is built
 
@@ -30,7 +30,7 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 | `content/ids.lock` | Every permanent item ID ever built (written by `build.py`) |
 | `engine/patterns.py` | One Python function per slide pattern, turning YAML into HTML |
 | `engine/shell.html`, `engine/icons.svg` | The page frame and the icon set |
-| `engine/logo.svg`, `logo/` | The logo: the small flat finish the pages use, and the large glossy finish with its PNG exports for YouTube and social posts |
+| `engine/logo.svg`, `logo/` | The logo: the icon the pages use, and in `logo/open-knowledge/` the full artwork (avatar, lockups, exports) for YouTube and social posts |
 | `engine/css/` | `tokens` (colours, sizes), `base`, `stage` (16:9 canvas), `patterns`, `index` (home page) |
 | `engine/js/` | `core` (helpers, theme, score, `record()`, click-away), one file per pattern, `deck` (stage, navigation, start-up) |
 | `build.py` | Checks every topic, then builds the candidate's `dist/<specialty>/<slug>.html`, `dist/index.html`, and the presenter's `presenter/<specialty>/<slug>.html` and `presenter/index.html` (git-ignored, never published) |

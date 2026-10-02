@@ -27,7 +27,7 @@ LOGO = os.path.join(os.path.dirname(__file__), "logo.svg")
 
 
 def logo_svg():
-    """The logo icon (a G, a heartbeat and a play button on a blue tile), as written in engine/logo.svg."""
+    """The logo icon (an open book whose right page forms a G, with a mint folded corner, on a blue tile), as written in engine/logo.svg."""
     with open(LOGO, encoding="utf-8") as f:
         return f.read().strip()
 

@@ -28,7 +28,7 @@ Each SVG has a matching PNG preview. The symbol also has `icon-16.png`, `icon-32
 
 ## Integration status
 
-Approved artwork is stored for later integration. The active site continues to load its existing symbol from `engine/logo.svg`. When adopting this logo, update that asset, the relevant exports and the Brand / Logo sizes rules in `DESIGN.md` together, then rebuild and run the page checks. Do not copy an experimental comparison board into a production header.
+Adopted on the site on 3 October 2026: `engine/logo.svg` and `logo/logo-small.svg` are `icon.svg` (without its title, as the page hides the icon from screen readers), and `logo/logo-small-32.png`, `logo-small-180.png` and `youtube-800.png` are copies of this folder's exports. When adopting this logo, update that asset, the relevant exports and the Brand / Logo sizes rules in `DESIGN.md` together, then rebuild and run the page checks. Do not copy an experimental comparison board into a production header.
 
 ## Verification
 
