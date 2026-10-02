@@ -25,6 +25,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 a.wordmark{text-decoration:none;border-radius:6px}
 .wordmark{display:inline-flex;align-items:center;gap:.45em}
 .wm-logo{width:1.3em;height:1.3em;flex:none}
+/* the lockup file whole: its name keeps the old .9em height, so the file's icon stands 96 ÷ 70 of that */
+.wordmark .wm-lockup{display:block;height:calc(.9em * 96 / 70);width:auto;flex:none}
 a.wordmark:hover{opacity:.8}
 a.wordmark:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
 .wm-letters{height:.9em;width:auto;flex:none}

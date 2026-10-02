@@ -24,6 +24,7 @@ def icon(name):
 
 
 LOGO = os.path.join(os.path.dirname(__file__), "logo.svg")
+ARTWORK = os.path.join(os.path.dirname(__file__), "..", "logo", "open-knowledge")
 
 
 def logo_svg():
@@ -78,9 +79,22 @@ def logo_icon():
     return logo_svg().replace("<svg ", '<svg class="wm-logo" aria-hidden="true" focusable="false" ', 1)
 
 
+def lockup(file="lockup"):
+    """The approved logo artwork whole, from logo/open-knowledge (lockup: icon and name; lockup-tagline: with the tagline),
+    hidden from screen readers (the caller gives the name). Only its ink colours become CSS variables, so the name takes
+    the dark lockup's colours in dark mode; every shape, size and gap is the file's own."""
+    with open(os.path.join(ARTWORK, f"{file}.svg"), encoding="utf-8") as f:
+        svg = f.read().strip()
+    svg = re.sub(r"<title[^<]*</title>|<desc[^<]*</desc>", "", svg)
+    svg = re.sub(r"<svg [^>]*?(viewBox=\"[^\"]+\")[^>]*>", lambda m: f'<svg class="wm-lockup" {m.group(1)} aria-hidden="true" focusable="false">', svg, count=1)
+    for ink, var in (("#12304F", "lk-caps"), ("#1F7FBF", "lk-name"), ("#56657A", "lk-tag")):
+        svg = svg.replace(f'stroke="{ink}"', f'style="stroke:var(--{var})"')
+    return svg
+
+
 def wordmark(name):
-    """The logo icon, then the site name in the brand lettering; the name itself is read from aria-label."""
-    return logo_icon() + lettering(name)
+    """The logo lockup (icon and name, the artwork file whole); the name itself is read from aria-label."""
+    return lockup("lockup")
 
 
 def stem_html(text, cls="clue-mark", lit=False):

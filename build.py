@@ -27,7 +27,7 @@ import sys
 import yaml
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from engine.patterns import CENTRED, PATTERNS, e, favicon, lettering, logo_icon, p_title, p_video, topic_data, wordmark  # noqa: E402
+from engine.patterns import CENTRED, PATTERNS, e, favicon, lockup, p_title, p_video, topic_data, wordmark  # noqa: E402
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 ENGINE = os.path.join(ROOT, "engine")
@@ -488,7 +488,7 @@ def render_index(site, specs, label=""):
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(site["title"] + label)}</title>{favicon()}<meta name="description" content="Interactive MRCP revision pages, one per topic.">
 <style>{css}</style></head>
-<body><main class="index"><header class="masthead">{logo_icon()}<h1 aria-label="{e(site["title"])}">{lettering(site["title"])}</h1><p class="tagline">{e(site["tagline"])}</p></header>{"".join(rows)}
+<body><main class="index"><header class="masthead"><h1 aria-label="{e(site["title"] + " · " + site["tagline"])}">{lockup("lockup-tagline")}</h1></header>{"".join(rows)}
 <p class="credits"><span>Created by {e(site["author"])}</span><span>{e(site["disclaimer"])}</span><span>Last updated {today}</span></p>
 </main></body></html>"""
 
