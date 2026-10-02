@@ -1,44 +1,40 @@
-# Hypothesis testing: MRCP Part 1 statistics.
+# Hypothesis testing: MRCP Part 1 statistics. Lesson 4 of the series: the logic, no maths.
+# Lesson 5 (Testing a difference) shows where p comes from; lesson 6 (Confidence intervals and p) the CI.
 # One trial runs through the Learn deck: 400 people with high blood pressure, a new drug or a placebo,
 # 200 in each group; systolic BP fell 4 mmHg more on the drug (SD of the fall 15 mmHg in each group).
-#   Slide 4 shows each group's mean systolic BP at 8 weeks (chosen by the author): 140 mmHg on placebo, 136 on the drug,
-#   the same 4 mmHg gap (the groups start alike, being randomised). By the author's choice the SD of the final BP is taken
-#   as 15 mmHg too, so the SEM (1.1) and the SE of the difference (1.5) stay the same; in real trials it usually differs.
-#   SEM of each group = 15 ÷ √200 ≈ 1.1 mmHg; SE of the difference = 15 × √(2 ÷ 200) = 1.5 mmHg
-#   4 ÷ 1.5 ≈ 2.7 SEs from no effect, so p ≈ 0.008 (two-sided, normal: 0.0077)
-#   95% CI = 4 ± 2 × 1.5 = 1 to 7 mmHg
+#   SE of the difference = 15 × √(2 ÷ 200) = 1.5 mmHg; 4 ÷ 1.5 ≈ 2.7 SEs, so p ≈ 0.008 (two-sided, normal: 0.0077)
 # The small trial (the Not guilty story): the same 4 mmHg in 40 people, 20 in each group:
-#   SE = 15 × √(2 ÷ 20) ≈ 4.7 mmHg; 4 ÷ 4.7 ≈ 0.85 SEs, so p ≈ 0.4; 95% CI −5.5 to 13.5 mmHg
-# As in Standard error, "2 SE" stands for 1.96 SE by the author's choice (so 2 SE is taken as the 5% line).
-# Every gap is written as the extra fall on the drug, so the trial reads 4 mmHg, never −4.
+#   SE = 15 × √(2 ÷ 20) ≈ 4.7 mmHg; 4 ÷ 4.7 ≈ 0.85 SEs, so p ≈ 0.4 (0.399)
+# The grid slides show p as the trial run 1,000 times with placebo in both groups: about 8 runs (4 each way) give a gap
+# of 4 mmHg or more for 400 people, about 400 (200 each way) for 40 people. These are expected counts, worked out from
+# the numbers above in the browser; the narration says "about".
+# Two-sided throughout: a gap of 4 counts either way.
 # IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
+# The slides and items that left for lessons 5 and 6 are kept in notes/hypothesis-testing-moved.yaml.
 
 id: stats.hypothesis-testing
 title: Hypothesis testing
-description: Could this be chance? The null hypothesis, the p-value, the 0.05 line, and how the confidence interval and p always agree. Learn from one blood pressure trial told as a court case, then practise on exam-style stems.
+description: Could this be chance? The null hypothesis, what a p-value means, and the 0.05 line. Learn from one blood pressure trial told as a court case, then practise on exam-style stems.
 status: draft
-updated: 2026-09-30
+updated: 2026-10-02
 sources:
   - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapters 6–8.
   - Petrie A, Sabin C. Medical Statistics at a Glance, 4th ed. Chapters 17–18.
   - Altman DG, Bland JM. Absence of evidence is not evidence of absence. BMJ 1995;311:485.
   - Fisher RA. Statistical Methods for Research Workers. Edinburgh: Oliver and Boyd, 1925.
-retired: []
+# c01, c04–c07, c09 and the warm-up w01–w08 moved to lesson 6 (Confidence intervals and p) on 2026-10-02
+retired: [c01, c04, c05, c06, c07, c09, w01, w02, w03, w04, w05, w06, w07, w08]
 cover: concepts
 
-# Olive goes with testing (the null hypothesis, the p-value, significance);
-# teal with precision (the confidence interval), as in Standard error; purple with the people.
+# Olive goes with testing (the null hypothesis, the p-value, significance).
 families:
   test: Testing
-  se: Precision
-  par: People
   gray: Neutral
 
 concepts:
   h0:   { label: H₀,             family: test, icon: gavel }
   p:    { label: p-value,         family: test, icon: tails }
-  ci:   { label: 95% CI,          family: se,   icon: narrow }
-  # the warm-up's two buckets; they are verdicts, not ideas of their own, so they stay off the cover
+  # the two verdicts; they are not ideas of their own, so they stay off the cover
   sig:  { label: Significant,     family: test, icon: check, cover: false }
   ns:   { label: Not significant, family: gray, icon: dash,  cover: false }
 
@@ -59,41 +55,20 @@ learn:
     art: ht-court
     slots: { claim: "{h0}: no difference in BP", evidence: 4 mmHg, p: p = 0.008, verdict: Guilty, note: "Reject {h0}" }
 
-  # The coin: 10 heads in a row from a coin said to be fair. p = 2 ÷ 1,024 ≈ 0.002 (all heads or all tails).
-  - id: coin
+  # p as the trial run 1,000 times with placebo in both groups: about 8 runs give a gap of 4 mmHg or more, either way.
+  - id: p-big
     pattern: story
-    title: Is the coin fair?
-    kind: coin
-    start: 1
-    tosses: 10
-    claim: "{h0}: the coin is fair"
-
-  # The standard error of a difference, then the trial's 4 mmHg on the bell of gaps chance alone would give:
-  # SEM 15 ÷ √200 ≈ 1.1 each; SE of the gap 15 × √(2 ÷ 200) = 1.5; 4 ÷ 1.5 = 2.7 SEs; each tail 0.4%, p ≈ 0.008.
-  - id: gap
-    pattern: story
-    title: How big a gap can chance make?
-    kind: gap
+    title: What does p = 0.008 mean?
+    kind: grid
     start: 1
     sd: 15
-    n: 200
     gap: 4
     unit: mmHg
-    means: [140, 136]
-    means_axis: Systolic BP (mmHg)
-    labels: [Placebo, Drug, Gap]
-    axis: Extra fall on the drug (mmHg)
-    y_axis: "% of trials"
+    ns: [200]
+    labels: [400 people]
+    heading: 1,000 trials · placebo in both groups
 
-  - id: recap
-    pattern: reveal-cards
-    title: Three spreads
-    cards:
-      - { family: par, icon: spread, figure: ht-sd,  label: SD,                   answer: "People differ: 15 mmHg." }
-      - { family: se,  icon: narrow, figure: ht-sem, label: SEM,                  answer: "Means differ: 15 ÷ √200 ≈ 1.1 mmHg." }
-      - { family: se,  icon: narrow, figure: ht-gap, label: SE of the difference, answer: "Gaps differ: 15 × √(2 ÷ 200) ≈ 1.5 mmHg." }
-
-  # The same 4 mmHg in 40 people (20 in each group): SE 15 × √(2 ÷ 20) ≈ 4.7, 4 ÷ 4.7 ≈ 0.85 SEs, p ≈ 0.4.
+  # The same 4 mmHg in 40 people (20 in each group): p ≈ 0.4.
   - id: court-small
     pattern: story
     title: The same gap in 40 people
@@ -101,93 +76,44 @@ learn:
     art: ht-court
     slots: { claim: "{h0}: no difference in BP", evidence: 4 mmHg, p: p = 0.4, verdict: Not guilty, note: ≠ innocent }
 
-  # Why size matters: the same 4 mmHg. 200 in each group: SE = 15 × √(2 ÷ 200) = 1.5, 4 ÷ 1.5 = 2.7 SEs, p ≈ 0.008.
-  # 20 in each group: SE = 15 × √(2 ÷ 20) ≈ 4.7, 4 ÷ 4.7 ≈ 0.85 SEs, p ≈ 0.4.
-  - id: size
+  - id: p-small
     pattern: story
-    title: Why does size matter?
-    kind: ncompare
+    title: What does p = 0.4 mean?
+    kind: grid
+    start: 1
+    sd: 15
+    gap: 4
+    unit: mmHg
+    ns: [20]
+    labels: [40 people]
+    heading: 1,000 trials · placebo in both groups
+
+  # The line: 1 in 20 = 50 in 1,000, 25 runs at each end. That it is a convention (0.049 and 0.051 are almost
+  # the same evidence) is said aloud, not written. Fisher (1925) took p = 0.05 (about 2 SD) as a convenient limit.
+  - id: line
+    pattern: story
+    title: Where is the line?
+    kind: grid
+    start: 1
     sd: 15
     gap: 4
     ns: [200, 20]
     labels: [400 people, 40 people]
-    axis: Extra fall on the drug (mmHg)
-    y_axis: "% of trials"
-
-  # The 0.05 line: both trials on one ruler (p from the gap story and the Not guilty story).
-  # That the line is a convention (0.049 and 0.051 are almost the same evidence) is said aloud, not written.
-  - id: line
-    pattern: story
-    title: Where is the line?
-    kind: line
-    # Fisher (1925) noted that p = 0.05 falls at 1.96, nearly 2, standard deviations and took it as a convenient limit
-    origin: Fisher, 1925
     cut: 0.05
-    trials:
-      - { label: Trial of 400, p: 0.008 }
-      - { label: Trial of 40,  p: 0.4 }
-
-  # The 95% CI: our gap ± 2 SE of the difference = 4 ± 2 × 1.5 = 1 to 7 mmHg, the middle 95% of a bell round our 4;
-  # then chance's bell round 0 with its own 95% (−3 to +3): 0 lies outside 1 to 7 as 4 lies outside −3 to +3.
-  - id: ci
-    pattern: story
-    title: Where could the true effect be?
-    kind: ci
-    start: 1
-    sd: 15
-    n: 200
-    gap: 4
-    labels: [Our trial, No effect]
-    axis: Extra fall on the drug (mmHg)
-    y_axis: "% of trials"
-
-  # The CI and p agree. The difference keeps the trial's SE (1.5): at 4 (CI 1 to 7) p = 0.008; at 3 (CI 0 to 6)
-  # p = 0.05 (2 SE for 1.96); at 1.5 (CI −1.5 to 4.5) p = 0.3. The ratio is a relative risk, no effect = 1,
-  # its CI 0.4 wide: 0.45 to 0.85, then 0.6 to 1.0 (touching), then 0.8 to 1.2 (across).
-  - id: agree
-    pattern: story
-    title: The CI and p agree
-    kind: slide
-    panels:
-      - { label: A difference, none: 0, axis: Extra fall on the drug (mmHg), range: [-2, 8], ticks: [0, 2, 4, 6, 8], se: 1.5, at: [4, 3, 1.5] }
-      - { label: A ratio, none: 1, axis: Relative risk, range: [0.4, 1.6], ticks: [0.5, 1, 1.5], half: 0.2, at: [0.65, 0.8, 1.0] }
-
-  - id: important
-    pattern: reveal-cards
-    title: Significant or important?
-    cards:
-      - { family: se,   icon: narrow, figure: ht-huge,  label: Huge trial,  answer: "10,000 people, 1 mmHg: significant, but too small to matter." }
-      - { family: gray, icon: spread, figure: ht-small, label: Small trial, answer: "30 people, 10 mmHg, p = 0.2: it would matter, but it is not proven." }
+    origin: Fisher, 1925
 
   - id: hook-solved
     pattern: working
     title: Back to the trial
     scene: doctor-think
-    stem: "[[200 people took a new drug and 200 a placebo]]. Systolic BP fell [[4 mmHg more on the drug (SD 15 mmHg)]]."
+    stem: "[[200 people took a new drug and 200 a placebo]]. Systolic BP fell [[4 mmHg more on the drug]]."
     lines:
-      - { family: se,   text: "SE = 15 × √(2 ÷ 200) =", result: 1.5 mmHg }
-      - { family: se,   text: "4 ÷ 1.5 =", result: 2.7 SEs }
+      - { family: test, text: "If the drug did nothing:", result: "about 8 in 1,000" }
       - { family: test, text: "p =", result: "0.008" }
-      - { family: se,   text: "95% CI = 4 ± 2 × 1.5 =", result: 1 to 7 mmHg }
+      - { family: test, text: "0.008 < 0.05:", result: Significant }
     answer: "Unlikely to be chance. Reject H₀: the drug lowers BP."
 
 practise:
-  - id: warmup
-    pattern: sort
-    title: Significant or not?
-    buckets: [sig, ns]
-    retry: "Ask: is p below 0.05, or does the CI miss no effect (0 for a difference, 1 for a ratio)?"
-    done: "Below 0.05, or a CI that misses no effect, is significant. For a difference no effect is 0; for a ratio it is 1."
-    items:
-      - { id: w01, label: "p = 0.01",                                answer: sig, why: "Below 0.05." }
-      - { id: w02, label: "p = 0.3",                                 answer: ns,  why: "Above 0.05: chance explains it easily." }
-      - { id: w03, label: "Difference 5 mmHg (95% CI 2 to 8)",       answer: sig, why: "The CI misses 0, the no-effect value for a difference." }
-      - { id: w04, label: "Difference 2 kg (95% CI −1 to 5)",        answer: ns,  why: "The CI crosses 0." }
-      - { id: w05, label: "Relative risk 0.7 (95% CI 0.5 to 0.9)",   answer: sig, why: "The CI misses 1, the no-effect value for a ratio." }
-      - { id: w06, label: "Odds ratio 1.2 (95% CI 0.8 to 1.9)",      answer: ns,  why: "The CI crosses 1." }
-      - { id: w07, label: "p = 0.049",                               answer: sig, why: "Just below 0.05, though almost the same evidence as 0.051." }
-      - { id: w08, label: "Relative risk 1.1 (95% CI 0.9 to 1.3)",   answer: ns,  why: "The CI crosses 1." }
-
   - id: cases
     pattern: stem-quiz
     title: Could this be chance?
@@ -195,16 +121,16 @@ practise:
     # The first case is the solved example; the rest are dealt in a random order.
     # Every case brings its own options; the scenes are the nearest cartoons from the cast.
     cases:
-      - id: c01
+      - id: c11
         scene: case-older
         solved: true
-        stem: In a trial of 400 people with high blood pressure, systolic BP fell [[4 mmHg more on a new drug than on placebo (95% CI 1 to 7 mmHg)]].
+        stem: In a trial of 400 people with high blood pressure, systolic BP fell [[4 mmHg more on a new drug than on placebo, p = 0.008]].
         question: Is the result statistically significant at the 5% level?
-        options: ["Yes: the CI misses 0", "No: the CI does not include 1", "Not without the p-value"]
-        answer: "Yes: the CI misses 0"
-        hint: For a difference, no effect is 0. Does the CI include it?
-        why: "The whole CI, 1 to 7 mmHg, is above 0, so p is below 0.05."
-        tutor: "For a difference, no effect is 0. The 95% CI (1 to 7 mmHg) misses 0, so the result is significant at 5%: the CI and the p-value always agree. Here p = 0.008."
+        options: ["Yes: p is below 0.05", "No: 4 mmHg is too small to be significant", "Not without the 95% CI"]
+        answer: "Yes: p is below 0.05"
+        hint: Compare p with 0.05.
+        why: "0.008 is below 0.05, so a gap this big is unlikely to be chance."
+        tutor: "If the drug did nothing, a gap of 4 mmHg or more would turn up in about 8 of every 1,000 trials: p = 0.008. That is below 0.05 (1 in 20, or 50 in 1,000), so the result is significant at the 5% level and H₀ is rejected."
 
       - id: c02
         scene: case-older
@@ -224,42 +150,6 @@ practise:
         hint: A p-value is worked out by first assuming the null hypothesis is true.
         why: "p is the chance of a result at least this extreme if H₀ were true. It is not the chance that H₀ is true."
 
-      - id: c04
-        scene: case-people
-        stem: In a trial of a weight-loss drug, patients lost [[2 kg more than on placebo (95% CI −0.5 to 4.5 kg)]].
-        question: Is the difference statistically significant at the 5% level?
-        options: ["No: the CI includes 0", "Yes: the CI does not include 1", "Yes: they lost 2 kg more"]
-        answer: "No: the CI includes 0"
-        hint: For a difference, no effect is 0.
-        why: "The CI runs from −0.5 to 4.5 kg, so it includes 0: p is above 0.05."
-
-      - id: c05
-        scene: case-head
-        stem: A statin trial reports a [[relative risk of stroke of 0.80 (95% CI 0.65 to 0.98)]].
-        question: Is the result statistically significant at the 5% level?
-        options: ["Yes: the CI misses 1", "No: the CI does not include 0", "No: the CI is too wide"]
-        answer: "Yes: the CI misses 1"
-        hint: For a ratio, no effect is 1.
-        why: "A relative risk of 1 means the same risk in both groups. The CI, 0.65 to 0.98, stays below 1, so p is below 0.05."
-
-      - id: c06
-        scene: case-xray
-        stem: A case–control study of lung cancer reports an [[odds ratio of 1.3 for exposure to a solvent at work (95% CI 0.9 to 1.8)]].
-        question: Is the result statistically significant at the 5% level?
-        options: ["No: the CI includes 1", "Yes: the odds ratio is above 1", "Yes: the CI misses 0"]
-        answer: "No: the CI includes 1"
-        hint: For a ratio, no effect is 1.
-        why: "The CI, 0.9 to 1.8, includes 1 (no effect), so p is above 0.05."
-
-      - id: c07
-        scene: case-older
-        stem: A trial in [[20,000 people]] finds that a new drug lowers systolic BP by [[1 mmHg more than placebo, p < 0.001]].
-        question: What is the best conclusion?
-        options: ["Statistically significant, but too small to matter", "Not statistically significant", "A large and important effect"]
-        answer: "Statistically significant, but too small to matter"
-        hint: A very large trial can detect a very small difference.
-        why: "With 20,000 people even 1 mmHg is unlikely to be chance, but a fall that small makes little difference to patients."
-
       - id: c08
         scene: case-hip
         stem: A pilot trial in [[30 patients]] finds that pain scores are [[2 points lower on a new drug (0–10 scale), p = 0.2]].
@@ -268,16 +158,6 @@ practise:
         answer: "No clear evidence of a difference; the trial may be too small"
         hint: Not guilty is not the same as innocent.
         why: "p = 0.2 means chance could explain the result, but a small trial can miss a real effect. Absence of evidence is not evidence of absence."
-
-      - id: c09
-        scene: case-bloodbag
-        twist: true
-        stem: A trial reports that a drug raised haemoglobin by [[3 g/L more than placebo, p = 0.04]].
-        question: Which 95% CI fits this result?
-        options: ["0.2 to 5.8 g/L", "−0.3 to 6.3 g/L", "−3 to 9 g/L"]
-        answer: "0.2 to 5.8 g/L"
-        hint: p below 0.05 means the 95% CI must miss 0.
-        why: "Only 0.2 to 5.8 g/L misses 0, which is what p = 0.04 requires. The others include 0, so they would give p above 0.05."
 
       - id: c10
         scene: doctor-think

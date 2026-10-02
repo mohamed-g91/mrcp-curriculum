@@ -340,8 +340,9 @@ async function solvePass() {
   await load(SIZES[0]);
   await js(`document.querySelector('[data-go="practise"]').click(), true`);
   await sleep(400);
-  // warm-up: tap each chip, then its right bucket
+  // warm-up (if the topic has one): tap each chip, then its right bucket
   const sorted = await js(`(async () => {
+    if (!TOPIC.sorts.warmup) return { left: 0, msg: null };
     const S = TOPIC.sorts.warmup, wait = ms => new Promise(r => setTimeout(r, ms));
     for (const chip of [...document.querySelectorAll(".pool .chip")]) {
       const item = S.items[+chip.dataset.i];
@@ -352,7 +353,8 @@ async function solvePass() {
     return { left: document.querySelectorAll(".pool .chip").length, msg: document.querySelector(".sort .feedback").textContent };
   })()`);
   if (sorted.left) fail(`warm-up: ${sorted.left} chip(s) could not be placed`);
-  else console.log("  ok   warm-up sorts: " + sorted.msg);
+  else if (sorted.msg != null) console.log("  ok   warm-up sorts: " + sorted.msg);
+  else console.log("  --   no warm-up");
   // cases: the first practice case gets one wrong answer, then every case is solved
   const res = await js(`(async () => {
     const wait = ms => new Promise(r => setTimeout(r, ms)), out = [];

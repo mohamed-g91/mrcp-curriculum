@@ -180,8 +180,19 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare"):
-                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin, gap, line, slide, ci or ncompare, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid"):
+                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin, gap, line, slide, ci, ncompare or grid, not {kind!r}")
+            elif kind == "grid":
+                # the trial run 1,000 times with placebo in both groups (25 runs to a column): one trial with its heading and unit,
+                # or two side by side with the cut, whose share at each end must fill whole columns (0.05: 25 at each end)
+                ns = s.get("ns") or []
+                if len(ns) not in (1, 2) or not all(isinstance(n, int) and n >= 2 for n in ns) or not all(isinstance(s.get(k), (int, float)) for k in ("sd", "gap"))                         or len(s.get("labels") or []) != len(ns):
+                    errs.append(f"{where}: a grid story needs sd, gap, ns (one or two group sizes) and a label for each")
+                elif len(ns) == 1 and not (s.get("heading") and s.get("unit")):
+                    errs.append(f"{where}: a grid story of one trial needs a heading and a unit")
+                elif len(ns) == 2 and not (isinstance(s.get("cut"), (int, float)) and abs(s["cut"] * 1000 / 2 / 25 - round(s["cut"] * 1000 / 2 / 25)) < 1e-9 and 0 < s["cut"] < 1):
+                    errs.append(f"{where}: a grid story of two trials needs a cut whose share at each end is whole columns of 25 runs (0.05, 0.1 …)")
+                refs += ["p"] + (["sig", "ns"] if len(ns) == 2 else [])
             elif kind == "ncompare":
                 # the same gap in two trials: `ns` people in each group of each, the same SD
                 ns = s.get("ns") or []

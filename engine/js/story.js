@@ -25,6 +25,10 @@
    line    a ruler of p-values (1 at the top, 0.001 at the foot, a log scale); with an origin, first a small bell on the
            left: 2.5% beyond 2 SE each side, 5% = 1 in 20, and who chose the line (Fisher, 1925); the dashed line at
            0.05 = 1 in 20 with the significant side below it shaded; then each trial lands on the ruler at its p
+   grid    the trial run 1,000 times with placebo in both groups, one square per run, lined up by its gap (the biggest
+           fall first, the biggest rise last); the runs with a gap at least ours light up at both ends, then how many in
+           1,000 and p; with two trials side by side, both lit, then the cut's share at each end (50 in 1,000 = 1 in 20,
+           Fisher, 1925), then each trial's verdict
    ncompare the same gap in two trials of different sizes side by side: each one's SE (SD × √(2 ÷ n)), its chance bell
            round 0 true to scale (the smaller trial's wider and lower), how many SEs out the gap is, then p with the tails filled
    ci      our trial's bell of gaps (SE of the difference wide) round what we found; the 2 SE lines and its middle 95%;
@@ -93,6 +97,84 @@ function storyStar(parent, x, y) {
 const sumText = v => `${v.join(" + ")} = ${Stats.sum(v)}`;
 
 const STORIES = {
+  grid(svg, S) {
+    // the trial run 1,000 times with placebo in both groups: one square per run, lined up by its gap (the biggest fall
+    // first, the biggest rise last), so the runs with a gap at least as big as ours light up at both ends; p = how many
+    // in 1,000. Two trials side by side add the line: the cut (0.05 = 50 in 1,000) marks its share at each end
+    const RUNS = 1000, ROWS = 25, COLS = RUNS / ROWS, two = S.ns.length > 1;
+    const H = two ? 382 : 390, cell = two ? 8 : 12, sq = cell * .8;
+    // side by side, the cut's columns at each end stand a little apart, so the line can fall between them
+    const cut = Math.round((S.cut || 0) * RUNS), edge = two ? cut / 2 / ROWS : 0, SEP = two ? 6 : 0;
+    const colX = (t, c) => t.x0 + c * cell + (c >= edge ? SEP : 0) + (c >= COLS - edge ? SEP : 0);
+    svg.setAttribute("viewBox", `0 0 ${ST.W} ${H}`);
+    const fmt = v => v.toLocaleString("en-GB"), pText = k => String(+(k / RUNS).toFixed(3));
+    const text = (x, y, s, cls, parent = svg) => { const t = svgEl("text", { class: cls, x, y }, parent); t.textContent = s; return t; };
+    const pill = (cx, cy, s, f) => {
+      const g = svgEl("g", { class: `st-cpill ${f}` }, svg), w = 34 + s.length * 11.5;
+      svgEl("rect", { x: cx - w / 2, y: cy - 22, width: w, height: 40, rx: 20 }, g);
+      svgEl("text", { x: cx, y: cy + 5 }, g).textContent = s;
+    };
+    const trials = S.ns.map((n, i) => {
+      // two-sided: the share of chance's gaps at least ours either way, half at each end
+      const se = S.sd * Math.sqrt(2 / n), half = Math.round(RUNS * (1 - Sampling.cdf(S.gap / se)));
+      const x0 = two ? (i ? 404 : 24) : 20, y0 = two ? 40 : 48;
+      return { half, lit: 2 * half, x0, y0, cx: x0 + (COLS * cell + 2 * SEP) / 2, label: S.labels[i] };
+    });
+    // one trial's 1,000 runs; the hits at both ends light up from the outside in, both ends together
+    const grid = (t, lit) => {
+      const g = svgEl("g", { class: `st-grid f-test${lit ? " st-lit st-now" : ""}` }, svg), spread = Math.min(800, (t.half - 1) * 160);
+      for (let i = 0; i < RUNS; i++) {
+        const out = Math.min(i, RUNS - 1 - i), hit = out < t.half;
+        const r = svgEl("rect", { class: hit ? "st-run st-hit" : "st-run", x: colX(t, Math.floor(i / ROWS)), y: t.y0 + (i % ROWS) * cell, width: sq, height: sq, rx: sq * .2 }, g);
+        if (hit && !lit) r.style.animationDelay = `${REDUCED_MOTION || t.half < 2 ? 0 : out / (t.half - 1) * spread}ms`;
+      }
+      return g;
+    };
+    if (!two) {
+      const t = trials[0], foot = t.y0 + ROWS * cell + 26, right = t.x0 + COLS * cell;
+      let g;
+      return [
+        () => { text(t.x0, 28, S.heading, "st-gh"); g = grid(t); },
+        () => {
+          g.classList.add("st-lit");
+          const e = svgEl("g", { class: "st-gend" }, svg);
+          text(t.x0, foot, `${fmt(t.half)} · ≥ ${S.gap} ${S.unit} lower`, "", e);
+          text(right, foot, `≥ ${S.gap} ${S.unit} higher · ${fmt(t.half)}`, "st-gr", e);
+        },
+        () => {
+          text(640, 190, `${fmt(t.lit)} in ${fmt(RUNS)}`, "st-gcount");
+          pill(640, 238, `p = ${pText(t.lit)}`, "f-test st-gp");
+        }
+      ];
+    }
+    // two trials: both grids lit at once, then the line, then each trial's verdict
+    return [
+      () => trials.forEach(t => {
+        text(t.cx, 24, t.label, "st-nc-h");
+        t.g = grid(t, true);
+        text(t.cx, 268, `${fmt(t.lit)} in ${fmt(RUNS)} · p = ${pText(t.lit)}`, "st-nc-t");
+      }),
+      () => {
+        trials.forEach(t => {
+          // the cut's share at each end: a shaded band behind the end columns, the dashed line just inside it
+          const g = svgEl("g", { class: "st-gcut f-test" }, svg), top = t.y0 - 4, h = ROWS * cell + 6 - (cell - sq);
+          [[0, edge - 1, colX(t, edge - 1) + sq + (SEP + cell - sq) / 2], [COLS - edge, COLS - 1, colX(t, COLS - edge) - (SEP + cell - sq) / 2]].forEach(([a, b, line]) => {
+            svgEl("rect", { class: "st-sigzone", x: colX(t, a) - 3, y: top, width: colX(t, b) + sq - colX(t, a) + 6, height: h, rx: 3 }, g);
+            svgEl("path", { class: "st-cutline", d: `M${line} ${top - 6} V${top + h + 6}` }, g);
+          });
+          svg.insertBefore(g, t.g);
+        });
+        const line = `${fmt(cut)} in ${fmt(RUNS)} = 1 in ${Math.round(RUNS / cut)} = ${S.cut}`;
+        pill(ST.W / 2, 306, line, "f-test");
+        // who drew the line, beside it
+        if (S.origin) text(ST.W / 2 + (34 + line.length * 11.5) / 2 + 14, 313, S.origin, "st-orwho st-gwho");
+      },
+      ...trials.map(t => () => {
+        const sig = t.lit < cut, c = concept(sig ? "sig" : "ns");
+        pill(t.cx, 356, `${fmt(t.lit)} ${sig ? "<" : ">"} ${fmt(cut)} · ${c.label}`, `f-${c.family}`);
+      })
+    ];
+  },
   ncompare(svg, S) {
     // the same gap in two trials of different sizes, side by side: each trial's SE (SD × √(2 ÷ n)), its chance bell round 0
     // (true to scale, so the smaller trial's is wider and lower), how many SEs out the gap is, and its p with the tails filled

@@ -732,6 +732,23 @@ html.fluid .ask{position:fixed}
 .st-nc-tick{font-size:16px}
 .st-nc-ax{font-size:18px;animation:fadeIn .5s ease both}
 .st-nc-bell .st-pedge{stroke-width:3.5}
+/* grid: 1,000 runs of the trial with placebo in both groups, the ones with a gap at least ours lit at both ends */
+.st-grid{animation:fadeIn .5s ease both}
+.st-run{fill:var(--border)}
+.st-lit .st-hit{fill:var(--x-solid);animation:stHit .5s var(--ease) both}
+.st-lit.st-now .st-hit{animation:none}
+@keyframes stHit{from{fill:var(--border)}to{fill:var(--x-solid)}}
+.st-gh{fill:var(--ink);font:800 22px var(--sans)}
+.st-gend{animation:fadeIn .5s ease both}
+.st-gend text{fill:var(--muted);font:700 17px var(--sans)}
+.st-gend .st-gr{text-anchor:end}
+.st-gcount{fill:var(--ink);font:800 34px var(--sans);text-anchor:middle;animation:fadeIn .5s ease both}
+.st-gp{animation-delay:.16s}
+.st-gcut{animation:fadeIn .5s ease both}
+.st-gcut .st-cutline{stroke-width:2.5;stroke-dasharray:7 5}
+.st-orwho.st-gwho{text-anchor:start;font-size:19px}
+/* a verdict for the neutral side keeps a grey edge (neutral items stay grey) */
+.st-cpill.f-gray rect{stroke:var(--border-strong)}
 /* the CI story: our trial's bell and its middle 95%, then chance's bell beside it */
 .st-cib{animation:fadeIn .5s ease both}
 .st-cib-a{opacity:.14}

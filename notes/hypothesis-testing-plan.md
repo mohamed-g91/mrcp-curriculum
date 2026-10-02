@@ -1,5 +1,10 @@
 # Hypothesis testing: where we are and what comes next
 
+**Update 2026-10-02:** Lecture 1 (`stats.hypothesis-testing`) now holds the agreed 7 Learn slides (hook, court, p-big, court-small,
+p-small, line, hook-solved) and the cases c11 (solved), c02, c03, c08 and c10, with no warm-up. The three grid slides use the new story
+kind `grid`. Everything that left, kept for lessons 5 and 6, is in `notes/hypothesis-testing-moved.yaml` (its case and warm-up IDs are
+retired in lesson 4). The full check passed on both builds. The table below describes the deck as it was before the split.
+
 A hand-over for the next session, written 2026-10-01. The topic is `stats.hypothesis-testing`, `status: draft`, not pushed.
 Everything below "Built so far" is committed locally on `main` (last commit `c03cd4a`).
 
