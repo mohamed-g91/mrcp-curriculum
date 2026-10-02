@@ -187,13 +187,20 @@ def check_topic(t, expected_id):
                 if not isinstance(s.get("sd"), (int, float)) or len(s.get("means") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
                     errs.append(f"{where}: a samples story needs sd, means (two samples), an axis and a y_axis")
                 refs += ["sd"]
-            elif kind in ("means", "gaps"):
-                # the first two samples' means (or one pair of groups), then many more samples of n: their pile and its bell
-                if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n")) or len(s.get("means") or []) != 2 or not (s.get("axis") and s.get("y_axis"))                         or (kind == "gaps" and not s.get("means_axis")):
-                    errs.append(f"{where}: a {kind} story needs sd, n, means (two), an axis and a y_axis" + (" and a means_axis" if kind == "gaps" else ""))
-                elif kind == "means" and abs(s["means"][1] - s["means"][0]) > 4 * s["sd"] / s["n"] ** .5:
+            elif kind == "gaps":
+                # trials on placebo, one per tap: each [first group's mean, second's]; their gaps must fit the axis of gaps (-6 to 6)
+                pairs = s.get("pairs") or []
+                if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n")) or not (s.get("axis") and s.get("y_axis") and s.get("means_axis")) \
+                        or not 1 <= len(pairs) <= 5 or not all(len(pr) == 2 and all(isinstance(v, (int, float)) for v in pr) and abs(pr[1] - pr[0]) <= 5.5 for pr in pairs):
+                    errs.append(f"{where}: a gaps story needs sd, n, pairs (1 to 5 trials, each [mean, mean], gap within 5.5), a means_axis, an axis and a y_axis")
+                refs += ["se"]
+            elif kind == "means":
+                # the first two samples' means, then many more samples of n: their pile and its bell
+                if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n")) or len(s.get("means") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
+                    errs.append(f"{where}: a means story needs sd, n, means (two), an axis and a y_axis")
+                elif abs(s["means"][1] - s["means"][0]) > 4 * s["sd"] / s["n"] ** .5:
                     errs.append(f"{where}: the two means must sit within 4 SEM of each other, on the axis of means")
-                refs += ["sem" if kind == "means" else "se"]
+                refs += ["sem"]
             elif kind == "twose":
                 # chance's bell in SEs: the cut's share beyond 2 SE either side
                 if not (isinstance(s.get("cut"), (int, float)) and 0 < s["cut"] < 1) or not (s.get("axis") and s.get("y_axis")):

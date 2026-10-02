@@ -38,7 +38,8 @@
            no effect, one place per tap, its p read out beneath: clear of it, touching it (p = 0.05), across it
    samples one sample's people as a bell (± SD shaded, its mean written), then a second beside it: the mean moves, the SD stays
    means   the two samples' means as dots on an axis of means, then many more samples piling up; their bell, SEM wide (SD ÷ √n)
-   gaps    one pair of means and their gap, dropped onto an axis of gaps round 0; many more pairs pile up; their bell, SE wide
+   gaps    trials on placebo, one per tap: two groups' mean bells overlapping, their gap bracketed and dropped onto an axis
+           of gaps round 0; many more trials pile up; their bell, SE wide
    twose   chance's bell in SEs: the 2 SE lines, 95% of trials between them, the cut's half beyond each, 1 in 20 (who chose it)
    far     the trial's gap on chance's bell with the 1, 2 and 3 SE lines; how many SEs out it lands; the tails beyond it: p
    nrows   the same gap in two trials, one row each on one axis, true to scale; 2 SE lines on the bigger, 1 SE on the smaller;
@@ -199,43 +200,56 @@ const STORIES = {
       }
     ];
   },
-  gaps(svg, S) {
-    // one pair of groups (both on placebo): their means and the gap between them, dropped onto an axis of gaps round 0;
-    // then many more pairs: the gaps pile into a bell, the SE of the difference wide
-    const se = S.sd * Math.sqrt(2 / S.n), [m1, m2] = S.means, gap = m2 - m1, BIN = .5, N = 60, f = normPct(0, se, BIN);
+  gaps(svg, S, later) {
+    // trials with both groups on placebo, one per tap: each group's mean as a bell (SEM wide), the two overlapping on one axis,
+    // the gap between them bracketed; each gap drops as a dot onto an axis of gaps round 0. Then many more trials pile up
+    // there, and the bell they make is the SE of the difference wide
+    const sem = S.sd / Math.sqrt(S.n), se = S.sd * Math.sqrt(2 / S.n), BIN = .5, N = 60, f = normPct(0, se, BIN);
     const ymax = Math.ceil(f(0) / 5) * 5;
     svg.setAttribute("viewBox", `0 0 ${ST.W} 390`);
     svg.classList.add("f-se");
-    // the pair, small, on the left
-    const ML = 14, MR = 234, MA = 300, mlo = Math.min(m1, m2) - 2.5, mhi = Math.max(m1, m2) + 2.5, mx = v => ML + (v - mlo) / (mhi - mlo) * (MR - ML);
-    const pair = () => {
-      const g = svgEl("g", { class: "st-in" }, svg);
-      svgEl("path", { class: "dp-axis", d: `M${ML} ${MA} H${MR}` }, g);
-      for (let t = Math.ceil(mlo / 2) * 2; t <= mhi; t += 2) svgEl("text", { class: "dp-tlab st-smt", x: mx(t), y: MA + 26 }, g).textContent = t;
-      svgEl("text", { class: "cv-alab st-sma", x: (ML + MR) / 2, y: MA + 56 }, g).textContent = S.means_axis;
-      S.means.forEach(m => svgEl("circle", { class: "st-mdot st-still", cx: mx(m), cy: MA - 13, r: 11 }, g));
-      const yb = MA - 44, br = svgEl("g", { class: "st-gbr" }, g);
-      svgEl("path", { d: `M${mx(m1)} ${yb + 8} V${yb} H${mx(m2)} V${yb + 8}` }, br);
-      svgEl("text", { x: (mx(m1) + mx(m2)) / 2, y: yb - 12 }, br).textContent = `Gap ${minus(r1n(gap))}`;
-    };
+    // the pair of bells, on the left
+    const all = S.pairs.flat(), ML = 14, MR = 300, MA = 300, BH = 130;
+    const mlo = Math.min(...all) - 3.6 * sem, mhi = Math.max(...all) + 3.6 * sem, mx = v => ML + (v - mlo) / (mhi - mlo) * (MR - ML);
+    const left = svgEl("g", { class: "st-in" }, svg);
+    svgEl("path", { class: "dp-axis", d: `M${ML} ${MA} H${MR}` }, left);
+    for (let t = Math.ceil(mlo / 2) * 2; t <= mhi; t += 2) svgEl("text", { class: "dp-tlab st-smt", x: mx(t), y: MA + 26 }, left).textContent = t;
+    svgEl("text", { class: "cv-alab st-sma", x: (ML + MR) / 2, y: MA + 56 }, left).textContent = S.means_axis;
+    const lump = m => { const q = []; for (let i = 0; i <= 120; i++) { const v = m - 3.4 * sem + 6.8 * sem * i / 120; q.push([mx(v), MA - BH * Math.exp(-(((v - m) / sem) ** 2) / 2)]); } return q; };
     const ticks = []; for (let t = -6; t <= 6; t += 2) ticks.push(t);
-    const P = storyPlot(svg, { L: 380, R: 740, AX: 320, H: 250, lo: -6, hi: 6, ymax, ticks, yticks: [...Array(ymax / 5 + 1).keys()].map(k => k * 5), ytitle: S.y_axis, xtitle: S.axis });
+    const P = storyPlot(svg, { L: 400, R: 740, AX: 320, H: 250, lo: -6, hi: 6, ymax, ticks, yticks: [...Array(ymax / 5 + 1).keys()].map(k => k * 5), ytitle: S.y_axis, xtitle: S.axis });
     svgEl("path", { class: "st-zero", d: `M${P.x(0)} ${320} V${70}` }, P.g);
+    const arrow = svgEl("g", { class: "st-in" }, svg);
+    svgEl("path", { class: "st-garrow", d: `M${MR + 6} ${MA - 18} H${MR + 34}` }, arrow);
+    svgEl("path", { class: "st-garrow-h", d: `M${MR + 46} ${MA - 18} l-13 -8 v16 z` }, arrow);
     const pile = dotPile(svg, P, BIN, N);
+    let shown;
+    const trial = ([a, b]) => {
+      if (shown) { const old = shown; old.classList.add("st-gone"); later(450, () => old.remove()); }
+      const g = shown = svgEl("g", { class: "st-trial" }, svg), gap = b - a;
+      [[a, "st-pair-a"], [b, "st-pair-b"]].forEach(([m, cls]) => {
+        const q = lump(m), line = q.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(" L"), bg = svgEl("g", { class: `st-pair ${cls}` }, g);
+        svgEl("path", { class: "st-pair-f", d: `M${q[0][0].toFixed(1)} ${MA} L${line} L${q[q.length - 1][0].toFixed(1)} ${MA} Z` }, bg);
+        svgEl("path", { class: "st-pair-l", d: `M${line}` }, bg);
+        svgEl("path", { class: "st-pair-m", d: `M${mx(m)} ${MA} V${MA - BH}` }, bg);
+      });
+      const yb = MA - BH - 22, br = svgEl("g", { class: "st-gbr" }, g);
+      svgEl("path", { d: `M${mx(a)} ${yb + 8} V${yb} H${mx(b)} V${yb + 8}` }, br);
+      svgEl("text", { x: (mx(a) + mx(b)) / 2, y: yb - 12 }, br).textContent = `Gap ${minus(r1n(gap))}`;
+      later(700, () => pile.add(gap, 0, true));
+    };
     return [
-      pair,
+      ...S.pairs.map(pr => () => trial(pr)),
       () => {
-        const g = svgEl("g", { class: "st-in" }, svg);
-        svgEl("path", { class: "st-garrow", d: `M250 ${MA - 13} H${P.x(-6) - 34}` }, g);
-        svgEl("path", { class: "st-garrow-h", d: `M${P.x(-6) - 22} ${MA - 13} l-13 -8 v16 z` }, g);
-        pile.add(gap, 0, true);
+        // the pair and its axis have had their say: the pile takes over
+        [shown, left, arrow].forEach(g => g && g.classList.add("st-gone"));
+        quantiles(N - S.pairs.length).forEach((q, j) => pile.add(se * q, j * 28));
       },
-      () => quantiles(N - 1).forEach((q, j) => pile.add(se * q, j * 28)),
       () => {
         const g = svgEl("g", { class: "st-in" }, svg), exact = Math.abs(se - +r1(se)) < 1e-9;
         svgEl("path", { class: "cv-line", pathLength: 1, d: P.curve(f) }, g);
         stArrow(g, P, 0, se, P.y(f(se)) - 4, `${concept("se").label} ${r1(se)}`);
-        svgEl("text", { class: "st-formula st-fmid", x: (ML + MR) / 2, y: 150 }, g).textContent = `${S.sd} × √(2 ÷ ${S.n}) ${exact ? "=" : "≈"} ${r1(se)}`;
+        svgEl("text", { class: "st-formula st-fmid", x: (ML + MR) / 2, y: 120 }, g).textContent = `${S.sd} × √(2 ÷ ${S.n}) ${exact ? "=" : "≈"} ${r1(se)}`;
       }
     ];
   },

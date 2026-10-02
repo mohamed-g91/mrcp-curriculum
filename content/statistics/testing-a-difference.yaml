@@ -75,7 +75,9 @@ learn:
     axis: Mean systolic BP (mmHg)
     y_axis: "% of samples"
 
-  # Two placebo groups: their gap (141 − 140 = 1), then many more pairs: the gaps pile round 0, SE = 15 × √(2 ÷ 200) = 1.5.
+  # Trials with both groups on placebo, one per tap: each group's mean as a bell (SEM 1.1), the gap between them dropped
+  # onto an axis of gaps (slide 2's 140 and 141 first, gap 1; then gaps −1.6 and 2.3); then many more trials pile up
+  # round 0: SE = 15 × √(2 ÷ 200) = 1.5.
   - id: gaps
     pattern: story
     title: How big a gap can chance make?
@@ -83,7 +85,7 @@ learn:
     start: 1
     sd: 15
     n: 200
-    means: [140, 141]
+    pairs: [[140, 141], [140.6, 139.0], [139.5, 141.8]]
     means_axis: Mean systolic BP (mmHg)
     axis: Gap between means (mmHg)
     y_axis: "% of trials"

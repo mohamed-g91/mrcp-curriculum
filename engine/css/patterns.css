@@ -933,6 +933,11 @@ html.fluid .ask{position:fixed}
 .st-rowh{fill:var(--ink);font:800 21px var(--sans);text-anchor:middle}
 .st-rowse{fill:var(--se-ink);font:750 19px var(--sans);text-anchor:middle}
 @media (prefers-reduced-motion:reduce){.st-mdot,.st-mring{animation:none}}
+.st-pair-f{opacity:.15}
+.st-pair-l{fill:none;stroke-width:3}
+.st-pair-m{stroke-width:2;stroke-dasharray:5 5}
+.st-pair-a .st-pair-f{fill:#8C99AB}.st-pair-a .st-pair-l,.st-pair-a .st-pair-m{stroke:#8C99AB}
+.st-pair-b .st-pair-f{fill:var(--sc-line)}.st-pair-b .st-pair-l,.st-pair-b .st-pair-m{stroke:var(--sc-line)}
 /* the working as chains: one row per trial, one column per step (its name and sum on top), chips joined by arrows */
 .wk-chain{--cg:clamp(28px,calc(3.4 * var(--u)),44px);display:grid;grid-template-columns:auto repeat(var(--steps),minmax(0,1fr));column-gap:var(--cg);row-gap:clamp(16px,calc(2.6 * var(--u)),34px);align-items:center}
 .wk-chain .wk-line,.wk-chain .wk-names{display:contents}
