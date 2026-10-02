@@ -892,3 +892,49 @@ html.fluid .ask{position:fixed}
 .wk-answer.on{visibility:visible;animation:specIn .45s var(--ease)}
 @media (prefers-reduced-motion:reduce){.wk-line.on,.wk-line.on .wk-res,.wk-answer.on{animation:none}}
 @container (max-width:900px){.working{grid-template-columns:minmax(0,1fr)}.wk-steps{min-height:0}}
+/* story kinds for Testing a difference: samples, means, gaps, twose, far, nrows */
+.st-plot{animation:fadeIn .5s ease both}
+.dp-tlab.st-smt{font-size:16px}
+.cv-alab.st-sma{font-size:17px}
+.st-in{animation:fadeIn .5s ease both}
+.st-pb-a,.st-bell-a{fill:color-mix(in srgb,var(--muted) 13%,transparent)}
+.st-pb-band{fill:var(--par-bg)}
+.st-pb-l{fill:none;stroke:var(--ink);stroke-width:3}
+.st-pb-ghost{fill:none;stroke:var(--muted);stroke-width:2.5;stroke-dasharray:7 6}
+.st-pb-mean{stroke:var(--ink);stroke-width:3}
+.st-pb-mt{fill:var(--ink);font:750 19px var(--sans);text-anchor:middle}
+.st-pb-new .st-pb-mean{stroke:var(--se-solid)}
+.st-pb-new .st-pb-mt{fill:var(--se-ink)}
+.st-pb-sd{fill:var(--par-ink);font:750 17px var(--sans);text-anchor:middle}
+.st-zero{stroke:var(--muted);stroke-width:2;stroke-dasharray:6 6}
+.st-mdot{fill:color-mix(in srgb,var(--muted) 72%,var(--page));animation:stDrop .45s var(--ease) both}
+.st-mdot.st-still{animation:none}
+.st-mring{fill:none;stroke:var(--ink);stroke-width:3;animation:stDrop .45s var(--ease) both}
+.st-arrow path{fill:none;stroke:var(--x-solid);stroke-width:3.5}
+.st-arrow .st-head{fill:var(--x-solid);stroke:none}
+.st-arrow text{fill:var(--x-ink);font:750 20px var(--sans)}
+.st-formula{fill:var(--x-ink);font:750 21px var(--sans);text-anchor:end}
+.st-formula.st-fmid{text-anchor:middle}
+.st-gbr path{fill:none;stroke:var(--ink);stroke-width:2.5}
+.st-gbr text{fill:var(--ink);font:800 20px var(--sans);text-anchor:middle}
+.st-garrow{stroke:var(--muted);stroke-width:3}
+.st-garrow-h{fill:var(--muted)}
+.st-sel{stroke:var(--x-solid);stroke-width:2.5;stroke-dasharray:7 6}
+.st-sel-t{fill:var(--x-ink);font:750 17px var(--sans);text-anchor:middle;paint-order:stroke;stroke:var(--page);stroke-width:5px;stroke-linejoin:round}
+.st-95 path{fill:none;stroke:var(--x-solid);stroke-width:3.5}
+.st-95 .st-95-up{stroke-width:2;stroke-dasharray:5 5}
+.st-95 .st-head{fill:var(--x-solid);stroke:none}
+.st-95 text{fill:var(--x-ink);font:800 21px var(--sans);text-anchor:middle}
+.st-pedge.st-thin{stroke-width:4}
+.st-zt{fill:var(--ink);font:800 20px var(--sans);text-anchor:middle;paint-order:stroke;stroke:var(--page);stroke-width:6px;stroke-linejoin:round}
+.st-zt.st-zl{text-anchor:start}
+.st-lead{stroke:var(--ink);stroke-width:2}
+.st-dotline{stroke:var(--ink);stroke-width:2;stroke-dasharray:2 6;stroke-linecap:round}
+.st-rowh{fill:var(--ink);font:800 21px var(--sans);text-anchor:middle}
+.st-rowse{fill:var(--se-ink);font:750 19px var(--sans);text-anchor:middle}
+@media (prefers-reduced-motion:reduce){.st-mdot,.st-mring{animation:none}}
+/* the working with two columns: a row of their names, then each line's result under each */
+.wk-cols .wk-line,.wk-cols .wk-head{display:grid;grid-template-columns:minmax(0,1fr) repeat(2,minmax(120px,auto));column-gap:clamp(10px,calc(1.4 * var(--u)),18px);align-items:center}
+.wk-cols .wk-line:nth-child(even){padding-left:0}
+.wk-head span{font:750 var(--fs-body) var(--sans);color:var(--muted);text-align:center}
+.wk-cell{display:flex;justify-content:center}

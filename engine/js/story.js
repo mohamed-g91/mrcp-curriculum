@@ -36,6 +36,13 @@
            its own 95% (−3 to +3) beneath: 0 lies outside our CI just as our gap lies outside chance's
    slide   two panels, a difference (no effect = 0) and a ratio (no effect = 1); in each, one CI slides towards
            no effect, one place per tap, its p read out beneath: clear of it, touching it (p = 0.05), across it
+   samples one sample's people as a bell (± SD shaded, its mean written), then a second beside it: the mean moves, the SD stays
+   means   the two samples' means as dots on an axis of means, then many more samples piling up; their bell, SEM wide (SD ÷ √n)
+   gaps    one pair of means and their gap, dropped onto an axis of gaps round 0; many more pairs pile up; their bell, SE wide
+   twose   chance's bell in SEs: the 2 SE lines, 95% of trials between them, the cut's half beyond each, 1 in 20 (who chose it)
+   far     the trial's gap on chance's bell with the 1, 2 and 3 SE lines; how many SEs out it lands; the tails beyond it: p
+   nrows   the same gap in two trials, one row each on one axis, true to scale; 2 SE lines on the bigger, 1 SE on the smaller;
+           the gap drops through both rows, then the tails and each p
    art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
            from the slide's slots, with {key} standing for a concept's label (so H₀ is never retyped) */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -96,7 +103,276 @@ function storyStar(parent, x, y) {
 
 const sumText = v => `${v.join(" + ")} = ${Stats.sum(v)}`;
 
+// helpers for the testing kinds (samples, means, gaps, twose, far, nrows)
+const r1 = v => (Math.round(v * 10) / 10).toFixed(1);
+const r1n = v => String(+r1(v));
+const minus = v => String(v).replace("-", "−");
+// a bell as % per `per` units of the axis, so it sits on a pile of dots in bins `per` wide
+const normPct = (m, s, per) => v => 100 * per * Math.exp(-(((v - m) / s) ** 2) / 2) / (s * Math.sqrt(2 * Math.PI));
+// n normal quantiles, in a scattered order so a pile builds up evenly
+const quantiles = n => Array.from({ length: n }, (_, j) => Sampling.inv(((j * 37) % n + .5) / n));
+// a plot: the value axis lo to hi (minus signs kept) and a y axis of %, with their titles
+function storyPlot(parent, o) {
+  const { L, R, AX, H, lo, hi, ymax } = o, PY = H / ymax;
+  const x = v => L + (v - lo) / (hi - lo) * (R - L), y = p => AX - p * PY;
+  const g = svgEl("g", { class: "st-plot" }, parent);
+  svgEl("path", { class: "dp-axis", d: `M${L - 6} ${AX} H${R + 6}` }, g);
+  svgEl("path", { class: "dp-axis", d: `M${L - 6} ${AX} V${AX - H}` }, g);
+  o.ticks.forEach(t => { svgEl("text", { class: `dp-tlab${o.sm ? " st-smt" : ""}`, x: x(t), y: AX + 26 }, g).textContent = minus(t); });
+  o.yticks.forEach(t => { svgEl("text", { class: `cv-ylab${o.sm ? " sm" : ""}`, x: L - 16, y: y(t) + 6 }, g).textContent = `${t}%`; });
+  if (o.ytitle) svgEl("text", { class: `cv-ytitle${o.sm ? " sm" : ""}`, transform: `translate(${L - 58} ${AX - H / 2}) rotate(-90)` }, g).textContent = o.ytitle;
+  if (o.xtitle) svgEl("text", { class: `cv-alab${o.sm ? " st-sma" : ""}`, x: (L + R) / 2, y: AX + 58 }, g).textContent = o.xtitle;
+  const pts = (f, a, b) => { const q = [], n = 240; for (let i = 0; i <= n; i++) { const v = a + (b - a) * i / n; q.push(`${x(v).toFixed(1)} ${y(f(v)).toFixed(1)}`); } return q; };
+  return { g, x, y, PY, AX,
+    curve: (f, a = lo, b = hi) => `M${pts(f, a, b).join(" L")}`,
+    area: (f, a = lo, b = hi) => `M${x(a)} ${AX} L${pts(f, a, b).join(" L")} L${x(b)} ${AX} Z` };
+}
+// a pile of N dots on a plot, in bins `bin` wide: each dot stands for 1 in N, so the pile fits the bell drawn with normPct
+function dotPile(parent, P, bin, N) {
+  const counts = {}, step = 100 / N * P.PY, r = Math.min(step, P.x(bin) - P.x(0)) / 2 - 1.5, g = svgEl("g", {}, parent);
+  return {
+    add(v, delay, ring) {
+      const b = Math.round(v / bin) * bin, k = counts[b] || 0, cy = P.AX - step / 2 - k * step;
+      counts[b] = k + 1;
+      const style = `animation-delay:${REDUCED_MOTION ? 0 : delay}ms`;
+      svgEl("circle", { class: "st-mdot", cx: P.x(b), cy, r, style }, g);
+      if (ring) svgEl("circle", { class: "st-mring", cx: P.x(b), cy, r: r + 2.5, style }, g);
+    }
+  };
+}
+// a width marked from a to b at height y: a line with an arrowhead and its label
+function stArrow(parent, P, a, b, y, label) {
+  const g = svgEl("g", { class: "st-arrow" }, parent), xb = P.x(b);
+  svgEl("path", { d: `M${P.x(a)} ${y} H${xb - 10}` }, g);
+  svgEl("path", { class: "st-head", d: `M${xb} ${y} l-13 -8 v16 z` }, g);
+  svgEl("text", { x: xb + 10, y: y + 7 }, g).textContent = label;
+}
+function stPill(parent, cx, cy, text, f) {
+  const g = svgEl("g", { class: `st-cpill ${f}` }, parent), w = 34 + text.length * 11.5;
+  svgEl("rect", { x: cx - w / 2, y: cy - 22, width: w, height: 40, rx: 20 }, g);
+  svgEl("text", { x: cx, y: cy + 5 }, g).textContent = text;
+  return g;
+}
+
 const STORIES = {
+  samples(svg, S) {
+    // people's values in one sample, then a second: the same SD, the mean a little moved; the first bell stays dashed behind
+    const AX = 260, H = 200, [m1, m2] = S.means, sd = S.sd, f = m => normPct(m, sd, 1);
+    const lo = Math.floor((m1 - 3.3 * sd) / 10) * 10, hi = lo + Math.ceil(6.6 * sd / 10) * 10, ticks = [];
+    for (let t = Math.ceil(lo / 20) * 20; t <= hi; t += 20) ticks.push(t);
+    svg.setAttribute("viewBox", `0 0 ${ST.W} 380`);
+    const ymax = Math.ceil(f(m1)(m1)), yticks = [...Array(ymax + 1).keys()];
+    const panel = (L, m, cls, ghost) => {
+      const P = storyPlot(svg, { L, R: L + 262, AX, H, lo, hi, ymax, ticks, yticks, ytitle: S.y_axis, xtitle: S.axis, sm: true });
+      P.g.classList.add("st-pb", cls);
+      svgEl("path", { class: "st-pb-a", d: P.area(f(m)) }, P.g);
+      svgEl("path", { class: "st-pb-band", d: P.area(f(m), m - sd, m + sd) }, P.g);
+      if (ghost != null) svgEl("path", { class: "st-pb-ghost", d: P.curve(f(ghost)) }, P.g);
+      svgEl("path", { class: "st-pb-l", d: P.curve(f(m)) }, P.g);
+      svgEl("path", { class: "st-pb-mean", d: `M${P.x(m)} ${AX} V${P.y(f(m)(m)) - 4}` }, P.g);
+      svgEl("text", { class: "st-pb-mt", x: P.x(m), y: P.y(f(m)(m)) - 16 }, P.g).textContent = `Mean ${m}`;
+      svgEl("text", { class: "st-pb-sd", x: P.x(m), y: P.y(.5) }, P.g).textContent = `± ${concept("sd").label} ${sd}`;
+    };
+    return [
+      () => panel(92, m1, "st-pb-old"),
+      () => panel(468, m2, "st-pb-new", m1),
+      () => stPill(svg, ST.W / 2, 352, `Means differ · ${concept("sd").label} stays ${sd}`, "f-par")
+    ];
+  },
+  means(svg, S) {
+    // the two samples' means as dots on an axis of means, then many more samples of n piling up; the bell they make is SEM wide
+    const sem = S.sd / Math.sqrt(S.n), c = S.means[0], span = Math.max(5, Math.ceil(4 * sem)), BIN = .5, N = 60;
+    const lo = c - span, hi = c + span, f = normPct(c, sem, BIN), ymax = Math.ceil(f(c) / 5) * 5;
+    svg.setAttribute("viewBox", `0 0 ${ST.W} 390`);
+    svg.classList.add("f-se");
+    const ticks = []; for (let t = lo; t <= hi; t++) ticks.push(t);
+    const P = storyPlot(svg, { L: 110, R: 720, AX: 320, H: 250, lo, hi, ymax, ticks, yticks: [...Array(ymax / 5 + 1).keys()].map(k => k * 5), ytitle: S.y_axis, xtitle: S.axis });
+    const pile = dotPile(svg, P, BIN, N);
+    return [
+      () => S.means.forEach(m => pile.add(m, 0, true)),
+      () => quantiles(N - 2).forEach((q, j) => pile.add(c + sem * q, j * 28)),
+      () => {
+        const g = svgEl("g", { class: "st-in" }, svg);
+        svgEl("path", { class: "cv-line", pathLength: 1, d: P.curve(f) }, g);
+        stArrow(g, P, c, c + sem, P.y(f(c + sem)) - 4, `${concept("sem").label} ${r1(sem)}`);
+        svgEl("text", { class: "st-formula", x: 720, y: 130 }, g).textContent = `${S.sd} ÷ √${S.n} ≈ ${r1(sem)}`;
+      }
+    ];
+  },
+  gaps(svg, S) {
+    // one pair of groups (both on placebo): their means and the gap between them, dropped onto an axis of gaps round 0;
+    // then many more pairs: the gaps pile into a bell, the SE of the difference wide
+    const se = S.sd * Math.sqrt(2 / S.n), [m1, m2] = S.means, gap = m2 - m1, BIN = .5, N = 60, f = normPct(0, se, BIN);
+    const ymax = Math.ceil(f(0) / 5) * 5;
+    svg.setAttribute("viewBox", `0 0 ${ST.W} 390`);
+    svg.classList.add("f-se");
+    // the pair, small, on the left
+    const ML = 14, MR = 234, MA = 300, mlo = Math.min(m1, m2) - 2.5, mhi = Math.max(m1, m2) + 2.5, mx = v => ML + (v - mlo) / (mhi - mlo) * (MR - ML);
+    const pair = () => {
+      const g = svgEl("g", { class: "st-in" }, svg);
+      svgEl("path", { class: "dp-axis", d: `M${ML} ${MA} H${MR}` }, g);
+      for (let t = Math.ceil(mlo / 2) * 2; t <= mhi; t += 2) svgEl("text", { class: "dp-tlab st-smt", x: mx(t), y: MA + 26 }, g).textContent = t;
+      svgEl("text", { class: "cv-alab st-sma", x: (ML + MR) / 2, y: MA + 56 }, g).textContent = S.means_axis;
+      S.means.forEach(m => svgEl("circle", { class: "st-mdot st-still", cx: mx(m), cy: MA - 13, r: 11 }, g));
+      const yb = MA - 44, br = svgEl("g", { class: "st-gbr" }, g);
+      svgEl("path", { d: `M${mx(m1)} ${yb + 8} V${yb} H${mx(m2)} V${yb + 8}` }, br);
+      svgEl("text", { x: (mx(m1) + mx(m2)) / 2, y: yb - 12 }, br).textContent = `Gap ${minus(r1n(gap))}`;
+    };
+    const ticks = []; for (let t = -6; t <= 6; t += 2) ticks.push(t);
+    const P = storyPlot(svg, { L: 380, R: 740, AX: 320, H: 250, lo: -6, hi: 6, ymax, ticks, yticks: [...Array(ymax / 5 + 1).keys()].map(k => k * 5), ytitle: S.y_axis, xtitle: S.axis });
+    svgEl("path", { class: "st-zero", d: `M${P.x(0)} ${320} V${70}` }, P.g);
+    const pile = dotPile(svg, P, BIN, N);
+    return [
+      pair,
+      () => {
+        const g = svgEl("g", { class: "st-in" }, svg);
+        svgEl("path", { class: "st-garrow", d: `M250 ${MA - 13} H${P.x(-6) - 34}` }, g);
+        svgEl("path", { class: "st-garrow-h", d: `M${P.x(-6) - 22} ${MA - 13} l-13 -8 v16 z` }, g);
+        pile.add(gap, 0, true);
+      },
+      () => quantiles(N - 1).forEach((q, j) => pile.add(se * q, j * 28)),
+      () => {
+        const g = svgEl("g", { class: "st-in" }, svg), exact = Math.abs(se - +r1(se)) < 1e-9;
+        svgEl("path", { class: "cv-line", pathLength: 1, d: P.curve(f) }, g);
+        stArrow(g, P, 0, se, P.y(f(se)) - 4, `${concept("se").label} ${r1(se)}`);
+        svgEl("text", { class: "st-formula st-fmid", x: (ML + MR) / 2, y: 150 }, g).textContent = `${S.sd} × √(2 ÷ ${S.n}) ${exact ? "=" : "≈"} ${r1(se)}`;
+      }
+    ];
+  },
+  twose(svg, S) {
+    // chance's bell in SEs from 0: 95% of trials within 2 SE either side, the cut's half beyond each, 1 in 20 in all
+    const AX = 262, f = normPct(0, 1, .5), ymax = 20, SE = concept("se").label, pc = v => `${+(v * 100).toFixed(1)}%`;
+    svg.setAttribute("viewBox", `0 0 ${ST.W} 380`);
+    svg.classList.add("f-se");
+    const ticks = []; for (let t = -4; t <= 4; t++) ticks.push(t);
+    const P = storyPlot(svg, { L: 110, R: 720, AX, H: 210, lo: -4, hi: 4, ymax, ticks, yticks: [0, 10, 20], ytitle: S.y_axis, xtitle: S.axis });
+    return [
+      () => {
+        svgEl("path", { class: "st-bell-a", d: P.area(f) }, P.g);
+        svgEl("path", { class: "cv-line", pathLength: 1, d: P.curve(f) }, P.g);
+        svgEl("path", { class: "st-zero", d: `M${P.x(0)} ${AX} V${AX - 216}` }, P.g);
+      },
+      () => {
+        const g = svgEl("g", { class: "st-in" }, svg);
+        [-2, 2].forEach(k => {
+          svgEl("path", { class: "st-sel", d: `M${P.x(k)} ${AX} V${AX - 120}` }, g);
+          svgEl("text", { class: "st-sel-t", x: P.x(k), y: AX - 130 }, g).textContent = `2 ${SE}`;
+        });
+      },
+      () => {
+        // under the axis, a double-headed arrow from −2 to +2 SE, its share written in a gap at its middle
+        const g = svgEl("g", { class: "st-in st-95" }, svg), y = AX + 92, a = P.x(-2), b = P.x(2), m = P.x(0), w = 96;
+        [a, b].forEach(v => svgEl("path", { class: "st-95-up", d: `M${v} ${AX + 66} V${y + 12}` }, g));
+        svgEl("path", { d: `M${a + 12} ${y} H${m - w} M${m + w} ${y} H${b - 12}` }, g);
+        svgEl("path", { class: "st-head", d: `M${a} ${y} l13 -8 v16 z M${b} ${y} l-13 -8 v16 z` }, g);
+        svgEl("text", { x: m, y: y + 8 }, g).textContent = `${pc(1 - S.cut)} of trials`;
+      },
+      () => {
+        const g = svgEl("g", { class: "st-ptail f-test" }, P.g);
+        [[2, 4], [-4, -2]].forEach(([a, b]) => {
+          svgEl("path", { class: "st-pfill", d: P.area(f, a, b) }, g);
+          svgEl("path", { class: "st-pedge st-thin", d: P.curve(f, a, b) }, g);
+          svgEl("text", { class: "st-ppct", x: P.x((a + b) / 2 + Math.sign(a) * .1), y: AX - 60 }, g).textContent = pc(S.cut / 2);
+        });
+      },
+      () => {
+        stPill(svg, 600, 42, `${pc(S.cut)} = 1 in ${Math.round(1 / S.cut)}`, "f-test");
+        if (S.origin) svgEl("text", { class: "st-orwho st-in", x: 600, y: 90 }, svg).textContent = S.origin;
+      },
+      () => stPill(svg, 236, 42, `Past 2 ${SE} → p < ${S.cut}`, "f-test")
+    ];
+  },
+  far(svg, S) {
+    // the trial's gap on chance's bell (SE of the difference wide): the 1, 2 and 3 SE lines either side,
+    // the gap landing between them, then the tails at least that far out, either way: p
+    const se = S.sd * Math.sqrt(2 / S.n), z = S.gap / +r1(se), tail = 1 - Sampling.cdf(S.gap / se), AX = 300;
+    const f = normPct(0, se, .5), ymax = Math.ceil(f(0) / 5) * 5, SE = concept("se").label, pc = v => `${r1(v * 100)}%`;
+    svg.setAttribute("viewBox", `0 0 ${ST.W} 390`);
+    svg.classList.add("f-se");
+    const ticks = []; for (let t = -6; t <= 6; t += 2) ticks.push(t);
+    const P = storyPlot(svg, { L: 110, R: 720, AX, H: 230, lo: -6, hi: 6, ymax, ticks, yticks: [...Array(ymax / 5 + 1).keys()].map(k => k * 5), ytitle: S.y_axis, xtitle: S.axis });
+    let tails;
+    return [
+      () => {
+        svgEl("path", { class: "st-bell-a", d: P.area(f) }, P.g);
+        tails = svgEl("g", {}, P.g);
+        svgEl("path", { class: "cv-line", pathLength: 1, d: P.curve(f) }, P.g);
+        svgEl("path", { class: "st-zero", d: `M${P.x(0)} ${AX} V${AX - 236}` }, P.g);
+      },
+      () => {
+        const g = svgEl("g", { class: "st-in" }, svg);
+        [1, 2, 3].forEach(k => [-1, 1].forEach(s => {
+          svgEl("path", { class: "st-sel", d: `M${P.x(s * k * se)} ${AX} V${AX - 214}` }, g);
+          svgEl("text", { class: "st-sel-t", x: P.x(s * k * se), y: AX - 222 }, g).textContent = `${k} ${SE}`;
+        }));
+      },
+      () => {
+        const g = svgEl("g", {}, svg), x = P.x(S.gap), top = AX - 128;
+        svgEl("path", { class: "st-lead st-in", d: `M${x} ${AX - 9} V${top + 6}` }, g);
+        svgEl("text", { class: "st-zt st-in", x, y: top }, g).textContent = `${r1(z)} ${SE}s`;
+        svgEl("circle", { class: "st-real", cx: x, cy: AX, r: 8 }, g);
+      },
+      () => {
+        const g = svgEl("g", { class: "st-ptail f-test" }, tails);
+        [[S.gap, 6], [-6, -S.gap]].forEach(([a, b]) => {
+          svgEl("path", { class: "st-pfill", d: P.area(f, a, b) }, g);
+          svgEl("path", { class: "st-pedge", d: `${P.curve(f, a, b)} M${P.x(a)} ${AX} H${P.x(b)}` }, g);
+          svgEl("text", { class: "st-ppct", x: P.x(Math.sign(a + b) * 5.4), y: AX - 34 }, g).textContent = pc(tail);
+        });
+        const p = 2 * tail;
+        stPill(svg, 236, 34, `p ≈ ${p < .01 ? p.toFixed(3) : p.toPrecision(1)}`, "f-test");
+      }
+    ];
+  },
+  nrows(svg, S) {
+    // the same gap in two trials, one row each on the same axis, true to scale: the bigger trial's bell narrow with its
+    // 2 SE lines, the smaller one's wide with its 1 SE lines; one dotted line drops from the gap through both, then the tails: p
+    const SE = concept("se").label, L = 170, R = 600, H = 112, lo = -15, hi = 15, rowsAX = [150, 318];
+    const rows = S.ns.map((n, i) => {
+      const se = S.sd * Math.sqrt(2 / n), shown = +r1(se), z = S.gap / shown, p = 2 * (1 - Sampling.cdf(S.gap / se));
+      return { n, se, z, p, f: normPct(0, se, .5), AX: rowsAX[i], k: i ? 1 : 2, label: S.labels[i] };
+    });
+    const ymax = Math.ceil(rows[0].f(0) / 5) * 5, ticks = []; for (let t = lo; t <= hi; t += 5) ticks.push(t);
+    svg.setAttribute("viewBox", `0 0 ${ST.W} 386`);
+    svg.classList.add("f-se");
+    rows.forEach((r, i) => { r.P = storyPlot(svg, { L, R, AX: r.AX, H, lo, hi, ymax, ticks, yticks: [0, ymax], xtitle: i ? S.axis : "", sm: true }); });
+    const yt = svgEl("text", { class: "cv-ytitle sm", transform: `translate(${L - 58} ${(rowsAX[0] + rowsAX[1] - H) / 2}) rotate(-90)` }, svg);
+    yt.textContent = S.y_axis;
+    const zt = z => (z < 1 ? z.toFixed(2) : r1(z));
+    return [
+      () => rows.forEach(r => {
+        svgEl("path", { class: "st-bell-a", d: r.P.area(r.f) }, r.P.g);
+        r.tails = svgEl("g", {}, r.P.g);
+        svgEl("path", { class: "cv-line", pathLength: 1, d: r.P.curve(r.f) }, r.P.g);
+        svgEl("path", { class: "st-zero", d: `M${r.P.x(0)} ${r.AX} V${r.AX - H - 8}` }, r.P.g);
+        svgEl("text", { class: "st-rowh", x: 690, y: r.AX - 82 }, r.P.g).textContent = r.label;
+        svgEl("text", { class: "st-rowse", x: 690, y: r.AX - 52 }, r.P.g).textContent = `${SE} ${r1(r.se)}`;
+      }),
+      () => rows.forEach(r => {
+        const g = svgEl("g", { class: "st-in" }, svg);
+        [-1, 1].forEach(s => {
+          svgEl("path", { class: "st-sel", d: `M${r.P.x(s * r.k * r.se)} ${r.AX} V${r.AX - H + 14}` }, g);
+          svgEl("text", { class: "st-sel-t", x: r.P.x(s * r.k * r.se), y: r.AX - H + 4 }, g).textContent = `${r.k} ${SE}`;
+        });
+      }),
+      () => {
+        const x = rows[0].P.x(S.gap);
+        svgEl("path", { class: "st-dotline st-in", d: `M${x} ${rows[0].AX - H} V${rows[1].AX}` }, svg);
+        rows.forEach(r => {
+          svgEl("text", { class: "st-zt st-zl st-in", x: x + 12, y: r.P.y(r.f(S.gap)) - 12 }, svg).textContent = `${zt(r.z)} ${SE}s`;
+          svgEl("circle", { class: "st-real", cx: x, cy: r.AX, r: 7 }, svg);
+        });
+      },
+      () => rows.forEach(r => {
+        const g = svgEl("g", { class: "st-ptail f-test" }, r.tails);
+        [[S.gap, hi], [lo, -S.gap]].forEach(([a, b]) => {
+          svgEl("path", { class: "st-pfill", d: r.P.area(r.f, a, b) }, g);
+          svgEl("path", { class: "st-pedge st-thin", d: `${r.P.curve(r.f, a, b)} M${r.P.x(a)} ${r.AX} H${r.P.x(b)}` }, g);
+        });
+        stPill(svg, 690, r.AX - 12, `p ≈ ${r.p < .01 ? r.p.toFixed(3) : r.p.toPrecision(1)}`, "f-test");
+      })
+    ];
+  },
   grid(svg, S) {
     // the trial run 1,000 times with placebo in both groups: one square per run, lined up by its gap (the biggest fall
     // first, the biggest rise last), so the runs with a gap at least as big as ours light up at both ends; p = how many

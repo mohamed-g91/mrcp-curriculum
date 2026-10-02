@@ -1,0 +1,244 @@
+# Testing a difference: MRCP Part 1 statistics. Lesson 5 of the series: where p comes from.
+# Lesson 4 (Hypothesis testing) gave p as a fact; this lesson works it out: SD → SE of the difference → how many SEs out → p.
+# The same trial runs through: 400 people with high blood pressure, a new drug or a placebo, 200 in each group;
+# systolic BP fell 4 mmHg more on the drug (SD 15 mmHg in each group).
+#   SEM = 15 ÷ √200 ≈ 1.1 mmHg; SE of the difference = 15 × √(2 ÷ 200) = 1.5 mmHg (= SEM × √2)
+#   4 ÷ 1.5 ≈ 2.7 SEs, so p ≈ 0.008 (two-sided, normal: 0.0077)
+# The small trial: the same 4 mmHg in 40 people, 20 in each group:
+#   SE = 15 × √(2 ÷ 20) ≈ 4.7 mmHg; 4 ÷ 4.7 ≈ 0.85 SEs, so p ≈ 0.4 (0.399)
+# Slides 2–4 use systolic BP levels (means 140 and 141 in two samples) with the SD of BP taken as 15, by the author's choice,
+# so the SEM and SE stay 1.1 and 1.5; in real trials the SD of BP and of its change usually differ.
+# "2 SE" stands for 1.96 SE (2 SE leaves 4.6% outside, not 5%); the narration says "1.96, about 2".
+# In effect a two-sample z-test; at this size a t-test gives almost the same p. Tests are named in Choosing the right test.
+# Two-sided throughout. Gaps between chance trials fall either way, so the gap axes keep their minus signs.
+# IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
+
+id: stats.testing-a-difference
+title: Testing a difference
+description: Where does p come from? How far means and gaps move by chance, the standard error of a difference, why 2 SEs, and why the same gap gives a smaller p in a bigger trial. Learn from one blood pressure trial, then practise on exam-style stems.
+status: draft
+updated: 2026-10-02
+sources:
+  - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapters 6–8.
+  - Petrie A, Sabin C. Medical Statistics at a Glance, 4th ed. Chapters 17, 21.
+  - Fisher RA. Statistical Methods for Research Workers. Edinburgh: Oliver and Boyd, 1925.
+  - Bland JM, Altman DG. Comparisons against baseline within randomised groups are often used and can be highly misleading. Trials 2011;12:264.
+retired: []
+cover: concepts
+
+# Purple goes with the people and their spread (the SD), teal with how far means and gaps move (the SEM and SE),
+# olive with testing (the p-value, significance).
+families:
+  par: People
+  se: Means and gaps
+  test: Testing
+  gray: Neutral
+
+concepts:
+  sd:   { label: SD,  family: par,  icon: spread }
+  sem:  { label: SEM, family: se,   icon: narrow }
+  # the SE of the difference; figures write "SE 1.5", "2 SE"
+  se:   { label: SE,  family: se,   icon: narrow }
+  p:    { label: p-value, family: test, icon: tails }
+  # the two verdicts; they are not ideas of their own, so they stay off the cover
+  sig:  { label: Significant,     family: test, icon: check, cover: false }
+  ns:   { label: Not significant, family: gray, icon: dash,  cover: false }
+
+learn:
+  - id: hook
+    pattern: hook
+    title: Same gap, different p
+    stem: "Two trials of a new drug for high blood pressure found the same gap: systolic BP fell [[4 mmHg]] more on the drug (SD 15 mmHg). With [[400 people]], p = 0.008. With [[40 people]], p = 0.4."
+    question: Why is p so different?
+    scene: case-older
+
+  # People's BP in one sample of 200 (mean 140, SD 15), then a second sample: its mean moves (141), its SD does not.
+  - id: samples
+    pattern: story
+    title: Another sample
+    kind: samples
+    start: 1
+    sd: 15
+    means: [140, 141]
+    axis: Systolic BP (mmHg)
+    y_axis: "% of people"
+
+  # The two samples' means, then many more samples of 200: they pile into a narrow bell, SEM = 15 ÷ √200 ≈ 1.1.
+  - id: means
+    pattern: story
+    title: How far do means move?
+    kind: means
+    start: 1
+    sd: 15
+    n: 200
+    means: [140, 141]
+    axis: Mean systolic BP (mmHg)
+    y_axis: "% of samples"
+
+  # Two placebo groups: their gap (141 − 140 = 1), then many more pairs: the gaps pile round 0, SE = 15 × √(2 ÷ 200) = 1.5.
+  - id: gaps
+    pattern: story
+    title: How big a gap can chance make?
+    kind: gaps
+    start: 1
+    sd: 15
+    n: 200
+    means: [140, 141]
+    means_axis: Mean systolic BP (mmHg)
+    axis: Gap between means (mmHg)
+    y_axis: "% of trials"
+
+  # 95% of chance's gaps fall within 2 SE (1.96 exactly) of 0; 2.5% beyond each side, 5% = 1 in 20 (Fisher, 1925).
+  - id: two-se
+    pattern: story
+    title: Why 2 SEs?
+    kind: twose
+    start: 1
+    # Fisher (1925) noted that p = 0.05 falls at 1.96, nearly 2, standard deviations and took it as a convenient limit
+    cut: 0.05
+    origin: Fisher, 1925
+    axis: SEs from 0
+    y_axis: "% of trials"
+
+  # The trial's 4 mmHg on chance's bell (SE 1.5): past 2 SE, short of 3, at 2.7 SEs; the tails beyond ± 4, 0.4% each, p ≈ 0.008.
+  - id: far
+    pattern: story
+    title: How far out is 4?
+    kind: far
+    start: 1
+    sd: 15
+    n: 200
+    gap: 4
+    axis: Gap between means (mmHg)
+    y_axis: "% of trials"
+
+  # The same 4 mmHg in 400 and 40 people. 200 in each group: SE 1.5, 4 ÷ 1.5 ≈ 2.7 SEs, p ≈ 0.008.
+  # 20 in each group: SE ≈ 4.7, 4 ÷ 4.7 ≈ 0.85 SEs (inside even 1 SE), p ≈ 0.4.
+  - id: size
+    pattern: story
+    title: Why does size matter?
+    kind: nrows
+    start: 1
+    sd: 15
+    gap: 4
+    ns: [200, 20]
+    labels: [400 people, 40 people]
+    axis: Gap between means (mmHg)
+    y_axis: "% of trials"
+
+  - id: hook-solved
+    pattern: working
+    title: Back to the trials
+    scene: doctor-think
+    stem: "Systolic BP fell [[4 mmHg]] more on the drug (SD 15 mmHg): in [[200 people in each group]], and in [[20 in each group]]."
+    columns: [400 people, 40 people]
+    lines:
+      - { family: se,   text: "SE = 15 × √(2 ÷ n)", results: [1.5, 4.7] }
+      - { family: se,   text: "4 ÷ SE", results: [2.7 SEs, 0.85 SEs] }
+      - { family: test, text: "p", results: ["0.008", "0.4"] }
+    answer: "The same gap. More people give a smaller SE, so 4 lands further out and p is smaller."
+
+practise:
+  - id: cases
+    pattern: stem-quiz
+    title: Testing a difference
+    options: [sig, ns]
+    # The first case is the solved example; the rest are dealt in a random order.
+    # Every case brings its own options; the scenes are the nearest cartoons from the cast.
+    cases:
+      - id: c01
+        scene: case-older
+        solved: true
+        stem: 400 people with high blood pressure took a new drug or a placebo, [[200 in each group]]. Systolic BP fell [[4 mmHg more on the drug (SD 15 mmHg)]].
+        question: Is the result significant at the 5% level?
+        options: ["Yes: 4 is 2.7 SEs from 0", "No: 4 mmHg is smaller than the SD of 15", "Not without a confidence interval"]
+        answer: "Yes: 4 is 2.7 SEs from 0"
+        hint: How many SEs of the difference is 4 from 0?
+        why: "SE of the difference = 15 × √(2 ÷ 200) = 1.5, and 4 ÷ 1.5 = 2.7 SEs: past 2 SE, so p is below 0.05."
+        tutor: "SE of the difference = 15 × √(2 ÷ 200) = 1.5 mmHg. 4 ÷ 1.5 = 2.7 SEs, past 2 SE, so p < 0.05 (p ≈ 0.008). The SD describes people; the test asks how far the gap between the means is from 0."
+
+      - id: c02
+        scene: case-glucose
+        stem: A trial compares two diets in [[50 patients each]]. HbA1c has an [[SD of 10 mmol/mol]] in both groups.
+        question: What is the SE of the difference between the two mean HbA1c values?
+        options: ["2 mmol/mol", "1.4 mmol/mol", "0.2 mmol/mol"]
+        answer: "2 mmol/mol"
+        hint: SE of a difference = SD × √(2 ÷ n).
+        why: "10 × √(2 ÷ 50) = 10 × 0.2 = 2. The 1.4 is one group's SEM (10 ÷ √50): the gap moves more than either mean."
+
+      - id: c03
+        scene: case-people
+        stem: A trial with [[100 patients per group]] gives an [[SE of the difference of 3 mmHg]]. It is repeated with [[400 per group]] and the same SD.
+        question: What is the new SE of the difference?
+        options: ["1.5 mmHg", "0.75 mmHg", "3 mmHg"]
+        answer: "1.5 mmHg"
+        hint: The SE shrinks with the square root of n.
+        why: "4 times as many people, and √4 = 2, so the SE halves: 3 → 1.5 mmHg."
+
+      - id: c04
+        scene: case-older
+        stem: Two trials of the same drug find the [[same 5 mmHg fall in BP]] against placebo, with the same SD. One has [[60 patients]], the other [[600]].
+        question: Which gives the smaller p-value?
+        options: ["The trial of 600", "The trial of 60", "Neither: the gap is the same"]
+        answer: "The trial of 600"
+        hint: Which trial has the smaller SE?
+        why: "More people give a smaller SE, so the same 5 mmHg lies more SEs from 0, and p is smaller."
+
+      - id: c05
+        scene: case-people
+        stem: Patients on a weight-loss drug lost [[3 kg more than on placebo]]. The [[SE of the difference is 2 kg]].
+        question: Is the difference significant at the 5% level?
+        options: ["No: it is only 1.5 SEs from 0", "Yes: 3 kg is more than 2 kg", "Yes: the gap is above 0"]
+        answer: "No: it is only 1.5 SEs from 0"
+        hint: Is the gap past 2 SEs?
+        why: "3 ÷ 2 = 1.5 SEs, inside 2 SE, so p is above 0.05 (p ≈ 0.13)."
+
+      - id: c06
+        scene: doctor-think
+        stem: In a BP trial, [[each group's mean has an SEM of 1.1 mmHg]], but the [[SE of the difference is 1.5 mmHg]].
+        question: Why is the SE of the difference bigger?
+        options: ["Both means move by chance, so their gap moves more", "The drug makes BP more variable", "The SD is larger in the drug group"]
+        answer: "Both means move by chance, so their gap moves more"
+        hint: How many means does a gap depend on?
+        why: "A gap moves with both means, so it moves more than either one. For two equal groups it is the SEM × √2 (1.1 × 1.41 ≈ 1.5)."
+
+      - id: c07
+        scene: case-older
+        twist: true
+        stem: In a trial of a new antihypertensive, BP fell [[10 mmHg from baseline on the drug (p < 0.001)]] and [[7 mmHg on placebo (p = 0.01)]]. The authors conclude that [[the drug works]].
+        question: What is the best response?
+        options: ["Compare the arms: test the 3 mmHg gap between them", "Agreed: the drug arm's p-value is smaller", "Agreed: BP fell more on the drug"]
+        answer: "Compare the arms: test the 3 mmHg gap between them"
+        hint: BP falls on placebo too. What is the drug's effect?
+        why: "BP falls on placebo as well (regression to the mean, the placebo effect). The drug's effect is the 3 mmHg gap between the arms, and that needs its own SE and p. Each arm against its own baseline answers the wrong question."
+
+      - id: c08
+        scene: case-people
+        stem: In a weight-loss trial with [[200 per group]], the drug group lost a mean of [[6.5 kg]] and the placebo group [[4 kg (SD 10 kg in both)]].
+        question: How many SEs from 0 is the difference?
+        options: ["2.5", "0.25", "1.25"]
+        answer: "2.5"
+        hint: "Find the SE of the difference first: SD × √(2 ÷ n)."
+        why: "SE = 10 × √(2 ÷ 200) = 1 kg. The gap is 2.5 kg, so 2.5 SEs: significant (p ≈ 0.01). The 0.25 comes from dividing by the SD (10)."
+
+      - id: c09
+        scene: doctor-think
+        stem: A diet lowered LDL cholesterol by [[0.18 mmol/L more than the usual diet]], with an [[SE of the difference of 0.1 mmol/L]].
+        question: Is the difference significant at the 5% level?
+        options: ["No: it is under 2 SEs from 0", "Yes: it is more than 1 SE from 0", "Yes: any fall counts"]
+        answer: "No: it is under 2 SEs from 0"
+        hint: How many SEs is 0.18?
+        why: "0.18 ÷ 0.1 = 1.8 SEs, inside 2 SE, so p is above 0.05 (p ≈ 0.07)."
+
+      - id: c10
+        scene: doctor-think
+        stem: Two trials have the [[same size and the same gap]]. In trial B, [[the SD is twice as large]] as in trial A.
+        question: What happens to the SE of the difference in trial B?
+        options: ["It doubles", "It halves", "It stays the same"]
+        answer: "It doubles"
+        hint: SE of a difference = SD × √(2 ÷ n).
+        why: "The SE grows in step with the SD, so B's SE is twice A's and its p is larger. The SD stays the same from sample to sample, but it still sets the SE."
+
+  - id: end
+    pattern: end
+    title: Your score

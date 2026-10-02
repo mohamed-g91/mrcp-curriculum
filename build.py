@@ -180,8 +180,38 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid"):
-                errs.append(f"{where}: kind is mean, median, mode, iqr, sampling, art, coin, gap, line, slide, ci, ncompare or grid, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows"):
+                errs.append(f"{where}: kind is one of {', '.join(("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows"))}, not {kind!r}")
+            elif kind == "samples":
+                # people's values in two samples: the same SD, the means a little apart
+                if not isinstance(s.get("sd"), (int, float)) or len(s.get("means") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
+                    errs.append(f"{where}: a samples story needs sd, means (two samples), an axis and a y_axis")
+                refs += ["sd"]
+            elif kind in ("means", "gaps"):
+                # the first two samples' means (or one pair of groups), then many more samples of n: their pile and its bell
+                if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n")) or len(s.get("means") or []) != 2 or not (s.get("axis") and s.get("y_axis"))                         or (kind == "gaps" and not s.get("means_axis")):
+                    errs.append(f"{where}: a {kind} story needs sd, n, means (two), an axis and a y_axis" + (" and a means_axis" if kind == "gaps" else ""))
+                elif kind == "means" and abs(s["means"][1] - s["means"][0]) > 4 * s["sd"] / s["n"] ** .5:
+                    errs.append(f"{where}: the two means must sit within 4 SEM of each other, on the axis of means")
+                refs += ["sem" if kind == "means" else "se"]
+            elif kind == "twose":
+                # chance's bell in SEs: the cut's share beyond 2 SE either side
+                if not (isinstance(s.get("cut"), (int, float)) and 0 < s["cut"] < 1) or not (s.get("axis") and s.get("y_axis")):
+                    errs.append(f"{where}: a twose story needs a cut, an axis and a y_axis")
+                refs += ["se", "p"]
+            elif kind == "far":
+                if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n", "gap")) or not (s.get("axis") and s.get("y_axis")):
+                    errs.append(f"{where}: a far story needs sd, n (in each group), gap, an axis and a y_axis")
+                elif not 2 * s["sd"] * (2 / s["n"]) ** .5 < s["gap"] < 3 * s["sd"] * (2 / s["n"]) ** .5 or 4 * s["sd"] * (2 / s["n"]) ** .5 > 6.01:
+                    errs.append(f"{where}: its axis runs -6 to 6: the gap must land between 2 and 3 SEs, with 4 SEs no more than 6")
+                refs += ["se", "p"]
+            elif kind == "nrows":
+                ns = s.get("ns") or []
+                if len(ns) != 2 or not all(isinstance(n, int) and n >= 2 for n in ns) or not all(isinstance(s.get(k), (int, float)) for k in ("sd", "gap"))                         or len(s.get("labels") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
+                    errs.append(f"{where}: an nrows story needs sd, gap, ns (two group sizes), two labels, an axis and a y_axis")
+                elif 3 * s["sd"] * (2 / min(ns)) ** .5 > 15 or s["gap"] > 15:
+                    errs.append(f"{where}: its axis runs -15 to 15: the smaller trial's bell and the gap must fit on it")
+                refs += ["se", "p"]
             elif kind == "grid":
                 # the trial run 1,000 times with placebo in both groups (25 runs to a column): one trial with its heading and unit,
                 # or two side by side with the cut, whose share at each end must fill whole columns (0.05: 25 at each end)
@@ -287,6 +317,8 @@ def check_topic(t, expected_id):
             for ln in s.get("lines") or []:
                 if not ln.get("text") or ln.get("family") not in fams:
                     errs.append(f"{where}: each line of working needs its text and one of the topic's families")
+                if s.get("columns") and len(ln.get("results") or []) != len(s["columns"]):
+                    errs.append(f"{where}: with columns, each line of working needs one result per column")
         if p == "sort":
             refs += s["buckets"] + [it["answer"] for it in s["items"]]
         if p == "stem-quiz":

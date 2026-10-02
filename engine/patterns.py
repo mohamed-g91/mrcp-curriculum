@@ -413,13 +413,20 @@ def p_working(slide, topic):
     hook = next((s for s in topic.get("learn", []) if s.get("pattern") == "hook"), {})
     question = slide.get("question") or hook.get("question", "")
     lines = []
+    # with `columns`, each line holds one result per column (two trials side by side), under a row of their names
+    cols = slide.get("columns")
+    head = ("<li class=\"wk-head\"><span></span>" + "".join(f"<span>{e(c)}</span>" for c in cols) + "</li>") if cols else ""
     for i, ln in enumerate(slide["lines"]):
-        res = f'<span class="wk-res">{e(ln["result"])}</span>' if ln.get("result") else ""
+        if cols:
+            res = "".join(f'<span class="wk-cell"><span class="wk-res">{e(r)}</span></span>' for r in ln["results"])
+        else:
+            res = f'<span class="wk-res">{e(ln["result"])}</span>' if ln.get("result") else ""
         lines.append(f'<li class="wk-line f-{ln["family"]}"><span class="wk-text">{e(ln["text"])}</span>{res}</li>')
+    lines = [head] + lines if head else lines
     stem = f'<div class="stem-card compact"><p class="stem-text">{stem_html(slide["stem"], lit=True)}</p></div>'
     scene = figure(slide["scene"], "stem-scene") if slide.get("scene") else ""
     return (heading(slide) + f'<div class="center-body"><div class="working"><div class="wk-side">{stem}{scene}</div>'
-            f'<div class="wk-steps"><p class="stem-q wk-q">{e(question)}</p><ol class="wk-lines">{"".join(lines)}</ol>'
+            f'<div class="wk-steps"><p class="stem-q wk-q">{e(question)}</p><ol class="wk-lines{" wk-cols" if cols else ""}">{"".join(lines)}</ol>'
             f'<p class="wk-answer">{e(slide["answer"])}</p></div></div></div>')
 
 
