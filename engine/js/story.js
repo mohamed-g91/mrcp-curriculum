@@ -46,7 +46,7 @@
            the gap drops through both rows, then the tails and each p
    runs    the same trial repeated, each run's CI as a bar round a true effect we pretend to know, ours first; the rest drop in,
            each ticked or crossed; the one that misses is named; how many in 20 catch it, then the share (95%)
-   mirror  our trial's bell round its gap and chance's round 0, the same width, each with its middle 95%: the gap lies outside
+   mirror  our trial's bell round its gap and chance's round 0, the same width, each with its 95% edges marked: the gap lies outside
            chance's 95% exactly when 0 lies outside ours
    cibars  trials as CI bars on one axis with the no-effect line, one row per tap, with their sums and half-widths, or with a
            line at the smallest effect worth having; each row's p, or its verdict and a note, on the right
@@ -398,7 +398,7 @@ const STORIES = {
     // the same trial repeated, each run's CI (its gap ± 2 SE) as a bar round a true effect we pretend to know: ours first,
     // then the rest drop in one after another, each ticked if it catches the truth or crossed if not; then the one that
     // misses is named, then how many catch it, and the share
-    const half = 2 * S.se, n = S.centres.length, [lo, hi] = S.range, L = 60, R = 500, TOP = 56, STEP = 12.5, AX = TOP + n * STEP + 8;
+    const half = 2 * S.se, n = S.centres.length, [lo, hi] = S.range, L = 60, R = 480, TOP = 56, STEP = 12.5, AX = TOP + n * STEP + 8;
     const x = v => L + (v - lo) / (hi - lo) * (R - L), yr = i => TOP + (i + .5) * STEP, num = v => minus(+v.toFixed(1));
     const caught = c => Math.abs(c - S.truth) <= half + 1e-9, hits = S.centres.filter(caught).length;
     svg.setAttribute("viewBox", `0 0 ${ST.W} ${AX + 64}`);
@@ -412,7 +412,7 @@ const STORIES = {
       const g = svgEl("g", { class: `st-run${caught(c) ? "" : " f-test"}`, style: `animation-delay:${REDUCED_MOTION ? 0 : delay}ms` }, svg), y = yr(i);
       svgEl("path", { d: `M${x(c - half)} ${y} H${x(c + half)}` }, g);
       svgEl("circle", { cx: x(c), cy: y, r: 5 }, g);
-      svgEl("text", { class: "st-run-k", x: R + 34, y: y + 6 }, g).textContent = caught(c) ? "✓" : "✕";
+      svgEl("text", { class: "st-run-k", x: R + 26, y: y + 6 }, g).textContent = caught(c) ? "✓" : "✕";
       return g;
     };
     return [
@@ -427,32 +427,40 @@ const STORIES = {
         svgEl("path", { class: "st-run-gap", d: `M${x(S.truth)} ${y} H${x(edge)}` }, g);
         svgEl("text", { class: `st-run-t${c > S.truth ? "" : " st-run-r"}`, x: x(S.truth) + (c > S.truth ? -12 : 12), y: y + 5 }, g).textContent = `Misses ${S.truth}`;
       }),
-      () => stPill(svg, 650, AX / 2 - 10, `${hits} in ${n} catch ${S.truth}`, "f-se"),
-      () => stPill(svg, 650, AX / 2 + 50, `${Math.round(100 * hits / n)}%`, "f-se")
+      () => stPill(svg, 646, AX / 2 - 10, `${hits} in ${n} catch ${S.truth}`, "f-se"),
+      () => stPill(svg, 646, AX / 2 + 50, `${Math.round(100 * hits / n)}%`, "f-se")
     ];
   },
   mirror(svg, S) {
     // our trial's bell round its gap and chance's bell round 0, the same width (the SE of the difference), each with its
-    // middle 95% shaded: the gap lies outside chance's 95% exactly when 0 lies outside ours
+    // middle 95% marked: the gap lies outside chance's 95% exactly when 0 lies outside ours
     const se = S.sd * Math.sqrt(2 / S.n), f = c => normPct(c, se, .5), ymax = Math.ceil(f(0)(0) / 5) * 5, AX = 300, [lo, hi] = S.range;
     svg.setAttribute("viewBox", `0 0 ${ST.W} 390`);
     const ticks = []; for (let t = lo; t <= hi; t += 2) ticks.push(t);
     const P = storyPlot(svg, { L: 110, R: 720, AX, H: 220, lo, hi, ymax, ticks, yticks: [...Array(ymax / 5 + 1).keys()].map(k => k * 5), ytitle: S.y_axis, xtitle: S.axis });
-    const bell = (c, fam, label) => {
+    // each bell's 95% is marked, not shaded, so the two never blur where they overlap: dashed lines at its 2 SE edges, in its
+    // colour, at its own height (ours higher), each edge's value above it and a line between them with 95% on it
+    const bell = (c, fam, label, top) => {
       const g = svgEl("g", { class: `st-mir ${fam}` }, P.g), a = Math.max(lo, c - 3.6 * se), b = Math.min(hi, c + 3.6 * se);
-      svgEl("path", { class: "st-mir-95", d: P.area(f(c), c - 2 * se, c + 2 * se) }, g);
+      const e = [c - 2 * se, c + 2 * se];
       svgEl("path", { class: "st-mir-l", d: P.curve(f(c), a, b) }, g);
       svgEl("text", { class: "st-mir-t", x: P.x(c), y: P.y(f(c)(c)) - 14 }, g).textContent = label;
+      e.forEach(v => {
+        svgEl("path", { class: "st-mir-e", d: `M${P.x(v)} ${AX} V${top}` }, g);
+        svgEl("text", { class: "st-mir-v", x: P.x(v), y: top - 10 }, g).textContent = minus(r1n(v));
+      });
+      svgEl("path", { class: "st-mir-r", d: `M${P.x(e[0]) + 4} ${top + 22} H${P.x(e[1]) - 4}` }, g);
+      svgEl("text", { class: "st-mir-p", x: P.x(c), y: top + 16 }, g).textContent = "95%";
       return g;
     };
     let ours;
     return [
       () => {
-        ours = bell(S.gap, "f-se", S.labels[0]);
+        ours = bell(S.gap, "f-se", S.labels[0], 126);
         svgEl("circle", { class: "st-real", cx: P.x(S.gap), cy: AX, r: 8 }, svg);
       },
       () => {
-        P.g.insertBefore(bell(0, "f-test", S.labels[1]), ours);
+        P.g.insertBefore(bell(0, "f-test", S.labels[1], 206), ours);
         svgEl("circle", { class: "st-zdot", cx: P.x(0), cy: AX, r: 8 }, svg);
       },
       () => stPill(svg, 210, 34, S.chips[0], "f-test"),

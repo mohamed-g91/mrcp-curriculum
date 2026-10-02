@@ -961,7 +961,10 @@ html.fluid .ask{position:fixed}
 .st-run-t.st-run-r{text-anchor:start}
 .st-run-gap{stroke:var(--x-solid);stroke-width:2;stroke-dasharray:3 4}
 .st-mir{animation:fadeIn .5s ease both}
-.st-mir-95{fill:var(--x-solid);opacity:.28}
+.st-mir-e{stroke:var(--x-solid);stroke-width:2.5;stroke-dasharray:7 6}
+.st-mir-v{fill:var(--x-ink);font:750 18px var(--sans);text-anchor:middle}
+.st-mir-r{stroke:var(--x-solid);stroke-width:2.5}
+.st-mir-p{fill:var(--x-ink);font:800 18px var(--sans);text-anchor:middle;paint-order:stroke;stroke:var(--page);stroke-width:5px;stroke-linejoin:round}
 .st-mir-l{fill:none;stroke:var(--x-solid);stroke-width:3.5}
 .st-mir-t{fill:var(--x-ink);font:750 19px var(--sans);text-anchor:middle}
 .st-zdot{fill:var(--surface);stroke:var(--ink);stroke-width:3;animation:stDrop .5s var(--ease) both}
