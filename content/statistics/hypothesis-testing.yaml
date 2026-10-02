@@ -42,7 +42,7 @@ learn:
   - id: hook
     pattern: hook
     title: Could this be chance?
-    stem: 400 people with high blood pressure took a new drug or a placebo, 200 in each group. After 8 weeks, systolic BP had fallen 4 mmHg more on the drug (SD 15 mmHg), p = 0.008.
+    stem: 400 people with high blood pressure took a [[new drug]] or a placebo, 200 in each group. After 8 weeks, systolic BP had fallen [[4 mmHg]] more on the drug (SD 15 mmHg), [[p = 0.008]].
     question: Could this be chance?
     scene: case-older
 
@@ -53,7 +53,7 @@ learn:
     title: Innocent until proven guilty
     kind: art
     art: ht-court
-    slots: { claim: "{h0}: no difference in BP", evidence: 4 mmHg, p: p = 0.008, verdict: Guilty, note: "Reject {h0}" }
+    slots: { claim: "{h0}: no effect on BP", evidence: 4 mmHg, p: p = 0.008, verdict: Guilty, note: "Reject {h0}" }
 
   # p as the trial run 1,000 times with placebo in both groups: about 8 runs give a gap of 4 mmHg or more, either way.
   - id: p-big
@@ -74,7 +74,7 @@ learn:
     title: The same gap in 40 people
     kind: art
     art: ht-court
-    slots: { claim: "{h0}: no difference in BP", evidence: 4 mmHg, p: p = 0.4, verdict: Not guilty, note: ≠ innocent }
+    slots: { claim: "{h0}: no effect on BP", evidence: 4 mmHg, p: p = 0.4, verdict: Not guilty, note: ≠ innocent }
 
   - id: p-small
     pattern: story
@@ -106,10 +106,10 @@ learn:
     pattern: working
     title: Back to the trial
     scene: doctor-think
-    stem: "[[200 people took a new drug and 200 a placebo]]. Systolic BP fell [[4 mmHg more on the drug, p = 0.008]]."
+    stem: "200 people took a new drug and 200 a placebo. Systolic BP fell [[4 mmHg]] more on the drug, [[p = 0.008]]."
     lines:
       - { family: test, text: "If the drug did nothing:", result: "about 8 in 1,000" }
-      - { family: test, text: "p =", result: "0.008" }
+      - { family: test, text: "trials would show a gap this big, in either direction, by chance" }
       - { family: test, text: "0.008 < 0.05:", result: Significant }
     answer: "Unlikely to be chance. Reject H₀: the drug lowers BP."
 

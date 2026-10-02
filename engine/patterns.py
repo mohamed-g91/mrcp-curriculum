@@ -174,7 +174,7 @@ def figure(name, cls=""):
 
 def p_hook(slide, topic):
     fig = figure(slide["figure"]) if slide.get("figure") else ""
-    card = (f'<div class="stem-card hook"><p class="stem-text">{stem_html(slide["stem"])}</p>{fig}'
+    card = (f'<div class="stem-card hook"><p class="stem-text">{stem_html(slide["stem"], lit=True)}</p>{fig}'
             f'<p class="stem-q">{e(slide["question"])}</p></div>')
     if slide.get("scene"):  # a cartoon scene beside the card (above it on phones)
         card = f'<div class="hook-row">{card}{figure(slide["scene"])}</div>'
