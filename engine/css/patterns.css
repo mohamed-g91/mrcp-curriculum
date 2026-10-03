@@ -980,6 +980,23 @@ html.fluid .ask{position:fixed}
 .st-eb-v{fill:var(--ink);font:750 17px var(--sans);text-anchor:middle}
 .st-mir-t.st-eb-t{text-anchor:end}
 .st-eb-n{fill:var(--muted);font:700 19px var(--sans);text-anchor:middle}
+.st-eb-fill.st-eb-pow{fill-opacity:.75}
+.st-eb-sum{fill:var(--ink);font:750 19px var(--sans);text-anchor:middle}
+.st-mir-t.st-pr-t{fill:var(--ink)}
+/* plan: where a trial starts */
+.st-pl-line{stroke:var(--border-strong);stroke-width:4}
+.st-pl-dot{fill:var(--border-strong);transition:fill .5s ease}
+.st-pl-dot.st-pl-on{fill:var(--primary)}
+.st-pl-h{fill:var(--muted);font:750 21px var(--sans);text-anchor:middle;transition:fill .5s ease}
+.st-pl-h.st-pl-on{fill:var(--primary)}
+.st-pl-strike{stroke:var(--bad-solid);stroke-width:4;stroke-linecap:round}
+.st-pl-row use{color:var(--x-solid)}
+.st-pl-row.f-gray use{color:var(--gray-ink)}
+.st-pl-t{fill:var(--x-ink);font:750 20px var(--sans)}
+.st-pl-arrow{fill:none;stroke:var(--muted);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.st-pl-box rect{fill:var(--surface);stroke:var(--primary);stroke-width:3}
+.st-pl-bh{fill:var(--primary);font:750 22px var(--sans);text-anchor:middle}
+.st-pl-eq{fill:var(--ink);font:650 19px var(--sans);text-anchor:middle}
 .st-mir{animation:fadeIn .5s ease both}
 .st-mir-e{stroke:var(--x-solid);stroke-width:2.5;stroke-dasharray:7 6}
 .st-mir-v{fill:var(--x-ink);font:750 18px var(--sans);text-anchor:middle}

@@ -83,4 +83,5 @@
 .f-par{--x-bg:var(--par-bg);--x-ink:var(--par-ink);--x-bd:var(--par-bd);--x-solid:var(--par-solid)}
 .f-se{--x-bg:var(--se-bg);--x-ink:var(--se-ink);--x-bd:var(--se-bd);--x-solid:var(--se-solid)}
 .f-test{--x-bg:var(--test-bg);--x-ink:var(--test-ink);--x-bd:var(--test-bd);--x-solid:var(--test-solid)}
+.f-sol{--x-bg:var(--sol-bg);--x-ink:var(--sol-ink);--x-bd:var(--sol-bd);--x-solid:var(--sol-solid)}
 .f-gray{--x-bg:var(--gray-bg);--x-ink:var(--gray-ink);--x-bd:var(--gray-bd);--x-solid:var(--primary)}

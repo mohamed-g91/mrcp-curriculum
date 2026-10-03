@@ -206,8 +206,8 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows", "runs", "mirror", "cibars", "errgrid", "errbells"):
-                errs.append(f"{where}: kind is one of {', '.join(("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows", "runs", "mirror", "cibars", "errgrid", "errbells"))}, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows", "runs", "mirror", "cibars", "errgrid", "errbells", "powrows", "plan"):
+                errs.append(f"{where}: kind is one of {', '.join(("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows", "runs", "mirror", "cibars", "errgrid", "errbells", "powrows", "plan"))}, not {kind!r}")
             elif kind == "samples":
                 # people's values in two samples: the same SD, the means a little apart
                 if not isinstance(s.get("sd"), (int, float)) or len(s.get("means") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
@@ -315,7 +315,24 @@ def check_topic(t, expected_id):
                         errs.append(f"{where}: the 2 SE lines and the truth must sit inside the range")
                     if 100 / (se * (2 * 3.14159) ** .5) > s["ymax"]:
                         errs.append(f"{where}: ymax must clear the bells' peak ({100 / (se * (2 * 3.14159) ** .5):.0f}%)")
-                refs += er
+                refs += er + ([s["power"]] if s.get("power") else [])
+            elif kind == "powrows":
+                # the truth's bell in two rows: each row's SE from its n, or from the power it is planned for (0 to 1)
+                rg, rows = s.get("range") or [], s.get("rows") or []
+                if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "truth", "ymax")) or len(rg) != 2 or len(s.get("parts") or []) != 2                         or len(rows) != 2 or not all(r.get("label") and (isinstance(r.get("n"), int) or 0 < (r.get("power") or 0) < 1) for r in rows)                         or not (s.get("axis") and s.get("y_axis")):
+                    errs.append(f"{where}: a powrows story needs sd, truth, ymax, a range, two parts (β and power concepts), two rows of label and n or power, an axis and a y_axis")
+                else:
+                    for r in rows:
+                        se = s["sd"] * (2 / r["n"]) ** .5 if r.get("n") else None
+                        if se and not (rg[0] < s["truth"] - 3 * se and s["truth"] + 3 * se < rg[1] + se):
+                            errs.append(f"{where}: row {r['label']!r}: the bell must sit inside the range")
+                refs += s.get("parts") or []
+            elif kind == "plan":
+                # a timeline of three labels, power crossed off the last; rows of a concept and its value; the box's sum
+                rows, bx = s.get("rows") or [], s.get("box") or {}
+                if len(s.get("labels") or []) != 3 or not s.get("power") or not 1 <= len(rows) <= 4 or not all(r.get("key") and r.get("value") for r in rows)                         or not all(bx.get(k) for k in ("head", "eq", "unknown")):
+                    errs.append(f"{where}: a plan story needs three labels, power (a concept), rows (1 to 4) of key and value, and a box of head, eq and unknown")
+                refs += [s.get("power")] + [r.get("key") for r in rows] + [k for r in rows for k in re.findall(r"\{(\w+)\}", str(r.get("value", "")) + str(r.get("text", "")))]
             elif kind == "cibars":
                 # trials as CI bars: each row's gap ± 2 SE (SD × √(2 ÷ n), in tenths), its p or its verdict and a note
                 rows, rg = s.get("rows") or [], s.get("range") or []

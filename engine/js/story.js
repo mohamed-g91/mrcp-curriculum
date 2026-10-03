@@ -56,6 +56,11 @@
            pretend to know below, the same width; the 2 SE lines through both, with the SE on a grey chip to the left;
            chance's tails beyond them (filled solid) are Type I, the truth's bell between them is Type II, each share on
            a pill to the right
+           With `power`, the truth's bell splits: β between the lines, power beyond them, then "β + power = 100%"
+   powrows the truth's bell in two trials, one row each on one axis: one from its n, one from the power it is planned for;
+           each row's 2 SE line, β below it and power beyond it, each on a pill
+   plan    where a trial starts: a timeline with power crossed off after the trial; then what is chosen before it, one row
+           per tap (each concept's icon and value); last, the sum with the unknown on a gold pill
    art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
            from the slide's slots, with {key} standing for a concept's label (so H₀ is never retyped) */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -1088,7 +1093,87 @@ const STORIES = {
       },
       () => { shade(rows[0], [[lo, -e], [e, hi]], "st-eb-tail"); tag(0, alpha); },
       () => bell(rows[1], S.labels[1]),
-      () => { shade(rows[1], [[-e, e]]); tag(1, beta); }
+      ...(S.power ? [
+        // with power: β between the lines, then power beyond them (in power's own colour), then the two add up to 100%
+        () => { shade(rows[1], [[-e, e]]); stPill(svg, 664, rowsAX[1] - 96, `${concept(S.errors[1]).label} · ${pct(beta)}`, `f-${concept(S.errors[1]).family}`); },
+        () => {
+          const f = `f-${concept(S.power).family}`;
+          [[lo, -e], [e, hi]].forEach(([a, b]) => svgEl("path", { class: `st-eb-fill st-eb-pow st-in ${f}`, d: rows[1].P.area(rows[1].f, Math.max(lo, a), Math.min(hi, b)) }, rows[1].fill));
+          stPill(svg, 664, rowsAX[1] - 46, `${concept(S.power).label} · ${pct(1 - beta)}`, f);
+        },
+        () => { svgEl("text", { class: "st-eb-sum st-in", x: 664, y: rowsAX[1] + 2 }, svg).textContent = `${concept(S.errors[1]).label} + ${concept(S.power).label.toLowerCase()} = 100%`; }
+      ] : [() => { shade(rows[1], [[-e, e]]); tag(1, beta); }])
+    ];
+  },
+  powrows(svg, S) {
+    // the truth's bell in two trials, one row each on one axis, true to scale: each row's SE from its n (SD × √(2 ÷ n)) or
+    // from the power it is planned for (the truth sits 2 + z SEs from 0, z the normal point for that power); the 2 SE line
+    // (2 × the SE in tenths) on each; β the part below the line, power the part beyond it (and below −2 SE, too small to see)
+    const [lo, hi] = S.range, L = 200, R = 566, H = 112, rowsAX = [150, 322], [kb, kp] = S.parts;
+    const ticks = []; for (let t = lo; t <= hi; t += S.step || 2) ticks.push(t);
+    svg.setAttribute("viewBox", `0 0 ${ST.W} 386`);
+    const zOf = q => { let a = -6, b = 6; for (let i = 0; i < 60; i++) { const m = (a + b) / 2; if (Sampling.cdf(m) < q) a = m; else b = m; } return (a + b) / 2; };
+    const pct = v => `${Math.round(100 * v)}%`;
+    svgEl("text", { class: "cv-ytitle sm", transform: `translate(${L - 58} ${(rowsAX[0] + rowsAX[1] - H) / 2}) rotate(-90)` }, svg).textContent = S.y_axis;
+    const row = (r, i) => {
+      const se = r.n ? S.sd * Math.sqrt(2 / r.n) : S.truth / (2 + zOf(r.power)), e = 2 * +r1(se), AX = rowsAX[i];
+      const beta = Sampling.cdf((e - S.truth) / se) - Sampling.cdf((-e - S.truth) / se);
+      const g = svgEl("g", { class: "st-in" }, svg);
+      const P = storyPlot(g, { L, R, AX, H, lo, hi, ymax: S.ymax, ticks, yticks: [0, S.ymax], xtitle: i ? S.axis : "", sm: true });
+      P.g.classList.add(`f-${concept(kb).family}`);
+      const f = normPct(S.truth, se, 1), fill = svgEl("g", {}, P.g);
+      svgEl("path", { class: "st-eb-l", d: P.curve(f, Math.max(lo, S.truth - 4 * se), Math.min(hi, S.truth + 4 * se)) }, P.g);
+      svgEl("text", { class: "st-mir-t st-eb-t st-pr-t", x: L - 78, y: AX - H / 2 + 6 }, g).textContent = r.label;
+      svgEl("path", { class: "st-eb-cut", d: `M${P.x(e)} ${AX} V${AX - H - 4}` }, g);
+      svgEl("text", { class: "st-eb-v", x: P.x(e), y: AX - H - 14 }, g).textContent = r1n(e);
+      return () => {
+        svgEl("path", { class: "st-eb-fill st-in", d: P.area(f, lo, e) }, fill);
+        svgEl("path", { class: `st-eb-fill st-eb-pow st-in f-${concept(kp).family}`, d: P.area(f, e, hi) }, fill);
+        stPill(svg, 664, AX - 84, `${concept(kp).label} · ${pct(1 - beta)}`, `f-${concept(kp).family}`);
+        stPill(svg, 664, AX - 34, `${concept(kb).label} · ${pct(beta)}`, `f-${concept(kb).family}`);
+      };
+    };
+    let fills = [];
+    return S.rows.flatMap((r, i) => [() => { fills[i] = row(r, i); }, () => fills[i]()]);
+  },
+  plan(svg, S) {
+    // where a trial starts: a timeline (before, the trial, after) with power crossed off after it; then what is chosen
+    // before, one row per tap, each with its concept's icon and value; last, the sum that turns them into people
+    const W = 900, PR = (x, y, text, f) => stPill(svg, x, y, text, f);
+    svg.setAttribute("viewBox", `0 0 ${W} 386`);
+    const lab = t => String(t).replace(/\{(\w+)\}/g, (m, k) => concept(k).label);
+    const TL = 80, xs = [170, 540, 788];
+    const line = svgEl("g", { class: "st-in" }, svg);
+    let pw, dots = [];
+    return [
+      () => {
+        svgEl("path", { class: "st-pl-line", d: `M30 ${TL} H${W - 30}` }, line);
+        S.labels.forEach((t, i) => {
+          dots[i] = svgEl("circle", { class: "st-pl-dot", cx: xs[i], cy: TL, r: 9 }, line);
+          svgEl("text", { class: "st-pl-h", x: xs[i], y: TL - 20 }, line).textContent = t;
+        });
+        pw = PR(xs[2], TL + 44, concept(S.power).label, `f-${concept(S.power).family}`);
+      },
+      () => {
+        const w = 34 + concept(S.power).label.length * 11.5;
+        svgEl("path", { class: "st-pl-strike st-in", d: `M${xs[2] - w / 2 + 10} ${TL + 41} H${xs[2] + w / 2 - 10}` }, pw);
+        dots[0].classList.add("st-pl-on"); $$(".st-pl-h", line)[0].classList.add("st-pl-on");
+      },
+      ...S.rows.map((r, i) => () => {
+        const c = concept(r.key), y = 150 + i * 58, g = svgEl("g", { class: `st-pl-row st-in f-${c.family}` }, svg);
+        const u = svgEl("use", { href: `#i-${c.icon}`, x: 30, y: y - 18, width: 36, height: 36 }, g);
+        svgEl("text", { class: "st-pl-t", x: 80, y: y + 7 }, g).textContent = r.text ? lab(r.text) : c.label;
+        const v = lab(r.value), w = 34 + v.length * 11.5;
+        stPill(g, 395 + w / 2, y, v, `f-${c.family}`);
+      }),
+      () => {
+        const g = svgEl("g", { class: "st-pl-box st-in" }, svg), x = 690, y = 160, w = 196, h = 170;
+        svgEl("path", { class: "st-pl-arrow", d: `M${x - 34} ${y + h / 2} H${x - 10} M${x - 18} ${y + h / 2 - 8} L${x - 10} ${y + h / 2} L${x - 18} ${y + h / 2 + 8}` }, g);
+        svgEl("rect", { x, y, width: w, height: h, rx: 14 }, g);
+        svgEl("text", { class: "st-pl-bh", x: x + w / 2, y: y + 44 }, g).textContent = S.box.head;
+        svgEl("text", { class: "st-pl-eq", x: x + w / 2, y: y + 92 }, g).textContent = lab(S.box.eq);
+        stPill(g, x + w / 2, y + 132, S.box.unknown, "f-sol");
+      }
     ];
   },
   art(svg, S, later, chart) {

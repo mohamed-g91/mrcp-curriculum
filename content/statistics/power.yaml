@@ -1,0 +1,226 @@
+# Power and sample size: MRCP Part 1 statistics. Lesson 8 of the series: how many people did the trial need?
+# Lesson 5 gave the SE of a difference (SD × √(2 ÷ n)) and the 2 SE line; lesson 6 a made-up truth ("Say the truth is 4");
+# lesson 7 the two bells, chance's and the truth's, with β the truth's bell between the lines. This lesson names the rest of
+# that bell, power, and works back from the power we want to the people we need.
+# The same trials run through: 400 people (200 in each group) and 40 people (20 in each group), SD 15 mmHg, a truth of 4 mmHg.
+#   400 people: SE = 15 × √(2 ÷ 200) = 1.5, line at 3. 4 sits 1 mmHg = 0.67 SE past it: power 75%, β 25%.
+#   40 people: SE ≈ 4.7, line at 9.4. 9.4 is 1.15 SE above 4: power ≈ 12.4% + 0.2% (beyond −9.4) ≈ 13%, β 87%.
+# Sample size for 80% power: 80% of the truth's bell clears the line when its centre sits 0.84 SE past it, so the truth must be
+#   2 + 0.84 = 2.84 SEs from 0: SE = 4 ÷ 2.84 = 1.41; n = 2 × (15 ÷ 1.41)² ≈ 227, said "about 225" (220 with 1.96 for 2).
+#   Half the change → 4 × the people (about 900); twice the SD → 4 × too. 20% drop-outs from 225 → power about 70%.
+# Power is set before the trial (with α, the clinically important change and the SD), never worked out from the result after it.
+# Kept short like lesson 7 (the user, 2026-10-04): no levers slide; its points are in the cases.
+# IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
+
+id: stats.power
+title: Power and sample size
+description: How many people did the trial need? Power and β on the truth's bell, what a trial chooses before it starts, and how that works back to the number of patients. Learn from one blood pressure trial, then practise on exam-style stems.
+status: draft
+updated: 2026-10-04
+sources:
+  - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapter 35.
+  - Petrie A, Sabin C. Medical Statistics at a Glance, 4th ed. Chapters 18, 36.
+  - Schulz KF, Altman DG, Moher D. CONSORT 2010 Statement. BMJ 2010;340:c332 (item 7a, how sample size was determined).
+retired: []
+cover: concepts
+
+# Olive goes with α (false positives, chance's bell), teal with β (the misses), purple with power, its own colour (the user, 2026-10-04).
+families:
+  test: Testing
+  se: Misses
+  par: Power
+  gray: Neutral
+
+concepts:
+  alpha: { label: α,     family: test, icon: tails }
+  beta:  { label: β,     family: se,   icon: bell }
+  power: { label: Power, family: par,  icon: power }
+  # what the planner chooses or already knows; they stay off the cover
+  sd:    { label: SD, family: gray, icon: spread, cover: false }
+  mcid:  { label: Clinically important change, family: gray, icon: ruler, cover: false }
+  se:    { label: SE, family: gray, icon: narrow, cover: false }
+
+learn:
+  - id: hook
+    pattern: hook
+    title: How many people did the trial need?
+    stem: "A new drug for high blood pressure, two trials. In [[400 people]], systolic BP fell 4 mmHg more on the drug, p = 0.008. In [[40 people]], the same 4 mmHg, p = 0.4."
+    question: How many people did the trial need?
+    scene: case-older
+
+  # Lesson 7's bells for 400 people open built (chance's bell, the 2 SE lines, α 5%, the truth's bell); then the truth's
+  # bell splits: β between the lines (25%, the false negatives), power beyond them (75%), and the two add up to 100%.
+  - id: power
+    pattern: story
+    title: Power and β
+    kind: errbells
+    start: 4
+    sd: 15
+    n: 200
+    truth: 4
+    range: [-12, 16]
+    ymax: 30
+    errors: [alpha, beta]
+    power: power
+    labels: [No effect, Say the truth is 4]
+    axis: Extra fall on the drug (mmHg)
+    y_axis: "% of trials"
+
+  # Power is not worked out after the trial; it is chosen before it. Before: the false positives we accept (α 5%), the
+  # false negatives (β 20%, power 80%), the SD (known from earlier studies) and the clinically important change; then the
+  # SE of a difference with n, the people, to find.
+  - id: start
+    pattern: story
+    title: Where do we start?
+    kind: plan
+    labels: [Before, The trial, After]
+    power: power
+    rows:
+      - { key: alpha, text: False positives, value: "{alpha} 5%" }
+      - { key: power, text: False negatives, value: "{beta} 20% · {power} 80%" }
+      - { key: sd,    value: 15 mmHg }
+      - { key: mcid,  value: 4 mmHg }
+    box: { head: People, eq: "{se} = {sd} × √(2 ÷ n)", unknown: "n = ?" }
+
+  # Our trial over the trial we want: the truth's bell for 200 in each group (SE 1.5, line 3, power 75%), and under it the
+  # SE that gives 80% (4 ÷ 2.84 = 1.41, line 2.8). The bells barely narrow: our trial was nearly big enough.
+  - id: compare
+    pattern: story
+    title: How far out must the truth sit?
+    kind: powrows
+    start: 2
+    sd: 15
+    truth: 4
+    range: [-2, 10]
+    ymax: 30
+    parts: [beta, power]
+    rows:
+      - { label: Our trial, n: 200 }
+      - { label: 80% power, power: 0.8 }
+    axis: Extra fall on the drug (mmHg)
+    y_axis: "% of trials"
+
+  # The SE of a difference (slide 3's sum) turned round: n = 2 × (SD ÷ SE)². 2 × (15 ÷ 1.41)² = 226 (227 unrounded); "about 225" throughout. With 1.96 for 2,
+  # textbooks get 2 × (1.96 + 0.84)² × 15² ÷ 4² = 221.
+  - id: how-many
+    pattern: working
+    title: How many people?
+    scene: doctor-think
+    stem: "We chose [[α 5% and power 80%]], and a [[clinically important change of 4 mmHg]]. The SD is [[15 mmHg]]."
+    question: How many people in each group?
+    lines:
+      - { family: par,  text: "For 80%: 2 + 0.84 =", result: 2.84 SEs }
+      - { family: gray, text: "SE = 4 ÷ 2.84 =", result: 1.41 mmHg }
+      - { family: gray, text: "n = 2 × (SD ÷ SE)²" }
+      - { family: gray, text: "= 2 × (15 ÷ 1.41)² ≈", result: 225 }
+    answer: "About 225 in each group give an 80% chance of finding a real 4 mmHg fall."
+
+  - id: hook-solved
+    pattern: working
+    title: Back to the trials
+    scene: doctor-think
+    stem: "The same 4 mmHg: [[400 people, p = 0.008]], and [[40 people, p = 0.4]]."
+    # a chain per trial: how many it had → its power for a real 4 mmHg → how many it needed
+    rows: [400 people, 40 people]
+    lines:
+      - { family: gray, head: Had,    text: "in each group", results: ["200", "20"] }
+      - { family: par,  head: Power,  results: ["75%", "13%"], families: [par, par] }
+      - { family: gray, head: Needed, text: "in each group", results: ["225", "225"] }
+    answer: "Both needed about 225 in each group. 200 came close; 20 had only a 13% chance of finding a real 4 mmHg."
+
+practise:
+  - id: cases
+    pattern: stem-quiz
+    title: Power and sample size
+    options: [alpha, beta]
+    # The first case is the solved example; the rest are dealt in a random order.
+    # Every case brings its own options; the scenes are the nearest cartoons from the cast.
+    cases:
+      - id: c01
+        scene: case-older
+        solved: true
+        stem: A trial has [[200 people in each group]] (SE 1.5 mmHg), so its 2 SE line is at 3 mmHg. Say a new drug truly lowers systolic BP by [[4 mmHg]] more than placebo.
+        question: What is the trial's power?
+        options: ["About 75%", "About 95%", "About 25%"]
+        answer: "About 75%"
+        hint: How far past the line does 4 sit, in SEs?
+        why: "4 sits 1 mmHg past the line: 1 ÷ 1.5 = 0.67 SE. That leaves 75% of the truth's bell beyond the line: power 75%, β 25%."
+        tutor: "The truth's bell is centred on 4 with the same SE, 1.5. The trial is significant when its gap lands beyond 3. 4 is 1 mmHg, or 0.67 SE, past 3, and 0.67 SE past the line leaves three quarters of the bell beyond it. So 75 in 100 such trials would find the real 4 mmHg: power 75%. The other 25% are β, the misses."
+
+      - id: c02
+        scene: case-people
+        stem: A trial has [[20 people in each group]] (SE 4.7 mmHg), so its 2 SE line is at 9.4 mmHg. Say a new drug truly lowers systolic BP by [[4 mmHg]] more than placebo.
+        question: What is the trial's power?
+        options: ["About 13%", "About 75%", "About 87%"]
+        answer: "About 13%"
+        hint: Is 4 inside the line or beyond it?
+        why: "4 sits well inside the line at 9.4. Only about 13% of the truth's bell lies beyond it: power 13%. 87% is β, the misses."
+
+      - id: c03
+        scene: doctor-think
+        stem: A trial is planned with [[α of 0.05 and β of 0.2]].
+        question: What is its power?
+        options: ["80%", "95%", "20%"]
+        answer: "80%"
+        hint: Power and β add up to 100%.
+        why: "Power = 1 − β = 1 − 0.2 = 80%. 95% is 1 − α, the level of a confidence interval, not power."
+
+      - id: c04
+        scene: doctor-think
+        stem: A trial is planned with [[80% power]] to find a [[5 mmHg fall]] in systolic BP.
+        question: What does this mean?
+        options: ["If the true fall is 5 mmHg, about 80 in 100 such trials will be significant", "There is an 80% chance the drug works", "There is a 20% chance of a false positive"]
+        answer: "If the true fall is 5 mmHg, about 80 in 100 such trials will be significant"
+        hint: Power is worked out assuming the effect is real.
+        why: "Power is the share of trials that find an effect that is really there, here a 5 mmHg fall. The false-positive rate is α, set on its own (usually 5%)."
+
+      - id: c05
+        scene: doctor-think
+        stem: A team is planning a trial of a new drug for high blood pressure, with α 0.05 and a [[clinically important change of 5 mmHg]].
+        question: Which raises the trial's power?
+        options: ["Recruiting more patients", "Choosing an outcome with a wider SD", "Planning for a smaller change"]
+        answer: "Recruiting more patients"
+        hint: What narrows the bells, or moves the truth further out?
+        why: "More patients shrink the SE, so the truth sits more SEs past the line. A wider SD widens the bells, and a smaller change sits closer to the line: both lower power."
+
+      - id: c06
+        scene: doctor-think
+        stem: A team is working out the [[sample size]] for a trial before it starts.
+        question: Which of these do they not need?
+        options: ["The p-value the trial will find", "The SD of the outcome", "The clinically important change"]
+        answer: "The p-value the trial will find"
+        hint: What is known before the trial, and what only after it?
+        why: "A sample size needs α, the power, the clinically important change and the SD. The p-value only comes after the trial."
+
+      - id: c07
+        scene: case-people
+        stem: "[[225 people in each group]] give 80% power to find a [[4 mmHg]] fall in systolic BP."
+        question: How many give the same power for a 2 mmHg fall?
+        options: ["About 900 in each group", "About 450 in each group", "About 225 in each group"]
+        answer: "About 900 in each group"
+        hint: Half the change needs half the SE. How many people halve the SE?
+        why: "To find half the change, the SE must halve. The SE shrinks with √n, so halving it takes 4 × the people: about 900 in each group."
+
+      - id: c08
+        scene: case-people
+        twist: true
+        stem: A trial is planned with [[225 people in each group]] for 80% power. [[A fifth of the patients drop out]] before the end.
+        question: What happens to its power?
+        options: ["It falls below 80%", "It stays at 80%", "It rises above 80%"]
+        answer: "It falls below 80%"
+        hint: Fewer people. What happens to the SE?
+        why: "Fewer people give a larger SE, so the truth sits fewer SEs past the line: power falls, to about 70%. Trials recruit extra at the start to allow for drop-outs."
+
+      - id: c09
+        scene: doctor-think
+        twist: true
+        stem: A trial was planned for 80% power assuming an [[SD of 15 mmHg]]. The SD turns out to be [[30 mmHg]].
+        question: To keep 80% power, how many people does it need?
+        options: ["About 4 × as many", "About 2 × as many", "The same number"]
+        answer: "About 4 × as many"
+        hint: SE = SD × √(2 ÷ n). Twice the SD; how many people bring the SE back?
+        why: "Twice the SD doubles the SE. Bringing it back takes 4 × the people, because the SE shrinks with √n."
+
+  - id: end
+    pattern: end
+    title: Your score

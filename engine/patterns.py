@@ -452,7 +452,7 @@ def p_story(slide, topic):
     data = {k: slide[k] for k in ("kind", "values", "outlier", "counts", "unit", "categories", "categories_unit",
                                   "population", "n", "axis", "means_axis", "wall_label", "slots", "tosses", "claim", "sd", "gap", "labels", "y_axis", "family", "cut", "trials", "panels", "start", "means", "origin", "ns", "heading", "pairs",
                                   "chance", "se", "truth", "truth_label", "centres", "range", "label", "chips", "sums", "rows", "none_label", "worth", "step",
-                                  "cols", "heads", "notes", "errors", "ymax") if k in slide}
+                                  "cols", "heads", "notes", "errors", "ymax", "power", "parts", "box") if k in slide}
     if slide.get("panel"):
         data["panel"] = slide["panel"]
     scene = figure(slide["scene"], "st-scene") if slide.get("scene") else ""
