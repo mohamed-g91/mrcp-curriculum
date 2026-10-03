@@ -975,6 +975,7 @@ html.fluid .ask{position:fixed}
 /* errbells: the two errors on chance's bell and the truth's */
 .st-eb-l{fill:none;stroke:var(--x-solid);stroke-width:3.5}
 .st-eb-fill{fill:var(--x-solid);fill-opacity:.4}
+.st-eb-fill.st-eb-tail{fill-opacity:1}
 .st-eb-cut{stroke:var(--text);stroke-width:2;stroke-dasharray:7 6}
 .st-eb-v{fill:var(--ink);font:750 17px var(--sans);text-anchor:middle}
 .st-mir-t.st-eb-t{text-anchor:end}

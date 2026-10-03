@@ -37,6 +37,8 @@ concepts:
   # the two verdicts; they are not ideas of their own, so they stay off the cover
   sig:   { label: Significant,     family: test, icon: check, cover: false }
   ns:    { label: Not significant, family: gray, icon: dash,  cover: false }
+  # the SE of the difference, on a grey chip beside the bells (teal here means Type II)
+  se:    { label: SE, family: gray, icon: narrow, cover: false }
 
 learn:
   - id: hook
@@ -86,7 +88,7 @@ learn:
     n: 20
     truth: 4
     range: [-12, 16]
-    ymax: 30
+    ymax: 10   # not 30 as on the last slide: the wide, low bells stand tall, so chance's thin 5% tails show
     errors: [type1, type2]
     labels: [No effect, Say the truth is 4]
     label: 40 people
@@ -104,7 +106,7 @@ learn:
       - { family: test, head: Verdict,   results: ["{sig}", "{ns}"],     families: [test, gray] }
       - { family: test, head: If wrong,  results: ["{type1}", "{type2}"], families: [test, se] }
       - { family: test, head: How often, text: "in trials like it", results: ["5%", "87%"], families: [test, se] }
-    answer: "Guilty is wrong only if it was one of chance's 5%. A trial of 40 misses a real 4 mmHg 87 times in 100."
+    answer: "A drug that does nothing is found Guilty 5 times in 100. A trial of 40 misses a real 4 mmHg 87 times in 100."
 
 practise:
   - id: cases

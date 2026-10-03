@@ -53,8 +53,9 @@
    errgrid two ways to be wrong: the truth across (no effect, an effect), the verdict down (significant, not); the two
            right cells first, then the Type I cell, then the Type II cell, each with its note
    errbells the two errors on two rows sharing one axis, true to scale: chance's bell round 0 above, the bell of a truth we
-           pretend to know below, the same width; the 2 SE lines through both; chance's tails beyond them are Type I,
-           the truth's bell between them is Type II, each share on a pill to the right
+           pretend to know below, the same width; the 2 SE lines through both, with the SE on a grey chip to the left;
+           chance's tails beyond them (filled solid) are Type I, the truth's bell between them is Type II, each share on
+           a pill to the right
    art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
            from the slide's slots, with {key} standing for a concept's label (so H₀ is never retyped) */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -1071,18 +1072,21 @@ const STORIES = {
       const lines = [words.slice(0, cut).join(" "), words.slice(cut).join(" ")].filter(Boolean);
       lines.forEach((t, k) => { svgEl("text", { class: "st-mir-t st-eb-t", x: L - 78, y: r.AX - H / 2 + 6 + (k - (lines.length - 1) / 2) * 24 }, g).textContent = t; });
     };
-    const shade = (r, parts) => parts.forEach(([a, b]) => svgEl("path", { class: "st-eb-fill st-in", d: r.P.area(r.f, Math.max(lo, a), Math.min(hi, b)) }, r.fill));
+    // chance's tails are filled solid, so a thin 5% still shows on a wide, low bell
+    const shade = (r, parts, cls = "") => parts.forEach(([a, b]) => svgEl("path", { class: `st-eb-fill st-in ${cls}`, d: r.P.area(r.f, Math.max(lo, a), Math.min(hi, b)) }, r.fill));
     const tag = (i, v) => stPill(svg, 664, rowsAX[i] - 52, `${concept(S.errors[i]).label} · ${pct(v)}`, `f-${concept(S.errors[i]).family}`);
     return [
       () => bell(rows[0], S.labels[0]),
       () => {
         const g = svgEl("g", { class: "st-in" }, svg);
+        // the lines come with the SE they are drawn from: one grey chip left of the plots, between the rows (both bells share it)
+        stPill(g, L - 130, (rowsAX[0] + rowsAX[1] - H) / 2, `${concept("se").label} ${r1(se)}`, "f-gray");
         [-e, e].forEach(v => {
           svgEl("path", { class: "st-eb-cut", d: `M${rows[0].P.x(v)} ${rowsAX[1]} V${rowsAX[0] - H - 4}` }, g);
           svgEl("text", { class: "st-eb-v", x: rows[0].P.x(v), y: rowsAX[0] - H - 14 }, g).textContent = minus(r1n(v));
         });
       },
-      () => { shade(rows[0], [[lo, -e], [e, hi]]); tag(0, alpha); },
+      () => { shade(rows[0], [[lo, -e], [e, hi]], "st-eb-tail"); tag(0, alpha); },
       () => bell(rows[1], S.labels[1]),
       () => { shade(rows[1], [[-e, e]]); tag(1, beta); }
     ];
