@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" width="1200" height="560">
+<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&amp;display=swap');</style>
+<rect width="1200" height="560" fill="#fff"/>
+<defs>
+  <linearGradient id="bc" gradientUnits="userSpaceOnUse" x1="40" y1="40" x2="300" y2="362"><stop offset="0" stop-color="#1F7FBF"/><stop offset="1" stop-color="#1B5A96"/></linearGradient>
+  <linearGradient id="tc" gradientUnits="userSpaceOnUse" x1="0" y1="40" x2="0" y2="300"><stop offset="0" stop-color="#3DB39A"/><stop offset="1" stop-color="#1C8FB0"/></linearGradient>
+  <clipPath id="Lc"><rect x="-20" y="0" width="195" height="400"/></clipPath>
+  <clipPath id="Hc"><path d="M92,362 C70,300 40,252 40,190 C40,100 100,40 170,40 C232,40 268,92 272,146 L302,196 L283,206 C289,216 290,222 283,230 C290,240 287,250 277,258 C273,270 262,276 248,276 L237,292 L233,362 Z"/></clipPath>
+</defs>
+<rect x="110" y="120" width="320" height="320" rx="72" fill="url(#bc)"/>
+<g transform="translate(142,142) scale(0.72)"><path d="M92,362 C70,300 40,252 40,190 C40,100 100,40 170,40 C232,40 268,92 272,146 L302,196 L283,206 C289,216 290,222 283,230 C290,240 287,250 277,258 C273,270 262,276 248,276 L237,292 L233,362 Z" fill="#fff"/>
+<g clip-path="url(#Lc)" fill="#9BE3D2"><circle cx="78" cy="108" r="46"/><circle cx="128" cy="78" r="44"/><circle cx="48" cy="170" r="44"/><circle cx="62" cy="236" r="42"/><circle cx="118" cy="270" r="36"/><circle cx="160" cy="120" r="40"/><rect x="40" y="90" width="140" height="170"/></g>
+<line x1="175" y1="30" x2="175" y2="372" stroke="#1E6FAE" stroke-width="7"/>
+<circle cx="175" cy="175" r="44" fill="#1E6FAE"/>
+<path d="M162,152 L200,175 L162,198 Z" fill="#fff" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></g>
+<text x="490" y="268" font-family="Montserrat,Arial,sans-serif" font-weight="800" font-size="100" fill="#12304F">MRCP <tspan font-weight="500" fill="#1F7FBF">Gafar</tspan></text>
+<text x="494" y="330" font-family="Montserrat,Arial,sans-serif" font-weight="500" font-size="30" fill="#56657A" letter-spacing="3">Internal Medicine Education</text>
+</svg>

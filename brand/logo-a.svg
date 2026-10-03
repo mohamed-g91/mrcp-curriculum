@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 560" width="1024" height="560">
+<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&amp;display=swap');</style>
+<rect width="1024" height="560" fill="#fff"/>
+<defs>
+  <linearGradient id="ba" gradientUnits="userSpaceOnUse" x1="40" y1="40" x2="300" y2="362"><stop offset="0" stop-color="#1F7FBF"/><stop offset="1" stop-color="#1B5A96"/></linearGradient>
+  <linearGradient id="ta" gradientUnits="userSpaceOnUse" x1="0" y1="40" x2="0" y2="300"><stop offset="0" stop-color="#3DB39A"/><stop offset="1" stop-color="#1C8FB0"/></linearGradient>
+  <clipPath id="La"><rect x="-20" y="0" width="195" height="400"/></clipPath>
+  <clipPath id="Ha"><path d="M92,362 C70,300 40,252 40,190 C40,100 100,40 170,40 C232,40 268,92 272,146 L302,196 L283,206 C289,216 290,222 283,230 C290,240 287,250 277,258 C273,270 262,276 248,276 L237,292 L233,362 Z"/></clipPath>
+</defs>
+<g transform="translate(150,90) scale(1.05)"><path d="M92,362 C70,300 40,252 40,190 C40,100 100,40 170,40 C232,40 268,92 272,146 L302,196 L283,206 C289,216 290,222 283,230 C290,240 287,250 277,258 C273,270 262,276 248,276 L237,292 L233,362 Z" fill="url(#ba)"/>
+<g clip-path="url(#La)" fill="url(#ta)"><circle cx="78" cy="108" r="46"/><circle cx="128" cy="78" r="44"/><circle cx="48" cy="170" r="44"/><circle cx="62" cy="236" r="42"/><circle cx="118" cy="270" r="36"/><circle cx="160" cy="120" r="40"/><rect x="40" y="90" width="140" height="170"/></g>
+<line x1="175" y1="30" x2="175" y2="372" stroke="#fff" stroke-width="7"/>
+<g stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"><path d="M175,130 C140,130 120,110 110,70"/><path d="M140,175 C100,175 70,160 40,150"/><path d="M150,210 C120,240 100,250 70,285"/><path d="M175,250 L233,300" clip-path="url(#Ha)"/><path d="M175,90 L268,150" clip-path="url(#Ha)"/></g>
+<circle cx="175" cy="175" r="44" fill="#fff"/>
+<path d="M162,152 L200,175 L162,198 Z" fill="url(#ta)" stroke="url(#ta)" stroke-width="6" stroke-linejoin="round"/>
+<g stroke="url(#ta)" stroke-width="9" stroke-linecap="round">
+<line x1="-29.0" y1="124.7" x2="-58.0" y2="116.9"/>
+<line x1="16.3" y1="46.3" x2="-5.0" y2="25.0"/>
+<line x1="94.7" y1="1.0" x2="86.9" y2="-28.0"/>
+<line x1="185.3" y1="1.0" x2="193.1" y2="-28.0"/>
+<line x1="252.5" y1="35.9" x2="271.8" y2="13.0"/>
+</g></g>
+<text x="530" y="250" font-family="Montserrat,Arial,sans-serif" font-weight="800" font-size="92" fill="#12304F" letter-spacing="2">MRCP</text>
+<text x="530" y="350" font-family="Montserrat,Arial,sans-serif" font-weight="800" font-size="92" fill="#12304F" letter-spacing="2">GAFAR</text>
+<text x="532" y="405" font-family="Montserrat,Arial,sans-serif" font-weight="500" font-size="32" fill="#12304F">Internal Medicine</text>
+<text x="532" y="447" font-family="Montserrat,Arial,sans-serif" font-weight="500" font-size="32" fill="#12304F">Education</text>
+</svg>

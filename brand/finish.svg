@@ -1,0 +1,430 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 1000" width="1240" height="1000"><rect width="1240" height="1000" fill="#F7F9FC"/><rect x="760" y="0" width="480" height="1000" fill="#0E1826"/><text x="30" y="48" font-family="Segoe UI,Arial" font-weight="700" font-size="20" fill="#56657A">Now</text><svg x="30" y="64" width="180" height="180" viewBox="0 0 210 210"><defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient><mask id="gap1" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg1)"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap1)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="260" y="106" width="96" height="96" viewBox="0 0 210 210"><defs><linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient><mask id="gap2" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg2)"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap2)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="390" y="122" width="64" height="64" viewBox="0 0 210 210"><defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient><mask id="gap3" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg3)"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap3)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="490" y="130" width="48" height="48" viewBox="0 0 210 210"><defs><linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient><mask id="gap4" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg4)"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap4)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="570" y="138" width="32" height="32" viewBox="0 0 210 210"><defs><linearGradient id="bg5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient><mask id="gap5" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg5)"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap5)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="630" y="146" width="16" height="16" viewBox="0 0 210 210"><defs><linearGradient id="bg6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient><mask id="gap6" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg6)"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap6)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="800" y="106" width="96" height="96" viewBox="0 0 210 210"><defs><linearGradient id="bg7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient><mask id="gap7" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg7)"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap7)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="930" y="122" width="64" height="64" viewBox="0 0 210 210"><defs><linearGradient id="bg8" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient><mask id="gap8" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg8)"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap8)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="1030" y="130" width="48" height="48" viewBox="0 0 210 210"><defs><linearGradient id="bg9" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient><mask id="gap9" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg9)"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap9)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="1110" y="138" width="32" height="32" viewBox="0 0 210 210"><defs><linearGradient id="bg10" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient><mask id="gap10" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg10)"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap10)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="1170" y="146" width="16" height="16" viewBox="0 0 210 210"><defs><linearGradient id="bg11" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2383C4"/><stop offset="1" stop-color="#1B5A96"/></linearGradient><mask id="gap11" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg11)"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap11)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><text x="30" y="288" font-family="Segoe UI,Arial" font-weight="700" font-size="20" fill="#56657A">1  Glossy</text><svg x="30" y="304" width="180" height="180" viewBox="0 0 210 210"><defs>
+<linearGradient id="bg12" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3AA0E0"/><stop offset=".55" stop-color="#1E6FB4"/><stop offset="1" stop-color="#154C86"/></linearGradient>
+<radialGradient id="glow12" cx=".5" cy="1.05" r=".6"><stop offset="0" stop-color="#3FD0C0" stop-opacity=".35"/><stop offset="1" stop-color="#3FD0C0" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen12" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="wg12" gradientUnits="userSpaceOnUse" x1="0" y1="45" x2="0" y2="165"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCEBF7"/></linearGradient>
+<linearGradient id="tg12" gradientUnits="userSpaceOnUse" x1="0" y1="88" x2="0" y2="122"><stop offset="0" stop-color="#C4F5E9"/><stop offset="1" stop-color="#5FD3BA"/></linearGradient>
+<filter id="lift12" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#062A4F" flood-opacity=".45"/></filter>
+<clipPath id="tile12"><rect width="210" height="210" rx="48"/></clipPath><mask id="gap12" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg12)"/>
+<rect width="210" height="210" rx="48" fill="url(#glow12)"/>
+<g filter="url(#lift12)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="url(#wg12)" stroke-width="20" stroke-linecap="round" mask="url(#gap12)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="url(#wg12)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="url(#tg12)" stroke="url(#tg12)" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="url(#wg12)" stroke-width="20" stroke-linecap="round" /></g>
+<path clip-path="url(#tile12)" d="M0,0 H210 V70 C150,88 60,88 0,70 Z" fill="url(#sheen12)"/>
+<rect x="2" y="2" width="206" height="206" rx="46" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></svg><svg x="260" y="346" width="96" height="96" viewBox="0 0 210 210"><defs>
+<linearGradient id="bg13" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3AA0E0"/><stop offset=".55" stop-color="#1E6FB4"/><stop offset="1" stop-color="#154C86"/></linearGradient>
+<radialGradient id="glow13" cx=".5" cy="1.05" r=".6"><stop offset="0" stop-color="#3FD0C0" stop-opacity=".35"/><stop offset="1" stop-color="#3FD0C0" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen13" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="wg13" gradientUnits="userSpaceOnUse" x1="0" y1="45" x2="0" y2="165"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCEBF7"/></linearGradient>
+<linearGradient id="tg13" gradientUnits="userSpaceOnUse" x1="0" y1="88" x2="0" y2="122"><stop offset="0" stop-color="#C4F5E9"/><stop offset="1" stop-color="#5FD3BA"/></linearGradient>
+<filter id="lift13" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#062A4F" flood-opacity=".45"/></filter>
+<clipPath id="tile13"><rect width="210" height="210" rx="48"/></clipPath><mask id="gap13" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg13)"/>
+<rect width="210" height="210" rx="48" fill="url(#glow13)"/>
+<g filter="url(#lift13)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="url(#wg13)" stroke-width="20" stroke-linecap="round" mask="url(#gap13)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="url(#wg13)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="url(#tg13)" stroke="url(#tg13)" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="url(#wg13)" stroke-width="20" stroke-linecap="round" /></g>
+<path clip-path="url(#tile13)" d="M0,0 H210 V70 C150,88 60,88 0,70 Z" fill="url(#sheen13)"/>
+<rect x="2" y="2" width="206" height="206" rx="46" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></svg><svg x="390" y="362" width="64" height="64" viewBox="0 0 210 210"><defs>
+<linearGradient id="bg14" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3AA0E0"/><stop offset=".55" stop-color="#1E6FB4"/><stop offset="1" stop-color="#154C86"/></linearGradient>
+<radialGradient id="glow14" cx=".5" cy="1.05" r=".6"><stop offset="0" stop-color="#3FD0C0" stop-opacity=".35"/><stop offset="1" stop-color="#3FD0C0" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen14" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="wg14" gradientUnits="userSpaceOnUse" x1="0" y1="45" x2="0" y2="165"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCEBF7"/></linearGradient>
+<linearGradient id="tg14" gradientUnits="userSpaceOnUse" x1="0" y1="88" x2="0" y2="122"><stop offset="0" stop-color="#C4F5E9"/><stop offset="1" stop-color="#5FD3BA"/></linearGradient>
+<filter id="lift14" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#062A4F" flood-opacity=".45"/></filter>
+<clipPath id="tile14"><rect width="210" height="210" rx="48"/></clipPath><mask id="gap14" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg14)"/>
+<rect width="210" height="210" rx="48" fill="url(#glow14)"/>
+<g filter="url(#lift14)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="url(#wg14)" stroke-width="20" stroke-linecap="round" mask="url(#gap14)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="url(#wg14)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="url(#tg14)" stroke="url(#tg14)" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="url(#wg14)" stroke-width="20" stroke-linecap="round" /></g>
+<path clip-path="url(#tile14)" d="M0,0 H210 V70 C150,88 60,88 0,70 Z" fill="url(#sheen14)"/>
+<rect x="2" y="2" width="206" height="206" rx="46" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></svg><svg x="490" y="370" width="48" height="48" viewBox="0 0 210 210"><defs>
+<linearGradient id="bg15" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3AA0E0"/><stop offset=".55" stop-color="#1E6FB4"/><stop offset="1" stop-color="#154C86"/></linearGradient>
+<radialGradient id="glow15" cx=".5" cy="1.05" r=".6"><stop offset="0" stop-color="#3FD0C0" stop-opacity=".35"/><stop offset="1" stop-color="#3FD0C0" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen15" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="wg15" gradientUnits="userSpaceOnUse" x1="0" y1="45" x2="0" y2="165"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCEBF7"/></linearGradient>
+<linearGradient id="tg15" gradientUnits="userSpaceOnUse" x1="0" y1="88" x2="0" y2="122"><stop offset="0" stop-color="#C4F5E9"/><stop offset="1" stop-color="#5FD3BA"/></linearGradient>
+<filter id="lift15" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#062A4F" flood-opacity=".45"/></filter>
+<clipPath id="tile15"><rect width="210" height="210" rx="48"/></clipPath><mask id="gap15" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg15)"/>
+<rect width="210" height="210" rx="48" fill="url(#glow15)"/>
+<g filter="url(#lift15)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="url(#wg15)" stroke-width="20" stroke-linecap="round" mask="url(#gap15)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="url(#wg15)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="url(#tg15)" stroke="url(#tg15)" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="url(#wg15)" stroke-width="20" stroke-linecap="round" /></g>
+<path clip-path="url(#tile15)" d="M0,0 H210 V70 C150,88 60,88 0,70 Z" fill="url(#sheen15)"/>
+<rect x="2" y="2" width="206" height="206" rx="46" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></svg><svg x="570" y="378" width="32" height="32" viewBox="0 0 210 210"><defs>
+<linearGradient id="bg16" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3AA0E0"/><stop offset=".55" stop-color="#1E6FB4"/><stop offset="1" stop-color="#154C86"/></linearGradient>
+<radialGradient id="glow16" cx=".5" cy="1.05" r=".6"><stop offset="0" stop-color="#3FD0C0" stop-opacity=".35"/><stop offset="1" stop-color="#3FD0C0" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen16" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="wg16" gradientUnits="userSpaceOnUse" x1="0" y1="45" x2="0" y2="165"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCEBF7"/></linearGradient>
+<linearGradient id="tg16" gradientUnits="userSpaceOnUse" x1="0" y1="88" x2="0" y2="122"><stop offset="0" stop-color="#C4F5E9"/><stop offset="1" stop-color="#5FD3BA"/></linearGradient>
+<filter id="lift16" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#062A4F" flood-opacity=".45"/></filter>
+<clipPath id="tile16"><rect width="210" height="210" rx="48"/></clipPath><mask id="gap16" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg16)"/>
+<rect width="210" height="210" rx="48" fill="url(#glow16)"/>
+<g filter="url(#lift16)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="url(#wg16)" stroke-width="20" stroke-linecap="round" mask="url(#gap16)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="url(#wg16)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="url(#tg16)" stroke="url(#tg16)" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="url(#wg16)" stroke-width="20" stroke-linecap="round" /></g>
+<path clip-path="url(#tile16)" d="M0,0 H210 V70 C150,88 60,88 0,70 Z" fill="url(#sheen16)"/>
+<rect x="2" y="2" width="206" height="206" rx="46" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></svg><svg x="630" y="386" width="16" height="16" viewBox="0 0 210 210"><defs>
+<linearGradient id="bg17" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3AA0E0"/><stop offset=".55" stop-color="#1E6FB4"/><stop offset="1" stop-color="#154C86"/></linearGradient>
+<radialGradient id="glow17" cx=".5" cy="1.05" r=".6"><stop offset="0" stop-color="#3FD0C0" stop-opacity=".35"/><stop offset="1" stop-color="#3FD0C0" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen17" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="wg17" gradientUnits="userSpaceOnUse" x1="0" y1="45" x2="0" y2="165"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCEBF7"/></linearGradient>
+<linearGradient id="tg17" gradientUnits="userSpaceOnUse" x1="0" y1="88" x2="0" y2="122"><stop offset="0" stop-color="#C4F5E9"/><stop offset="1" stop-color="#5FD3BA"/></linearGradient>
+<filter id="lift17" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#062A4F" flood-opacity=".45"/></filter>
+<clipPath id="tile17"><rect width="210" height="210" rx="48"/></clipPath><mask id="gap17" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg17)"/>
+<rect width="210" height="210" rx="48" fill="url(#glow17)"/>
+<g filter="url(#lift17)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="url(#wg17)" stroke-width="20" stroke-linecap="round" mask="url(#gap17)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="url(#wg17)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="url(#tg17)" stroke="url(#tg17)" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="url(#wg17)" stroke-width="20" stroke-linecap="round" /></g>
+<path clip-path="url(#tile17)" d="M0,0 H210 V70 C150,88 60,88 0,70 Z" fill="url(#sheen17)"/>
+<rect x="2" y="2" width="206" height="206" rx="46" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></svg><svg x="800" y="346" width="96" height="96" viewBox="0 0 210 210"><defs>
+<linearGradient id="bg18" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3AA0E0"/><stop offset=".55" stop-color="#1E6FB4"/><stop offset="1" stop-color="#154C86"/></linearGradient>
+<radialGradient id="glow18" cx=".5" cy="1.05" r=".6"><stop offset="0" stop-color="#3FD0C0" stop-opacity=".35"/><stop offset="1" stop-color="#3FD0C0" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen18" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="wg18" gradientUnits="userSpaceOnUse" x1="0" y1="45" x2="0" y2="165"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCEBF7"/></linearGradient>
+<linearGradient id="tg18" gradientUnits="userSpaceOnUse" x1="0" y1="88" x2="0" y2="122"><stop offset="0" stop-color="#C4F5E9"/><stop offset="1" stop-color="#5FD3BA"/></linearGradient>
+<filter id="lift18" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#062A4F" flood-opacity=".45"/></filter>
+<clipPath id="tile18"><rect width="210" height="210" rx="48"/></clipPath><mask id="gap18" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg18)"/>
+<rect width="210" height="210" rx="48" fill="url(#glow18)"/>
+<g filter="url(#lift18)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="url(#wg18)" stroke-width="20" stroke-linecap="round" mask="url(#gap18)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="url(#wg18)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="url(#tg18)" stroke="url(#tg18)" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="url(#wg18)" stroke-width="20" stroke-linecap="round" /></g>
+<path clip-path="url(#tile18)" d="M0,0 H210 V70 C150,88 60,88 0,70 Z" fill="url(#sheen18)"/>
+<rect x="2" y="2" width="206" height="206" rx="46" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></svg><svg x="930" y="362" width="64" height="64" viewBox="0 0 210 210"><defs>
+<linearGradient id="bg19" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3AA0E0"/><stop offset=".55" stop-color="#1E6FB4"/><stop offset="1" stop-color="#154C86"/></linearGradient>
+<radialGradient id="glow19" cx=".5" cy="1.05" r=".6"><stop offset="0" stop-color="#3FD0C0" stop-opacity=".35"/><stop offset="1" stop-color="#3FD0C0" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen19" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="wg19" gradientUnits="userSpaceOnUse" x1="0" y1="45" x2="0" y2="165"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCEBF7"/></linearGradient>
+<linearGradient id="tg19" gradientUnits="userSpaceOnUse" x1="0" y1="88" x2="0" y2="122"><stop offset="0" stop-color="#C4F5E9"/><stop offset="1" stop-color="#5FD3BA"/></linearGradient>
+<filter id="lift19" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#062A4F" flood-opacity=".45"/></filter>
+<clipPath id="tile19"><rect width="210" height="210" rx="48"/></clipPath><mask id="gap19" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg19)"/>
+<rect width="210" height="210" rx="48" fill="url(#glow19)"/>
+<g filter="url(#lift19)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="url(#wg19)" stroke-width="20" stroke-linecap="round" mask="url(#gap19)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="url(#wg19)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="url(#tg19)" stroke="url(#tg19)" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="url(#wg19)" stroke-width="20" stroke-linecap="round" /></g>
+<path clip-path="url(#tile19)" d="M0,0 H210 V70 C150,88 60,88 0,70 Z" fill="url(#sheen19)"/>
+<rect x="2" y="2" width="206" height="206" rx="46" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></svg><svg x="1030" y="370" width="48" height="48" viewBox="0 0 210 210"><defs>
+<linearGradient id="bg20" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3AA0E0"/><stop offset=".55" stop-color="#1E6FB4"/><stop offset="1" stop-color="#154C86"/></linearGradient>
+<radialGradient id="glow20" cx=".5" cy="1.05" r=".6"><stop offset="0" stop-color="#3FD0C0" stop-opacity=".35"/><stop offset="1" stop-color="#3FD0C0" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen20" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="wg20" gradientUnits="userSpaceOnUse" x1="0" y1="45" x2="0" y2="165"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCEBF7"/></linearGradient>
+<linearGradient id="tg20" gradientUnits="userSpaceOnUse" x1="0" y1="88" x2="0" y2="122"><stop offset="0" stop-color="#C4F5E9"/><stop offset="1" stop-color="#5FD3BA"/></linearGradient>
+<filter id="lift20" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#062A4F" flood-opacity=".45"/></filter>
+<clipPath id="tile20"><rect width="210" height="210" rx="48"/></clipPath><mask id="gap20" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg20)"/>
+<rect width="210" height="210" rx="48" fill="url(#glow20)"/>
+<g filter="url(#lift20)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="url(#wg20)" stroke-width="20" stroke-linecap="round" mask="url(#gap20)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="url(#wg20)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="url(#tg20)" stroke="url(#tg20)" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="url(#wg20)" stroke-width="20" stroke-linecap="round" /></g>
+<path clip-path="url(#tile20)" d="M0,0 H210 V70 C150,88 60,88 0,70 Z" fill="url(#sheen20)"/>
+<rect x="2" y="2" width="206" height="206" rx="46" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></svg><svg x="1110" y="378" width="32" height="32" viewBox="0 0 210 210"><defs>
+<linearGradient id="bg21" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3AA0E0"/><stop offset=".55" stop-color="#1E6FB4"/><stop offset="1" stop-color="#154C86"/></linearGradient>
+<radialGradient id="glow21" cx=".5" cy="1.05" r=".6"><stop offset="0" stop-color="#3FD0C0" stop-opacity=".35"/><stop offset="1" stop-color="#3FD0C0" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen21" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="wg21" gradientUnits="userSpaceOnUse" x1="0" y1="45" x2="0" y2="165"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCEBF7"/></linearGradient>
+<linearGradient id="tg21" gradientUnits="userSpaceOnUse" x1="0" y1="88" x2="0" y2="122"><stop offset="0" stop-color="#C4F5E9"/><stop offset="1" stop-color="#5FD3BA"/></linearGradient>
+<filter id="lift21" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#062A4F" flood-opacity=".45"/></filter>
+<clipPath id="tile21"><rect width="210" height="210" rx="48"/></clipPath><mask id="gap21" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg21)"/>
+<rect width="210" height="210" rx="48" fill="url(#glow21)"/>
+<g filter="url(#lift21)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="url(#wg21)" stroke-width="20" stroke-linecap="round" mask="url(#gap21)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="url(#wg21)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="url(#tg21)" stroke="url(#tg21)" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="url(#wg21)" stroke-width="20" stroke-linecap="round" /></g>
+<path clip-path="url(#tile21)" d="M0,0 H210 V70 C150,88 60,88 0,70 Z" fill="url(#sheen21)"/>
+<rect x="2" y="2" width="206" height="206" rx="46" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></svg><svg x="1170" y="386" width="16" height="16" viewBox="0 0 210 210"><defs>
+<linearGradient id="bg22" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3AA0E0"/><stop offset=".55" stop-color="#1E6FB4"/><stop offset="1" stop-color="#154C86"/></linearGradient>
+<radialGradient id="glow22" cx=".5" cy="1.05" r=".6"><stop offset="0" stop-color="#3FD0C0" stop-opacity=".35"/><stop offset="1" stop-color="#3FD0C0" stop-opacity="0"/></radialGradient>
+<linearGradient id="sheen22" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="wg22" gradientUnits="userSpaceOnUse" x1="0" y1="45" x2="0" y2="165"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCEBF7"/></linearGradient>
+<linearGradient id="tg22" gradientUnits="userSpaceOnUse" x1="0" y1="88" x2="0" y2="122"><stop offset="0" stop-color="#C4F5E9"/><stop offset="1" stop-color="#5FD3BA"/></linearGradient>
+<filter id="lift22" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#062A4F" flood-opacity=".45"/></filter>
+<clipPath id="tile22"><rect width="210" height="210" rx="48"/></clipPath><mask id="gap22" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg22)"/>
+<rect width="210" height="210" rx="48" fill="url(#glow22)"/>
+<g filter="url(#lift22)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="url(#wg22)" stroke-width="20" stroke-linecap="round" mask="url(#gap22)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="url(#wg22)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="url(#tg22)" stroke="url(#tg22)" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="url(#wg22)" stroke-width="20" stroke-linecap="round" /></g>
+<path clip-path="url(#tile22)" d="M0,0 H210 V70 C150,88 60,88 0,70 Z" fill="url(#sheen22)"/>
+<rect x="2" y="2" width="206" height="206" rx="46" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/></svg><text x="30" y="528" font-family="Segoe UI,Arial" font-weight="700" font-size="20" fill="#56657A">2  Soft depth</text><svg x="30" y="544" width="180" height="180" viewBox="0 0 210 210"><defs><linearGradient id="bg23" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B8AD0"/><stop offset="1" stop-color="#1A5694"/></linearGradient>
+<radialGradient id="hi23" cx=".25" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gap23" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg23)"/><rect width="210" height="210" rx="48" fill="url(#hi23)"/>
+<g opacity=".55"><g transform="translate(0,6)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap23)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,4)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap23)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,2)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap23)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g></g><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap23)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="260" y="586" width="96" height="96" viewBox="0 0 210 210"><defs><linearGradient id="bg24" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B8AD0"/><stop offset="1" stop-color="#1A5694"/></linearGradient>
+<radialGradient id="hi24" cx=".25" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gap24" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg24)"/><rect width="210" height="210" rx="48" fill="url(#hi24)"/>
+<g opacity=".55"><g transform="translate(0,6)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap24)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,4)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap24)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,2)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap24)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g></g><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap24)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="390" y="602" width="64" height="64" viewBox="0 0 210 210"><defs><linearGradient id="bg25" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B8AD0"/><stop offset="1" stop-color="#1A5694"/></linearGradient>
+<radialGradient id="hi25" cx=".25" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gap25" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg25)"/><rect width="210" height="210" rx="48" fill="url(#hi25)"/>
+<g opacity=".55"><g transform="translate(0,6)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap25)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,4)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap25)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,2)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap25)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g></g><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap25)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="490" y="610" width="48" height="48" viewBox="0 0 210 210"><defs><linearGradient id="bg26" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B8AD0"/><stop offset="1" stop-color="#1A5694"/></linearGradient>
+<radialGradient id="hi26" cx=".25" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gap26" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg26)"/><rect width="210" height="210" rx="48" fill="url(#hi26)"/>
+<g opacity=".55"><g transform="translate(0,6)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap26)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,4)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap26)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,2)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap26)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g></g><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap26)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="570" y="618" width="32" height="32" viewBox="0 0 210 210"><defs><linearGradient id="bg27" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B8AD0"/><stop offset="1" stop-color="#1A5694"/></linearGradient>
+<radialGradient id="hi27" cx=".25" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gap27" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg27)"/><rect width="210" height="210" rx="48" fill="url(#hi27)"/>
+<g opacity=".55"><g transform="translate(0,6)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap27)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,4)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap27)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,2)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap27)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g></g><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap27)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="630" y="626" width="16" height="16" viewBox="0 0 210 210"><defs><linearGradient id="bg28" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B8AD0"/><stop offset="1" stop-color="#1A5694"/></linearGradient>
+<radialGradient id="hi28" cx=".25" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gap28" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg28)"/><rect width="210" height="210" rx="48" fill="url(#hi28)"/>
+<g opacity=".55"><g transform="translate(0,6)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap28)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,4)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap28)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,2)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap28)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g></g><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap28)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="800" y="586" width="96" height="96" viewBox="0 0 210 210"><defs><linearGradient id="bg29" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B8AD0"/><stop offset="1" stop-color="#1A5694"/></linearGradient>
+<radialGradient id="hi29" cx=".25" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gap29" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg29)"/><rect width="210" height="210" rx="48" fill="url(#hi29)"/>
+<g opacity=".55"><g transform="translate(0,6)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap29)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,4)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap29)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,2)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap29)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g></g><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap29)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="930" y="602" width="64" height="64" viewBox="0 0 210 210"><defs><linearGradient id="bg30" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B8AD0"/><stop offset="1" stop-color="#1A5694"/></linearGradient>
+<radialGradient id="hi30" cx=".25" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gap30" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg30)"/><rect width="210" height="210" rx="48" fill="url(#hi30)"/>
+<g opacity=".55"><g transform="translate(0,6)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap30)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,4)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap30)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,2)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap30)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g></g><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap30)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="1030" y="610" width="48" height="48" viewBox="0 0 210 210"><defs><linearGradient id="bg31" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B8AD0"/><stop offset="1" stop-color="#1A5694"/></linearGradient>
+<radialGradient id="hi31" cx=".25" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gap31" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg31)"/><rect width="210" height="210" rx="48" fill="url(#hi31)"/>
+<g opacity=".55"><g transform="translate(0,6)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap31)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,4)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap31)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,2)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap31)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g></g><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap31)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="1110" y="618" width="32" height="32" viewBox="0 0 210 210"><defs><linearGradient id="bg32" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B8AD0"/><stop offset="1" stop-color="#1A5694"/></linearGradient>
+<radialGradient id="hi32" cx=".25" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gap32" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg32)"/><rect width="210" height="210" rx="48" fill="url(#hi32)"/>
+<g opacity=".55"><g transform="translate(0,6)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap32)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,4)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap32)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,2)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap32)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g></g><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap32)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="1170" y="626" width="16" height="16" viewBox="0 0 210 210"><defs><linearGradient id="bg33" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B8AD0"/><stop offset="1" stop-color="#1A5694"/></linearGradient>
+<radialGradient id="hi33" cx=".25" cy=".15" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="gap33" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg33)"/><rect width="210" height="210" rx="48" fill="url(#hi33)"/>
+<g opacity=".55"><g transform="translate(0,6)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap33)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,4)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap33)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g><g transform="translate(0,2)"><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" mask="url(#gap33)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#0F3F6E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#0F3F6E" stroke="#0F3F6E" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#0F3F6E" stroke-width="20" stroke-linecap="round" /></g></g><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap33)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#9BE3D2" stroke="#9BE3D2" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><text x="30" y="768" font-family="Segoe UI,Arial" font-weight="700" font-size="20" fill="#56657A">3  Crisp flat</text><svg x="30" y="784" width="180" height="180" viewBox="0 0 210 210"><defs><linearGradient id="bg34" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F78BE"/><stop offset="1" stop-color="#123F73"/></linearGradient><mask id="gap34" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg34)"/>
+<path d="M0,48 A48,48 0 0 1 48,0 H162 A48,48 0 0 1 210,48 V70 C140,40 70,40 0,70 Z" fill="#fff" opacity=".07"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap34)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#5EE0C4" stroke="#5EE0C4" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="260" y="826" width="96" height="96" viewBox="0 0 210 210"><defs><linearGradient id="bg35" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F78BE"/><stop offset="1" stop-color="#123F73"/></linearGradient><mask id="gap35" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg35)"/>
+<path d="M0,48 A48,48 0 0 1 48,0 H162 A48,48 0 0 1 210,48 V70 C140,40 70,40 0,70 Z" fill="#fff" opacity=".07"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap35)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#5EE0C4" stroke="#5EE0C4" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="390" y="842" width="64" height="64" viewBox="0 0 210 210"><defs><linearGradient id="bg36" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F78BE"/><stop offset="1" stop-color="#123F73"/></linearGradient><mask id="gap36" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg36)"/>
+<path d="M0,48 A48,48 0 0 1 48,0 H162 A48,48 0 0 1 210,48 V70 C140,40 70,40 0,70 Z" fill="#fff" opacity=".07"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap36)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#5EE0C4" stroke="#5EE0C4" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="490" y="850" width="48" height="48" viewBox="0 0 210 210"><defs><linearGradient id="bg37" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F78BE"/><stop offset="1" stop-color="#123F73"/></linearGradient><mask id="gap37" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg37)"/>
+<path d="M0,48 A48,48 0 0 1 48,0 H162 A48,48 0 0 1 210,48 V70 C140,40 70,40 0,70 Z" fill="#fff" opacity=".07"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap37)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#5EE0C4" stroke="#5EE0C4" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="570" y="858" width="32" height="32" viewBox="0 0 210 210"><defs><linearGradient id="bg38" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F78BE"/><stop offset="1" stop-color="#123F73"/></linearGradient><mask id="gap38" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg38)"/>
+<path d="M0,48 A48,48 0 0 1 48,0 H162 A48,48 0 0 1 210,48 V70 C140,40 70,40 0,70 Z" fill="#fff" opacity=".07"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap38)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#5EE0C4" stroke="#5EE0C4" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="630" y="866" width="16" height="16" viewBox="0 0 210 210"><defs><linearGradient id="bg39" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F78BE"/><stop offset="1" stop-color="#123F73"/></linearGradient><mask id="gap39" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg39)"/>
+<path d="M0,48 A48,48 0 0 1 48,0 H162 A48,48 0 0 1 210,48 V70 C140,40 70,40 0,70 Z" fill="#fff" opacity=".07"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap39)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#5EE0C4" stroke="#5EE0C4" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="800" y="826" width="96" height="96" viewBox="0 0 210 210"><defs><linearGradient id="bg40" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F78BE"/><stop offset="1" stop-color="#123F73"/></linearGradient><mask id="gap40" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg40)"/>
+<path d="M0,48 A48,48 0 0 1 48,0 H162 A48,48 0 0 1 210,48 V70 C140,40 70,40 0,70 Z" fill="#fff" opacity=".07"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap40)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#5EE0C4" stroke="#5EE0C4" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="930" y="842" width="64" height="64" viewBox="0 0 210 210"><defs><linearGradient id="bg41" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F78BE"/><stop offset="1" stop-color="#123F73"/></linearGradient><mask id="gap41" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg41)"/>
+<path d="M0,48 A48,48 0 0 1 48,0 H162 A48,48 0 0 1 210,48 V70 C140,40 70,40 0,70 Z" fill="#fff" opacity=".07"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap41)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#5EE0C4" stroke="#5EE0C4" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="1030" y="850" width="48" height="48" viewBox="0 0 210 210"><defs><linearGradient id="bg42" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F78BE"/><stop offset="1" stop-color="#123F73"/></linearGradient><mask id="gap42" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg42)"/>
+<path d="M0,48 A48,48 0 0 1 48,0 H162 A48,48 0 0 1 210,48 V70 C140,40 70,40 0,70 Z" fill="#fff" opacity=".07"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap42)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#5EE0C4" stroke="#5EE0C4" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="1110" y="858" width="32" height="32" viewBox="0 0 210 210"><defs><linearGradient id="bg43" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F78BE"/><stop offset="1" stop-color="#123F73"/></linearGradient><mask id="gap43" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg43)"/>
+<path d="M0,48 A48,48 0 0 1 48,0 H162 A48,48 0 0 1 210,48 V70 C140,40 70,40 0,70 Z" fill="#fff" opacity=".07"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap43)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#5EE0C4" stroke="#5EE0C4" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg><svg x="1170" y="866" width="16" height="16" viewBox="0 0 210 210"><defs><linearGradient id="bg44" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F78BE"/><stop offset="1" stop-color="#123F73"/></linearGradient><mask id="gap44" maskUnits="userSpaceOnUse" x="0" y="0" width="210" height="210"><rect width="210" height="210" fill="#fff"/><path d="M27,105 H77" stroke="#000" stroke-width="19" stroke-linecap="round"/></mask></defs>
+<rect width="210" height="210" rx="48" fill="url(#bg44)"/>
+<path d="M0,48 A48,48 0 0 1 48,0 H162 A48,48 0 0 1 210,48 V70 C140,40 70,40 0,70 Z" fill="#fff" opacity=".07"/><path d="M145,65 A56,56 0 1 0 161,105" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" mask="url(#gap44)" />
+<path d="M27,105 H77 L84,87 L92,123 L98,105 H103" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M107,90 L131,105 L107,120 Z" fill="#5EE0C4" stroke="#5EE0C4" stroke-width="7" stroke-linejoin="round" />
+<path d="M133,105 H161" stroke="#fff" stroke-width="20" stroke-linecap="round" /></svg></svg>
