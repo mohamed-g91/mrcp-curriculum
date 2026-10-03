@@ -403,7 +403,8 @@ def p_story(slide, topic):
     The figure is drawn in the browser from the slide's numbers (engine/js/story.js)."""
     data = {k: slide[k] for k in ("kind", "values", "outlier", "counts", "unit", "categories", "categories_unit",
                                   "population", "n", "axis", "means_axis", "wall_label", "slots", "tosses", "claim", "sd", "gap", "labels", "y_axis", "family", "cut", "trials", "panels", "start", "means", "origin", "ns", "heading", "pairs",
-                                  "chance", "se", "truth", "truth_label", "centres", "range", "label", "chips", "sums", "rows", "none_label", "worth", "step") if k in slide}
+                                  "chance", "se", "truth", "truth_label", "centres", "range", "label", "chips", "sums", "rows", "none_label", "worth", "step",
+                                  "cols", "heads", "notes", "errors", "ymax") if k in slide}
     if slide.get("panel"):
         data["panel"] = slide["panel"]
     scene = figure(slide["scene"], "st-scene") if slide.get("scene") else ""
@@ -421,6 +422,11 @@ def p_story(slide, topic):
             f'{scene}<div class="st-chart"></div>{panel}{art}</div>')
 
 
+def labelled(topic, text):
+    """{key} in a text stands for a concept's label, so a label is never retyped."""
+    return re.sub(r"\{(\w+)\}", lambda m: topic["concepts"][m.group(1)]["label"], str(text))
+
+
 def p_working(slide, topic):
     """Solving the hook with a sum: the stem beside the working, one line per tap (engine/js/working.js).
     The hook's question heads the working from the start, so the part to tap is never empty.
@@ -431,6 +437,8 @@ def p_working(slide, topic):
     # with `rows` (two trials), the working is a chain per trial: each line is a step, a column headed by its name (`head`)
     # and its sum (`text`), with one chip per trial (`results`) and an arrow into it from the step before
     rows = slide.get("rows")
+    # a chain with a long chip (such as Not significant) takes smaller chips throughout, so they stay one size
+    long = " wk-long" if rows and any(len(labelled(topic, v)) > 10 for ln in slide["lines"] for v in ln["results"]) else ""
     if rows:
         lines.append('<li class="wk-names">' + "".join(
             f'<span class="wk-rowname" style="grid-row:{r + 2}">{e(name.split(" ", 1)[0])}<small>{e((name.split(" ", 1) + [""])[1])}</small></span>'
@@ -439,8 +447,10 @@ def p_working(slide, topic):
         if rows:
             col = f"grid-column:{i + 2}"
             sub = f'<small>{e(ln["text"])}</small>' if ln.get("text") else ""
+            fams = ln.get("families") or [None] * len(ln["results"])
             cells = f'<span class="wk-head" style="{col}">{e(ln["head"])}{sub}</span>' + "".join(
-                f'<span class="wk-chip{" wk-after" if i else ""}" style="{col};grid-row:{r + 2}">{e(v)}</span>' for r, v in enumerate(ln["results"]))
+                f'<span class="wk-chip{" wk-after" if i else ""}{long}{f" f-{fam}" if fam else ""}" style="{col};grid-row:{r + 2}">{e(labelled(topic, v))}</span>'
+                for r, (v, fam) in enumerate(zip(ln["results"], fams)))
             lines.append(f'<li class="wk-line f-{ln["family"]}">{cells}</li>')
             continue
         res = f'<span class="wk-res">{e(ln["result"])}</span>' if ln.get("result") else ""

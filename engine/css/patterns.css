@@ -940,16 +940,19 @@ html.fluid .ask{position:fixed}
 .st-pair-a .st-pair-f{fill:#8C99AB}.st-pair-a .st-pair-l,.st-pair-a .st-pair-m{stroke:#8C99AB}
 .st-pair-b .st-pair-f{fill:var(--sc-line)}.st-pair-b .st-pair-l,.st-pair-b .st-pair-m{stroke:var(--sc-line)}
 /* the working as chains: one row per trial, one column per step (its name and sum on top), chips joined by arrows */
-.wk-chain{--cg:clamp(28px,calc(3.4 * var(--u)),44px);display:grid;grid-template-columns:auto repeat(var(--steps),minmax(0,1fr));column-gap:var(--cg);row-gap:clamp(16px,calc(2.6 * var(--u)),34px);align-items:center}
+.wk-chain{--cg:clamp(28px,calc(3.4 * var(--u)),44px);display:grid;grid-template-columns:auto repeat(var(--steps),minmax(max-content,1fr));column-gap:var(--cg);row-gap:clamp(16px,calc(2.6 * var(--u)),34px);align-items:center}
 .wk-chain .wk-line,.wk-chain .wk-names{display:contents}
 .wk-chain .wk-line.on>*{animation:specIn .45s var(--ease)}
 .wk-head{grid-row:1;display:flex;flex-direction:column;align-items:center;gap:2px;font:800 var(--fs-body) var(--sans);color:var(--ink);text-align:center}
 .wk-head small,.wk-rowname small{font:600 var(--fs-small) var(--sans);color:var(--muted);white-space:nowrap}
 .wk-rowname{grid-column:1;display:flex;flex-direction:column;font:800 clamp(20px,calc(2 * var(--u)),26px) var(--sans);color:var(--ink);line-height:1.1}
 .wk-chip{position:relative;display:flex;justify-content:center;align-items:center;padding:clamp(6px,calc(.8 * var(--u)),10px) 4px;border-radius:999px;background:var(--x-bg);border:2.5px solid var(--x-solid);color:var(--x-ink);font:800 clamp(19px,calc(2 * var(--u)),26px) var(--sans);font-variant-numeric:tabular-nums}
+.wk-chip.wk-long{font-size:clamp(15px,calc(1.5 * var(--u)),20px);white-space:nowrap;padding-inline:12px}
 .wk-chip.wk-after::before{content:"";position:absolute;top:50%;right:calc(100% + 12px);width:calc(var(--cg) - 20px);height:3px;margin-top:-1.5px;background:var(--muted)}
 .wk-chip.wk-after::after{content:"";position:absolute;top:50%;right:calc(100% + 4px);margin-top:-6px;border:6px solid transparent;border-left:9px solid var(--muted);border-right:0}
 @media (prefers-reduced-motion:reduce){.wk-chain .wk-line.on>*{animation:none}}
+/* on phones a long chip may wrap, so the chain fits the width */
+@container (max-width:600px){.wk-chain{grid-template-columns:auto repeat(var(--steps),minmax(0,1fr))}.wk-chip.wk-long{white-space:normal;padding-inline:4px;text-align:center}}
 /* story kinds for Confidence intervals and p: runs, mirror, cibars */
 .st-truth{stroke:var(--ink);stroke-width:2.5;stroke-dasharray:7 6}
 .st-truth-t{fill:var(--ink);font:750 18px var(--sans);text-anchor:middle}
@@ -960,6 +963,22 @@ html.fluid .ask{position:fixed}
 .st-run-t{fill:var(--x-ink);font:750 16px var(--sans);text-anchor:end}
 .st-run-t.st-run-r{text-anchor:start}
 .st-run-gap{stroke:var(--x-solid);stroke-width:2;stroke-dasharray:3 4}
+/* errgrid: two ways to be wrong */
+.st-eg-ax{fill:var(--muted);font:700 14px var(--sans);letter-spacing:.12em;text-transform:uppercase;text-anchor:middle}
+.st-eg-h{fill:var(--ink);font:750 20px var(--sans);text-anchor:middle}
+.st-eg-r{text-anchor:end}
+.st-eg-cell rect{fill:var(--x-bg);stroke:var(--x-bd);stroke-width:2}
+.st-eg-cell .st-eg-top{fill:var(--x-solid);stroke:none}
+.st-eg-big{fill:var(--x-ink);font:800 32px var(--sans);text-anchor:middle}
+.st-eg-sm{fill:var(--x-ink);font:600 18px var(--sans);text-anchor:middle}
+.st-eg-ok text{fill:var(--muted)}
+/* errbells: the two errors on chance's bell and the truth's */
+.st-eb-l{fill:none;stroke:var(--x-solid);stroke-width:3.5}
+.st-eb-fill{fill:var(--x-solid);fill-opacity:.4}
+.st-eb-cut{stroke:var(--text);stroke-width:2;stroke-dasharray:7 6}
+.st-eb-v{fill:var(--ink);font:750 17px var(--sans);text-anchor:middle}
+.st-mir-t.st-eb-t{text-anchor:end}
+.st-eb-n{fill:var(--muted);font:700 19px var(--sans);text-anchor:middle}
 .st-mir{animation:fadeIn .5s ease both}
 .st-mir-e{stroke:var(--x-solid);stroke-width:2.5;stroke-dasharray:7 6}
 .st-mir-v{fill:var(--x-ink);font:750 18px var(--sans);text-anchor:middle}

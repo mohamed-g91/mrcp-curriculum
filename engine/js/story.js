@@ -50,6 +50,11 @@
            chance's 95% exactly when 0 lies outside ours
    cibars  trials as CI bars on one axis with the no-effect line, one row per tap, with their sums and half-widths, or with a
            line at the smallest effect worth having; each row's p, or its verdict and a note, on the right
+   errgrid two ways to be wrong: the truth across (no effect, an effect), the verdict down (significant, not); the two
+           right cells first, then the Type I cell, then the Type II cell, each with its note
+   errbells the two errors on two rows sharing one axis, true to scale: chance's bell round 0 above, the bell of a truth we
+           pretend to know below, the same width; the 2 SE lines through both; chance's tails beyond them are Type I,
+           the truth's bell between them is Type II, each share on a pill to the right
    art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
            from the slide's slots, with {key} standing for a concept's label (so H₀ is never retyped) */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
@@ -1020,6 +1025,66 @@ const STORIES = {
       () => { const t = svgEl("text", { class: "st-csum", x: ST.W / 2, y: 272 }, svg); t.textContent = `All heads or all tails: 2 in ${fmt(ways)}`; },
       // the p-value: how often a fair coin gives a result at least this extreme
       () => pill("f-test st-cp", 330, `p = 2 ÷ ${fmt(ways)} ≈ ${p.toFixed(3)}`, 330)
+    ];
+  },
+  errgrid(svg, S) {
+    // the truth across (S.cols), the verdict down (the sig and ns concepts); the right cells grey, the errors (S.errors:
+    // Type I where nothing works yet it is significant, Type II where it works yet it is not) in their own colours
+    const X0 = 250, Y0 = 94, CW = 250, CH = 134;
+    svg.setAttribute("viewBox", `0 0 ${ST.W} 380`);
+    svgEl("text", { class: "st-eg-ax", x: X0 + CW, y: 26 }, svg).textContent = S.heads[0];
+    S.cols.forEach((c, i) => { svgEl("text", { class: "st-eg-h", x: X0 + CW * i + CW / 2, y: Y0 - 18 }, svg).textContent = c; });
+    svgEl("text", { class: "st-eg-ax", transform: `translate(34 ${Y0 + CH}) rotate(-90)` }, svg).textContent = S.heads[1];
+    ["sig", "ns"].forEach((k, j) => { svgEl("text", { class: "st-eg-h st-eg-r", x: X0 - 16, y: Y0 + CH * j + CH / 2 + 7 }, svg).textContent = concept(k).label; });
+    const cell = (i, j, key) => {
+      const g = svgEl("g", { class: `st-eg-cell st-in f-${key ? concept(key).family : "gray"}${key ? "" : " st-eg-ok"}` }, svg);
+      const x = X0 + CW * i + 6, y = Y0 + CH * j + 6, w = CW - 12, h = CH - 12;
+      svgEl("rect", { x, y, width: w, height: h, rx: 14 }, g);
+      if (key) svgEl("rect", { class: "st-eg-top", x, y, width: w, height: 6, rx: 3 }, g);
+      svgEl("text", { class: "st-eg-big", x: x + w / 2, y: y + 62 }, g).textContent = key ? concept(key).label : "✓";
+      svgEl("text", { class: "st-eg-sm", x: x + w / 2, y: y + 96 }, g).textContent = S.notes[key || "right"];
+    };
+    return [() => { cell(1, 0); cell(0, 1); }, () => cell(0, 0, S.errors[0]), () => cell(1, 1, S.errors[1])];
+  },
+  errbells(svg, S) {
+    // above: chance's bell of gaps round 0 (no effect); below: the bell round a truth we pretend to know, the same width
+    // (SE = SD × √(2 ÷ n)); one axis, so a smaller trial's bells are wider and lower. The 2 SE lines (2 × the SE in tenths)
+    // run through both rows. Chance's tails beyond them: Type I, α (5%: "2" stands for 1.96). The truth's bell between
+    // them: Type II, β, the trials that miss a real effect
+    const se = S.sd * Math.sqrt(2 / S.n), e = 2 * +r1(se), [lo, hi] = S.range, L = 200, R = 566, H = 112, rowsAX = [150, 322];
+    const ticks = []; for (let t = lo; t <= hi; t += S.step || 4) ticks.push(t);
+    svg.setAttribute("viewBox", `0 0 ${ST.W} 386`);
+    const rows = [0, S.truth].map((c, i) => {
+      const P = storyPlot(svg, { L, R, AX: rowsAX[i], H, lo, hi, ymax: S.ymax, ticks, yticks: [0, S.ymax], xtitle: i ? S.axis : "", sm: true });
+      P.g.classList.add(`f-${concept(S.errors[i]).family}`);
+      return { P, c, f: normPct(c, se, 1), AX: rowsAX[i], fill: svgEl("g", {}, P.g) };
+    });
+    svgEl("text", { class: "cv-ytitle sm", transform: `translate(${L - 58} ${(rowsAX[0] + rowsAX[1] - H) / 2}) rotate(-90)` }, svg).textContent = S.y_axis;
+    if (S.label) svgEl("text", { class: "st-eb-n", x: 664, y: rowsAX[1] + 26 }, svg).textContent = S.label;
+    const alpha = 2 * (1 - Sampling.cdf(1.96)), beta = Sampling.cdf((e - S.truth) / se) - Sampling.cdf((-e - S.truth) / se);
+    const pct = v => `${Math.round(100 * v)}%`;
+    const bell = (r, label) => {
+      const g = svgEl("g", { class: "st-in" }, r.P.g), a = Math.max(lo, r.c - 4 * se), b = Math.min(hi, r.c + 4 * se);
+      svgEl("path", { class: "st-eb-l", d: r.P.curve(r.f, a, b) }, g);
+      // its name outside the plot, to the left of its row, on two lines if long
+      const words = label.split(" "), cut = words.length > 1 && label.length > 12 ? Math.ceil(words.length / 2) : words.length;
+      const lines = [words.slice(0, cut).join(" "), words.slice(cut).join(" ")].filter(Boolean);
+      lines.forEach((t, k) => { svgEl("text", { class: "st-mir-t st-eb-t", x: L - 78, y: r.AX - H / 2 + 6 + (k - (lines.length - 1) / 2) * 24 }, g).textContent = t; });
+    };
+    const shade = (r, parts) => parts.forEach(([a, b]) => svgEl("path", { class: "st-eb-fill st-in", d: r.P.area(r.f, Math.max(lo, a), Math.min(hi, b)) }, r.fill));
+    const tag = (i, v) => stPill(svg, 664, rowsAX[i] - 52, `${concept(S.errors[i]).label} · ${pct(v)}`, `f-${concept(S.errors[i]).family}`);
+    return [
+      () => bell(rows[0], S.labels[0]),
+      () => {
+        const g = svgEl("g", { class: "st-in" }, svg);
+        [-e, e].forEach(v => {
+          svgEl("path", { class: "st-eb-cut", d: `M${rows[0].P.x(v)} ${rowsAX[1]} V${rowsAX[0] - H - 4}` }, g);
+          svgEl("text", { class: "st-eb-v", x: rows[0].P.x(v), y: rowsAX[0] - H - 14 }, g).textContent = minus(r1n(v));
+        });
+      },
+      () => { shade(rows[0], [[lo, -e], [e, hi]]); tag(0, alpha); },
+      () => bell(rows[1], S.labels[1]),
+      () => { shade(rows[1], [[-e, e]]); tag(1, beta); }
     ];
   },
   art(svg, S, later, chart) {

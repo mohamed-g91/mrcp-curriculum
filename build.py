@@ -180,8 +180,8 @@ def check_topic(t, expected_id):
             # the numbers are worked out in the browser; only the data each kind draws from is given here
             kind = s.get("kind")
             nums = lambda xs: bool(xs) and all(isinstance(v, int) for v in xs)
-            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows", "runs", "mirror", "cibars"):
-                errs.append(f"{where}: kind is one of {', '.join(("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows", "runs", "mirror", "cibars"))}, not {kind!r}")
+            if kind not in ("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows", "runs", "mirror", "cibars", "errgrid", "errbells"):
+                errs.append(f"{where}: kind is one of {', '.join(("mean", "median", "mode", "iqr", "sampling", "art", "coin", "gap", "line", "slide", "ci", "ncompare", "grid", "samples", "means", "gaps", "twose", "far", "nrows", "runs", "mirror", "cibars", "errgrid", "errbells"))}, not {kind!r}")
             elif kind == "samples":
                 # people's values in two samples: the same SD, the means a little apart
                 if not isinstance(s.get("sd"), (int, float)) or len(s.get("means") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
@@ -272,6 +272,24 @@ def check_topic(t, expected_id):
                     errs.append(f"{where}: a mirror story needs sd, n (in each group), gap, a range, two labels, two chips, an axis and a y_axis")
                 elif not rg[0] <= -2 * s["sd"] * (2 / s["n"]) ** .5 or s["gap"] + 2 * s["sd"] * (2 / s["n"]) ** .5 > rg[1]:
                     errs.append(f"{where}: both 95% bands must sit inside the range")
+            elif kind == "errgrid":
+                # the truth across (two columns), the verdict down (sig and ns); the two errors are concepts, each with a note
+                er, nt = s.get("errors") or [], s.get("notes") or {}
+                if len(s.get("cols") or []) != 2 or len(s.get("heads") or []) != 2 or len(er) != 2 or not all(nt.get(k) for k in er + ["right"]):
+                    errs.append(f"{where}: an errgrid story needs two cols, two heads, two errors (concepts) and a note for each error and for right")
+                refs += er + ["sig", "ns"]
+            elif kind == "errbells":
+                # chance's bell round 0 and a truth's bell, SE = SD × √(2 ÷ n); both bells and their 2 SE lines inside the range
+                rg, er = s.get("range") or [], s.get("errors") or []
+                if not all(isinstance(s.get(k), (int, float)) for k in ("sd", "n", "truth", "ymax")) or len(rg) != 2 or len(er) != 2                         or len(s.get("labels") or []) != 2 or not (s.get("axis") and s.get("y_axis")):
+                    errs.append(f"{where}: an errbells story needs sd, n (in each group), truth, ymax, a range, two errors (concepts), two labels, an axis and a y_axis")
+                else:
+                    se = s["sd"] * (2 / s["n"]) ** .5
+                    if not rg[0] < -2 * round(se, 1) < 0 < s["truth"] < 2 * round(se, 1) + s["truth"] < rg[1] + 4 * se:
+                        errs.append(f"{where}: the 2 SE lines and the truth must sit inside the range")
+                    if 100 / (se * (2 * 3.14159) ** .5) > s["ymax"]:
+                        errs.append(f"{where}: ymax must clear the bells' peak ({100 / (se * (2 * 3.14159) ** .5):.0f}%)")
+                refs += er
             elif kind == "cibars":
                 # trials as CI bars: each row's gap ± 2 SE (SD × √(2 ÷ n), in tenths), its p or its verdict and a note
                 rows, rg = s.get("rows") or [], s.get("range") or []

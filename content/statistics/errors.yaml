@@ -1,0 +1,195 @@
+# Type I and type II errors: MRCP Part 1 statistics. Lesson 7 of the series: could the verdict be wrong?
+# Lesson 4 gave the two verdicts (Guilty, Not guilty); lesson 5 the SE of a difference and the 2 SE lines; lesson 6 a made-up
+# truth ("Say the truth is 3"). This lesson names the two ways a verdict can be wrong and shows where each lives on two bells.
+# Lesson 8 (Power and sample size) starts from the same bells.
+# The same trials run through: 400 people (200 in each group) and 40 people (20 in each group), SD 15 mmHg, a gap of 4 mmHg.
+#   400 people: SE = 15 × √(2 ÷ 200) = 1.5, 2 SE = 3. 40 people: SE ≈ 4.7, 2 SE = 9.4.
+# Type I (α): if the drug does nothing, the gap lands beyond the 2 SE lines in 5% of trials ("2" stands for 1.96, as before).
+# Type II (β): say the truth is 4 (a made-up truth, as a simulation sets it). The gap lands round 4 with the same SE; it misses
+#   when it lands between the lines. 400 people: 3 is 0.67 SE below 4, so 25% miss. 40 people: 9.4 is 1.15 SE above 4, so
+#   about 87% miss (the 0.2% beyond −9.4, significant the wrong way, is not drawn apart). Worked out in the browser.
+# A significant verdict can only be a Type I error; a non-significant one only a Type II error. Whether one trial made an
+# error is never known: the rates say how often trials like it would.
+# Kept short for statistics-naive candidates (the user, 2026-10-03): no grids, no stricter line, no multiple testing.
+# IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
+
+id: stats.errors
+title: Type I and type II errors
+description: Could the verdict be wrong? A false alarm (Type I) and a miss (Type II), where each lives on chance's bell and the truth's, and why a small trial misses so often. Learn from one blood pressure trial, then practise on exam-style stems.
+status: draft
+updated: 2026-10-03
+sources:
+  - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapters 8, 35.
+  - Petrie A, Sabin C. Medical Statistics at a Glance, 4th ed. Chapter 18.
+  - Altman DG, Bland JM. Absence of evidence is not evidence of absence. BMJ 1995;311:485.
+retired: []
+cover: concepts
+
+# Olive goes with chance's bell (no effect, the false alarm), teal with the truth's bell (a real effect, the miss).
+families:
+  test: Testing
+  se: The estimate
+  gray: Neutral
+
+concepts:
+  type1: { label: Type I,  family: test, icon: tails }
+  type2: { label: Type II, family: se,   icon: bell }
+  # the two verdicts; they are not ideas of their own, so they stay off the cover
+  sig:   { label: Significant,     family: test, icon: check, cover: false }
+  ns:    { label: Not significant, family: gray, icon: dash,  cover: false }
+
+learn:
+  - id: hook
+    pattern: hook
+    title: Could the verdict be wrong?
+    stem: "A new drug for high blood pressure, two trials. In [[400 people]], systolic BP fell 4 mmHg more on the drug, p = 0.008: significant. In [[40 people]], the same 4 mmHg, p = 0.4: not significant."
+    question: Could either verdict be wrong?
+    scene: case-older
+
+  # Truth across, verdict down: the two right cells, then Type I (a false alarm: no effect, yet significant), then
+  # Type II (a miss: an effect, yet not significant). The court is said aloud: convicting the innocent, freeing the guilty.
+  - id: two-ways
+    pattern: story
+    title: Two ways to be wrong
+    kind: errgrid
+    cols: [Drug does nothing, Drug works]
+    heads: [The truth, The verdict]
+    errors: [type1, type2]
+    notes: { type1: A false alarm, type2: A miss, right: Right }
+
+  # 400 people: chance's bell round 0 and the 2 SE lines at ± 3; its tails beyond them are Type I (5%). Then say the truth
+  # is 4: its bell, the same width, below; the part between the lines is Type II (25%).
+  - id: where
+    pattern: story
+    title: Where do the errors live?
+    kind: errbells
+    start: 1
+    sd: 15
+    n: 200
+    truth: 4
+    range: [-12, 16]
+    ymax: 30
+    errors: [type1, type2]
+    labels: [No effect, Say the truth is 4]
+    label: 400 people
+    axis: Extra fall on the drug (mmHg)
+    y_axis: "% of trials"
+
+  # The same truth in 40 people, on the same axis: both bells wide and low, the lines at ± 9.4. Chance's tails stay 5%;
+  # the truth's bell is mostly between the lines: about 87% of such trials miss a real 4 mmHg.
+  - id: small
+    pattern: story
+    title: The same truth in 40 people
+    kind: errbells
+    start: 1
+    sd: 15
+    n: 20
+    truth: 4
+    range: [-12, 16]
+    ymax: 30
+    errors: [type1, type2]
+    labels: [No effect, Say the truth is 4]
+    label: 40 people
+    axis: Extra fall on the drug (mmHg)
+    y_axis: "% of trials"
+
+  - id: hook-solved
+    pattern: working
+    title: Back to the trials
+    scene: doctor-think
+    stem: "The same 4 mmHg: [[400 people, p = 0.008]], and [[40 people, p = 0.4]]."
+    # a chain per trial: the verdict → the only error it could be → how often trials like it make that error
+    rows: [400 people, 40 people]
+    lines:
+      - { family: test, head: Verdict,   results: ["{sig}", "{ns}"],     families: [test, gray] }
+      - { family: test, head: If wrong,  results: ["{type1}", "{type2}"], families: [test, se] }
+      - { family: test, head: How often, text: "in trials like it", results: ["5%", "87%"], families: [test, se] }
+    answer: "Guilty is wrong only if it was one of chance's 5%. A trial of 40 misses a real 4 mmHg 87 times in 100."
+
+practise:
+  - id: cases
+    pattern: stem-quiz
+    title: Type I and type II errors
+    options: [type1, type2]
+    # The first case is the solved example; the rest are dealt in a random order.
+    # Every case brings its own options; the scenes are the nearest cartoons from the cast.
+    cases:
+      - id: c01
+        scene: case-older
+        solved: true
+        stem: In a trial of [[400 people]], systolic BP fell 4 mmHg more on a new drug than on placebo, [[p = 0.008]].
+        question: If this verdict is wrong, which error is it?
+        options: ["Type I", "Type II", "Neither: p is below 0.05"]
+        answer: "Type I"
+        hint: Which verdict was given?
+        why: "The trial says significant. If the drug really does nothing, that is a false alarm: a Type I error."
+        tutor: "p = 0.008 is below 0.05, so the verdict is significant. A significant verdict can only be wrong one way: the drug does nothing and chance made the gap. That is a Type I error, and it happens in 5% of trials of a drug that does nothing."
+
+      - id: c02
+        scene: case-people
+        stem: A trial of [[30 people]] finds no benefit from a new drug (p = 0.4). [[Later, large trials show a real benefit]].
+        question: Which error did the small trial make?
+        options: ["Type II", "Type I", "None: p was above 0.05"]
+        answer: "Type II"
+        hint: The drug works. What did the small trial say?
+        why: "The drug works, but the trial said not significant: a miss, a Type II error. Small trials make it often."
+
+      - id: c03
+        scene: doctor-think
+        stem: A trial finds that a supplement lowers cholesterol, [[p = 0.03]]. [[Larger trials later show it does nothing]].
+        question: Which error did the first trial make?
+        options: ["Type I", "Type II", "None: p was below 0.05"]
+        answer: "Type I"
+        hint: The supplement does nothing. What did the first trial say?
+        why: "It does nothing, yet the trial said significant: a false alarm, a Type I error."
+
+      - id: c04
+        scene: doctor-think
+        stem: Before a trial starts, the team sets [[α at 0.05]].
+        question: What does this mean?
+        options: ["If the drug does nothing, about 5 in 100 such trials will still be significant", "The trial's p-value will be 0.05", "A significant result is 95% sure to be true"]
+        answer: "If the drug does nothing, about 5 in 100 such trials will still be significant"
+        hint: α is the rate of one of the two errors.
+        why: "α is the Type I error rate, chosen before the trial: the share of no-effect trials that cross the line by chance. p is found after the trial; significant means p is below α."
+
+      - id: c05
+        scene: doctor-think
+        stem: A trial is planned with [[β of 0.2]] for a fall in systolic BP of 5 mmHg.
+        question: What does this mean?
+        options: ["If the true fall is 5 mmHg, about 20 in 100 such trials will miss it", "20% of significant results will be false", "The trial's p-value must be below 0.2"]
+        answer: "If the true fall is 5 mmHg, about 20 in 100 such trials will miss it"
+        hint: β is the rate of the other error.
+        why: "β is the Type II error rate: the share of trials that come out not significant even though the effect is real, here a 5 mmHg fall."
+
+      - id: c06
+        scene: case-people
+        stem: A trial is run again with [[10 times as many people]], with α still 0.05.
+        question: What happens to the chance of a Type I error?
+        options: ["It stays at 5%", "It gets smaller", "It gets larger"]
+        answer: "It stays at 5%"
+        hint: Who sets the Type I error rate?
+        why: "The Type I error rate is α, which the team sets: 5% whatever the size. More people shrink the bells, so fewer real effects are missed: the Type II error rate falls."
+
+      - id: c07
+        scene: doctor-think
+        twist: true
+        stem: A trial reports [[p = 0.03]]. A colleague says, "So there is a 3% chance this result is a false positive."
+        question: What is the best response?
+        options: ["No: p is worked out assuming the drug does nothing", "Agreed", "No: it is a 97% chance"]
+        answer: "No: p is worked out assuming the drug does nothing"
+        hint: In which world is p worked out?
+        why: "p says how often a drug that does nothing would give a gap this big. It does not say how likely the drug is to do nothing, so it is not the chance this result is a false alarm."
+
+      - id: c08
+        scene: case-older
+        twist: true
+        stem: A trial of [[40 people]] finds systolic BP fell 4 mmHg more on a new drug, p = 0.4. The authors conclude that [[the drug has no effect]].
+        question: What is the best response?
+        options: ["Not shown: a trial this small often misses a real effect", "Agreed: p is above 0.05", "Agreed: a Type I error is ruled out"]
+        answer: "Not shown: a trial this small often misses a real effect"
+        hint: Not significant is not the same as no effect.
+        why: "If the drug truly lowered BP by 4 mmHg, about 87 in 100 trials of 40 people would still miss it. A Type II error is likely; absence of evidence is not evidence of absence."
+
+  - id: end
+    pattern: end
+    title: Your score
