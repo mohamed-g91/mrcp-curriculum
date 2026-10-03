@@ -190,6 +190,17 @@ practise:
         hint: Not significant is not the same as no effect.
         why: "If the drug truly lowered BP by 4 mmHg, about 87 in 100 trials of 40 people would still miss it. A Type II error is likely; absence of evidence is not evidence of absence."
 
+      # A Type II error seen through a CI: say the truth is 4; this trial's CI, 2 ± 2 × 1.5, holds 4 but also 0.
+      # Any gap below 3 gives a CI that reaches below 0: the same 25% of trials as the truth's bell between the lines.
+      - id: c09
+        scene: case-older
+        stem: Say a new drug truly lowers systolic BP by [[4 mmHg]] more than placebo. One trial finds a fall of [[2 mmHg (95% CI −1 to 5 mmHg)]].
+        question: Which error has this trial made?
+        options: ["Type II", "Type I", "None: the CI contains the true effect"]
+        answer: "Type II"
+        hint: The CI holds the true 4 mmHg. Does it also hold 0?
+        why: "The CI, −1 to 5 mmHg, contains the true 4 mmHg, but it also contains 0, so the result is not significant. The drug works and the trial missed it: a Type II error. The CI was not wrong; the verdict was."
+
   - id: end
     pattern: end
     title: Your score
