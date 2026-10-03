@@ -8,7 +8,7 @@
 id: stats.standard-error
 title: Standard error
 description: How sure is a mean? The standard error against the standard deviation, why bigger samples give surer means, and the 95% confidence interval against the reference range. Learn from one sample of women's heights, then practise on exam-style stems.
-status: draft
+status: reviewed
 updated: 2026-09-27
 sources:
   - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapters 4–6.

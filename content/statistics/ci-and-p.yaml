@@ -13,7 +13,7 @@
 id: stats.ci-and-p
 title: Confidence intervals and p
 description: How big is the effect? The 95% confidence interval round a difference, what 95% means, why the CI and p always agree, ratios whose no-effect value is 1, and significant against important. Learn from one blood pressure trial, then practise on exam-style stems.
-status: draft
+status: reviewed
 updated: 2026-10-03
 sources:
   - Kirkwood BR, Sterne JAC. Essential Medical Statistics, 2nd ed. Chapters 6–8, 16.
