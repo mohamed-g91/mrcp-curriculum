@@ -54,11 +54,14 @@ const Score = {
     const fs = $("#finalScore"), fm = $("#finalMsg");
     if (!fs) return;
     fs.textContent = `${this.got} / ${this.total}`;
+    // the scored cases on the page (every case but each quiz's solved example)
+    const all = Object.values(TOPIC.quizzes || {}).reduce((n, q) => n + q.cases.filter(c => !c.solved).length, 0);
     const pct = this.total ? this.got / this.total : 0;
     fm.textContent = !this.total ? "Work through the cases to build your score." :
+      this.total < all ? `${this.total} of ${all} cases answered. Answer the rest for your final score.` :
       pct >= .85 ? "Excellent. You're ready for exam stems." :
-      pct >= .6 ? "Good. Go back over the three questions for the ones you missed." :
-      "Go back over the three questions, then deal new cases.";
+      pct >= .6 ? "Good. Go back over the cases you missed." :
+      "Go back over the Learn slides, then deal new cases.";
   }
 };
 

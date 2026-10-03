@@ -1383,7 +1383,8 @@ function buildStories() {
     };
     buttons = stepButtons(chart, back, next);
     chart.addEventListener("click", next);
-    chart.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && chart.classList.contains("stepper")) { e.preventDefault(); next(); } });
+    // only when the figure itself has focus: Enter on its Back or Next button is that button's own
+    chart.addEventListener("keydown", e => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ") && chart.classList.contains("stepper")) { e.preventDefault(); next(); } });
     onEnter(sb, start);
     start();
   });

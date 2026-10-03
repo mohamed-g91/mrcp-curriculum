@@ -16,7 +16,11 @@ function makeSorter(buckets, onDrop) {
     if (selected) selected.classList.add("selected");
     buckets.forEach(b => b.el.classList.toggle("clickable", !!selected));
   };
-  chipDeselectors.add(() => { if (selected) select(null); });
+  // a sorter rebuilt by Reset leaves its old buckets behind: their deselectors go before the new one joins
+  chipDeselectors.forEach(f => { if (!f.alive()) chipDeselectors.delete(f); });
+  const deselect = () => { if (selected) select(null); };
+  deselect.alive = () => buckets[0].el.isConnected;
+  chipDeselectors.add(deselect);
   const attempt = (chip, bucket) => {
     select(null);
     if (onDrop(chip, bucket.key)) {
@@ -118,7 +122,9 @@ function buildSort(host) {
     }
     return ok;
   });
-  [...S.items.keys()].sort(() => Math.random() - .5).forEach(i => {
+  const order = [...S.items.keys()];
+  for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+  order.forEach(i => {
     const c = el("div", { class: "chip", "data-i": String(i) }, esc(S.items[i].label));
     wire(c); pool.appendChild(c);
   });

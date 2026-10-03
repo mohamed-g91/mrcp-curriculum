@@ -8,13 +8,13 @@
 // view's pen and zoom on a 16:10 tablet, and fails on any
 // console error or network request. --shots saves a screenshot of every slide and open state.
 import { spawn } from "node:child_process";
-import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const CHROME = process.env.CHROME || "C:/Program Files/Google/Chrome/Application/chrome.exe";
-const PORT = 9333;
+// Chrome picks a free debugging port and writes it to DevToolsActivePort, so two checks can run at once
 const SIZES = [
   { name: "stage", width: 1280, height: 720 },
   { name: "rec", width: 1920, height: 1080 },
@@ -39,7 +39,7 @@ const fail = msg => { problems.push(msg); console.log("  FAIL " + msg); };
 // ---------------------------------------------------------------- Chrome and the DevTools protocol
 const profile = mkdtempSync(join(tmpdir(), "mrcp-check-"));
 const chrome = spawn(CHROME, [
-  "--headless=new", `--remote-debugging-port=${PORT}`, `--user-data-dir=${profile}`,
+  "--headless=new", "--remote-debugging-port=0", `--user-data-dir=${profile}`,
   "--hide-scrollbars", "--no-first-run", "--no-default-browser-check", "--allow-file-access-from-files",
   // extra flags from the environment, e.g. CHROME_FLAGS=--no-sandbox in a container running as root
   ...(process.env.CHROME_FLAGS || "").split(" ").filter(Boolean), "about:blank",
@@ -48,7 +48,8 @@ const chrome = spawn(CHROME, [
 async function connect() {
   for (let i = 0; i < 50; i++) {
     try {
-      const targets = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
+      const port = readFileSync(join(profile, "DevToolsActivePort"), "utf8").split(/\s+/)[0].trim();
+      const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
       const t = targets.find(x => x.type === "page");
       if (t) return t.webSocketDebuggerUrl;
     } catch (e) {}
@@ -70,7 +71,10 @@ ws.addEventListener("message", ev => {
   } else if (m.method) listeners.forEach(f => f(m));
 });
 const send = (method, params = {}) => new Promise((ok, no) => {
-  const id = nextId++; pending.set(id, { ok, no }); ws.send(JSON.stringify({ id, method, params }));
+  const id = nextId++;
+  const timer = setTimeout(() => { if (pending.delete(id)) no(new Error(`${method}: no answer from Chrome in 120 s`)); }, 120000);
+  pending.set(id, { ok: r => { clearTimeout(timer); ok(r); }, no: e => { clearTimeout(timer); no(e); } });
+  ws.send(JSON.stringify({ id, method, params }));
 });
 const js = async expr => {
   const r = await send("Runtime.evaluate", { expression: expr, awaitPromise: true, returnByValue: true });

@@ -13,7 +13,7 @@ The full list and each topic's status live in [curriculum.yaml](curriculum.yaml)
 
 ## Build and check
 
-You need Python 3 with PyYAML (`pip install -r requirements.txt`). The check also needs Node 18+ and Google Chrome.
+You need Python 3 with PyYAML (`pip install -r requirements.txt`). The check also needs Node 22+ (for its built-in WebSocket) and Google Chrome.
 
 ```bash
 python build.py

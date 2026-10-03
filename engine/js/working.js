@@ -22,7 +22,8 @@ function buildWorkings() {
     const reset = () => { shown = 0; render(); };
     buttons = stepButtons(steps, back, next);
     steps.addEventListener("click", next);
-    steps.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && steps.classList.contains("stepper")) { e.preventDefault(); next(); } });
+    // only when the working itself has focus: Enter on its Back or Next button is that button's own
+    steps.addEventListener("keydown", e => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ") && steps.classList.contains("stepper")) { e.preventDefault(); next(); } });
     onEnter(wk, reset);
     reset();
   });

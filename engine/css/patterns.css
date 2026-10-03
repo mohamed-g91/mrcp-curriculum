@@ -77,7 +77,7 @@ mark.clue-mark.lit{background:var(--hl);color:var(--hl-ink);box-shadow:0 0 0 .15
 .gfig .gf-s1{fill:var(--x-solid)}
 .gfig .gf-s2{fill:color-mix(in srgb,var(--x-solid) 70%,var(--surface))}
 .gfig .gf-s3{fill:color-mix(in srgb,var(--x-solid) 40%,var(--surface))}
-.gfig .gf-n{fill:#fff;font:750 19px var(--sans);text-anchor:middle}
+.gfig .gf-n{fill:var(--on-solid);font:750 19px var(--sans);text-anchor:middle}
 .gfig .gf-n3{fill:var(--x-ink)}
 .gfig .gf-base{stroke:var(--border-strong);stroke-width:2.5;stroke-linecap:round}
 .gfig .gf-tick{stroke:var(--x-solid);stroke-width:2.5;stroke-linecap:round}
@@ -87,7 +87,7 @@ mark.clue-mark.lit{background:var(--hl);color:var(--hl-ink);box-shadow:0 0 0 .15
 .spec-stop{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;min-width:0;padding:0 4px}
 .spec-dot{position:relative;z-index:1;width:var(--dot);height:var(--dot);border-radius:50%;background:var(--surface);border:4px solid var(--x-solid);color:var(--x-ink);font:750 calc(var(--dot) * .36) var(--sans);box-shadow:var(--shadow);margin-bottom:6px;transition:transform .25s var(--ease),background .2s ease,color .2s ease,box-shadow .25s var(--ease)}
 .spec-dot:hover{transform:scale(1.07)}
-.spec-stop.on .spec-dot{background:var(--x-solid);color:#fff;transform:scale(1.08);box-shadow:0 0 0 6px var(--x-bg),var(--shadow-lift)}
+.spec-stop.on .spec-dot{background:var(--x-solid);color:var(--on-solid);transform:scale(1.08);box-shadow:0 0 0 6px var(--x-bg),var(--shadow-lift)}
 .spec-stop>b{font-size:clamp(11px,calc(1.72 * var(--u)),22px);font-weight:750;line-height:1.2}
 .spec-ex{display:none;list-style:none;margin:10px 0 0;padding:clamp(8px,calc(1 * var(--u)),12px) clamp(10px,calc(1.2 * var(--u)),14px);width:max-content;min-width:100%;max-width:calc(100% + 40px);text-align:left;border-radius:var(--radius);background:var(--x-bg);border:1px solid var(--x-bd);border-top:4px solid var(--x-solid)}
 .spec-stop.on .spec-ex{display:block}
@@ -111,7 +111,7 @@ mark.clue-mark.lit{background:var(--hl);color:var(--hl-ink);box-shadow:0 0 0 .15
 .spec-bubble.closing{opacity:0;transition:transform .45s var(--ease),opacity .45s ease}
 .bubble-body{display:flex;flex-direction:column;align-items:center;gap:2cqi;width:74%;max-height:80%;text-align:center;opacity:0;transition:opacity .3s ease}
 .spec-bubble.open .bubble-body{opacity:1;transition-delay:.25s}
-.bubble-letter{flex:none;display:inline-flex;align-items:center;justify-content:center;width:10cqi;height:10cqi;border-radius:50%;background:var(--x-solid);color:#fff;font-weight:750;font-size:4.6cqi;box-shadow:0 0 0 5px var(--surface)}
+.bubble-letter{flex:none;display:inline-flex;align-items:center;justify-content:center;width:10cqi;height:10cqi;border-radius:50%;background:var(--x-solid);color:var(--on-solid);font-weight:750;font-size:4.6cqi;box-shadow:0 0 0 5px var(--surface)}
 .bubble-label{font-family:var(--serif);font-weight:600;font-size:11.2cqi;line-height:1.05;letter-spacing:-.01em;color:var(--x-ink)}
 .bubble-label::after{content:"";display:block;width:11cqi;height:.8cqi;margin:2.4cqi auto 0;border-radius:4px;background:var(--x-solid)}
 /* examples as soft pills: white, a thin family border, a family dot, a gentle shadow.
@@ -201,8 +201,8 @@ mark.clue-mark.lit{background:var(--hl);color:var(--hl-ink);box-shadow:0 0 0 .15
 .tree-a:hover{transform:translateY(-2px);box-shadow:var(--edge),var(--shadow)}
 .tree-a.yes{border-color:var(--ok-bd);color:var(--ok-ink)}
 .tree-a.no{border-color:var(--bad-bd);color:var(--bad-ink)}
-.tree-a.yes[aria-pressed="true"]{background:var(--ok-solid);border-color:var(--ok-solid);color:#fff}
-.tree-a.no[aria-pressed="true"]{background:var(--bad-solid);border-color:var(--bad-solid);color:#fff}
+.tree-a.yes[aria-pressed="true"]{background:var(--ok-solid);border-color:var(--ok-solid);color:var(--on-solid)}
+.tree-a.no[aria-pressed="true"]{background:var(--bad-solid);border-color:var(--bad-solid);color:var(--on-solid)}
 .tree-level.answered .tree-a[aria-pressed="false"]{opacity:.35}
 /* No: a coral line down to the final answer */
 .tree-out{display:none;position:relative;padding-top:var(--link);flex-direction:column;align-items:center}
@@ -210,10 +210,10 @@ mark.clue-mark.lit{background:var(--hl);color:var(--hl-ink);box-shadow:0 0 0 .15
 .tree-out::before{content:"";position:absolute;top:0;left:50%;width:3px;height:var(--link);margin-left:-1.5px;border-radius:2px;background:var(--bad-bd);transform-origin:top;animation:linkDown .4s var(--ease) .15s both}
 .tree-level.no>.tree-out>.tree-final{animation:finalIn .6s cubic-bezier(.34,1.56,.64,1) .4s both}
 /* the final answer: a solid, glowing family card with a faint dot texture */
-.tree-final{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;gap:14px;min-height:clamp(58px,calc(5.6 * var(--u)),72px);padding:8px clamp(22px,calc(2.4 * var(--u)),30px) 8px 10px;border-radius:20px;background:linear-gradient(135deg,var(--x-solid),color-mix(in srgb,var(--x-solid) 72%,#0b1522));color:#fff;box-shadow:0 0 0 5px var(--x-bg),0 12px 30px color-mix(in srgb,var(--x-solid) 38%,transparent)}
+.tree-final{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;gap:14px;min-height:clamp(58px,calc(5.6 * var(--u)),72px);padding:8px clamp(22px,calc(2.4 * var(--u)),30px) 8px 10px;border-radius:20px;background:linear-gradient(135deg,var(--x-solid),color-mix(in srgb,var(--x-solid) 72%,#0b1522));color:var(--on-solid);box-shadow:0 0 0 5px var(--x-bg),0 12px 30px color-mix(in srgb,var(--x-solid) 38%,transparent)}
 .tree-final::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle,rgba(255,255,255,.22) 1.2px,transparent 1.7px) 0 0/12px 12px;-webkit-mask:linear-gradient(90deg,transparent 30%,#000);mask:linear-gradient(90deg,transparent 30%,#000)}
 .tree-dot{display:inline-flex;align-items:center;justify-content:center;flex:none;width:clamp(40px,calc(3.9 * var(--u)),50px);height:clamp(40px,calc(3.9 * var(--u)),50px);border-radius:50%;background:#fff;color:var(--x-solid);font-weight:800;font-size:clamp(18px,calc(1.8 * var(--u)),23px);box-shadow:0 2px 8px rgba(0,0,0,.18)}
-.tree-label{font-family:var(--serif);font-weight:600;font-size:clamp(22px,calc(2.4 * var(--u)),31px);line-height:1.1;color:#fff;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.18)}
+.tree-label{font-family:var(--serif);font-weight:600;font-size:clamp(22px,calc(2.4 * var(--u)),31px);line-height:1.1;color:var(--on-solid);white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.18)}
 @keyframes treeIn{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes linkDown{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 @keyframes finalIn{from{opacity:0;transform:translateY(-6px) scale(.7)}to{opacity:1;transform:none}}
@@ -284,7 +284,7 @@ mark.clue{cursor:pointer;background:var(--x-bg);color:var(--x-ink);border-bottom
 .rfig .rf-bellp-a{fill:#8B97A6;opacity:.2}
 .rfig .rf-arrow{fill:none;stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .rcard.on .rcard-answer{display:block}
-.rcard.on .rcard-ico{background:var(--x-solid);color:#fff}
+.rcard.on .rcard-ico{background:var(--x-solid);color:var(--on-solid)}
 .next-topic{align-self:flex-start;display:inline-flex;align-items:center;gap:12px;margin-top:clamp(8px,calc(1.6 * var(--u)),20px);padding:12px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border-strong);color:var(--ink);text-decoration:none;box-shadow:var(--edge),var(--shadow);font-size:var(--fs-body)}
 a.next-topic:hover{border-color:var(--primary)}
 .next-topic .ico{color:var(--primary)}
@@ -386,7 +386,7 @@ a.next-topic:hover{border-color:var(--primary)}
 .cv-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .cv-chip{padding:6px 14px;border-radius:999px;border:2px solid var(--x-solid);background:var(--surface);color:var(--x-ink);font-weight:700;font-size:var(--fs-small);transition:background .2s ease,color .2s ease,transform .2s var(--ease)}
 .cv-chip:hover{transform:translateY(-2px)}
-.cv-chip.on{background:var(--x-solid);color:#fff}
+.cv-chip.on{background:var(--x-solid);color:var(--on-solid)}
 .cv-read{min-height:1.6em;font-size:var(--fs-body);color:var(--ink);text-align:center;font-variant-numeric:tabular-nums}
 .cv-read b{color:var(--x-ink)}
 .cv-sum{visibility:hidden;display:flex;align-items:baseline;gap:10px;padding:6px 16px;border-radius:var(--radius);background:var(--x-bg);border:1px solid var(--x-bd)}
@@ -477,7 +477,7 @@ a.next-topic:hover{border-color:var(--primary)}
 .choice.correct{background:var(--ok-bg);border-color:var(--ok-bd);color:var(--ok-ink)}
 .choice.wrong{background:var(--bad-bg);border-color:var(--bad-bd);color:var(--bad-ink)}
 .choice.correct .mark-ok,.choice.wrong .mark-bad{display:block}
-.choice.correct .choice-dot{background:var(--x-solid);color:#fff}
+.choice.correct .choice-dot{background:var(--x-solid);color:var(--on-solid)}
 /* a solved case lights the bar's Next with one soft pulse */
 #nextBtn.ready{animation:readyPulse 1.2s var(--ease) 2}
 @keyframes readyPulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--primary) 45%,transparent)}100%{box-shadow:0 0 0 14px transparent}}
@@ -886,7 +886,7 @@ html.fluid .ask{position:fixed}
 .wk-line{display:flex;align-items:center;flex-wrap:wrap;gap:12px;font:800 clamp(20px,calc(2.3 * var(--u)),30px) var(--sans);color:var(--x-ink);font-variant-numeric:tabular-nums;visibility:hidden}
 .wk-line.on{visibility:visible;animation:specIn .45s var(--ease)}
 .wk-line:nth-child(even){padding-left:clamp(24px,calc(4 * var(--u)),56px)}
-.wk-res{display:inline-flex;align-items:center;padding:4px 18px;border-radius:999px;background:var(--x-solid);color:#fff;box-shadow:var(--shadow)}
+.wk-res{display:inline-flex;align-items:center;padding:4px 18px;border-radius:999px;background:var(--x-solid);color:var(--on-solid);box-shadow:var(--shadow)}
 .wk-line.on .wk-res{animation:pillIn .5s var(--ease) .25s both}
 .wk-answer{margin:0;padding:12px 18px;border-radius:var(--radius);background:var(--se-bg);border:1px solid var(--se-bd);color:var(--se-ink);font-size:var(--fs-body);font-weight:700;visibility:hidden}
 .wk-answer.on{visibility:visible;animation:specIn .45s var(--ease)}
