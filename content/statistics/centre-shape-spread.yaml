@@ -4,6 +4,7 @@
 
 id: stats.centre-shape-spread
 title: Centre, shape and spread
+title_ar: الوسط والشكل والانتشار
 description: Mean, median and mode, why data come out normal or skewed, and how SD and IQR describe them. Learn from one ward's lengths of stay, then practise on exam-style stems.
 status: reviewed
 updated: 2026-09-24
@@ -19,20 +20,25 @@ families:
   cat: Categories
   np: Skewed
   par: Normal
+families_ar:
+  cat: فئات
+  np: ملتوٍ
+  par: طبيعي
 
 concepts:
-  mean:     { label: Mean,          family: par, icon: balance }
-  median:   { label: Median,        family: np,  icon: middle }
-  mode:     { label: Mode,          family: cat, icon: peak }
-  normal:   { label: Normal,        family: par, letter: N,  icon: bell }
-  skewed:   { label: Skewed,        family: np,  letter: S,  icon: tail-right }
-  positive: { label: Positive skew, family: np,  letter: "+", icon: tail-right }
-  negative: { label: Negative skew, family: np,  letter: "−", icon: tail-left }
+  mean:     { label: Mean, ar: المتوسط,          family: par, icon: balance }
+  median:   { label: Median, ar: الوسيط,        family: np,  icon: middle }
+  mode:     { label: Mode, ar: المنوال,          family: cat, icon: peak }
+  normal:   { label: Normal, ar: طبيعي,        family: par, letter: N,  icon: bell }
+  skewed:   { label: Skewed, ar: ملتوٍ,        family: np,  letter: S,  icon: tail-right }
+  positive: { label: Positive skew, ar: التواء موجب, family: np,  letter: "+", icon: tail-right }
+  negative: { label: Negative skew, ar: التواء سالب, family: np,  letter: "−", icon: tail-left }
 
 learn:
   - id: hook
     pattern: hook
     title: What shape are these stays?
+    title_ar: ما شكل منحنى مدد الإقامة هذه؟
     stem: A study of 200 adults admitted with pneumonia reported a mean length of stay of 6 days (SD 4 days) and a median of 3 days.
     question: What shape is the distribution of length of stay?
     scene: stays-calendar
@@ -42,6 +48,7 @@ learn:
   - id: story-mean
     pattern: story
     title: The mean
+    title_ar: المتوسط
     kind: mean
     scene: story-astronomer
     values: [11, 8, 10, 12, 9]
@@ -49,6 +56,7 @@ learn:
   - id: story-median
     pattern: story
     title: The median
+    title_ar: الوسيط
     kind: median
     scene: story-storm
     values: [11, 8, 10, 12, 9]
@@ -58,6 +66,7 @@ learn:
   - id: story-mode
     pattern: story
     title: The mode
+    title_ar: المنوال
     kind: mode
     scene: story-shoes
     unit: shoe size
@@ -70,6 +79,7 @@ learn:
   - id: middles
     pattern: dot-plot
     title: Three middles
+    title_ar: ثلاثة مقاييس للوسط
     values: [1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 8]
     unit: days in hospital
     swap: { from: 8, to: 30 }
@@ -81,6 +91,7 @@ learn:
   - id: shapes
     pattern: curve
     title: Distribution
+    title_ar: توزيع البيانات
     steps:
       - concept: normal
         shape: normal
@@ -103,6 +114,7 @@ learn:
   - id: spread
     pattern: curve
     title: "Spread: standard deviation"
+    title_ar: "الانتشار: الانحراف المعياري"
     panels:
       - kind: sd
         mean: 162
@@ -121,6 +133,7 @@ learn:
   - id: story-iqr
     pattern: story
     title: "Spread: interquartile range"
+    title_ar: "الانتشار: المدى الربيعي"
     kind: iqr
     scene: stays-calendar
     unit: days
@@ -139,6 +152,7 @@ learn:
     hidden: true
     pattern: reveal-cards
     title: Four traps
+    title_ar: أربعة فخاخ
     cards:
       - { family: np, icon: tail-right, label: Tail to the right, answer: "Positive skew. Skew is named by its tail, not its hump." }
       - { family: np, icon: balance, label: Mean well above median, answer: "Positive skew: the mean follows the tail. In negative skew, mean < median < mode." }
@@ -149,11 +163,12 @@ learn:
   - id: algorithm
     pattern: decision-tree
     title: Normal or skewed?
+    title_ar: طبيعي أم ملتوٍ؟
     steps:
-      - { q: "Value can't be negative?", at: [1, 1], no: { to: 3 } }
-      - { q: "Mean − 2 SD below 0?",     at: [1, 2], yes: positive }
-      - { q: "Mean and median apart?",   at: [2, 1], no: normal }
-      - { q: "Mean above median?",       at: [2, 2], no: negative }
+      - { q: "Value can't be negative?", q_ar: هل القيمة لا تقبل السالب؟, at: [1, 1], no: { to: 3 } }
+      - { q: "Mean − 2 SD below 0?", q_ar: هل المتوسط − 2 انحراف معياري أقل من 0؟,     at: [1, 2], yes: positive }
+      - { q: "Mean and median apart?", q_ar: هل يبتعد المتوسط عن الوسيط؟,   at: [2, 1], no: normal }
+      - { q: "Mean above median?", q_ar: هل المتوسط أكبر من الوسيط؟,       at: [2, 2], no: negative }
     end: positive
     examples:
       normal: [Height, Haemoglobin, Serum sodium]
@@ -163,15 +178,16 @@ learn:
   - id: hook-solved
     pattern: decision-tree
     title: Back to the pneumonia stays
+    title_ar: العودة إلى مدد الإقامة في الالتهاب الرئوي
     scene: doctor-think
     stem: A study of 200 adults admitted with pneumonia reported [[a mean length of stay of 6 days (SD 4 days) and a median of 3 days]].
     # four steps in two rows: a value that can't be negative goes to the SD test first (mean − 2 SD below 0
     # means a tail to the right); anything else, or a test that doesn't settle it, goes on to mean against median
     steps:
-      - { q: "Value can't be negative?", at: [1, 1], no: { to: 3 } }
-      - { q: "Mean − 2 SD below 0?",     at: [1, 2], yes: positive }
-      - { q: "Mean and median apart?",   at: [2, 1], no: normal }
-      - { q: "Mean above median?",       at: [2, 2], no: negative }
+      - { q: "Value can't be negative?", q_ar: هل القيمة لا تقبل السالب؟, at: [1, 1], no: { to: 3 } }
+      - { q: "Mean − 2 SD below 0?", q_ar: هل المتوسط − 2 انحراف معياري أقل من 0؟,     at: [1, 2], yes: positive }
+      - { q: "Mean and median apart?", q_ar: هل يبتعد المتوسط عن الوسيط؟,   at: [2, 1], no: normal }
+      - { q: "Mean above median?", q_ar: هل المتوسط أكبر من الوسيط؟,       at: [2, 2], no: negative }
     end: positive
     examples:
       normal: [Height, Haemoglobin, Serum sodium]
@@ -186,6 +202,7 @@ practise:
   - id: warmup
     pattern: sort
     title: Sort these variables
+    title_ar: صنّف هذه المتغيرات
     buckets: [normal, positive, negative]
     retry: "Look for a wall: a floor makes a tail to the right, a ceiling a tail to the left."
     done: "Skew is named by its tail. Skewed data are summarised by the median (IQR)."
@@ -203,6 +220,7 @@ practise:
   - id: cases
     pattern: stem-quiz
     title: Name the shape
+    title_ar: حدّد الشكل
     options: [normal, positive, negative]
     # The first case is the solved example; the rest are dealt in a random order.
     # A case with its own options overrides the slide's; plain text options are shown in grey.
@@ -309,3 +327,4 @@ practise:
   - id: end
     pattern: end
     title: Your score
+    title_ar: نتيجتك

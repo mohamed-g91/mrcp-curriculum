@@ -7,6 +7,7 @@
 
 id: stats.standard-error
 title: Standard error
+title_ar: الخطأ المعياري
 description: How sure is a mean? The standard error against the standard deviation, why bigger samples give surer means, and the 95% confidence interval against the reference range. Learn from one sample of women's heights, then practise on exam-style stems.
 status: reviewed
 updated: 2026-09-27
@@ -21,16 +22,20 @@ cover: concepts
 families:
   par: People
   se: The mean
+families_ar:
+  par: الأفراد
+  se: المتوسط
 
 concepts:
-  mean: { label: Mean, family: par, icon: balance }
-  sd:   { label: SD,   family: par, icon: spread }
-  sem:  { label: SEM,  family: se,  icon: narrow }
+  mean: { label: Mean, ar: المتوسط, family: par, icon: balance }
+  sd:   { label: SD, ar: الانحراف المعياري,   family: par, icon: spread }
+  sem:  { label: SEM, ar: الخطأ المعياري للمتوسط,  family: se,  icon: narrow }
 
 learn:
   - id: hook
     pattern: hook
     title: How sure is the mean?
+    title_ar: ما مدى ثقتنا بالمتوسط؟
     stem: A study measured the height of 49 healthy women. Their mean height was 162 cm (SD 7 cm).
     question: How sure can we be that 162 cm is the mean height of all women?
     scene: case-people
@@ -40,6 +45,7 @@ learn:
   - id: sampling
     pattern: story
     title: The standard error
+    title_ar: الخطأ المعياري
     kind: sampling
     population: { shape: normal, mean: 162, sd: 7 }
     n: 49
@@ -51,6 +57,7 @@ learn:
   - id: bigger
     pattern: curve
     title: Bigger sample, smaller error
+    title_ar: عينة أكبر، خطأ أصغر
     panels:
       - kind: sem
         mean: 162
@@ -65,6 +72,7 @@ learn:
   - id: clt
     pattern: story
     title: Skewed data, normal means
+    title_ar: بيانات ملتوية، متوسطات طبيعية
     kind: sampling
     population: { shape: positive, mean: 6, sd: 4 }
     n: 16
@@ -77,6 +85,7 @@ learn:
   - id: ranges
     pattern: curve
     title: Two ranges
+    title_ar: نطاقان
     panels:
       - kind: sd
         mean: 162
@@ -93,6 +102,7 @@ learn:
   - id: compare
     pattern: reveal-cards
     title: SD or SEM?
+    title_ar: الانحراف المعياري أم الخطأ المعياري؟
     cards:
       - { concept: sd,  figure: se-bar-sd,  answer: "How much people differ. It stays about the same as the sample grows." }
       - { concept: sem, figure: se-bar-sem, answer: "How precise the mean is: SD ÷ √n. It shrinks as the sample grows." }
@@ -102,6 +112,7 @@ learn:
   - id: hook-solved
     pattern: working
     title: Back to the 49 women
+    title_ar: العودة إلى المثال
     scene: doctor-think
     stem: A study measured the height of [[49 healthy women. Their mean height was 162 cm (SD 7 cm)]].
     lines:
@@ -115,6 +126,7 @@ practise:
   - id: warmup
     pattern: sort
     title: SD or SEM?
+    title_ar: الانحراف المعياري أم الخطأ المعياري؟
     buckets: [sd, sem]
     retry: "Ask: does it describe the people, or how precise their mean is?"
     done: "The SD describes the people; the SEM describes the mean, and shrinks as the sample grows."
@@ -131,6 +143,7 @@ practise:
   - id: cases
     pattern: stem-quiz
     title: How sure is the mean?
+    title_ar: ما مدى ثقتنا بالمتوسط؟
     options: [sd, sem]
     # The first case is the solved example; the rest are dealt in a random order.
     # The scenes are the nearest cartoons from the cast for now; new ones are to follow as mockups.
@@ -234,3 +247,4 @@ practise:
   - id: end
     pattern: end
     title: Your score
+    title_ar: نتيجتك

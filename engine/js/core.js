@@ -22,6 +22,20 @@ const arTitle = text => text ? `<span class="ar-title" lang="ar" dir="rtl">${esc
 // a label's English alone, and its Arabic alone, read back from labels that carry both
 const enText = n => { const c = n.cloneNode(true); $$(".ar", c).forEach(x => x.remove()); return c.textContent.trim(); };
 const arText = n => { const a = $(".ar", n); return a ? a.textContent : ""; };
+// a slide's title keeps its English and Arabic on one line on the stage: when the two do not fit, the Arabic is made
+// a little smaller (down to 72% of the heading) before it is let drop under the English; a narrow page lets it drop
+function fitArTitle(slide) {
+  const h = slide && $("h2.has-ar", slide);
+  if (!h) return;
+  const ar = $(".ar-title", h), en = $(":scope > span", h);
+  ar.style.fontSize = "";
+  const root = document.documentElement;
+  if (root.classList.contains("fluid") || root.classList.contains("ar-off")) return;
+  // wrapped: the Arabic's middle is below the English line (its trimmed margins let the two boxes overlap)
+  const wrapped = () => { const a = ar.getBoundingClientRect(), b = en.getBoundingClientRect(); return (a.top + a.bottom) / 2 > b.bottom; };
+  for (let k = 100; wrapped() && k > 72; k -= 4) ar.style.fontSize = (1.04 * (k - 4) / 100) + "em";
+  if (wrapped()) ar.style.fontSize = "";
+}
 
 /* the presenter's deck (presenter/…) has the Learn slides and the recording view;
    the candidate's page has the video in their place */
@@ -60,7 +74,7 @@ function record(event, data) {}
     try { localStorage.setItem("mrcp-ar", on ? "on" : "off"); } catch (e) {}
   };
   set(saved !== "off");
-  btn.addEventListener("click", () => set(root.classList.contains("ar-off")));
+  btn.addEventListener("click", () => { set(root.classList.contains("ar-off")); if (typeof Deck !== "undefined" && Deck.slides) fitArTitle(Deck.slides[Deck.i]); });
 })();
 
 /* ---------- score: correct at the first attempt, each case counted once ---------- */

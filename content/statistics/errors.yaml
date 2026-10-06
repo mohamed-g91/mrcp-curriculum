@@ -15,6 +15,7 @@
 
 id: stats.errors
 title: Type I and type II errors
+title_ar: أخطاء النوع الأول والنوع الثاني
 description: Could the verdict be wrong? A false alarm (Type I) and a miss (Type II), where each lives on chance's bell and the truth's, and why a small trial misses so often. Learn from one blood pressure trial, then practise on exam-style stems.
 status: reviewed
 updated: 2026-10-03
@@ -30,20 +31,25 @@ families:
   test: Testing
   se: The estimate
   gray: Neutral
+families_ar:
+  test: الاختبار
+  se: التقدير
+  gray: محايد
 
 concepts:
-  type1: { label: Type I,  family: test, icon: tails }
-  type2: { label: Type II, family: se,   icon: bell }
+  type1: { label: Type I, ar: خطأ النوع الأول,  family: test, icon: tails }
+  type2: { label: Type II, ar: خطأ النوع الثاني, family: se,   icon: bell }
   # the two verdicts; they are not ideas of their own, so they stay off the cover
-  sig:   { label: Significant,     family: test, icon: check, cover: false }
-  ns:    { label: Not significant, family: gray, icon: dash,  cover: false }
+  sig:   { label: Significant, ar: مؤثر إحصائيًا,     family: test, icon: check, cover: false }
+  ns:    { label: Not significant, ar: غير مؤثر إحصائيًا, family: gray, icon: dash,  cover: false }
   # the SE of the difference, on a grey chip beside the bells (teal here means Type II)
-  se:    { label: SE, family: gray, icon: narrow, cover: false }
+  se:    { label: SE, ar: الخطأ المعياري, family: gray, icon: narrow, cover: false }
 
 learn:
   - id: hook
     pattern: hook
     title: Could the verdict be wrong?
+    title_ar: هل يمكن أن يكون الحُكم خاطئًا؟
     stem: "A new drug for high blood pressure, two trials. In [[400 people]], systolic BP fell 4 mmHg more on the drug, p = 0.008: significant. In [[40 people]], the same 4 mmHg, p = 0.4: not significant."
     question: Could either verdict be wrong?
     scene: case-older
@@ -53,6 +59,7 @@ learn:
   - id: two-ways
     pattern: story
     title: Two ways to be wrong
+    title_ar: طريقتان للخطأ
     kind: errgrid
     cols: [Drug does nothing, Drug works]
     heads: [The truth, The verdict]
@@ -64,6 +71,7 @@ learn:
   - id: where
     pattern: story
     title: Where do the errors live?
+    title_ar: أين تقع الأخطاء؟
     kind: errbells
     start: 1
     sd: 15
@@ -82,6 +90,7 @@ learn:
   - id: small
     pattern: story
     title: The same truth in 40 people
+    title_ar: الحقيقة نفسها في 40 شخصًا
     kind: errbells
     start: 1
     sd: 15
@@ -98,6 +107,7 @@ learn:
   - id: hook-solved
     pattern: working
     title: Back to the trials
+    title_ar: العودة إلى التجارب
     scene: doctor-think
     stem: "The same 4 mmHg: [[400 people, p = 0.008]], and [[40 people, p = 0.4]]."
     # a chain per trial: the verdict → the only error it could be → how often trials like it make that error
@@ -112,6 +122,7 @@ practise:
   - id: cases
     pattern: stem-quiz
     title: Type I and type II errors
+    title_ar: أخطاء النوع الأول والنوع الثاني
     options: [type1, type2]
     # The first case is the solved example; the rest are dealt in a random order.
     # Every case brings its own options; the scenes are the nearest cartoons from the cast.
@@ -206,3 +217,4 @@ practise:
   - id: end
     pattern: end
     title: Your score
+    title_ar: نتيجتك

@@ -15,6 +15,7 @@
 
 id: stats.testing-a-difference
 title: Testing a difference
+title_ar: اختبار الفرق
 description: Where does p come from? How far means and gaps move by chance, the standard error of a difference, why 2 SEs, and why the same gap gives a smaller p in a bigger trial. Learn from one blood pressure trial, then practise on exam-style stems.
 status: reviewed
 updated: 2026-10-02
@@ -33,21 +34,27 @@ families:
   se: Means and gaps
   test: Testing
   gray: Neutral
+families_ar:
+  par: الأفراد
+  se: المتوسطات والفروق
+  test: الاختبار
+  gray: محايد
 
 concepts:
-  sd:   { label: SD,  family: par,  icon: spread }
-  sem:  { label: SEM, family: se,   icon: narrow }
+  sd:   { label: SD, ar: الانحراف المعياري,  family: par,  icon: spread }
+  sem:  { label: SEM, ar: الخطأ المعياري للمتوسط, family: se,   icon: narrow }
   # the SE of the difference; figures write "SE 1.5", "2 SE"
-  se:   { label: SE,  family: se,   icon: narrow }
-  p:    { label: p-value, family: test, icon: tails }
+  se:   { label: SE, ar: الخطأ المعياري,  family: se,   icon: narrow }
+  p:    { label: p-value, ar: قيمة p, family: test, icon: tails }
   # the two verdicts; they are not ideas of their own, so they stay off the cover
-  sig:  { label: Significant,     family: test, icon: check, cover: false }
-  ns:   { label: Not significant, family: gray, icon: dash,  cover: false }
+  sig:  { label: Significant, ar: مؤثر إحصائيًا,     family: test, icon: check, cover: false }
+  ns:   { label: Not significant, ar: غير مؤثر إحصائيًا, family: gray, icon: dash,  cover: false }
 
 learn:
   - id: hook
     pattern: hook
     title: Same gap, different p
+    title_ar: الفرق نفسه، وقيمة p مختلفة
     stem: "Two trials of a new drug for high blood pressure found the same gap: systolic BP fell [[4 mmHg]] more on the drug (SD 15 mmHg). With [[400 people]], p = 0.008. With [[40 people]], p = 0.4."
     question: Why is p so different?
     scene: case-older
@@ -56,6 +63,7 @@ learn:
   - id: samples
     pattern: story
     title: Another sample
+    title_ar: عينة أخرى
     kind: samples
     start: 1
     sd: 15
@@ -67,6 +75,7 @@ learn:
   - id: means
     pattern: story
     title: How far do means move?
+    title_ar: إلى أي مدى تتأرجح المتوسطات؟
     kind: means
     start: 1
     sd: 15
@@ -81,6 +90,7 @@ learn:
   - id: gaps
     pattern: story
     title: How big a gap can chance make?
+    title_ar: ما حجم الفرق الذي تصنعه الصدفة؟
     kind: gaps
     start: 1
     sd: 15
@@ -94,6 +104,7 @@ learn:
   - id: two-se
     pattern: story
     title: Why 2 SEs?
+    title_ar: لماذا خطآن معياريان؟
     kind: twose
     start: 1
     # Fisher (1925) noted that p = 0.05 falls at 1.96, nearly 2, standard deviations and took it as a convenient limit
@@ -106,6 +117,7 @@ learn:
   - id: far
     pattern: story
     title: How far out is 4?
+    title_ar: كم تبعد الـ 4؟
     kind: far
     start: 1
     sd: 15
@@ -119,6 +131,7 @@ learn:
   - id: size
     pattern: story
     title: Why does size matter?
+    title_ar: لماذا يهم حجم العينة؟
     kind: nrows
     start: 1
     sd: 15
@@ -131,6 +144,7 @@ learn:
   - id: hook-solved
     pattern: working
     title: Back to the trials
+    title_ar: العودة إلى التجارب
     scene: doctor-think
     stem: "Systolic BP fell [[4 mmHg]] more on the drug (SD 15 mmHg): in [[200 people in each group]], and in [[20 in each group]]."
     # a chain per trial: SE → how many SEs out → p
@@ -145,6 +159,7 @@ practise:
   - id: cases
     pattern: stem-quiz
     title: Testing a difference
+    title_ar: اختبار الفرق
     options: [sig, ns]
     # The first case is the solved example; the rest are dealt in a random order.
     # Every case brings its own options; the scenes are the nearest cartoons from the cast.
@@ -245,3 +260,4 @@ practise:
   - id: end
     pattern: end
     title: Your score
+    title_ar: نتيجتك

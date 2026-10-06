@@ -12,6 +12,7 @@
 
 id: stats.ci-and-p
 title: Confidence intervals and p
+title_ar: فترات الثقة وقيمة p
 description: How big is the effect? The 95% confidence interval round a difference, what 95% means, why the CI and p always agree, ratios whose no-effect value is 1, and significant against important. Learn from one blood pressure trial, then practise on exam-style stems.
 status: reviewed
 updated: 2026-10-03
@@ -30,20 +31,25 @@ families:
   se: The estimate
   test: Testing
   gray: Neutral
+families_ar:
+  se: التقدير
+  test: الاختبار
+  gray: محايد
 
 concepts:
   # the SE of the difference; figures write "SE 1.5", "2 SE"
-  se:   { label: SE,      family: se,   icon: narrow }
-  ci:   { label: 95% CI,  family: se,   icon: spread }
-  p:    { label: p-value, family: test, icon: tails }
+  se:   { label: SE, ar: الخطأ المعياري,      family: se,   icon: narrow }
+  ci:   { label: 95% CI, ar: فترة الثقة 95%,  family: se,   icon: spread }
+  p:    { label: p-value, ar: قيمة p, family: test, icon: tails }
   # the two verdicts; they are not ideas of their own, so they stay off the cover
-  sig:  { label: Significant,     family: test, icon: check, cover: false }
-  ns:   { label: Not significant, family: gray, icon: dash,  cover: false }
+  sig:  { label: Significant, ar: مؤثر إحصائيًا,     family: test, icon: check, cover: false }
+  ns:   { label: Not significant, ar: غير مؤثر إحصائيًا, family: gray, icon: dash,  cover: false }
 
 learn:
   - id: hook
     pattern: hook
     title: How big is the effect?
+    title_ar: ما حجم التأثير؟
     stem: "400 people with high blood pressure took a new drug or a placebo, 200 in each group. Systolic BP fell [[4 mmHg]] more on the drug (SD 15 mmHg), [[p = 0.008]]."
     question: Unlikely to be chance. But how big is the effect?
     scene: case-older
@@ -53,6 +59,7 @@ learn:
   - id: where
     pattern: story
     title: Where could the true effect be?
+    title_ar: أين يمكن أن يكون التأثير الحقيقي؟
     kind: ci
     start: 1
     chance: false
@@ -70,6 +77,7 @@ learn:
   - id: runs
     pattern: story
     title: What does 95% mean?
+    title_ar: ماذا تعني 95%؟
     kind: runs
     start: 1
     se: 1.5
@@ -85,6 +93,7 @@ learn:
   - id: agree
     pattern: story
     title: Why do the CI and p agree?
+    title_ar: لماذا تتفق فترة الثقة وقيمة p؟
     kind: mirror
     start: 1
     sd: 15
@@ -101,6 +110,7 @@ learn:
   - id: slide
     pattern: story
     title: Sliding towards 0
+    title_ar: الانزلاق نحو الصفر
     kind: slide
     panels:
       - { none: 0, axis: Extra fall on the drug (mmHg), range: [-2, 8], ticks: [-2, 0, 2, 4, 6, 8], se: 1.5, at: [4, 3, 1.5] }
@@ -110,6 +120,7 @@ learn:
   - id: wider
     pattern: story
     title: Same gap, wider CI
+    title_ar: الفرق نفسه، فترة ثقة أوسع
     kind: cibars
     start: 1
     sd: 15
@@ -127,6 +138,7 @@ learn:
   - id: ratio
     pattern: story
     title: "A ratio: no effect is 1"
+    title_ar: "النسبة: انعدام التأثير يساوي 1"
     kind: slide
     panels:
       - { none: 1, axis: Relative risk, range: [0.4, 1.6], ticks: [0.5, 0.75, 1, 1.5], factor: 1.25, at: [0.6, 0.8, 1.0] }
@@ -137,6 +149,7 @@ learn:
   - id: important
     pattern: story
     title: Significant or important?
+    title_ar: مؤثر إحصائيًا أم مهم سريريًا؟
     kind: cibars
     sd: 15
     range: [-4, 22]
@@ -151,6 +164,7 @@ learn:
   - id: hook-solved
     pattern: working
     title: Back to the trial
+    title_ar: العودة إلى التجربة
     scene: doctor-think
     stem: "[[200 people in each group]]. Systolic BP fell [[4 mmHg more on the drug (SD 15 mmHg)]]."
     lines:
@@ -163,6 +177,7 @@ practise:
   - id: warmup
     pattern: sort
     title: Significant or not?
+    title_ar: مؤثر إحصائيًا أم لا؟
     buckets: [sig, ns]
     retry: "Ask: does the CI miss no effect? For a difference that is 0; for a ratio it is 1."
     done: "A CI that misses no effect is significant at 5%: 0 for a difference, 1 for a ratio."
@@ -179,6 +194,7 @@ practise:
   - id: cases
     pattern: stem-quiz
     title: Confidence intervals and p
+    title_ar: فترات الثقة وقيمة p
     options: [sig, ns]
     # The first case is the solved example; the rest are dealt in a random order.
     # Every case brings its own options; the scenes are the nearest cartoons from the cast.
@@ -309,3 +325,4 @@ practise:
   - id: end
     pattern: end
     title: Your score
+    title_ar: نتيجتك

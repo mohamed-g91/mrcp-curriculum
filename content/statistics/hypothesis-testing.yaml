@@ -14,6 +14,7 @@
 
 id: stats.hypothesis-testing
 title: Hypothesis testing
+title_ar: اختبار الفرضيات
 description: Could this be chance? The null hypothesis, what a p-value means, and the 0.05 line. Learn from one blood pressure trial told as a court case, then practise on exam-style stems.
 status: reviewed
 updated: 2026-10-02
@@ -30,18 +31,22 @@ cover: concepts
 families:
   test: Testing
   gray: Neutral
+families_ar:
+  test: الاختبار
+  gray: محايد
 
 concepts:
-  h0:   { label: H₀,             family: test, icon: gavel }
-  p:    { label: p-value,         family: test, icon: tails }
+  h0:   { label: H₀, ar: فرضية العدم,             family: test, icon: gavel }
+  p:    { label: p-value, ar: قيمة p,         family: test, icon: tails }
   # the two verdicts; they are not ideas of their own, so they stay off the cover
-  sig:  { label: Significant,     family: test, icon: check, cover: false }
-  ns:   { label: Not significant, family: gray, icon: dash,  cover: false }
+  sig:  { label: Significant, ar: مؤثر إحصائيًا,     family: test, icon: check, cover: false }
+  ns:   { label: Not significant, ar: غير مؤثر إحصائيًا, family: gray, icon: dash,  cover: false }
 
 learn:
   - id: hook
     pattern: hook
     title: Could this be chance?
+    title_ar: هل يمكن أن تكون هذه صدفة؟
     stem: 400 people with high blood pressure took a [[new drug]] or a placebo, 200 in each group. After 8 weeks, systolic BP had fallen [[4 mmHg]] more on the drug (SD 15 mmHg), [[p = 0.008]].
     question: Could this be chance?
     scene: case-older
@@ -51,6 +56,7 @@ learn:
   - id: court
     pattern: story
     title: Innocent until proven guilty
+    title_ar: بريء حتى تثبت إدانته
     kind: art
     art: ht-court
     slots: { claim: "{h0}: no effect on BP", evidence: 4 mmHg, p: p = 0.008, verdict: Guilty, note: "Reject {h0}" }
@@ -59,6 +65,7 @@ learn:
   - id: p-big
     pattern: story
     title: What does p = 0.008 mean?
+    title_ar: ماذا تعني p = 0.008؟
     kind: grid
     start: 1
     sd: 15
@@ -72,6 +79,7 @@ learn:
   - id: court-small
     pattern: story
     title: The same gap in 40 people
+    title_ar: الفرق نفسه في 40 شخصًا
     kind: art
     art: ht-court
     slots: { claim: "{h0}: no effect on BP", evidence: 4 mmHg, p: p = 0.4, verdict: Not guilty, note: ≠ innocent }
@@ -79,6 +87,7 @@ learn:
   - id: p-small
     pattern: story
     title: What does p = 0.4 mean?
+    title_ar: ماذا تعني p = 0.4؟
     kind: grid
     start: 1
     sd: 15
@@ -93,6 +102,7 @@ learn:
   - id: line
     pattern: story
     title: Where is the line?
+    title_ar: أين الحد الفاصل؟
     kind: grid
     start: 1
     sd: 15
@@ -105,6 +115,7 @@ learn:
   - id: hook-solved
     pattern: working
     title: Back to the trial
+    title_ar: العودة إلى التجربة
     scene: doctor-think
     stem: "200 people took a new drug and 200 a placebo. Systolic BP fell [[4 mmHg]] more on the drug, [[p = 0.008]]."
     lines:
@@ -117,6 +128,7 @@ practise:
   - id: cases
     pattern: stem-quiz
     title: Could this be chance?
+    title_ar: هل يمكن أن تكون هذه صدفة؟
     options: [sig, ns]
     # The first case is the solved example; the rest are dealt in a random order.
     # Every case brings its own options; the scenes are the nearest cartoons from the cast.
@@ -172,3 +184,4 @@ practise:
   - id: end
     pattern: end
     title: Your score
+    title_ar: نتيجتك

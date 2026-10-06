@@ -1044,6 +1044,8 @@ h2.has-ar{display:flex;align-items:baseline;justify-content:space-between;flex-w
 h2 .ar-title{font-size:1.04em;line-height:1.12;margin-block:-.18em}
 .case-head>.ar-title{margin-left:auto;margin-block:-.18em;font-size:calc(var(--fs-h2) * 1.04);line-height:1.12}
 .p-title h1 .ar-h1{display:block;margin-top:.22em;font-size:.62em;text-align:center}
+/* the Arabic takes the second line, so the English is let run wider and keeps to one */
+html.has-ar:not(.ar-off) .p-title h1{max-width:26ch}
 /* the video: a chapter's Arabic at the right end of its row; the poster's under its name */
 .vid-name{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:0 10px}
 .vid-name .ar-title{font-size:1.04em;color:inherit}
@@ -1061,8 +1063,12 @@ h2 .ar-title{font-size:1.04em;line-height:1.12;margin-block:-.18em}
 /* a question's tail is primary blue, like its pill */
 .tree-q .ar,.qf-q .ar{line-height:1.1;margin-block:-.2em;color:var(--primary);background:color-mix(in srgb,var(--primary) 12%,var(--surface))}
 .qf-step.on .qf-q .ar,.qf-step.yes .qf-q .ar{color:var(--on-primary);background:color-mix(in srgb,var(--on-primary) 20%,transparent)}
-/* with Arabic showing, the choices are two to a row so each name and its tail stay on one line */
-html.has-ar:not(.ar-off) .choices{--per:2}
+/* in a tree laid out in rows the questions share a row, so a question's Arabic sits under its English, not beside it */
+html.has-ar:not(.ar-off) .tree-grid .tree-q b{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding-block:4px}
+.tree-grid .tree-q b .ar{margin:0;font-size:.8em}
+/* with Arabic showing, four or more choices that carry an Arabic tail are two to a row so each name and its tail stay on one line;
+   three stay on one row (a long name drops its tail under it), and plain choices, such as numbers, keep their own count */
+html.has-ar:not(.ar-off) .choices:has(.ar):has(> :nth-child(4)){--per:2}
 
 /* ---------- spectrum drill: the families first, a family's circles in one tray under the cards ----------
    Equal cards (a picture, a name and its Arabic tail, a coloured top edge); a tap opens that family's circles in a tray

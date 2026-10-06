@@ -17,6 +17,7 @@ const Stage = {
       app.style.setProperty("--s", this.s);
       app.style.width = "1280px"; app.style.height = "720px";
       d.style.setProperty("--tray", (h - 720 * this.s) + "px");
+      if (typeof Deck !== "undefined" && Deck.slides) fitArTitle(Deck.slides[Deck.i]);
       return;
     }
     const fluid = w < 900 || h < 480 || h > w;
@@ -29,6 +30,7 @@ const Stage = {
     app.style.setProperty("--s", this.s);
     app.style.width = fluid ? "" : Math.floor(w / this.s) + "px";
     app.style.height = fluid ? "" : Math.floor(h / this.s) + "px";
+    if (typeof Deck !== "undefined" && Deck.slides) fitArTitle(Deck.slides[Deck.i]);
   }
 };
 
@@ -62,6 +64,7 @@ const Deck = {
   render() {
     const s = this.slides[this.i];
     this.slides.forEach((x, k) => x.classList.toggle("active", k === this.i));
+    fitArTitle(s);
     const label = s.getAttribute("aria-label") || "";
     $("#partLabel").textContent = s.dataset.part ? `${s.dataset.part} · ${label}` : "";
     // slides are counted within their part
@@ -114,6 +117,8 @@ const Deck = {
 document.addEventListener("DOMContentLoaded", () => {
   Stage.fit();
   window.addEventListener("resize", () => Stage.fit());
+  // the embedded faces change the titles' widths once they load
+  if (document.fonts) document.fonts.ready.then(() => Stage.fit());
   buildVideo();
   buildSpectra();
   buildQuestionFlows();
