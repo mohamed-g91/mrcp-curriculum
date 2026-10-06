@@ -16,6 +16,12 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 const concept = key => TOPIC.concepts[key];
 // what a concept's circle holds: its letter, or its icon when it has no letter
 const conceptMark = c => c.letter ? esc(c.letter) : c.icon ? icon(c.icon) : "";
+// a concept's name with its Arabic tail (to the right of the English; the ع switch hides it), and a title's Arabic
+const arTail = text => text ? `<span class="ar" lang="ar" dir="rtl">${esc(text)}</span>` : "";
+const arTitle = text => text ? `<span class="ar-title" lang="ar" dir="rtl">${esc(text)}</span>` : "";
+// a label's English alone, and its Arabic alone, read back from labels that carry both
+const enText = n => { const c = n.cloneNode(true); $$(".ar", c).forEach(x => x.remove()); return c.textContent.trim(); };
+const arText = n => { const a = $(".ar", n); return a ? a.textContent : ""; };
 
 /* the presenter's deck (presenter/…) has the Learn slides and the recording view;
    the candidate's page has the video in their place */
@@ -38,6 +44,23 @@ function record(event, data) {}
   };
   set(saved || "light");
   $("#themeBtn").addEventListener("click", () => set(root.getAttribute("data-theme") === "dark" ? "light" : "dark"));
+})();
+
+/* ---------- Arabic: the ع switch in the top bar shows or hides every Arabic title and term (on by default),
+   and is remembered like the theme. Only topics with Arabic have the button. ---------- */
+(function arabic() {
+  const btn = $("#arBtn");
+  if (!btn) return;
+  const root = document.documentElement;
+  let saved = null;
+  try { saved = localStorage.getItem("mrcp-ar"); } catch (e) {}
+  const set = on => {
+    root.classList.toggle("ar-off", !on);
+    btn.setAttribute("aria-pressed", String(on));
+    try { localStorage.setItem("mrcp-ar", on ? "on" : "off"); } catch (e) {}
+  };
+  set(saved !== "off");
+  btn.addEventListener("click", () => set(root.classList.contains("ar-off")));
 })();
 
 /* ---------- score: correct at the first attempt, each case counted once ---------- */

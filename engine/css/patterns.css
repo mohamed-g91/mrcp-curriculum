@@ -1008,3 +1008,78 @@ html.fluid .ask{position:fixed}
 .st-vchip-a{font:800 20px var(--sans)}
 .st-vchip-b{font:650 17px var(--sans)}
 @media (prefers-reduced-motion:reduce){.st-run,.st-cirow,.st-zdot{animation:none}}
+
+/* ---------- Arabic ----------
+   Titles and major terms carry their Arabic, for a video recorded in Arabic. A title: the English stays at the left
+   edge and the Arabic stands at the right edge of the same line. A term: the Arabic is a small tinted tail to the right
+   of the English, in the term's own family colours. The ع switch in the top bar (html.ar-off) hides all of it.
+   Arabic never takes letter-spacing: it would break the joined letters. */
+.ar,.ar-title{font-family:var(--arabic);letter-spacing:0;text-transform:none;direction:rtl;unicode-bidi:isolate}
+.ar{display:inline-block;margin-left:.55em;padding:.08em .62em .2em;border-radius:999px;font-size:.86em;font-weight:500;line-height:1.35;white-space:nowrap;vertical-align:.04em;
+  color:var(--x-ink,var(--gray-ink));background:color-mix(in srgb,var(--x-bd,var(--gray-bd)) 40%,var(--x-bg,var(--gray-bg)))}
+.ar-title{font-weight:500;color:var(--ink);line-height:1.3;text-align:right}
+html.ar-off .ar,html.ar-off .ar-title{display:none!important}
+#arBtn{font:500 22px/1 var(--arabic);padding:0 0 4px}
+#arBtn[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+#arBtn[aria-pressed="true"]:hover{background:var(--primary-hover)}
+/* a slide's title: English left, Arabic right, on one line (the Arabic drops under it when the line is too narrow) */
+h2.has-ar{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:0 clamp(12px,calc(2 * var(--u)),32px)}
+h2 .ar-title{font-size:1.04em;line-height:1.12;margin-block:-.18em}
+.case-head>.ar-title{margin-left:auto;margin-block:-.18em;font-size:calc(var(--fs-h2) * 1.04);line-height:1.12}
+.p-title h1 .ar-h1{display:block;margin-top:.22em;font-size:.62em;text-align:center}
+/* the video: a chapter's Arabic at the right end of its row; the poster's under its name */
+.vid-name{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:0 10px}
+.vid-name .ar-title{font-size:1.04em;color:inherit}
+.vid-ar{display:block;margin-top:.3em;font-size:clamp(20px,calc(2.6 * var(--u)),32px);color:inherit;text-align:center}
+.has-ar .vid-wrap{grid-template-columns:minmax(0,1fr) clamp(300px,calc(30 * var(--u)),400px)}
+@container (max-width:900px){.has-ar .vid-wrap{grid-template-columns:minmax(0,1fr)}}
+/* terms: small labels, the tree's solid cards, the zoom circle's name, buckets */
+.spec-group .ar{font-size:calc(var(--fs-label) * 1.25);margin-left:.7em;padding-block:.02em .14em}
+.tree-final .ar{margin-left:.5em;font-size:.6em;color:var(--on-solid);background:color-mix(in srgb,var(--on-solid) 20%,transparent);text-shadow:none;vertical-align:.12em}
+.bubble-label .en{white-space:nowrap}
+.bubble-label .ar{font-size:.46em;margin-left:.45em;vertical-align:.14em}
+.spec-bubble.long-label .bubble-label{white-space:normal}
+.bucket-head>span:last-child{min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center}
+.bucket-head .ar{margin:3px 0 0}
+/* a question's tail is primary blue, like its pill */
+.tree-q .ar,.qf-q .ar{line-height:1.1;margin-block:-.2em;color:var(--primary);background:color-mix(in srgb,var(--primary) 12%,var(--surface))}
+.qf-step.on .qf-q .ar,.qf-step.yes .qf-q .ar{color:var(--on-primary);background:color-mix(in srgb,var(--on-primary) 20%,transparent)}
+/* with Arabic showing, the choices are two to a row so each name and its tail stay on one line */
+html.has-ar:not(.ar-off) .choices{--per:2}
+
+/* ---------- spectrum drill: the families first, a family's circles in one tray under the cards ----------
+   Equal cards (a picture, a name and its Arabic tail, a coloured top edge); a tap opens that family's circles in a tray
+   in its colours, with a pointer up to the card. The tray's room is always kept, so the cards never move. */
+.spec-drill{position:relative}
+.spec-drill .spec-groups{grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:clamp(8px,calc(3.1 * var(--u)),40px);width:min(100%,calc(86 * var(--u)));margin:0 auto;align-items:stretch}
+.spec-card{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:clamp(6px,calc(1.2 * var(--u)),16px);
+  padding:clamp(14px,calc(2.2 * var(--u)),30px) 12px clamp(12px,calc(1.8 * var(--u)),24px);border:1.5px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);
+  box-shadow:var(--edge),var(--shadow);color:var(--x-ink);cursor:pointer;font:inherit;text-align:center;
+  animation-fill-mode:backwards;transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .2s ease}
+.spec-card::before{content:"";position:absolute;inset:0 0 auto 0;height:6px;background:var(--x-solid)}
+.spec-card:hover{transform:translateY(-3px);box-shadow:var(--edge),var(--shadow-lift)}
+.spec-card.on{border-color:var(--x-solid);box-shadow:0 0 0 2px var(--x-solid),0 0 0 9px var(--x-bg),var(--shadow-lift)}
+.spec-card .spec-fig{display:block;margin:0 auto}
+.spec-card .spec-name{font-size:clamp(11px,calc(1.33 * var(--u)),17px);font-weight:750;letter-spacing:.08em;text-transform:uppercase;line-height:1.35}
+.spec-card .ar{font-size:1.12em;margin-left:.7em;padding-block:.02em .14em}
+.spec-drill .spec-line{display:flex;justify-content:center;align-items:flex-start;gap:clamp(14px,calc(10 * var(--u)),130px);flex-wrap:wrap;
+  width:min(100%,calc(86 * var(--u)));min-height:clamp(120px,calc(12 * var(--u)),154px);margin:clamp(22px,calc(3 * var(--u)),38px) auto 0;
+  padding:clamp(12px,calc(1.6 * var(--u)),20px) 16px clamp(10px,calc(1.2 * var(--u)),16px);border-radius:20px;background:var(--x-bg);border:2px solid var(--x-bd);
+  visibility:hidden;opacity:0;transition:opacity .25s ease,visibility 0s .25s}
+.spec-drill .spec-line.open{visibility:visible;opacity:1;transition:opacity .25s ease}
+.spec-drill .spec-line::before{content:"";position:absolute;left:calc(var(--px, 50%) - 11px);top:-12px;width:20px;height:20px;transform:rotate(45deg);
+  background:var(--x-bg);border-left:2px solid var(--x-bd);border-top:2px solid var(--x-bd);border-radius:4px 0 0 0}
+.spec-drill .spec-stop:not(.shown){display:none}
+@container (max-width:600px){.spec-card .spec-fig{width:100%;max-width:88px}.spec-card .ar{margin-left:.3em}}
+/* a parent circle in the tray (Ordinal): a tap opens its kinds beside it, an arrow disc between; its circle fills while they are open */
+.spec-drill .spec-stop{animation-fill-mode:backwards}
+.spec-drill .spec-kid:not(.shown),.spec-drill .spec-arrow:not(.shown){display:none}
+.spec-stop.open .spec-dot{background:var(--x-solid);color:var(--on-solid);transform:scale(1.08);box-shadow:0 0 0 6px var(--x-bg),var(--shadow-lift)}
+.spec-drill .spec-line.kids{gap:clamp(12px,calc(3.4 * var(--u)),44px)}
+.spec-arrow{display:inline-flex;align-items:center;justify-content:center;flex:none;width:clamp(24px,calc(2.7 * var(--u)),34px);height:clamp(24px,calc(2.7 * var(--u)),34px);border-radius:50%;
+  background:var(--surface);border:1.6px solid var(--border-strong);color:var(--muted);margin-top:calc(var(--dot) / 2 - clamp(12px,calc(1.35 * var(--u)),17px));
+  animation:figUp .5s var(--ease) backwards;animation-delay:.26s}
+.spec-arrow .ico{width:56%;height:56%}
+.spec-ex li.spec-sub-h .ar{font-size:1.25em;margin-left:.6em}
+/* when the heading wraps (a narrow page) the Arabic gets its own line, so it keeps its margins */
+@container (max-width:900px){h2 .ar-title,.case-head>.ar-title{margin-block:0}}

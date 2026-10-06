@@ -101,7 +101,7 @@ function buildSort(host) {
       // a pail: a raised handle, an open rim, a tapered body; chips land inside, the name sits low on its side
       `<span class="pail-handle" aria-hidden="true"></span><svg class="pail-body" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">` +
       `<path d="M1 3 L99 3 L90 97 Q50 100 10 97 Z"/></svg><span class="pail-rim" aria-hidden="true"></span>` +
-      `<div class="bucket-items"></div><div class="bucket-head"><span class="bucket-letter">${conceptMark(c)}</span>${esc(c.label)}</div>`);
+      `<div class="bucket-items"></div><div class="bucket-head"><span class="bucket-letter">${conceptMark(c)}</span><span>${esc(c.label)}${arTail(c.ar)}</span></div>`);
     wrap.appendChild(b);
     return { key, el: b };
   });

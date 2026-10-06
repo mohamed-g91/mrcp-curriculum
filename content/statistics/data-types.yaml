@@ -4,6 +4,9 @@
 
 id: stats.data-types
 title: Types of data
+# Arabic for the recording (shown to the right of the English; the ع switch in the top bar hides it).
+# Titles and major terms only. Wording is a draft for the author's review.
+title_ar: أنواع البيانات
 description: Nominal, ordinal, discrete or continuous? Learn three quick questions that name any variable in an MRCP stem, then practise on nine exam-style stems.
 status: reviewed
 updated: 2026-09-22
@@ -19,17 +22,22 @@ families:
   cat: Categorical
   np: Ranked
   par: Numerical
+families_ar:
+  cat: فئوي
+  np: مصنف
+  par: رقمي
 
 concepts:
-  nominal:    { label: Nominal / binary, family: cat, letter: N, icon: tag }
-  ordinal:    { label: Ordinal,          family: np,  letter: O, icon: stairs }
-  discrete:   { label: Discrete,         family: par, letter: D, icon: hash }
-  continuous: { label: Continuous,       family: par, letter: C, icon: ruler }
+  nominal:    { label: Nominal / binary, ar: اسمي / ثنائي, family: cat, letter: N, icon: tag }
+  ordinal:    { label: Ordinal,          ar: مرتب,         family: np,  letter: O, icon: stairs }
+  discrete:   { label: Discrete,         ar: منفصل,        family: par, letter: D, icon: hash }
+  continuous: { label: Continuous,       ar: متصل,         family: par, letter: C, icon: ruler }
 
 learn:
   - id: hook
     pattern: hook
     title: What type of data is this?
+    title_ar: ما نوع هذه البيانات؟
     stem: In a trial of a new analgesic, 120 adults rated their pain on a scale from 0 to 10, 24 hours after surgery.
     question: What type of data is the pain score?
     figure: pain-scale
@@ -38,29 +46,35 @@ learn:
   - id: types
     pattern: spectrum
     title: Five types of data
+    title_ar: خمسة أنواع من البيانات
     open: zoom
+    # the three families first; a tap opens that family's circles in a tray under the cards
+    drill: true
     groups:
       # above each family's name, a picture of what it means: no order, an order, any value
       - { family: cat, span: 2, figure: group-labels }
       - { family: np,  span: 1, figure: group-podium }
       - { family: par, span: 2, figure: group-ruler }
     stops:
-      - { label: Nominal, family: cat, letter: N, examples: &ex-nominal [Blood group, Ethnicity, Diagnosis] }
-      - { label: Binary,  family: cat, letter: B, examples: &ex-binary [Alive / dead, Smoker yes / no, Test positive / negative] }
+      - { label: Nominal, ar: اسمي, family: cat, letter: N, examples: &ex-nominal [Blood group, Ethnicity, Diagnosis] }
+      - { label: Binary,  ar: ثنائي, family: cat, letter: B, examples: &ex-binary [Alive / dead, Smoker yes / no, Test positive / negative] }
       - concept: ordinal
         split: &ex-ordinal
-          - { label: Labels,  family: cat, items: [Mild / moderate / severe, NYHA class I–IV] }
-          - { label: Numbers, family: par, items: [Pain score 0–10, mRS 0–6, GCS 3–15] }
+          # on slide 2 (a drill) these are Ordinal's two kinds: circles with this icon, each opening its own examples;
+          # on the tree they stay together in Ordinal's one circle
+          - { label: Labels,  ar: مسميات, icon: tag,  family: cat, items: [Mild / moderate / severe, NYHA class I–IV] }
+          - { label: Numbers, ar: أرقام,  icon: hash, family: par, items: [Pain score 0–10, mRS 0–6, GCS 3–15] }
       - { concept: discrete,   examples: &ex-discrete [Number of seizures, Admissions per year, Number of children] }
       - { concept: continuous, examples: &ex-continuous [Blood pressure, Weight, HbA1c, eGFR] }
 
   - id: questions
     pattern: decision-tree
     title: Three quick questions
+    title_ar: ثلاثة أسئلة سريعة
     steps:
-      - { q: "Ordered?",    no: nominal,  figure: q-ordered }
-      - { q: "Equal gaps?", no: ordinal,  figure: q-gaps }
-      - { q: "Fractions?",  no: discrete, figure: q-fractions }
+      - { q: "Ordered?", q_ar: هل لها ترتيب؟, no: nominal,  figure: q-ordered }
+      - { q: "Equal gaps?", q_ar: هل الفروق متساوية؟, no: ordinal,  figure: q-gaps }
+      - { q: "Fractions?", q_ar: هل تقبل الكسور؟, no: discrete, figure: q-fractions }
     end: continuous
     # a doctor thinking, in the empty corner beside the tree
     scene: doctor-think
@@ -83,6 +97,7 @@ learn:
     hidden: true
     pattern: clue-stem
     title: Spot the type in a stem
+    title_ar: اكتشف النوع في نص السؤال
     stem: >-
       In a cohort of 300 adults with heart failure, researchers recorded the
       [[discrete|number of hospital admissions per year]],
@@ -98,11 +113,12 @@ learn:
   - id: hook-solved
     pattern: decision-tree
     title: Back to the pain score
+    title_ar: العودة إلى درجة الألم
     stem: In a trial of a new analgesic, 120 adults rated their [[pain on a scale from 0 to 10]], 24 hours after surgery.
     steps:
-      - { q: "Ordered?",    no: nominal }
-      - { q: "Equal gaps?", no: ordinal }
-      - { q: "Fractions?",  no: discrete }
+      - { q: "Ordered?", q_ar: هل لها ترتيب؟, no: nominal }
+      - { q: "Equal gaps?", q_ar: هل الفروق متساوية؟, no: ordinal }
+      - { q: "Fractions?", q_ar: هل تقبل الكسور؟, no: discrete }
     end: continuous
     examples: *tree-examples
     # under the stem: the patient gives a score, then (from "Equal gaps?") a ruler against the pain score
@@ -117,6 +133,7 @@ learn:
     hidden: true
     pattern: reveal-cards
     title: The type picks the test
+    title_ar: النوع يحدد الاختبار
     cards:
       - { concept: nominal, answer: Chi-squared or Fisher's exact }
       - { concept: ordinal, answer: Rank tests such as Mann-Whitney U }
@@ -127,6 +144,7 @@ practise:
   - id: warmup
     pattern: sort
     title: Sort these variables
+    title_ar: صنّف هذه المتغيرات
     buckets: [nominal, ordinal, discrete, continuous]
     retry: "Ask the three questions: ordered? equal gaps? fractions?"
     done: "Remember: discrete vs continuous rarely changes the test, but spotting ordinal will."
@@ -143,6 +161,7 @@ practise:
   - id: cases
     pattern: stem-quiz
     title: Name the type
+    title_ar: حدّد النوع
     options: [nominal, ordinal, discrete, continuous]
     # The first case is the solved example; the rest are dealt in a random order.
     # [[...]] marks the clue phrase, highlighted only after a wrong answer (or in the solved example).
@@ -235,3 +254,4 @@ practise:
   - id: end
     pattern: end
     title: Your score
+    title_ar: نتيجتك

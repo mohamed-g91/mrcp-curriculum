@@ -180,6 +180,75 @@ async function layoutPass(size) {
       if (await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`)) fail(`${size.name} slide ${i + 1}: Next did not finish it again`);
     }
     const r = await js(REVEALS);
+    // a drill spectrum: the family cards first; a card opens its own circles in the tray (one family at a time),
+    // each circle opens its zoom circle with the family still open under it, and a click away closes the deepest first
+    if (await js(`!!Deck.slides[Deck.i].querySelector(".spec-drill")`)) {
+      r.dots = 0;
+      const where = `${size.name} slide ${i + 1}`;
+      const trayOpen = () => js(`Deck.slides[Deck.i].querySelector(".spec-line").classList.contains("open")`);
+      const nCards = await js(`Deck.slides[Deck.i].querySelectorAll(".spec-card").length`);
+      if (await trayOpen()) fail(`${where}: the tray is open before any card is tapped`);
+      for (let k = 0; k < nCards; k++) {
+        await js(`Deck.slides[Deck.i].querySelectorAll(".spec-card")[${k}].click(), true`);
+        await sleep(1100);
+        await measure(size, `slide ${i + 1} card ${k + 1}`);
+        const t = await js(`(() => { const s = Deck.slides[Deck.i], vis = [...s.querySelectorAll(".spec-stop.shown")];
+          return { open: s.querySelector(".spec-line").classList.contains("open"), stops: vis.length, mine: vis.every(x => x.dataset.group === "${k}"), on: s.querySelectorAll(".spec-card.on").length }; })()`);
+        if (!t.open || !t.stops || !t.mine || t.on !== 1) fail(`${where}: card ${k + 1} did not open its own circles in the tray (${JSON.stringify(t)})`);
+        await shot(`${tag}-card${k + 1}`);
+        // every circle that opens examples (not a parent) opens its zoom circle, the family staying open under it
+        const zoomEach = async (sel, what, keep) => {
+          const dots = await js(`Deck.slides[Deck.i].querySelectorAll("${sel}").length`);
+          for (let d = 0; d < dots; d++) {
+            await js(`Deck.slides[Deck.i].querySelectorAll("${sel}")[${d}].click(), true`);
+            await sleep(1600);
+            await measure(size, `slide ${i + 1} card ${k + 1} ${what} ${d + 1}`);
+            const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`);
+            if (out) fail(`${where}: ${out}`);
+            if (k === 0 && d === 0 && what === "circle") await shot(`${tag}-zoom`);
+            if (k === 1 && d === 0 && what === "kind") await shot(`${tag}-kind-zoom`);
+            await js(`document.body.click(), true`);
+            await sleep(700);
+            if (!await trayOpen()) fail(`${where}: a click away closed the family along with its zoom circle`);
+            if (keep && !await js(`!!Deck.slides[Deck.i].querySelector("${keep}")`)) fail(`${where}: a click away closed the kinds along with a kind's zoom circle`);
+          }
+        };
+        await zoomEach(".spec-stop.shown:not(.spec-parent) .spec-dot", "circle");
+        // a parent circle (Ordinal) opens its kinds beside it, not a zoom circle; each kind then opens its own
+        const parents = await js(`Deck.slides[Deck.i].querySelectorAll(".spec-stop.shown.spec-parent").length`);
+        for (let p = 0; p < parents; p++) {
+          await js(`Deck.slides[Deck.i].querySelectorAll(".spec-stop.shown.spec-parent .spec-dot")[${p}].click(), true`);
+          await sleep(1000);
+          await measure(size, `slide ${i + 1} card ${k + 1} parent ${p + 1}`);
+          const kids = await js(`(() => { const s = Deck.slides[Deck.i]; return { kids: s.querySelectorAll(".spec-kid.shown").length, arrow: !!s.querySelector(".spec-arrow.shown"), zoom: !!s.querySelector(".spec-bubble"), open: !!s.querySelector(".spec-parent.open") }; })()`);
+          if (kids.kids < 2 || !kids.arrow || kids.zoom || !kids.open) fail(`${where}: a parent circle did not open its kinds (${JSON.stringify(kids)})`);
+          await shot(`${tag}-kinds`);
+          await zoomEach(".spec-kid.shown .spec-dot", "kind", ".spec-parent.open");
+          // a click away closes the kinds next (the family stays), and tapping the parent again does the same
+          await js(`document.body.click(), true`);
+          await sleep(700);
+          if (await js(`!!Deck.slides[Deck.i].querySelector(".spec-parent.open")`) || !await trayOpen()) fail(`${where}: a click away did not close the kinds and keep the family`);
+          await js(`Deck.slides[Deck.i].querySelectorAll(".spec-stop.shown.spec-parent .spec-dot")[${p}].click(), true`);
+          await sleep(700);
+          await js(`Deck.slides[Deck.i].querySelectorAll(".spec-stop.shown.spec-parent .spec-dot")[${p}].click(), true`);
+          await sleep(700);
+          if (await js(`!!Deck.slides[Deck.i].querySelector(".spec-parent.open")`)) fail(`${where}: tapping the parent again did not close its kinds`);
+        }
+      }
+      if (nCards > 1) {
+        await js(`Deck.slides[Deck.i].querySelectorAll(".spec-card")[1].click(), true`);
+        await sleep(400);
+        if (!await js(`Deck.slides[Deck.i].querySelectorAll(".spec-card.on").length === 1 && Deck.slides[Deck.i].querySelector(".spec-card.on").dataset.group === "1"`)) fail(`${where}: a second card did not swap the first`);
+      }
+      await js(`Deck.slides[Deck.i].querySelector(".spec-card.on").click(), true`);
+      await sleep(400);
+      if (await trayOpen()) fail(`${where}: tapping the open card did not close its circles`);
+      await js(`Deck.slides[Deck.i].querySelectorAll(".spec-card")[0].click(), true`);
+      await sleep(400);
+      await js(`document.body.click(), true`);
+      await sleep(500);
+      if (await trayOpen()) fail(`${where}: a click away did not close the open family`);
+    }
     for (let k = 0; k < r.dots; k++) {
       await js(`Deck.slides[Deck.i].querySelectorAll(".spec-dot")[${k}].click(), true`);
       const zoomed = await js(`!!Deck.slides[Deck.i].querySelector(".spec-zoom")`);
@@ -404,7 +473,7 @@ async function presentPass() {
   const TAB = { name: "present", width: 1152, height: 720, mobile: true };
   await load(TAB);
   await send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 5 });
-  const tap = ".spec-dot, .reveal-item, .qf-q, .tree-a";
+  const tap = ".spec-card, .spec-dot, .reveal-item, .qf-q, .tree-a";
   const i = await js(`Deck.slides.findIndex(s => s.dataset.part === "Learn" && s.querySelector("${tap}"))`);
   if (i < 0) { console.log("  --   recording view: no Learn slide with a tappable item"); return; }
   await js(`Deck.go(${i}), Present.enter(false), true`);
@@ -630,6 +699,56 @@ async function resumePass() {
   if (!problems.some(p => p.startsWith("resume"))) console.log("  ok   Practise asks to carry on a run left part-way; Continue and Start again");
 }
 
+// a topic with Arabic: each slide's Arabic title stands at the right edge of the line its English title is on, and the
+// ع switch hides every Arabic title and term, brings them back, and is remembered across a reload
+async function arabicPass() {
+  await load(SIZES[0]);
+  if (!await js(`!!document.getElementById("arBtn")`)) { console.log("  --   no Arabic"); return; }
+  const bad = await js(`(async () => {
+    const out = [];
+    for (const [k, s] of Deck.slides.entries()) {
+      Deck.go(k); await new Promise(r => setTimeout(r, 150));
+      const h = s.querySelector("h2");
+      if (!h) continue;
+      const row = h.querySelector(".ar-title") ? h : h.parentElement, a = row.querySelector(".ar-title");
+      if (!a) { out.push(s.dataset.id + ": no Arabic title"); continue; }
+      const en = (h.querySelector(":scope > span") || h).getBoundingClientRect(), ar = a.getBoundingClientRect(), box = s.getBoundingClientRect();
+      if (ar.left < en.right) out.push(s.dataset.id + ": the Arabic title is not to the right of the English");
+      if (box.right - ar.right > 100) out.push(s.dataset.id + ": the Arabic title is not at the right edge");
+    }
+    return out;
+  })()`);
+  bad.forEach(b => fail(`arabic: ${b}`));
+  // the embedded Arabic face is the one in use, not the device's own
+  const face = await js(`(async () => { await document.fonts.ready; const t = document.querySelector(".ar-title, .ar"); return { loaded: document.fonts.check('500 20px "Cairo"', "ع1"), family: t ? getComputedStyle(t).fontFamily : "" }; })()`);
+  if (!face.loaded || !/Cairo/.test(face.family)) fail(`arabic: the Cairo face is not loaded (${JSON.stringify(face)})`);
+  const i = await js(`Deck.slides.findIndex(s => s.querySelector(".ar-title") && s.dataset.part)`);
+  await js(`Deck.go(${i}), true`);
+  await sleep(500);
+  const seen = () => js(`[...Deck.slides[Deck.i].querySelectorAll(".ar, .ar-title")].filter(n => n.getBoundingClientRect().width > 0).length`);
+  if (!await seen()) fail("arabic: the slide shows no Arabic with the switch on");
+  await js(`document.getElementById("arBtn").click(), true`);
+  await sleep(300);
+  const off = await js(`({ off: document.documentElement.classList.contains("ar-off"), pressed: document.getElementById("arBtn").getAttribute("aria-pressed") })`);
+  if (!off.off || off.pressed !== "false") fail("arabic: the ع switch did not turn the Arabic off");
+  if (await seen()) fail("arabic: Arabic still shows with the switch off");
+  // on every slide, the title slide included
+  const left = await js(`(async () => { const out = [];
+    for (const [k, s] of Deck.slides.entries()) { Deck.go(k); await new Promise(r => setTimeout(r, 120));
+      const n = [...s.querySelectorAll(".ar, .ar-title")].filter(x => x.getBoundingClientRect().width > 0).length;
+      if (n) out.push(s.dataset.id + " (" + n + ")"); }
+    return out; })()`);
+  if (left.length) fail(`arabic: Arabic still shows with the switch off on ${left.join(", ")}`);
+  await shot("arabic-off");
+  await send("Page.reload", {});
+  await sleep(1200);
+  if (!await js(`document.documentElement.classList.contains("ar-off")`)) fail("arabic: the switch was not remembered across a reload");
+  await js(`document.getElementById("arBtn").click(), true`);
+  await sleep(300);
+  if (await js(`document.documentElement.classList.contains("ar-off")`)) fail("arabic: the ع switch did not bring the Arabic back");
+  if (!problems.some(p => p.startsWith("arabic"))) console.log("  ok   Arabic titles stand at the right edge; the ع switch hides, restores and is remembered");
+}
+
 // dark mode: screenshots of every slide on the stage, for a look (layout is the same as light)
 async function darkPass() {
   if (!shotDir) return;
@@ -640,7 +759,7 @@ async function darkPass() {
     await js(`Deck.go(${i}), true`);
     await sleep(500);
     const id = await js(`Deck.slides[Deck.i].dataset.id`);
-    await js(`(() => { const d = Deck.slides[Deck.i].querySelector(".spec-dot, .reveal-item"); if (d) d.click(); return true; })()`);
+    await js(`(() => { const d = Deck.slides[Deck.i].querySelector(".spec-card, .spec-dot, .reveal-item"); if (d) d.click(); return true; })()`);
     await sleep(900);
     await shot(`dark-${String(i + 1).padStart(2, "0")}-${id}`);
     await js(`document.body.click(), true`);
@@ -651,6 +770,7 @@ async function darkPass() {
 try {
   for (const size of SIZES) await layoutPass(size);
   await solvePass();
+  await arabicPass();
   await presentPass();
   await startPass();
   await resumePass();

@@ -119,7 +119,30 @@ def mark(c):
     return e(c["letter"]) if c.get("letter") else icon(c["icon"])
 
 
+def ar(text):
+    """A term's Arabic, a small tinted tail set right to left to the right of the English
+    (the ع switch in the top bar hides every one). Empty when the term has none."""
+    return f'<span class="ar" lang="ar" dir="rtl">{e(text)}</span>' if text else ""
+
+
+def named(label, arabic):
+    """A concept's English name with its Arabic tail."""
+    return e(label) + ar(arabic)
+
+
+def ar_title(text, cls=""):
+    """A title's Arabic, in the heading's own size and face, to the right of the English."""
+    return f'<span class="ar-title{" " + cls if cls else ""}" lang="ar" dir="rtl">{e(text)}</span>' if text else ""
+
+
+def family_ar(topic, fam):
+    return (topic.get("families_ar") or {}).get(fam)
+
+
 def heading(slide):
+    """The slide's title; with a title_ar, the English stays at the left edge and the Arabic stands at the right edge."""
+    if slide.get("title_ar"):
+        return f'<h2 class="has-ar"><span>{e(slide["title"])}</span>{ar_title(slide["title_ar"])}</h2>'
     return f'<h2>{e(slide["title"])}</h2>'
 
 
@@ -141,7 +164,7 @@ def p_title(slide, topic):
         cover = '<div class="cover" aria-hidden="true">' + "".join(
             f'<span class="f-{c["family"]}" style="--i:{i}">{icon(c["icon"])}</span>'
             for i, c in enumerate(c for c in topic["concepts"].values() if c.get("cover", True))) + "</div>"
-    return (f'<div class="title-wrap">{cover}<h1>{e(topic["title"])}</h1>'
+    return (f'<div class="title-wrap">{cover}<h1>{e(topic["title"])}{ar_title(topic.get("title_ar"), "ar-h1")}</h1>'
             f'<div class="part-cards">{cards}</div></div>{credits(topic)}')
 
 
@@ -159,7 +182,7 @@ def p_video(slide, topic):
     and cookie-free until then. With no video yet, the poster says so and the chapters show what is coming."""
     vid = topic.get("_video") or ""
     cover = "".join(f'<span class="f-{c["family"]}">{icon(c["icon"])}</span>' for c in topic["concepts"].values() if c.get("cover", True))
-    face = f'<span class="vid-cover" aria-hidden="true">{cover}</span><b class="vid-title">{e(topic["title"])}</b>'
+    face = f'<span class="vid-cover" aria-hidden="true">{cover}</span><b class="vid-title">{e(topic["title"])}</b>{ar_title(topic.get("title_ar"), "vid-ar")}'
     if vid:
         poster = (f'<button type="button" class="vid-poster" aria-label="Play the video: {e(topic["title"])}">{face}'
                   f'<span class="vid-play">{icon("play")}</span></button>')
@@ -168,7 +191,7 @@ def p_video(slide, topic):
     rows = []
     for k, s in enumerate(x for x in topic["learn"] if not x.get("hidden")):
         at = s.get("at")
-        stamp = f'<span class="vid-at">{e(at) if at is not None else k + 1}</span><span class="vid-name">{e(s["title"])}</span>'
+        stamp = f'<span class="vid-at">{e(at) if at is not None else k + 1}</span><span class="vid-name"><span>{e(s["title"])}</span>{ar_title(s.get("title_ar"))}</span>'
         rows.append(f'<li><button type="button" class="vid-ch" data-at="{chapter_seconds(at)}">{stamp}</button></li>'
                     if vid and at is not None else f'<li><span class="vid-ch">{stamp}</span></li>')
     return (f'<div class="vid-wrap"><div class="vid-player" data-video="{e(vid)}">{poster}</div>'
@@ -205,7 +228,7 @@ def _examples_body(ex, hidden=False):
     if ex and isinstance(ex[0], dict):
         n, subs = 0, []
         for sub in ex:
-            subs.append(f'<ul class="spec-sub f-{sub["family"]}"><li class="spec-sub-h" style="--i:{n}">{e(sub["label"])}</li>'
+            subs.append(f'<ul class="spec-sub f-{sub["family"]}"><li class="spec-sub-h" style="--i:{n}">{named(sub["label"], sub.get("ar"))}</li>'
                         f'{_examples(sub["items"], n + 1)}</ul>')
             n += len(sub["items"]) + 1
         return f'<div class="spec-ex spec-split"{attr}>{"".join(subs)}</div>'
@@ -215,24 +238,49 @@ def _examples_body(ex, hidden=False):
 def p_spectrum(slide, topic):
     stops = slide["stops"]
     groups = ""
-    if slide.get("groups"):
+    drill = bool(slide.get("drill"))
+    if slide.get("groups") and drill:
+        # drill: the families first, as equal cards; a tap opens that family's circles in one tray under the cards
+        groups = '<div class="spec-groups">' + "".join(
+            f'<button type="button" class="spec-group spec-card f-{g["family"]}" style="--g:{i}" data-group="{i}" aria-expanded="false" '
+            f'aria-label="Show the {e(topic["families"][g["family"]])} types">'
+            + (f'<span class="spec-fig">{svg(g["figure"])}</span>' if g.get("figure") else "")
+            + f'<span class="spec-name">{named(topic["families"][g["family"]], family_ar(topic, g["family"]))}</span></button>'
+            for i, g in enumerate(slide["groups"])) + "</div>"
+    elif slide.get("groups"):
         groups = '<div class="spec-groups">' + "".join(
             f'<div class="spec-group f-{g["family"]}" style="grid-column:span {g.get("span", 1)};--g:{i}">'
             # a small picture of what the family means, above its name
             + (f'<div class="spec-fig">{svg(g["figure"])}</div>' if g.get("figure") else "")
-            + f'{e(topic["families"][g["family"]])}</div>' for i, g in enumerate(slide["groups"])) + "</div>"
+            + f'{named(topic["families"][g["family"]], family_ar(topic, g["family"]))}</div>' for i, g in enumerate(slide["groups"])) + "</div>"
     # each stop enters with the group above it: --g is that group's place, found from the group spans
     owner = [i for i, g in enumerate(slide.get("groups") or []) for _ in range(g.get("span", 1))]
+    # in a drill, a circle rises in its family's tray in the order of its place there
+    place = [sum(1 for k in range(j) if owner[k] == owner[j]) for j in range(len(owner))]
     html_stops = []
     for j, s in enumerate(stops):
         c = concept(topic, s["concept"]) if s.get("concept") else {}
         label, fam, letter = s.get("label", c.get("label")), s.get("family", c.get("family")), (e(s["letter"]) if s.get("letter") else mark(c))
-        body = _examples_body(s.get("split") or s["examples"])
+        label_ar = s.get("ar", c.get("ar"))
+        kinds = s.get("split") if drill else None
+        body = "" if kinds else _examples_body(s.get("split") or s["examples"])
+        grp = owner[j] if j < len(owner) else j
+        rise = (place[j] if drill else owner[j]) if j < len(owner) else j
+        parent = ' spec-parent' if kinds else ''
+        parent_id = f' data-id="{j}"' if kinds else ''
+        what = 'kinds' if kinds else 'examples'
         html_stops.append(
-            f'<div class="spec-stop f-{fam}" style="--g:{owner[j] if j < len(owner) else j}"><button class="spec-dot" type="button" aria-expanded="false" '
-            f'aria-label="Show {e(label)} examples">{letter}</button><b>{e(label)}</b>{body}</div>')
+            f'<div class="spec-stop f-{fam}{parent}" data-group="{grp}"{parent_id} style="--g:{rise}"><button class="spec-dot" type="button" aria-expanded="false" '
+            f'aria-label="Show {e(label)} {what}">{letter}</button><b>{named(label, label_ar)}</b>{body}</div>')
+        if kinds:
+            # an arrow disc points from the parent to its kinds, which each open their own zoom circle
+            html_stops.append(f'<span class="spec-arrow" data-parent="{j}" aria-hidden="true">{icon("right")}</span>')
+            for k, kind in enumerate(kinds):
+                html_stops.append(
+                    f'<div class="spec-stop spec-kid f-{kind["family"]}" data-group="{grp}" data-parent="{j}" style="--g:{k + 1}"><button class="spec-dot" type="button" aria-expanded="false" '
+                    f'aria-label="Show {e(kind["label"])} examples">{icon(kind["icon"])}</button><b>{named(kind["label"], kind.get("ar"))}</b>{_examples_body(kind["items"])}</div>')
     zoom = slide.get("open") == "zoom"
-    spec = (f'<div class="spec{" spec-zoom" if zoom else ""}" style="--n:{len(stops)}">{groups}'
+    spec = (f'<div class="spec{" spec-zoom" if zoom else ""}{" spec-drill" if drill else ""}" style="--n:{len(slide["groups"]) if drill else len(stops)}">{groups}'
             f'<div class="spec-line">{"".join(html_stops)}</div></div>')
     # a zoom spectrum never grows, so it sits centred under the heading
     return heading(slide) + (f'<div class="center-body">{spec}</div>' if zoom else spec)
@@ -240,7 +288,7 @@ def p_spectrum(slide, topic):
 
 def _result(topic, key, extra=""):
     c = concept(topic, key)
-    return f'<div class="qf-res f-{c["family"]}{extra}" data-type="{e(key)}"><b>{e(c["label"])}</b></div>'
+    return f'<div class="qf-res f-{c["family"]}{extra}" data-type="{e(key)}"><b>{named(c["label"], c.get("ar"))}</b></div>'
 
 
 def p_question_flow(slide, topic):
@@ -250,7 +298,7 @@ def p_question_flow(slide, topic):
     for i, st in enumerate(steps):
         parts.append(
             f'<div class="qf-step" data-step="{i}"><button class="qf-q" type="button" aria-expanded="false">'
-            f'<span class="qf-n">{i + 1}</span><b>{e(st["q"])}</b></button>'
+            f'<span class="qf-n">{i + 1}</span><b>{e(st["q"])}{ar(st.get("q_ar"))}</b></button>'
             f'<div class="qf-no"><span class="qf-lab">No</span>{_result(topic, st["no"])}</div></div>'
             f'<div class="qf-yes" data-step="{i}"><span class="qf-lab">Yes</span></div>')
     parts.append(f'<div class="qf-step qf-end" data-step="{len(steps)}">{_result(topic, slide["end"])}</div>')
@@ -271,7 +319,7 @@ def _tree_final(topic, key, examples, charts):
     tap = (f' role="button" tabindex="0" aria-expanded="false" aria-label="Show {e(c["label"])} examples"' if ex else "")
     chart = f'<div class="tree-chart f-{c["family"]}">{svg(charts[key])}</div>' if charts.get(key) else ""
     return (f'<div class="tree-final f-{c["family"]}{" zoomable" if ex else ""}" data-type="{e(key)}"{tap}>'
-            f'<span class="tree-dot">{mark(c)}</span><b class="tree-label">{e(c["label"])}</b>'
+            f'<span class="tree-dot">{mark(c)}</span><b class="tree-label">{named(c["label"], c.get("ar"))}</b>'
             f'{_examples_body(ex, hidden=True) if ex else ""}</div>{chart}')
 
 
@@ -318,7 +366,7 @@ def p_decision_tree(slide, topic):
         fig = f'<span class="tree-fig">{svg(st["figure"])}</span>' if st.get("figure") else ""
         levels.append(
             f'<div class="tree-level" data-step="{i}">'
-            f'<div class="tree-q">{fig}<span class="tree-n">{i + 1}</span><b>{e(st["q"])}</b></div>'
+            f'<div class="tree-q">{fig}<span class="tree-n">{i + 1}</span><b>{e(st["q"])}{ar(st.get("q_ar"))}</b></div>'
             f'<div class="tree-answers">'
             f'<button class="tree-a yes" type="button" data-a="yes" aria-pressed="false">Yes</button>'
             f'<button class="tree-a no" type="button" data-a="no" aria-pressed="false">No</button></div>{why}'
@@ -351,7 +399,7 @@ def _measure_dots(topic, keys, cls):
         c = concept(topic, key)
         out.append(f'<div class="spec-stop {cls} f-{c["family"]}" data-key="{e(key)}" style="--g:{i}">'
                    f'<button class="spec-dot" type="button" aria-expanded="false" aria-label="Show the {e(c["label"])}">'
-                   f'{mark(c)}</button><b>{e(c["label"])}</b></div>')
+                   f'{mark(c)}</button><b>{named(c["label"], c.get("ar"))}</b></div>')
     return "".join(out)
 
 
@@ -470,7 +518,7 @@ def p_clue_stem(slide, topic):
         stops.append(
             f'<div class="spec-stop f-{c["family"]}" data-type="{e(key)}"><button class="spec-dot" type="button" '
             f'aria-expanded="false" aria-label="Show {e(c["label"])} clues">{mark(c)}</button>'
-            f'<b>{e(c["label"])}</b><ul class="spec-ex{" long" if len(clues) > 4 else ""}">{_examples(clues)}</ul></div>')
+            f'<b>{named(c["label"], c.get("ar"))}</b><ul class="spec-ex{" long" if len(clues) > 4 else ""}">{_examples(clues)}</ul></div>')
     marks = CLUE.sub(lambda m: "\0{}\1{}\2".format(m.group(1), m.group(2)), slide["stem"])
     text = e(marks)
     for kind, phrase in re.findall("\0(.*?)\1(.*?)\2", text):
@@ -487,15 +535,16 @@ def p_reveal_cards(slide, topic):
     for cd in slide["cards"]:
         if cd.get("concept"):
             c = concept(topic, cd["concept"])
-            label, fam, ico = c["label"], c["family"], c.get("icon", "tag")
+            label, fam, ico, label_ar = c["label"], c["family"], c.get("icon", "tag"), c.get("ar")
         else:
             fam = cd["family"]
             label, ico = cd.get("label", topic["families"][fam]), cd.get("icon", "ruler")
+            label_ar = cd.get("ar", family_ar(topic, fam))
         # a picture of the idea above its name, in place of the icon
         top = figure(cd["figure"], "rcard-fig") if cd.get("figure") else f'<span class="rcard-ico">{icon(ico)}</span>'
         cards.append(
             f'<div class="rcard f-{fam} reveal-item" role="button" tabindex="0" aria-expanded="false">'
-            f'{top}<b class="rcard-label">{e(label)}</b>'
+            f'{top}<b class="rcard-label">{named(label, label_ar)}</b>'
             f'<span class="rcard-answer">{e(cd["answer"])}</span></div>')
     nxt = ""
     if slide.get("next"):
@@ -556,7 +605,7 @@ CENTRED = {"hook", "question-flow", "reveal-cards", "working", "end"}
 
 def topic_data(topic):
     """The data the browser needs to build the practice slides."""
-    data = {"id": topic["id"], "title": topic["title"], "concepts": topic["concepts"], "sorts": {}, "quizzes": {}}
+    data = {"id": topic["id"], "title": topic["title"], "ar": bool(topic.get("title_ar")), "concepts": topic["concepts"], "sorts": {}, "quizzes": {}}
     for s in topic["practise"]:
         if s["pattern"] == "sort":
             data["sorts"][s["id"]] = {

@@ -36,6 +36,8 @@ PRESENTER = os.path.join(ROOT, "presenter")  # local only: git ignores it and Cl
 LOCK = os.path.join(ROOT, "content", "ids.lock")
 CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css"]
 JS_FILES = ["core.js", "video.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "working.js", "sort.js", "quiz.js", "present.js", "deck.js"]
+# the Arabic switch in the top bar: shows or hides every Arabic title and term (engine/js/core.js)
+AR_BUTTON = '<button class="icon-btn" id="arBtn" type="button" aria-pressed="true" aria-label="Show or hide the Arabic" lang="ar">ع</button>'
 ITEM_ID = re.compile(r"^[a-z]\d{2,3}$")
 YOUTUBE_ID = re.compile(r"^[A-Za-z0-9_-]{11}$")
 CHAPTER_AT = re.compile(r"^(\d+:)?[0-5]?\d:[0-5]\d$")
@@ -80,6 +82,14 @@ def check_topic(t, expected_id):
     for k, c in cons.items():
         if c.get("family") not in fams:
             errs.append(f"concept {k}: unknown family {c.get('family')!r}")
+    # a topic with title_ar is a topic with Arabic: every shown title and every concept needs its Arabic, so no slide is left half done
+    if t.get("title_ar"):
+        for k, c in cons.items():
+            if not c.get("ar"):
+                warns.append(f"concept {k}: no ar (the topic has title_ar)")
+        for k in fams:
+            if k not in (t.get("families_ar") or {}):
+                warns.append(f"family {k}: not in families_ar (the topic has title_ar)")
     seen = set()
     for s in t["learn"] + t["practise"]:
         sid = s.get("id")
@@ -94,6 +104,12 @@ def check_topic(t, expected_id):
             continue
         if s.get("at") is not None and not CHAPTER_AT.match(str(s["at"])):
             errs.append(f"{where}: at is {s['at']!r}: write where its chapter starts in the video as m:ss (2:15)")
+        if t.get("title_ar") and not s.get("title_ar"):
+            warns.append(f"{where}: no title_ar (the topic has title_ar)")
+        if t.get("title_ar") and s.get("pattern") in ("decision-tree", "question-flow"):
+            for k, st in enumerate(s["steps"]):
+                if not st.get("q_ar"):
+                    warns.append(f"{where}: step {k + 1} has no q_ar (the topic has title_ar)")
         if INSTRUCTION.search(s.get("title", "")):
             warns.append(f"{where}: title reads like an instruction ({s['title']!r})")
         refs = []
@@ -105,6 +121,16 @@ def check_topic(t, expected_id):
                 errs.append(f"{where}: no drawing at content/figures/{name}.svg")
         if p == "spectrum":
             refs += [st["concept"] for st in s["stops"] if st.get("concept")]
+            if s.get("drill") and (s.get("open") != "zoom" or not s.get("groups")
+                                   or sum(g.get("span", 1) for g in s["groups"]) != len(s["stops"])):
+                errs.append(f"{where}: drill needs open: zoom and groups whose spans add up to the stops (each family's circles open under its card)")
+            if s.get("drill"):
+                for st in s["stops"]:
+                    for kind in st.get("split") or []:
+                        if not (kind.get("icon") and kind.get("family") in fams and kind.get("items")):
+                            errs.append(f"{where}: in a drill, each kind of {st.get('concept') or st.get('label')} needs an icon, a family and its items")
+                        elif t.get("title_ar") and not kind.get("ar"):
+                            warns.append(f"{where}: kind {kind.get('label')!r} has no ar (the topic has title_ar)")
             if s.get("open", "list") not in ("list", "zoom"):
                 errs.append(f"{where}: open is {s['open']!r}: use list (bullets under the circle) or zoom (a large centred circle)")
         if p == "question-flow":
@@ -439,10 +465,22 @@ def check_ids(topics):
 
 # ---------------------------------------------------------------- build
 
-def fonts_css():
+# Cairo (SIL Open Font License, engine/fonts/cairo-OFL.txt), the Arabic face: its Arabic letters and its Latin part (digits, and the
+# letters that sit inside Arabic text), each a variable-weight font used only where its characters appear. Only topics with Arabic carry it.
+CAIRO_FACES = (
+    ("cairo-arabic.woff2", "U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC"),
+    ("cairo-latin.woff2", "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"),
+)
+
+
+def fonts_css(arabic=False):
     b64 = {n: base64.b64encode(open(os.path.join(ENGINE, "fonts", n), "rb").read()).decode("ascii")
            for n in ("inter.woff2", "outfit.woff2")}
-    return ('@font-face{font-family:"Inter";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:100 900;font-display:swap}\n'
+    cairo = "".join(
+        '@font-face{font-family:"Cairo";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:200 1000;unicode-range:%s;font-display:swap}\n'
+        % (base64.b64encode(open(os.path.join(ENGINE, "fonts", n), "rb").read()).decode("ascii"), rng)
+        for n, rng in CAIRO_FACES) if arabic else ""
+    return cairo + ('@font-face{font-family:"Inter";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:100 900;font-display:swap}\n'
             # Outfit is a variable font; declaring it at 500 alone pins every heading to Medium
             '@font-face{font-family:"Outfit";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:500;font-display:swap}\n'
             % (b64["inter.woff2"], b64["outfit.woff2"]))
@@ -472,13 +510,14 @@ def render_topic(t, spec, site, present=False):
             else:
                 slides.append(section(s, part, inner))
     shell = read(ENGINE, "shell.html")
-    css = fonts_css() + "".join(read(ENGINE, "css", f) for f in CSS_FILES)
+    css = fonts_css(bool(t.get("title_ar"))) + "".join(read(ENGINE, "css", f) for f in CSS_FILES)
     js = "".join(read(ENGINE, "js", f) for f in JS_FILES)
     data = json.dumps(topic_data(t), ensure_ascii=False).replace("</", "<\\/")
     page_title = f'{t["title"]} · {site["title"]}'
     for k, v in {
         "{{PAGE_TITLE}}": e(page_title), "{{DESCRIPTION}}": e(t["description"]), "{{AUTHOR}}": e(site["author"]),
-        "{{MODE}}": "present-deck" if present else "site",
+        "{{MODE}}": ("present-deck" if present else "site") + (" has-ar" if t.get("title_ar") else ""),
+        "{{ARBTN}}": AR_BUTTON if t.get("title_ar") else "",
         "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{SITE}}": e(site["title"]), "{{WORDMARK}}": wordmark(site["title"]), "{{FAVICON}}": favicon(), "{{ICONS}}": read(ENGINE, "icons.svg"),
         "{{SLIDES}}": "\n".join(slides), "{{DATA}}": data, "{{CSS}}": css, "{{JS}}": js,
     }.items():

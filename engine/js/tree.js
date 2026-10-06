@@ -36,7 +36,7 @@ function buildTrees() {
       open = card;
       if (card) card.setAttribute("aria-expanded", "true");
       zoom.show(card && { dot: $(".tree-dot", card), fam: famClass(card), letter: $(".tree-dot", card).innerHTML,
-        label: $(".tree-label", card).textContent, ex: $(".spec-ex", card) }, instant);
+        label: enText($(".tree-label", card)), ar: arText($(".tree-label", card)), ex: $(".spec-ex", card) }, instant);
     };
     $$(".tree-a", tree).forEach(b => b.addEventListener("click", () => {
       const i = +b.closest(".tree-level").dataset.step;
@@ -124,7 +124,7 @@ function buildGridTree(tree) {
     open = card;
     if (card) card.setAttribute("aria-expanded", "true");
     zoom.show(card && { dot: $(".tree-dot", card), fam: famClass(card), letter: $(".tree-dot", card).innerHTML,
-      label: $(".tree-label", card).textContent, ex: $(".spec-ex", card) }, instant);
+      label: enText($(".tree-label", card)), ar: arText($(".tree-label", card)), ex: $(".spec-ex", card) }, instant);
   };
   $$(".tree-a", tree).forEach(b => b.addEventListener("click", () => {
     const i = +b.closest(".tree-level").dataset.step, at = trail.findIndex(([j]) => j === i);
