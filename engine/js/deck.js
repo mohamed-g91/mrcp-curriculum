@@ -71,6 +71,8 @@ const Deck = {
     const [first, last] = this.range(), home = this.i === 0;
     $("#navCount").textContent = $("#topCount").textContent = home ? "" : `${this.i - first + 1} / ${last - first + 1}`;
     $("#homeTop").hidden = home;
+    // the score belongs to Practise: not on the title, the video or the presenter's deck
+    $("#scorePill").hidden = PRESENTER || s.dataset.part !== "Practise";
     $("#progressBar").style.width = home ? "0%" : ((this.i - first + 1) / (last - first + 1) * 100) + "%";
     $("#prevBtn").hidden = home || this.i === first;
     $("#homeBtn").hidden = home;

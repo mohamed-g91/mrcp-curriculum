@@ -41,7 +41,8 @@ a.wordmark:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
 .icon-btn:hover{background:var(--surface-2)}
 .progress{height:4px;background:var(--surface-2)}
 .progress>div{height:100%;width:0;background:var(--primary);transition:width .5s var(--ease)}
-@container (max-width:600px){.brand-sub,.part-label{display:none}.score-pill{margin-left:auto}}
+/* on a phone the part label goes but keeps its room, so the buttons stay at the right whether or not the score shows */
+@container (max-width:600px){.brand-sub{display:none}.part-label{visibility:hidden}}
 @container (max-width:420px){.brand,.brand-sep{display:none}}
 
 /* ---------- slides ---------- */

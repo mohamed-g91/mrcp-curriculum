@@ -20,7 +20,6 @@ html.fluid .navbar{position:sticky;bottom:0}
 html.sideways .navbar{display:none}
 html.sideways .top-count{display:inline;margin-left:auto;font-size:var(--fs-small);color:var(--muted);font-variant-numeric:tabular-nums}
 html.sideways .top-home:not([hidden]){display:inline-flex}
-html.sideways .score-pill{margin-left:0}
 html.sideways .part-label,html.sideways .brand-sub{display:none}
 html.sideways .tree-scene,html.sideways .case-fig{display:none}  /* the screen is short: the tree needs the room */
 html.fluid .deck{overflow:visible}
@@ -35,7 +34,7 @@ html.phone #presentBtn,html.present #presentBtn,html.site #presentBtn{display:no
    and a pan would cancel the pen halfway through a stroke */
 html.present body,html.present .app *{touch-action:none}
 html.present .app{top:0;transform-origin:50% 0;transform:translateX(-50%) scale(var(--s,1));box-shadow:none;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-/* the top bar stays (wordmark, topic, score); the tray does the bottom bar's job, and the slide
+/* the top bar stays (wordmark, topic); the tray does the bottom bar's job, and the slide
    moves down by half the bar it lost, so its content and any zoom circle sit centred below the top bar */
 html.present .navbar{display:none}
 html.present .deck{padding-top:calc(clamp(18px,calc(2.5 * var(--u)),32px) + 32px)}
