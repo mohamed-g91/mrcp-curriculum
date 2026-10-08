@@ -115,6 +115,17 @@ learn:
     panels:
       - { none: 0, axis: Extra fall on the drug (mmHg), range: [-2, 8], ticks: [-2, 0, 2, 4, 6, 8], se: 1.5, at: [4, 3, 1.5] }
 
+  # The same slide for a ratio (relative risk = risk on the drug ÷ risk on placebo; an odds ratio works the same way): no effect is 1.
+  # Its CI is even on a log axis: c ÷ 1.25 to c × 1.25. At 0.6 (0.48 to 0.75) p < 0.05; at 0.8 (0.64 to 1.0) p = 0.05;
+  # at 1.0 (0.8 to 1.25) p > 0.05. Risk and odds are taught in lesson 14.
+  - id: ratio
+    pattern: story
+    title: "A ratio: no effect is 1"
+    title_ar: "النسبة: انعدام التأثير يساوي 1"
+    kind: slide
+    panels:
+      - { none: 1, axis: Relative risk, range: [0.4, 1.6], ticks: [0.5, 0.75, 1, 1.5], factor: 1.25, at: [0.6, 0.8, 1.0] }
+
   # The same 4 mmHg in 400 and 40 people (lesson 5): 4 ± 2 × 1.5 = 1 to 7; 4 ± 2 × 4.7 = −5.4 to 13.4. Wide means unsure;
   # crossing 0 means not significant.
   - id: wider
@@ -131,17 +142,6 @@ learn:
     rows:
       - { label: 400 people, n: 200, gap: 4 }
       - { label: 40 people,  n: 20,  gap: 4 }
-
-  # A ratio (relative risk = risk on the drug ÷ risk on placebo; an odds ratio works the same way): no effect is 1.
-  # Its CI is even on a log axis: c ÷ 1.25 to c × 1.25. At 0.6 (0.48 to 0.75) p < 0.05; at 0.8 (0.64 to 1.0) p = 0.05;
-  # at 1.0 (0.8 to 1.25) p > 0.05. Risk and odds are taught in lesson 13.
-  - id: ratio
-    pattern: story
-    title: "A ratio: no effect is 1"
-    title_ar: "النسبة: انعدام التأثير يساوي 1"
-    kind: slide
-    panels:
-      - { none: 1, axis: Relative risk, range: [0.4, 1.6], ticks: [0.5, 0.75, 1, 1.5], factor: 1.25, at: [0.6, 0.8, 1.0] }
 
   # Against the smallest effect worth having (5 mmHg, the author's choice; see the BPLTTC source). 10,000 in each group:
   # SE = 15 × √(2 ÷ 10,000) ≈ 0.2, 1 ± 0.4 = 0.6 to 1.4, p < 0.001. Ours: 1 to 7, straddling 5, so it may or may not be

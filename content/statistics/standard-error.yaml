@@ -67,20 +67,6 @@ learn:
         means_axis: Mean height (cm)
         chips: [n = 4, n = 16, n = 49, n = 196]
 
-  # the central limit theorem: lengths of stay are skewed (the pneumonia stays of Centre, shape and spread:
-  # mean 6 days, SD 4), yet the means of samples of 16 stays pile up into a bell: SEM = 4 ÷ √16 = 1 day
-  - id: clt
-    pattern: story
-    title: Skewed data, normal means
-    title_ar: بيانات ملتوية، متوسطات طبيعية
-    kind: sampling
-    population: { shape: positive, mean: 6, sd: 4 }
-    n: 16
-    unit: days
-    axis: days in hospital
-    means_axis: Mean stay of 16 patients (days)
-    wall_label: 0 days
-
   # mean ± 2 SD, where 95% of women are (148–176 cm), against mean ± 2 SEM, the 95% CI for the mean (160–164 cm)
   - id: ranges
     pattern: curve
@@ -96,6 +82,21 @@ learn:
         chips: [Mean ± 2 SD, Mean ± 2 SEM]
         pct: [95% of women, 95% CI for the mean]
         tags: ["95%", 95% CI]
+
+  # the central limit theorem, so mean ± 2 SEM works for skewed data too: lengths of stay are skewed (the pneumonia
+  # stays of Centre, shape and spread: mean 6 days, SD 4), yet the means of samples of 16 stays pile up into a bell:
+  # SEM = 4 ÷ √16 = 1 day
+  - id: clt
+    pattern: story
+    title: Skewed data, normal means
+    title_ar: بيانات ملتوية، متوسطات طبيعية
+    kind: sampling
+    population: { shape: positive, mean: 6, sd: 4 }
+    n: 16
+    unit: days
+    axis: days in hospital
+    means_axis: Mean stay of 16 patients (days)
+    wall_label: 0 days
 
   # each card pictures its idea as papers draw it: the same bar with a long (SD) or a short (SEM) error bar,
   # a reference range on a ruler, and a forest-plot row
