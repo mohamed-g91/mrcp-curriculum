@@ -53,7 +53,8 @@ learn:
     groups:
       # above each family's name, a picture of what it means: no order, an order, any value
       - { family: cat, span: 2, figure: group-labels }
-      - { family: np,  span: 1, figure: group-podium }
+      # Ranked comes in on a tap: its top edge peeks out between the other two, which part to let it in
+      - { family: np,  span: 1, figure: group-podium, insert: true }
       - { family: par, span: 2, figure: group-ruler }
     stops:
       - { label: Nominal, ar: اسمي, family: cat, letter: N, examples: &ex-nominal [Blood group, Ethnicity, Diagnosis] }

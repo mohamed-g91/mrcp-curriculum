@@ -63,7 +63,9 @@ const famClass = node => [...node.classList].find(c => c.startsWith("f-")) || ""
    the cards (one family at a time, a tap on it again closes it); then a circle opens its zoom circle as above.
    A parent circle in the tray (.spec-parent, such as Ordinal) opens its kinds instead: the circle steps aside, an arrow
    points to the kinds, and each kind opens its own zoom circle; a tap on the parent again closes them.
-   A click elsewhere closes the deepest open thing first (the zoom circle, then the kinds, then the family). */
+   A click elsewhere closes the deepest open thing first (the zoom circle, then the kinds, then the family).
+   An insert card (.spec-insert, Ranked) starts as a tab peeking out between its neighbours (.spec.peek): a tap lets it in,
+   and it stays in until the slide is entered again. */
 function buildSpectra() {
   $$(".spec").forEach(spec => {
     const zoom = spec.classList.contains("spec-zoom") ? makeZoom(spec.closest(".slide")) : null;
@@ -99,7 +101,20 @@ function buildSpectra() {
     };
     const closeKids = instant => { set(null, instant); $$(".spec-parent.open", spec).forEach(p => toggleKids(p, false, instant)); };
     // the pointer on the tray points up at the open card's middle
-    const place = () => { if (group) tray.style.setProperty("--px", group.offsetLeft + group.offsetWidth / 2 - tray.offsetLeft + "px"); };
+    // (from the boxes as drawn, so a card shifted aside while the insert peeks is pointed at where it is)
+    const place = () => {
+      if (!group) return;
+      const g = group.getBoundingClientRect(), t = tray.getBoundingClientRect(), k = tray.offsetWidth / t.width || 1;
+      tray.style.setProperty("--px", (g.left + g.width / 2 - t.left) * k + "px");
+    };
+    // the insert card peeks again (instantly) when the slide is entered, and comes in on a tap
+    const peek = on => {
+      if (!$(".spec-insert", spec)) return;
+      spec.classList.add("still");
+      spec.classList.toggle("peek", on);
+      void spec.offsetWidth;
+      spec.classList.remove("still");
+    };
     const openGroup = (card, instant) => {
       closeKids(true);  // a zoom circle and any open kinds go with their family
       group = card;
@@ -108,7 +123,14 @@ function buildSpectra() {
       tray.className = "spec-line" + (card ? ` open ${famClass(card)}` : "");
       place();
     };
-    cards.forEach(card => card.addEventListener("click", () => openGroup(card === group ? null : card)));
+    cards.forEach(card => card.addEventListener("click", () => {
+      if (spec.classList.contains("peek")) {
+        if (!card.classList.contains("spec-insert")) return openGroup(card === group ? null : card);
+        openGroup(null);
+        return spec.classList.remove("peek");
+      }
+      openGroup(card === group ? null : card);
+    }));
     window.addEventListener("resize", place);
     $$(".spec-dot", spec).forEach(dot => dot.addEventListener("click", () => {
       const stop = dot.closest(".spec-stop");
@@ -128,7 +150,7 @@ function buildSpectra() {
       else if ($(".spec-parent.open", spec)) closeKids();
       else if (drill && group) openGroup(null);
     });
-    onEnter(spec, () => drill ? openGroup(null, true) : set(null, true));
+    onEnter(spec, () => { if (drill) { peek(true); openGroup(null, true); } else set(null, true); });
   });
 }
 const REDUCED_MOTION = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;

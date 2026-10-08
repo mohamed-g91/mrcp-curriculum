@@ -131,6 +131,9 @@ def check_topic(t, expected_id):
                             errs.append(f"{where}: in a drill, each kind of {st.get('concept') or st.get('label')} needs an icon, a family and its items")
                         elif t.get("title_ar") and not kind.get("ar"):
                             warns.append(f"{where}: kind {kind.get('label')!r} has no ar (the topic has title_ar)")
+            gs = s.get("groups") or []
+            if any(g.get("insert") for g in gs) and not (s.get("drill") and len(gs) == 3 and gs[1].get("insert") and not gs[0].get("insert") and not gs[2].get("insert")):
+                errs.append(f"{where}: insert is for the middle card of a three-card drill (it peeks out between the other two)")
             if s.get("open", "list") not in ("list", "zoom"):
                 errs.append(f"{where}: open is {s['open']!r}: use list (bullets under the circle) or zoom (a large centred circle)")
         if p == "question-flow":

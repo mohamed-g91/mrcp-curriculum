@@ -242,7 +242,7 @@ def p_spectrum(slide, topic):
     if slide.get("groups") and drill:
         # drill: the families first, as equal cards; a tap opens that family's circles in one tray under the cards
         groups = '<div class="spec-groups">' + "".join(
-            f'<button type="button" class="spec-group spec-card f-{g["family"]}" style="--g:{i}" data-group="{i}" aria-expanded="false" '
+            f'<button type="button" class="spec-group spec-card f-{g["family"]}{" spec-insert" if g.get("insert") else ""}" style="--g:{i}" data-group="{i}" aria-expanded="false" '
             f'aria-label="Show the {e(topic["families"][g["family"]])} types">'
             + (f'<span class="spec-fig">{svg(g["figure"])}</span>' if g.get("figure") else "")
             + f'<span class="spec-name">{named(topic["families"][g["family"]], family_ar(topic, g["family"]))}</span></button>'
@@ -280,7 +280,9 @@ def p_spectrum(slide, topic):
                     f'<div class="spec-stop spec-kid f-{kind["family"]}" data-group="{grp}" data-parent="{j}" style="--g:{k + 1}"><button class="spec-dot" type="button" aria-expanded="false" '
                     f'aria-label="Show {e(kind["label"])} examples">{icon(kind["icon"])}</button><b>{named(kind["label"], kind.get("ar"))}</b>{_examples_body(kind["items"])}</div>')
     zoom = slide.get("open") == "zoom"
-    spec = (f'<div class="spec{" spec-zoom" if zoom else ""}{" spec-drill" if drill else ""}" style="--n:{len(slide["groups"]) if drill else len(stops)}">{groups}'
+    # a group with insert: true starts as a tab peeking out between its neighbours, which part on a tap to let it in
+    peek = drill and any(g.get("insert") for g in slide.get("groups") or [])
+    spec = (f'<div class="spec{" spec-zoom" if zoom else ""}{" spec-drill" if drill else ""}{" peek" if peek else ""}" style="--n:{len(slide["groups"]) if drill else len(stops)}">{groups}'
             f'<div class="spec-line">{"".join(html_stops)}</div></div>')
     # a zoom spectrum never grows, so it sits centred under the heading
     return heading(slide) + (f'<div class="center-body">{spec}</div>' if zoom else spec)

@@ -39,7 +39,8 @@ html.present .app{top:0;transform-origin:50% 0;transform:translateX(-50%) scale(
    moves down by half the bar it lost, so its content and any zoom circle sit centred below the top bar */
 html.present .navbar{display:none}
 html.present .deck{padding-top:calc(clamp(18px,calc(2.5 * var(--u)),32px) + 32px)}
-.ink{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;display:none}
+/* over everything on the slide, a zoom circle and the answer card included */
+.ink{position:absolute;inset:0;z-index:50;width:100%;height:100%;overflow:visible;pointer-events:none;display:none}
 html.present .ink{display:block}
 .ink path{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .ink-marker{mix-blend-mode:multiply}

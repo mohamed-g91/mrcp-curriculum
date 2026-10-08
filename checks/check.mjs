@@ -188,6 +188,19 @@ async function layoutPass(size) {
       const trayOpen = () => js(`Deck.slides[Deck.i].querySelector(".spec-line").classList.contains("open")`);
       const nCards = await js(`Deck.slides[Deck.i].querySelectorAll(".spec-card").length`);
       if (await trayOpen()) fail(`${where}: the tray is open before any card is tapped`);
+      // an insert card (Ranked) lands peeking out between its neighbours; a tap lets it in without opening its circles
+      if (await js(`!!Deck.slides[Deck.i].querySelector(".spec-insert")`)) {
+        if (!await js(`Deck.slides[Deck.i].querySelector(".spec-drill").classList.contains("peek")`)) fail(`${where}: the insert card did not land peeking`);
+        await shot(`${tag}-peek`);
+        await js(`Deck.slides[Deck.i].querySelector(".spec-insert").click(), true`);
+        await sleep(900);
+        await measure(size, `slide ${i + 1} inserted`);
+        if (await js(`Deck.slides[Deck.i].querySelector(".spec-drill").classList.contains("peek")`) || await trayOpen()) fail(`${where}: a tap on the peeking card did not let it in (or opened its tray)`);
+        await shot(`${tag}-inserted`);
+        await js(`document.body.click(), true`);
+        await sleep(300);
+        if (await js(`Deck.slides[Deck.i].querySelector(".spec-drill").classList.contains("peek")`)) fail(`${where}: a click away sent the inserted card back`);
+      }
       for (let k = 0; k < nCards; k++) {
         await js(`Deck.slides[Deck.i].querySelectorAll(".spec-card")[${k}].click(), true`);
         await sleep(1100);
