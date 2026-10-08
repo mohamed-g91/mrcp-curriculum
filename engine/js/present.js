@@ -2,7 +2,9 @@
    The slide sits at the top of the screen as a clean 16:9 frame and the tray fills the strip
    below it. The pen (a stylus, such as the S Pen) only ever writes; fingers and the mouse work
    the slide as usual, and two fingers pinch to zoom. Ink belongs to its slide: it goes when the
-   slide changes and comes back when the slide does. Touches while the pen is near are a palm
+   slide changes and comes back when the slide does. Within a slide, ink belongs to what was open when it was written:
+   a family's tray, a parent's kinds or a zoom circle each keep their own layer, which hides when it closes and comes back
+   when it opens again; ink written with nothing open stays on the slide. A zoom circle shows only its own ink. Touches while the pen is near are a palm
    resting on the glass, and are ignored. */
 const PALM_MS = 600;      // a touch this soon after the pen was seen is the hand, not a tap
 const PEN_W = [2, 4, 7, 11];  // fine, medium (the default), thick, very thick
@@ -22,7 +24,8 @@ const segDist = (x, y, [ax, ay], [bx, by]) => {
 const Present = {
   on: false, tool: "pen", size: 1,
   colours: { pen: 1, marker: 0 },  // each tool keeps its own colour: red for the pen, yellow for the highlighter
-  ink: new WeakMap(),     // slide -> { strokes, history }
+  ink: new WeakMap(),     // slide -> Map(layer key -> { strokes, history })
+  shown: "",              // the layer keys painted now
   slide: null, stroke: null, erasing: false,
   rubbed: null,          // what the eraser has cut so far in this rub: one undo puts it all back
   lastPen: 0, swallowUntil: 0,
@@ -50,8 +53,28 @@ const Present = {
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
     Stage.fit();
   },
-  // this slide's ink, and whether busy hands should keep swipes and taps off the slide
-  page(s = this.slide) { if (!this.ink.has(s)) this.ink.set(s, { strokes: [], history: [] }); return this.ink.get(s); },
+  // the layers open on the slide, shallowest first: the slide (""), an open family's tray, its parent's kinds;
+  // an open zoom circle covers the rest, so it shows alone
+  keys(s = this.slide) {
+    const b = s && $(".spec-bubble.open", s);
+    if (b) return ["zoom:" + b.getAttribute("aria-label")];
+    const k = [""], card = s && $(".spec-card.on", s), parent = s && $(".spec-parent.open", s);
+    if (card) k.push("family:" + card.dataset.group);
+    if (card && parent) k.push(`family:${card.dataset.group}/kinds:${parent.dataset.id}`);
+    return k;
+  },
+  layer(key, s = this.slide) {
+    if (!this.ink.has(s)) this.ink.set(s, new Map());
+    const m = this.ink.get(s);
+    if (!m.has(key)) m.set(key, { strokes: [], history: [] });
+    return m.get(key);
+  },
+  layers() { return this.keys().map(k => this.layer(k)); },
+  // the layer new ink goes to: the deepest one open
+  page() { const k = this.keys(); return this.layer(k[k.length - 1]); },
+  // something opened or closed on the slide: show the ink that belongs to what is open now
+  sync() { if (this.on && this.slide && !this.stroke && !this.erasing && this.keys().join("|") !== this.shown) this.paint(); },
+  // whether busy hands should keep swipes and taps off the slide
   busy() { return this.on && (!!this.stroke || this.erasing || !!this.pinch || !!(this.drag && this.drag.moved) || performance.now() - this.lastPen < PALM_MS); },
 
   // a press of the S Pen's side button: the eraser, and the next press the pen
@@ -69,10 +92,13 @@ const Present = {
   paint() {
     const hl = $("#inkMarker"), pen = $("#inkPen");
     hl.replaceChildren(); pen.replaceChildren();
-    if (this.slide) this.page().strokes.forEach(k => (k.tool === "marker" ? hl : pen).appendChild(k.el));
+    if (!this.slide) return;
+    this.shown = this.keys().join("|");
+    this.layers().forEach(p => p.strokes.forEach(k => (k.tool === "marker" ? hl : pen).appendChild(k.el)));
   },
   tray() {
     $("#trayCount").textContent = $("#navCount").textContent;
+    $("#trayHome").disabled = Deck.i === 0;
     $("#trayPrev").disabled = $("#prevBtn").hidden;
     $("#trayNext").disabled = $("#nextBtn").hidden && Deck.i !== 0;
     $("#zoomReset").disabled = this.z === 1;
@@ -138,8 +164,8 @@ const Present = {
   },
   // the eraser rubs out only the ink under it, like a real one: a stroke it crosses is cut in two
   rub([x, y]) {
-    const p = this.page(), R = 12 / this.z;
-    p.strokes.slice().forEach(k => {
+    const R = 12 / this.z;
+    this.layers().forEach(p => p.strokes.slice().forEach(k => {
       const w = +k.el.getAttribute("stroke-width") / 2 + R, pts = k.pts;
       const near = ([a, b]) => Math.hypot(a - x, b - y) < w;
       // does any part of the line come within reach (not just its points)?
@@ -160,12 +186,15 @@ const Present = {
       const at = p.strokes.indexOf(k);
       p.strokes.splice(at, 1, ...parts);
       k.el.after(...parts.map(c => c.el)); k.el.remove();
-      if (!this.rubbed) { this.rubbed = []; p.history.push({ rub: this.rubbed }); }
-      this.rubbed.push({ was: k, parts, at });
-    });
+      // each layer keeps its own record of this rub, so one undo there puts it all back
+      if (!this.rubbed) this.rubbed = new Map();
+      if (!this.rubbed.has(p)) { this.rubbed.set(p, []); p.history.push({ rub: this.rubbed.get(p) }); }
+      this.rubbed.get(p).push({ was: k, parts, at });
+    }));
   },
+  // undo and clear work on what is shown: undo the deepest open layer that has something to undo
   undo() {
-    const p = this.page(), h = p.history.pop();
+    const p = this.layers().reverse().find(l => l.history.length), h = p && p.history.pop();
     if (!h) return;
     if (h.add) { p.strokes.splice(p.strokes.indexOf(h.add), 1); h.add.el.remove(); }
     if (h.rub) h.rub.slice().reverse().forEach(r => p.strokes.splice(r.at, r.parts.length, r.was));
@@ -173,11 +202,12 @@ const Present = {
     if (!h.add) this.paint();
   },
   clear() {
-    const p = this.page();
-    if (!p.strokes.length) return;
-    p.history.push({ clear: p.strokes.slice() });
-    p.strokes.forEach(k => k.el.remove());
-    p.strokes = [];
+    this.layers().forEach(p => {
+      if (!p.strokes.length) return;
+      p.history.push({ clear: p.strokes.slice() });
+      p.strokes.forEach(k => k.el.remove());
+      p.strokes = [];
+    });
   },
 
   /* ---- scroll: one finger drags the slide up and down ---- */
@@ -301,6 +331,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // the tray
   $("#presentBtn").addEventListener("click", () => P.enter(true));
   $("#presentExit").addEventListener("click", () => P.leave());
+  // a family, kinds or a zoom circle opening or closing changes which ink shows
+  new MutationObserver(() => P.sync()).observe($("#deck"), { subtree: true, childList: true, attributes: true, attributeFilter: ["class"] });
+  $("#trayHome").addEventListener("click", () => Deck.go(0));
   $("#trayPrev").addEventListener("click", () => Deck.prev());
   $("#trayNext").addEventListener("click", () => Deck.next());
   $("#zoomReset").addEventListener("click", () => P.resetZoom());

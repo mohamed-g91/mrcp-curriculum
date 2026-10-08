@@ -532,6 +532,39 @@ async function presentPass() {
   await js(`document.getElementById("trayPrev").click(), true`);
   await sleep(300);
   if (await js(`document.querySelectorAll("#inkPen path").length`) !== 2) fail("recording view: the slide's ink did not come back");
+  // ink belongs to what is open: a family's ink hides when it closes, stays off another family, and comes back with its own
+  const d = await js(`Deck.slides.findIndex(s => s.dataset.part === "Learn" && s.querySelector(".spec-drill"))`);
+  if (d >= 0) {
+    const inks = () => js(`document.querySelectorAll("#inkPen path").length`);
+    const card = async k => { await js(`Deck.slides[Deck.i].querySelectorAll(".spec-card")[${k}].click(), true`); await sleep(600); };
+    await js(`Deck.go(${d}), Present.tool = "pen", Present.tray(), true`);
+    await sleep(700);
+    await js(`(() => { const s = Deck.slides[Deck.i], ins = s.querySelector(".spec-insert"); if (ins && s.querySelector(".peek")) ins.click(); return true; })()`);
+    await sleep(700);
+    const base = await inks();
+    await card(1);
+    const tray = await js(`(() => { const r = Deck.slides[Deck.i].querySelector(".spec-line").getBoundingClientRect(); return [r.left + 30, r.top + 20]; })()`);
+    await pen([tray, [tray[0] + 60, tray[1] + 5]]);
+    await sleep(400);
+    const inFamily = await inks();
+    await card(1);  // closes it
+    const closed = await inks();
+    await card(2);
+    const other = await inks();
+    await card(1);
+    const back = await inks();
+    if (inFamily !== base + 1 || closed !== base || other !== base || back !== base + 1)
+      fail(`recording view: a family's ink did not stay with its family (${JSON.stringify({ base, inFamily, closed, other, back })})`);
+    await card(1);
+    await js(`Deck.go(${i}), Present.tool = "marker", Present.tray(), true`);
+    await sleep(400);
+  }
+  // the tray's Home goes to the first slide
+  await js(`document.getElementById("trayHome").click(), true`);
+  await sleep(300);
+  if (await js(`Deck.i`) !== 0) fail("recording view: the tray's Home did not go to the first slide");
+  await js(`Deck.go(${i}), true`);
+  await sleep(400);
   // a tap on the pen when it is in hand opens its sizes; the thick one draws a thick line
   const tapBtn = async sel => {
     const at = await js(`(() => { const r = document.querySelector("${sel}").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
@@ -642,7 +675,7 @@ async function presentPass() {
   await js(`document.getElementById("tallSpacer").remove(), true`);
   await js(`Present.leave(), true`);
   await send("Emulation.setTouchEmulationEnabled", { enabled: false });
-  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, sizes, colours, eraser, side button, highlighter, undo, ink per slide, pinch zoom, palm, finger scroll");
+  if (!problems.some(p => p.startsWith("recording view"))) console.log("  ok   recording view: pen, sizes, colours, eraser, side button, highlighter, undo, ink per slide and per open family, Home, pinch zoom, palm, finger scroll");
 }
 
 // the candidate's page opens on the title, even with a place saved by an older page or a link into the cases
