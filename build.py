@@ -729,10 +729,13 @@ def about_section(site, up=""):
         kind = c.get("kind") if c.get("kind") in HOME_ICONS else "link"
         chips.append(f'<li><a class="chip" href="{e(c["href"])}"{out}>{home_icon(kind)}<span>{e(c["label"])}</span></a></li>')
     chips = "".join(chips)
-    role = f'<p class="about-role">{e(about["role"])}</p>' if about.get("role") else ""
+    # roles: one line each under the name (a single role: works too)
+    roles = about.get("roles") or ([about["role"]] if about.get("role") else [])
+    role = "".join(f'<p class="about-role">{e(r)}</p>' for r in roles)
     bio = f'<p class="about-bio">{e(about["bio"])}</p>' if about.get("bio") else ""
-    return (f'<section class="about" aria-labelledby="aboutTitle"><div class="wrap about-in wash">{photo}'
-            f'<h2 id="aboutTitle">About me</h2><p class="about-name">{e(site["author"])}</p>{role}{bio}'
+    # no "About me" heading on the page: the name leads, and the section is named for screen readers
+    return (f'<section class="about" aria-label="About me"><div class="wrap about-in wash">{photo}'
+            f'<h2 class="about-name">{e(site["author"])}</h2>{role}{bio}'
             f'<ul class="chips">{chips}</ul></div></section>')
 
 
