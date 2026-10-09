@@ -182,7 +182,9 @@ def p_video(slide, topic):
     and cookie-free until then. With no video yet, the poster says so and the chapters show what is coming."""
     vid = topic.get("_video") or ""
     cover = "".join(f'<span class="f-{c["family"]}">{icon(c["icon"])}</span>' for c in topic["concepts"].values() if c.get("cover", True))
-    face = f'<span class="vid-cover" aria-hidden="true">{cover}</span><b class="vid-title">{e(topic["title"])}</b>{ar_title(topic.get("title_ar"), "vid-ar")}'
+    # the English title and its Arabic together, so the Arabic can end where the English ends
+    face = (f'<span class="vid-cover" aria-hidden="true">{cover}</span>'
+            f'<span class="vid-titles"><b class="vid-title">{e(topic["title"])}</b>{ar_title(topic.get("title_ar"), "vid-ar")}</span>')
     if vid:
         poster = (f'<button type="button" class="vid-poster" aria-label="Play the video: {e(topic["title"])}">{face}'
                   f'<span class="vid-play">{icon("play")}</span></button>')

@@ -661,7 +661,11 @@ MENU_JS = ("<script>(function(){var b=document.getElementById('menuBtn'),m=docum
            "rest.forEach(function(x){x.inert=false});m.hidden=true;b.focus()}"
            "b.addEventListener('click',function(){m.hidden?open():close()});"
            "m.addEventListener('click',function(ev){if(ev.target.closest('[data-close]'))close()});"
-           "document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&!m.hidden)close()})})();</script>")
+           # Tab and Shift+Tab go round the menu's own links and buttons while it is open
+           "document.addEventListener('keydown',function(ev){if(m.hidden)return;if(ev.key==='Escape'){close();return}"
+           "if(ev.key!=='Tab')return;var f=m.querySelectorAll('a[href],button'),a=f[0],z=f[f.length-1];"
+           "if(ev.shiftKey&&document.activeElement===a){ev.preventDefault();z.focus()}"
+           "else if(!ev.shiftKey&&document.activeElement===z){ev.preventDefault();a.focus()}})})();</script>")
 
 # What you get rises into view once, as it scrolls in (the site's entrance: 0.5 s each, 0.16 s apart); without
 # scripts, or for someone who asks for less motion, it simply shows
@@ -766,10 +770,12 @@ def render_index(site, specs, built, coming, label=""):
             f'{about_section(site)}</main>{site_foot(site)}')
     # old links named a specialty (/#statistics) or a part of the old home page (#lessons, #how): send them on
     ids = json.dumps([s["id"] for s in specs])
-    redirect = ("<script>(function(){var h=location.hash.slice(1),ids=" + ids + ";"
+    # (on arrival, and when only the address's # changes on an open home page)
+    redirect = ("<script>(function(){var ids=" + ids + ";function go(){var h=location.hash.slice(1);"
                 "if(ids.indexOf(h)>=0)location.replace(h+'/index.html');"
                 "else if(h==='lessons'&&ids.length)location.replace(ids[0]+'/index.html');"
-                "else if(h==='how')location.replace('" + HOW_PAGE + "')})();</script>")
+                "else if(h==='how')location.replace('" + HOW_PAGE + "')}"
+                "go();window.addEventListener('hashchange',go)})();</script>")
     return site_page(site, specs, built, coming, site["title"], body, cls="home", label=label,
                      extra_js=redirect + REVEAL_JS + SIGNUP_JS)
 

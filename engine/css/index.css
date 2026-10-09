@@ -78,12 +78,13 @@ a.mi:hover>span:first-child,.mi[aria-current]>span:first-child{color:var(--navy-
 .mi-soon{font:700 11px/1 var(--sans);background:#203D5A;color:#B4C3D3;border-radius:999px;padding:5px 9px}
 
 /* ---------- home: the hero ---------- */
-.hero-in{display:flex;flex-direction:column;padding-top:36px}
+.hero-in{display:flex;flex-direction:column;padding-top:clamp(18px,4.5svh,36px)}
 .hero h1{font-size:32px;line-height:35px}
 .hero h1 span{display:block;color:var(--primary)}
 .hero-sub{margin-top:12px;max-width:30em;font-size:16px;line-height:25px;color:var(--text)}
-.hero-art{display:block;margin:36px auto 0;width:100%;max-width:560px}
-.hero-art img{display:block;width:100%;height:auto;max-height:330px;object-fit:contain}
+.hero-art{display:block;margin:clamp(14px,4svh,36px) auto 0;width:100%;max-width:560px}
+/* the drawing gives way on a short phone, so Start learning stays on the first screen */
+.hero-art img{display:block;width:100%;height:auto;max-height:clamp(130px,calc(100svh - 440px),330px);object-fit:contain}
 .hero-foot{position:relative;margin:20px calc(-1 * var(--gutter)) 0;background:var(--surface);border-radius:24px 24px 0 0;padding:24px var(--gutter) 28px;box-shadow:0 -8px 24px rgba(14,31,53,.06)}
 .hero-foot>.btn{width:100%}
 

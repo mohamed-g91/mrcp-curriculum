@@ -170,6 +170,18 @@ for (const size of SIZES) {
       await new Promise(r => setTimeout(r, 50));
       return { closed: document.getElementById("menu").hidden, back: document.activeElement === document.getElementById("menuBtn") };
     })()`);
+    // Tab and Shift+Tab go round inside the open menu (the page behind is inert)
+    const trap = await js(`(async () => {
+      document.getElementById("menuBtn").click(); await new Promise(r => setTimeout(r, 350));
+      const m = document.getElementById("menu"), f = m.querySelectorAll("a[href],button"), a = f[0], z = f[f.length - 1];
+      z.focus(); document.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", bubbles: true, cancelable: true }));
+      const fwd = document.activeElement === a;
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", shiftKey: true, bubbles: true, cancelable: true }));
+      const back = document.activeElement === z;
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+      return { fwd, back };
+    })()`);
+    if (!trap.fwd || !trap.back) fail(`${where}: Tab leaves the open menu (${JSON.stringify(trap)})`);
     if (!esc.closed) fail(`${where}: Escape did not close the menu`);
     if (!esc.back) fail(`${where}: focus did not return to the menu button`);
     if (size.width >= 600) {
@@ -183,6 +195,17 @@ for (const size of SIZES) {
   }
   console.log(`  ok   ${size.name}: ${pages.length} pages, the menu`);
 }
+
+// ---------------------------------------------------------------- short phones keep Start learning on the first screen
+for (const size of [{ name: "phone-small", width: 320, height: 568, mobile: true }, { name: "phone-short", width: 360, height: 640, mobile: true }]) {
+  where = `index.html @ ${size.name}`;
+  await go("index.html", size);
+  const b = await js(`(() => { const r = document.querySelector(".hero-foot > .btn").getBoundingClientRect(); return { bottom: r.bottom, h: innerHeight, wide: document.documentElement.scrollWidth > innerWidth + 1 }; })()`);
+  if (b.bottom > b.h) fail(`${where}: Start learning is below the first screen (${Math.round(b.bottom)} of ${b.h} px)`);
+  if (b.wide) fail(`${where}: sideways overflow`);
+  await shot(`index-${size.name}`);
+}
+console.log("  ok   short phones: Start learning on the first screen");
 
 // ---------------------------------------------------------------- old addresses reach their new pages
 const specs = pages.filter(p => p.endsWith("/index.html")).map(p => p.split("/")[0]);

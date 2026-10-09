@@ -20,16 +20,21 @@
 .topbar .icon-btn:hover{background:rgba(255,255,255,.16)}
 .topbar #arBtn[aria-pressed="true"]{background:var(--bar-accent);border-color:var(--bar-accent);color:var(--bar)}
 .topbar #arBtn[aria-pressed="true"]:hover{background:#fff}
-.topbar :focus-visible{outline-color:var(--bar-accent)}
+.topbar :focus-visible,.topbar a:focus-visible,.topbar button:focus-visible{outline-color:var(--bar-accent)}
 .progress{background:color-mix(in srgb,var(--primary) 16%,var(--page))}
 /* a sideways phone keeps the way back to the specialty in the top bar (its bottom bar is gone) */
 html.sideways .topbar .brand-sub{display:inline}
 
-/* a landscape tablet scales the stage to 0.8: touch controls grow so they stay 44 px on the glass */
+/* a touch screen showing the scaled stage (a tablet held sideways): controls grow by the stage's scale (--s), so
+   they stay at least 44 px on the glass whatever the scale */
 @media (pointer:coarse){
-  html:not(.fluid):not(.present) .topbar .icon-btn{width:56px;height:56px}
-  html:not(.fluid):not(.present) .navbar .btn{min-height:56px}
+  html:not(.fluid):not(.present) .topbar .icon-btn{width:max(44px,calc(44px / var(--s,1)));height:max(44px,calc(44px / var(--s,1)))}
+  html:not(.fluid):not(.present) .navbar .btn{min-height:max(44px,calc(44px / var(--s,1)))}
 }
+/* on a phone the top bar keeps the logo and its controls whole: the lesson's title is on its slides, and the way back
+   to the specialty is in the dock */
+.topbar .icon-btn,.topbar .score-pill{flex:none}
+@container (max-width:600px){.topbar .brand,.topbar .brand-sep{display:none}}
 
 /* the bottom bar: none on the title on a laptop (Learn and Practise are its cards) */
 html.on-title:not(.fluid) .navbar{display:none}
@@ -37,8 +42,8 @@ html.on-title:not(.fluid) .navbar{display:none}
 .navbar .btn{min-height:44px}
 
 /* on a phone or upright tablet: the dock */
-html.fluid #scorePill{display:none}
-html.fluid .navbar{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"lessons lessons lessons score" "prev start count next";
+html.fluid:not(.sideways) #scorePill{display:none}
+html.fluid:not(.sideways) .navbar{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"lessons lessons lessons score" "prev start count next";
   align-items:center;gap:4px 8px;min-height:0;padding:6px 12px calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 20px rgba(14,31,53,.06)}
 html.fluid .nav-left,html.fluid .nav-right{display:contents}
 html.fluid .nav-lessons{grid-area:lessons;display:inline-flex;align-items:center;gap:2px;min-height:44px;padding:0 10px 0 2px;border-radius:10px;color:var(--primary);font-weight:650;font-size:15px;text-decoration:none;white-space:nowrap}
@@ -117,3 +122,9 @@ html.fluid .p-video .vid-practise{margin-top:auto}
 
 /* Practise carries no Arabic: it belongs to Learn and the video (the warm-up and the score heading drop theirs too) */
 .slide[data-part="Practise"] :is(.ar,.ar-title){display:none!important}
+
+/* Arabic always stands at the right: on the title and the video poster it ends where the English title ends */
+.p-title h1{width:fit-content;max-width:100%}
+.p-title h1 .ar-h1{text-align:right}
+.vid-titles{display:grid;justify-items:center}
+.vid-titles .vid-ar{justify-self:end;text-align:right}
