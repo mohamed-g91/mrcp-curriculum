@@ -708,9 +708,9 @@ def signup_form(site):
     """Subscribe for new lessons: one field and Subscribe, posting to the mailing-list service in curriculum.yaml."""
     action = site.get("subscribe") or ""
     act = f' action="{e(action)}" method="post" target="_blank"' if action else ""
-    return (f'<form class="signup" id="signup"{act} novalidate><p class="signup-label" id="signupLabel">Subscribe for new lessons</p>'
+    return (f'<form class="signup" id="signup"{act} novalidate>'
             f'<div class="signup-row"><span class="signup-field">{home_icon("email")}<label class="sr" for="signupEmail">Email address</label>'
-            f'<input id="signupEmail" name="email" type="email" autocomplete="email" required placeholder="Email address" aria-describedby="signupNote"></span>'
+            f'<input id="signupEmail" name="email" type="email" autocomplete="email" required placeholder="Email for new lessons" aria-describedby="signupNote"></span>'
             f'<button class="btn primary" type="submit">Subscribe</button></div>'
             f'<p class="signup-note" id="signupNote">Unsubscribe any time.</p><p class="signup-status" role="status" aria-live="polite"></p></form>')
 
