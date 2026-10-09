@@ -19,10 +19,8 @@ site:
       - { text: "MRCP instructor", icon: teach }
       - { text: "Internal medicine, haematology and bone marrow transplant specialist", icon: medic }
     bio: "I teach MRCP the way I wish I had been taught: one idea at a time, emphasising visualisation. Every lesson is written from current guidelines and textbooks, then tested with exam-style cases."
-    contacts:
-      - { kind: email,    label: Email,    href: "mailto:TODO@example.com" }
-      - { kind: youtube,  label: YouTube,  href: "https://www.youtube.com/" }
-      - { kind: telegram, label: Telegram, href: "https://t.me/" }
+    # the contact buttons (kind: email, youtube or telegram); none until the domain's email, the channel and Telegram exist
+    contacts: []
 
 # specialties not started yet: the home page shows them as coming soon, with a cover from art/site/covers/<id>.webp
 coming:

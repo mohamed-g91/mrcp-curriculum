@@ -743,7 +743,7 @@ def about_section(site, up=""):
     # no "About me" heading on the page: the name leads, and the section is named for screen readers
     return (f'<section class="about" aria-label="About me"><div class="wrap about-in wash">{photo}'
             f'<h2 class="about-name">{e(site["author"])}</h2>{role}{bio}'
-            f'<ul class="chips">{chips}</ul></div></section>')
+            + (f'<ul class="chips">{chips}</ul>' if chips else "") + '</div></section>')
 
 
 def render_index(site, specs, built, coming, label=""):
