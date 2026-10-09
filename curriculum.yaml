@@ -14,7 +14,7 @@ site:
   # About me and contact, at the end of the home page. The photo is art/site/about.webp (initials until it exists).
   # TODO lines are placeholders: build.py warns while any is left, and the site must not go live with them
   about:
-    role: "TODO: your role, e.g. Internal medicine registrar"
+    role: "Internal medicine, haematology and bone marrow transplant specialist"
     bio: "TODO: two lines about you: where you trained, and why you built MRCP Gafar."
     contacts:
       - { kind: email,    label: Email,    href: "mailto:TODO@example.com" }
