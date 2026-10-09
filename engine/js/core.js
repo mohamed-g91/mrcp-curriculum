@@ -87,10 +87,13 @@ const Score = {
   },
   reset() { this.got = 0; this.total = 0; this.seen.clear(); this.render(); },
   render() {
-    $("#scorePill").textContent = `Score ${this.got} / ${this.total}`;
+    // the top bar's score, and the phone dock's
+    $$("#scorePill, #scorePill2").forEach(p => p.textContent = `Score ${this.got} / ${this.total}`);
     const fs = $("#finalScore"), fm = $("#finalMsg");
     if (!fs) return;
-    fs.textContent = `${this.got} / ${this.total}`;
+    // nothing answered yet is said in words, never shown as a 0 / 0 result
+    fs.textContent = this.total ? `${this.got} / ${this.total}` : "No cases yet";
+    fs.classList.toggle("is-empty", !this.total);
     // the scored cases on the page (every case but each quiz's solved example)
     const all = Object.values(TOPIC.quizzes || {}).reduce((n, q) => n + q.cases.filter(c => !c.solved).length, 0);
     const pct = this.total ? this.got / this.total : 0;

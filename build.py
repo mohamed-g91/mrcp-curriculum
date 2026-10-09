@@ -36,7 +36,7 @@ DIST = os.path.join(ROOT, "dist")
 PRESENTER = os.path.join(ROOT, "presenter")  # local only: git ignores it and Cloudflare never sees it
 LOCK = os.path.join(ROOT, "content", "ids.lock")
 ART = os.path.join(ROOT, "art", "site")  # the home page's drawings, made small by art/make_site_images.py; copied to <build>/img/
-CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css"]
+CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css", "frame.css"]
 JS_FILES = ["core.js", "video.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "working.js", "sort.js", "quiz.js", "present.js", "deck.js"]
 # the Arabic switch in the top bar: shows or hides every Arabic title and term (engine/js/core.js)
 AR_BUTTON = '<button class="icon-btn" id="arBtn" type="button" aria-pressed="true" aria-label="Show or hide the Arabic" lang="ar">ع</button>'
@@ -533,6 +533,8 @@ def render_topic(t, spec, site, present=False):
                 slides.append(section(s, part, inner))
     shell = read(ENGINE, "shell.html")
     css = fonts_css(bool(t.get("title_ar"))) + "".join(read(ENGINE, "css", f) for f in CSS_FILES)
+    # the site's pattern behind the candidate's lesson, embedded so the page stays one offline file
+    css = css.replace("url(img/pattern.webp)", "url(" + art_data_uri("pattern.webp") + ")")
     js = "".join(read(ENGINE, "js", f) for f in JS_FILES)
     data = json.dumps(topic_data(t), ensure_ascii=False).replace("</", "<\\/")
     page_title = f'{t["title"]} · {site["title"]}'
@@ -821,7 +823,7 @@ def render_specialty(site, specs, built, coming, spec, label=""):
     blurb = f'<p class="spec-blurb">{e(spec["blurb"])}</p>' if spec.get("blurb") else ""
     body = (f'<main class="wrap spec"><aside class="spec-side">{img_tag("covers/" + spec["id"] + ".webp", "spec-pic", eager=True, up="../")}'
             f'<div class="spec-text wash"><h1>{e(spec["title"])}</h1>{blurb}<p class="spec-meta">{e(availability(spec, built))}</p>'
-            f'{start}</div></aside><div class="spec-list">{"".join(cards)}{more}</div></main>{site_foot(site)}')
+            f'{start}</div></aside><div class="spec-list">{"".join(cards)}{more}</div></main>')
     return site_page(site, specs, built, coming, f'{spec["title"]} · {site["title"]}', body, up="../", here=spec["id"],
                      cls="spec-page", label=label)
 
@@ -834,7 +836,7 @@ def render_how(site, specs, built, coming, label=""):
     cards = "".join(f'<li class="step"><span class="step-ico">{home_icon(ic)}</span><span class="step-n">{k + 1}</span>'
                     f'<h2>{t}</h2><p>{d}</p></li>' for k, (ic, t, d) in enumerate(steps))
     body = (f'<main class="wrap how"><h1 class="wash">How it works</h1><ol class="steps">{cards}</ol>'
-            f'<a class="btn primary big" href="{e(start_href(specs))}">Start learning</a></main>{site_foot(site)}')
+            f'<a class="btn primary big" href="{e(start_href(specs))}">Start learning</a></main>')
     return site_page(site, specs, built, coming, f'How it works · {site["title"]}', body, here="how", cls="how-page", label=label)
 
 

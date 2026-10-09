@@ -1,0 +1,108 @@
+/* ---------- the lesson's frame (direction B with a navy top bar, agreed 9 October 2026) ----------
+   A navy top bar on every lesson page, the presenter's deck and so the recordings included. On the candidate's page
+   (html.site) the lesson sits in the site's sky and pattern, each slide on a quiet canvas panel, and the title is a
+   cover with its Learn and Practise on a white shelf; on a phone the bottom bar is a two-row dock: the way back to the
+   specialty's lessons, the score and Start, then Back, the count and Next. Every control is at least 44 px, after
+   scaling too. Loaded after patterns.css, so it has the last word on the frame. */
+
+/* the navy top bar */
+.topbar{min-height:56px;background:var(--bar);border-bottom:0;color:var(--bar-ink);--lk-caps:#FFFFFF;--lk-name:var(--bar-accent)}
+.topbar .wordmark .wm-lockup{height:26px}
+@container (min-width:601px){.topbar .wordmark .wm-lockup{height:30px}}
+.topbar .brand-sep{background:rgba(255,255,255,.22)}
+.topbar .brand b{color:#fff}
+.topbar .brand-sub{color:var(--bar-accent)}
+.topbar a.brand-sub:hover{color:#fff}
+.topbar .part-label,.topbar .top-count{color:var(--bar-soft)}
+.topbar .score-pill{background:rgba(255,255,255,.12);border-color:transparent;color:#fff}
+.icon-btn{width:44px;height:44px;border-radius:12px}
+.topbar .icon-btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#fff}
+.topbar .icon-btn:hover{background:rgba(255,255,255,.16)}
+.topbar #arBtn[aria-pressed="true"]{background:var(--bar-accent);border-color:var(--bar-accent);color:var(--bar)}
+.topbar #arBtn[aria-pressed="true"]:hover{background:#fff}
+.topbar :focus-visible{outline-color:var(--bar-accent)}
+.progress{background:color-mix(in srgb,var(--primary) 16%,var(--page))}
+/* a sideways phone keeps the way back to the specialty in the top bar (its bottom bar is gone) */
+html.sideways .topbar .brand-sub{display:inline}
+
+/* a landscape tablet scales the stage to 0.8: touch controls grow so they stay 44 px on the glass */
+@media (pointer:coarse){
+  html:not(.fluid):not(.present) .topbar .icon-btn{width:56px;height:56px}
+  html:not(.fluid):not(.present) .navbar .btn{min-height:56px}
+}
+
+/* the bottom bar: none on the title on a laptop (Learn and Practise are its cards) */
+html.on-title:not(.fluid) .navbar{display:none}
+.nav-lessons,.nav-score{display:none}
+.navbar .btn{min-height:44px}
+
+/* on a phone or upright tablet: the dock */
+html.fluid #scorePill{display:none}
+html.fluid .navbar{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"lessons lessons lessons score" "prev start count next";
+  align-items:center;gap:4px 8px;min-height:0;padding:6px 12px calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 20px rgba(14,31,53,.06)}
+html.fluid .nav-left,html.fluid .nav-right{display:contents}
+html.fluid .nav-lessons{grid-area:lessons;display:inline-flex;align-items:center;gap:2px;min-height:44px;padding:0 10px 0 2px;border-radius:10px;color:var(--primary);font-weight:650;font-size:15px;text-decoration:none;white-space:nowrap}
+html.fluid .nav-lessons .ico{width:20px;height:20px}
+html.fluid .nav-score:not([hidden]){grid-area:score;justify-self:end;display:inline-flex}
+html.fluid .nav-lessons{justify-self:start}
+html.fluid #homeBtn{grid-area:start;justify-self:start}
+html.fluid #prevBtn{grid-area:prev;justify-self:start}
+html.fluid #nextBtn{grid-area:next;justify-self:end}
+html.fluid .nav-count{grid-area:count;text-align:center}
+html.fluid .nav-count:empty{display:none}
+html.fluid .navbar .btn:not(.primary){min-width:44px;justify-content:center;padding-inline:12px}
+
+/* ---------- the candidate's page: the site's sky around the lesson ---------- */
+html.site .deck{background:var(--sky) url(img/pattern.webp) 0 0/420px repeat}
+:root[data-theme="dark"].site .deck{background-blend-mode:multiply}
+/* each slide on a quiet canvas panel (drawn behind it, so the slide's own layout and fit do not change) */
+html.site .slide.active{isolation:isolate}
+html.site .slide.active:not(.p-title)::before{content:"";position:absolute;z-index:-1;inset:-14px -24px -10px;border-radius:18px;background:var(--page);box-shadow:var(--panel-shadow)}
+html.site.fluid .slide.active:not(.p-title)::before{inset:-10px -8px -8px;border-radius:16px}
+
+/* the title: a cover on the sky, its Learn and Practise on a white shelf */
+html.site .p-title .title-wrap{background:radial-gradient(closest-side,var(--sky) 58%,transparent) center 30%/110% 70% no-repeat}
+html.site .part-card{border-radius:16px;box-shadow:none}
+html.site:not(.fluid) .p-title .title-wrap{display:grid;grid-template-columns:minmax(0,1fr) 352px;grid-template-rows:auto auto;column-gap:64px;row-gap:24px;
+  align-content:center;justify-items:center;background-position:28% 50%;background-size:70% 90%}
+html.site:not(.fluid) .p-title .cover{grid-column:1;grid-row:1;align-self:end;margin-bottom:0}
+html.site:not(.fluid) .p-title h1{grid-column:1;grid-row:2;align-self:start}
+html.site:not(.fluid) .p-title .part-cards{grid-column:2;grid-row:1/3;align-self:center;grid-template-columns:minmax(0,1fr);gap:16px;padding:20px;
+  background:var(--surface);border-radius:16px;box-shadow:var(--panel-shadow)}
+html.site:not(.fluid) .p-title .part-card{min-height:104px}
+html.site.fluid .p-title .title-wrap{gap:20px;padding-top:12px}
+html.site.fluid .p-title .part-cards{margin:auto calc(-1 * var(--pad)) calc(-1 * clamp(14px,calc(1.6 * var(--u)),20px));width:calc(100% + 2 * var(--pad));padding:20px var(--pad);
+  background:var(--surface);border-radius:24px 24px 0 0;box-shadow:0 -8px 24px rgba(14,31,53,.06)}
+
+/* Learn: Practise straight after the chapters */
+.vid-side{align-self:stretch;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.vid-side .vid-chapters{align-self:auto;flex:0 1 auto;min-height:0}
+/* on the stage a long chapter list scrolls in its column, so the slide still fits with Practise under it */
+@container (min-width:901px){.vid-wrap{grid-template-rows:minmax(0,1fr)}.vid-side{max-height:100%}}
+html:not(.fluid) .slide.p-video.active{height:100%}
+.vid-practise{align-self:stretch;justify-content:center;min-height:48px;border-radius:999px;font-size:var(--fs-body)}
+@container (max-width:900px){.vid-wrap{align-content:start}.vid-side{justify-content:flex-start;gap:20px}}
+.vid-soon{border-style:solid}
+.vid-note{text-transform:none;letter-spacing:0;font-size:var(--fs-small);font-weight:600}
+
+/* practice: the options never jump when one is marked (the tick or cross has its own room), and on a phone or
+   tablet they stay two across, however long a label or its Arabic */
+.choice{min-width:0;padding-right:40px;border-radius:16px}
+.choice .mark{position:absolute;right:12px;top:50%;margin:-11px 0 0}
+/* a label and its Arabic wrap inside a narrow option rather than run out of it */
+.choice>span:not(.choice-dot){min-width:0}
+.choice .ar{white-space:normal;max-width:100%}
+@container (max-width:900px){
+  .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .choices>.choice:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 6px)}
+}
+.stem-card,.end-card,.next-card{border-radius:16px}
+
+/* the end: the score, then one clear way on */
+.final-score.is-empty{font-size:clamp(28px,calc(3.2 * var(--u)),40px);color:var(--muted)}
+.next-thumb{background:transparent;border:0}
+/* the drawings are navy line art: in the dark theme they keep a light ground to stay legible */
+:root[data-theme="dark"] .next-thumb{background:#DCE7F3}
+
+/* the credits stand once, on the end slide; on a phone they are one small, quiet block */
+@container (max-width:600px){.credits{font-size:11px;line-height:1.4;gap:0 10px;padding-top:8px}}

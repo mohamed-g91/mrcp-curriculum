@@ -165,7 +165,7 @@ def p_title(slide, topic):
             f'<span class="f-{c["family"]}" style="--i:{i}">{icon(c["icon"])}</span>'
             for i, c in enumerate(c for c in topic["concepts"].values() if c.get("cover", True))) + "</div>"
     return (f'<div class="title-wrap">{cover}<h1>{e(topic["title"])}{ar_title(topic.get("title_ar"), "ar-h1")}</h1>'
-            f'<div class="part-cards">{cards}</div></div>{credits(topic)}')
+            f'<div class="part-cards">{cards}</div></div>')
 
 
 def chapter_seconds(at):
@@ -194,8 +194,10 @@ def p_video(slide, topic):
         stamp = f'<span class="vid-at">{e(at) if at is not None else k + 1}</span><span class="vid-name"><span>{e(s["title"])}</span>{ar_title(s.get("title_ar"))}</span>'
         rows.append(f'<li><button type="button" class="vid-ch" data-at="{chapter_seconds(at)}">{stamp}</button></li>'
                     if vid and at is not None else f'<li><span class="vid-ch">{stamp}</span></li>')
+    # Practise straight after the chapters, so Learn always has a way on (and is never a dead end without a video)
+    practise = f'<button type="button" class="btn primary vid-practise" data-go="practise">Practise{icon("right")}</button>'
     return (f'<div class="vid-wrap"><div class="vid-player" data-video="{e(vid)}">{poster}</div>'
-            f'<ol class="vid-chapters" aria-label="Chapters">{"".join(rows)}</ol></div>{credits(topic)}')
+            f'<div class="vid-side"><ol class="vid-chapters" aria-label="Chapters">{"".join(rows)}</ol>{practise}</div></div>')
 
 
 def svg(name):
@@ -571,14 +573,14 @@ def p_stem_quiz(slide, topic):
 
 def p_end(slide, topic):
     nx = topic.get("_next") or {}
-    # every lesson ends with a way on: its specialty's lessons, and the next lesson when there is one
-    all_btn = (f'<a class="btn{"" if nx.get("slug") else " primary"}" href="{e(nx["all"])}">{icon("list")}All {e(nx["spec"].lower())} lessons</a>'
-               if nx.get("all") else "")
+    # every lesson ends with one clear way on: the next lesson when there is one, else its specialty's lessons
+    # (the specialty is always in the top bar or the phone's dock, and Start in the bottom bar, so neither repeats here)
+    all_btn = (f'<a class="btn primary" href="{e(nx["all"])}">{icon("list")}All {e(nx["spec"].lower())} lessons</a>'
+               if nx.get("all") and not nx.get("slug") else "")
     return (heading(slide) +
             '<div class="center-body"><div class="end-row"><div class="end-card">'
             '<div class="final-score" id="finalScore">0 / 0</div><p class="final-msg" id="finalMsg"></p>'
-            f'<div class="end-actions"><button class="btn primary" type="button" id="restartBtn">{icon("refresh")}New cases</button>'
-            f'<button class="btn" type="button" id="toStartBtn">{icon("start")}Back to start</button></div>'
+            f'<div class="end-actions"><button class="btn" type="button" id="restartBtn">{icon("refresh")}New cases</button></div>'
             f'</div>{next_card(nx, all_btn)}</div></div>{credits(topic)}')
 
 
@@ -599,6 +601,7 @@ def next_card(nx, all_btn):
 
 
 def credits(topic):
+    """Who made the lesson, the disclaimer and the date: once, on the end slide (never on every slide)."""
     site = topic["_site"]
     return (f'<p class="credits"><span>Created by {e(site["author"])}</span><span>{e(site["disclaimer"])}</span>'
             f'<span>Last updated {e(topic["_updated_text"])}</span></p>')

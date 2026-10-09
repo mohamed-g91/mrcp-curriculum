@@ -13,6 +13,17 @@ function caseOrder(opts, id) {
   return a;
 }
 
+// an answer's explanation can land under the bottom bar (a phone) or below the stage: bring it just into view,
+// so nobody moves on without reading it
+function bringIntoView(node) {
+  const fluid = document.documentElement.classList.contains("fluid"), bar = $(".navbar");
+  const limit = fluid ? (bar && bar.offsetParent ? bar.getBoundingClientRect().top : innerHeight) : $("#deck").getBoundingClientRect().bottom;
+  const over = node.getBoundingClientRect().bottom + 12 - limit;
+  if (over <= 0) return;
+  const behavior = matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+  (fluid ? window : $("#deck")).scrollBy({ top: over, behavior });
+}
+
 function buildCaseSlide(Q, c, num) {
   const title = c.solved ? "Solved example" : `Case ${num}`;
   // a topic with Arabic gives each case its Arabic heading too, at the right edge
@@ -53,6 +64,7 @@ function buildCaseSlide(Q, c, num) {
         fb.innerHTML = `${icon("cross")}<span><b>Not quite.</b> ${esc(c.hint)} The key phrase is highlighted in the stem.</span>`;
         $$("mark", sec).forEach(m => m.classList.add("lit"));
       }
+      if (!quiet) requestAnimationFrame(() => bringIntoView(fb));
     };
     b.addEventListener("click", () => b._pick(false));
     grid.appendChild(b);

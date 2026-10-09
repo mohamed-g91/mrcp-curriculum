@@ -67,13 +67,14 @@ const Deck = {
     fitArTitle(s);
     const label = s.getAttribute("aria-label") || "";
     $("#partLabel").textContent = s.dataset.part ? `${s.dataset.part} · ${label}` : "";
-    // slides are counted within their part
-    const [first, last] = this.range(), home = this.i === 0;
-    $("#navCount").textContent = $("#topCount").textContent = home ? "" : `${this.i - first + 1} / ${last - first + 1}`;
+    // slides are counted within their part; a part of one slide (the video) has no count and no progress
+    const [first, last] = this.range(), home = this.i === 0, lone = first === last;
+    $("#navCount").textContent = $("#topCount").textContent = home || lone ? "" : `${this.i - first + 1} / ${last - first + 1}`;
     $("#homeTop").hidden = home;
+    document.documentElement.classList.toggle("on-title", home);
     // the score belongs to Practise: not on the title, the video or the presenter's deck
-    $("#scorePill").hidden = PRESENTER || s.dataset.part !== "Practise";
-    $("#progressBar").style.width = home ? "0%" : ((this.i - first + 1) / (last - first + 1) * 100) + "%";
+    $$("#scorePill, #scorePill2").forEach(p => p.hidden = PRESENTER || s.dataset.part !== "Practise");
+    $("#progressBar").style.width = home || lone ? "0%" : ((this.i - first + 1) / (last - first + 1) * 100) + "%";
     $("#prevBtn").hidden = home || this.i === first;
     $("#homeBtn").hidden = home;
     const nb = $("#nextBtn");

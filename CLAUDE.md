@@ -34,7 +34,7 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 | `engine/logo.svg`, `logo/` | The logo: the icon the pages use, and in `logo/open-knowledge/` the full artwork (avatar, lockups, exports) for YouTube and social posts |
 | `art/` | The home page's drawings (see DESIGN.md, Home page): `site/` the approved ones as small WebP (committed; `build.py` copies them to `img/` beside the home page), `make_site_images.py` that makes them, `prompts/` the Codex style and subjects; `drafts/` holds Codex's large PNGs, local only |
 | `engine/fonts/` | The embedded fonts: Inter and Outfit on every page, Cairo (Arabic letters and Latin part, with its OFL licence) only in a topic with Arabic; `build.py` embeds them as base64 |
-| `engine/css/` | `tokens` (colours, sizes), `base`, `stage` (16:9 canvas), `patterns`, `index` (home page) |
+| `engine/css/` | `tokens` (colours, sizes), `base`, `stage` (16:9 canvas), `patterns`, `frame` (the lesson's frame: navy top bar, sky, phone dock), `index` (the site's own pages) |
 | `engine/js/` | `core` (helpers, theme, score, `record()`, click-away), one file per pattern, `deck` (stage, navigation, start-up) |
 | `build.py` | Checks every topic, then builds the candidate's `dist/<specialty>/<slug>.html`, the site around them (`dist/index.html`, each specialty's `dist/<specialty>/index.html`, `dist/how-it-works.html`), and the presenter's copies in `presenter/` (git-ignored, never published) |
 | `checks/check.mjs` | Drives headless Chrome through a built page: layout at six sizes, every case solved, the recording view, and, where a topic has them, the Arabic titles and ع switch and a drill spectrum's cards, kinds and zoom circles |
@@ -72,7 +72,7 @@ Mockups go to the user as a picture: write a static SVG (no scripts), render it 
 - Question bank items must be original, written from guidelines and textbooks. PassMedicine or Pastest material can guide which topics to cover and their weight, never be copied.
 - Before building a new topic, confirm its slide list, steps and cases with the user.
 - British English; plain, short sentences on slides.
-- Credits (from `curriculum.yaml`) sit on the title and end slides automatically.
+- Credits (from `curriculum.yaml`) sit on the end slide only, automatically; on the site, the footer is on the home page only.
 
 ## Delegation
 

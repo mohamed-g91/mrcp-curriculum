@@ -13,6 +13,9 @@
   --ink:#0E1F35;--text:#2F3E52;--muted:#56657A;
   --primary:#1F4E8C;--primary-hover:#173D6E;--on-primary:#FFFFFF;--on-solid:#FFFFFF;
   --brand-ink:#12304F;--brand:#1F7FBF;
+  /* the lesson frame: the navy top bar and its inks; the site's sky around the slides */
+  --bar:#12304F;--bar-ink:#FFFFFF;--bar-soft:#CFE0F2;--bar-accent:#9CCBF0;--sky:#E3EEF9;
+  --panel-shadow:0 2px 4px rgba(18,48,79,.03),0 10px 24px rgba(18,48,79,.06);
   /* the logo lockup's inks, from logo/open-knowledge: lockup.svg in light, lockup-dark.svg in dark */
   --lk-caps:#12304F;--lk-name:#1F7FBF;--lk-tag:#56657A;
   --cat-bg:#FDEEE8;--cat-ink:#5E1F0B;--cat-bd:#EBA88D;--cat-solid:#D85A30;
@@ -61,6 +64,7 @@
   --ink:#F5F8FC;--text:#D3DCE7;--muted:#A5B3C5;
   --primary:#5B92DB;--primary-hover:#79A8E6;--on-primary:#0B1522;--on-solid:#0B1522;
   --brand-ink:#F5F8FC;--brand:#6FB3E6;
+  --bar:#08101B;--sky:#13283E;--panel-shadow:none;
   --lk-caps:#FFFFFF;--lk-name:#6FB3E6;--lk-tag:var(--muted);
   --cat-bg:#3A1E14;--cat-ink:#FFD3C2;--cat-bd:#B5583A;--cat-solid:#E0764D;
   --par-bg:#252150;--par-ink:#E0DCFF;--par-bd:#6B62C8;--par-solid:#8A80F0;
