@@ -618,7 +618,7 @@ def render_index(site, specs, built, coming, label=""):
     tabs, panels = [], []
     for k, spec in enumerate(specs):
         n_ready = sum(1 for tp in spec["topics"] if tp["slug"] in built)
-        tabs.append(f'<a class="tab" href="#{e(spec["id"])}" data-tab="{e(spec["id"])}" role="tab">{e(spec["title"])}'
+        tabs.append(f'<a class="tab" href="#{e(spec["id"])}" data-tab="{e(spec["id"])}">{e(spec["title"])}'
                     f'<span class="tab-n">{n_ready}</span></a>')
         rows, last_sec, planned = [], None, []
         sections = spec.get("sections") or {}
@@ -647,13 +647,14 @@ def render_index(site, specs, built, coming, label=""):
             more = (f'<details class="more"><summary>{len(planned) - 1} more {e(spec["title"].lower())} topics planned</summary>'
                     f'<ul>{names}</ul></details>')
         total = len(spec["topics"])
+        how_id = ' id="how"' if k == 0 else ""
         pct = round(100 * n_ready / max(total, 1))
         lesson1 = f'{spec["id"]}/{spec["topics"][0]["slug"]}.html'
         side = (f'<aside class="side"><div class="side-card">{img_tag("covers/" + spec["id"] + ".webp", "side-pic")}'
                 f'<div class="side-body"><h3>{e(spec["title"])}</h3><p class="muted">{n_ready} of {total} topics ready</p>'
                 f'<div class="bar"><span style="width:{pct}%"></span></div>'
                 f'<a class="btn primary wide" href="{e(lesson1)}">Start with lesson 1</a></div></div>'
-                f'<div class="side-card how" id="how"><h3>How it works</h3><ul>'
+                f'<div class="side-card how"{how_id}><h3>How it works</h3><ul>'
                 f'<li>{home_icon("play")}<span><b>Watch</b>One idea per chapter</span></li>'
                 f'<li>{home_icon("cases")}<span><b>Practise</b>Exam-style cases, a new order each time</span></li>'
                 f'<li>{home_icon("check")}<span><b>Check</b>Why each answer is right</span></li></ul></div></aside>')
@@ -676,9 +677,9 @@ def render_index(site, specs, built, coming, label=""):
     hero_pic = img_tag("hero.webp", "hero-pic", eager=True)
     # the tabs: the address names the open specialty (/#statistics), so a link can open on it
     script = ("<script>(function(){var t=document.querySelectorAll('[data-tab]'),p=document.querySelectorAll('[data-panel]');"
-              "function show(id){var ok=false;p.forEach(function(x){if(x.dataset.panel===id)ok=true});if(!ok&&p.length)id=p[0].dataset.panel;"
-              "p.forEach(function(x){x.hidden=x.dataset.panel!==id});t.forEach(function(x){x.setAttribute('aria-selected',x.dataset.tab===id?'true':'false')})}"
-              "show(location.hash.slice(1));window.addEventListener('hashchange',function(){show(location.hash.slice(1))})})();</script>")
+              "function show(id,first){var ok=false;p.forEach(function(x){if(x.dataset.panel===id)ok=true});if(!ok){if(!first)return;id=p.length?p[0].dataset.panel:''}"
+              "p.forEach(function(x){x.hidden=x.dataset.panel!==id});t.forEach(function(x){if(x.dataset.tab===id)x.setAttribute('aria-current','true');else x.removeAttribute('aria-current')})}"
+              "show(location.hash.slice(1),true);window.addEventListener('hashchange',function(){show(location.hash.slice(1))})})();</script>")
     name = e(site["title"])
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -694,7 +695,7 @@ def render_index(site, specs, built, coming, label=""):
 <div class="hero-cta"><a class="btn primary big" href="{e(start_href)}">Start learning</a><a class="btn big" href="#lessons">Browse lessons</a></div>
 <dl class="stats"><div><dt>{len(ready)}</dt><dd>lessons</dd></div><div><dt>{n_cases}</dt><dd>exam-style cases</dd></div><div><dt>Free</dt><dd>to start, no sign-up</dd></div></dl>
 </div></section>
-<div class="wrap lessons" id="lessons"><nav class="tabs" role="tablist" aria-label="Specialties">{"".join(tabs)}</nav>{"".join(panels)}</div>
+<div class="wrap lessons" id="lessons"><nav class="tabs" aria-label="Specialties">{"".join(tabs)}</nav>{"".join(panels)}</div>
 {soon}
 </main>
 <footer class="foot"><div class="wrap foot-row"><span class="foot-name">{name} · {e(site["author"])}</span>

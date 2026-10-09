@@ -56,7 +56,7 @@ a:focus-visible,.btn:focus-visible,summary:focus-visible{outline:3px solid var(-
 .tabs{display:flex;flex-wrap:wrap;align-items:center;gap:6px 26px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
 .tab{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 6px;font-weight:500;color:var(--muted);text-decoration:none;border-radius:999px}
 a.tab{padding:0 18px;color:var(--primary);font-weight:700}
-a.tab[aria-selected="true"]{background:color-mix(in srgb,var(--primary) 12%,var(--surface))}
+a.tab[aria-current="true"]{background:color-mix(in srgb,var(--primary) 12%,var(--surface))}
 .tab-n{display:inline-grid;place-items:center;min-width:28px;height:22px;padding:0 8px;border-radius:11px;background:var(--primary);color:var(--on-primary);font-size:12px;font-weight:700}
 .tab.is-soon{cursor:default}
 
@@ -123,6 +123,9 @@ a.lesson:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow
 .foot-row{display:flex;flex-wrap:wrap;gap:8px 28px;padding:32px clamp(16px,4vw,48px)}
 .foot-name{color:#DCE6F2;font-weight:600;margin-right:auto}
 
+/* no smooth scrolling or hover lifts for someone who asks for less motion */
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,a.lesson{transition:none}a.lesson:hover,.btn:active{transform:none}}
+
 /* tablets and phones */
 @media (max-width:1060px){
   .panel{grid-template-columns:minmax(0,1fr);gap:36px}
@@ -131,7 +134,8 @@ a.lesson:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow
 @media (max-width:800px){
   .top-nav{display:none}
   .hero{min-height:0}
-  .hero-art{position:relative;width:auto;height:auto;margin:0 -16px}
+  .hero-art{position:relative;width:auto;height:auto;margin:0}
+  .hero h1 span{white-space:normal}
   .hero-pic{position:static;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent);mask-image:linear-gradient(180deg,#000 80%,transparent)}
   .hero-text{padding-top:8px}
   .hero-cta .btn{flex:1 1 200px}
