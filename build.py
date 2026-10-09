@@ -603,7 +603,10 @@ HOME_ICONS = {
     "teach": "M2 9l10-5 10 5-10 5zM6 11v5c0 1.2 2.7 3 6 3s6-1.8 6-3v-5M22 9v6",
     "medic": "M6 3v6a4 4 0 0 0 8 0V3M10 13v2a5 5 0 0 0 10 0v-2M20 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
 }
-HOW_PAGE = "how-it-works.html"
+HOW_PAGE = "how-it-works.html"  # the old page's address: it now opens the home page with How it works showing
+# How it works, a small card over the dimmed page on every page of the site: three steps, a few words each
+HOW_STEPS = [("play", "Watch", "A short video lesson"), ("cases", "Practise", "Exam-style cases"),
+             ("check", "Check", "Why each answer is right")]
 # What you get, on the home page's navy band: what the site offers (never "free": it will be paid)
 OFFER = [("play", "Short visual lessons", "One idea per chapter, drawn as you watch."),
          ("cases", "Exam-style cases", "A new order every time you practise."),
@@ -626,7 +629,7 @@ def img_tag(rel, cls="", eager=False, up=""):
 
 def start_href(specs, up=""):
     """Every Start learning opens the way in, never a lesson: the first specialty's lessons until the pathway page exists."""
-    return f'{up}{specs[0]["id"]}/index.html' if specs else f"{up}{HOW_PAGE}"
+    return f'{up}{specs[0]["id"]}/index.html' if specs else f"{up}index.html"
 
 
 def site_menu(specs, built, coming, up, here):
@@ -640,13 +643,12 @@ def site_menu(specs, built, coming, up, here):
                      f'<span class="mi-n">{n}</span>{home_icon("right")}</a></li>')
     for c in coming:
         items.append(f'<li><span class="mi is-soon"><span>{e(c["title"])}</span><span class="mi-soon">Soon</span></span></li>')
-    cur = ' aria-current="page"' if here == "how" else ""
     return (f'<div class="menu" id="menu" hidden><div class="menu-scrim" data-close></div>'
             f'<div class="menu-sheet" role="dialog" aria-modal="true" aria-label="Menu"><div class="menu-top">'
             f'<a class="wordmark" href="{up}index.html" aria-label="Home">{lockup("lockup")}</a>'
             f'<button class="menu-close" type="button" data-close aria-label="Close the menu">{home_icon("close")}</button></div>'
             f'<nav aria-label="Lessons"><ul class="mlist">{"".join(items)}</ul>'
-            f'<ul class="mlist"><li><a class="mi" href="{up}{HOW_PAGE}"{cur}><span>How it works</span>{home_icon("right")}</a></li></ul></nav>'
+            f'<ul class="mlist"><li><button class="mi" type="button" data-how><span>How it works</span>{home_icon("right")}</button></li></ul></nav>'
             f'</div></div>')
 
 
@@ -683,12 +685,12 @@ SIGNUP_JS = ("<script>(function(){var f=document.getElementById('signup');if(!f)
 
 
 def site_page(site, specs, built, coming, title, body, up="", here="", cls="", label="", extra_js=""):
-    """A page of the site around the lessons (home, a specialty's lessons, How it works): the top bar with the
+    """A page of the site around the lessons (home, a specialty's lessons): the top bar with the
     menu, the sky-blue patterned page, and the inline CSS. Drawings are files in img/ beside the home page."""
     css = (fonts_css() + read(ENGINE, "css", "tokens.css") + read(ENGINE, "css", "index.css")).replace("url(img/", f"url({up}img/")
     name = e(site["title"])
     top = (f'<header class="top"><div class="wrap top-row"><a class="wordmark" href="{up}index.html" aria-label="{name}">{lockup("lockup")}</a>'
-           f'<nav class="top-nav" aria-label="Site"><a href="{up}{HOW_PAGE}">How it works</a></nav>'
+           f'<nav class="top-nav" aria-label="Site"><button class="top-link" type="button" data-how>How it works</button></nav>'
            f'<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">'
            f'<span class="menu-btn-label">Lessons</span>{home_icon("menu")}<span class="sr">Menu</span></button></div></header>')
     return f"""<!DOCTYPE html>
@@ -699,8 +701,32 @@ def site_page(site, specs, built, coming, title, body, up="", here="", cls="", l
 {top}
 {body}
 {site_menu(specs, built, coming, up, here)}
-{MENU_JS}{extra_js}
+{how_dialog(specs, up)}
+{MENU_JS}{HOW_JS}{extra_js}
 </body></html>"""
+
+
+def how_dialog(specs, up=""):
+    """How it works: a white card over the dimmed page, three steps (an icon, a word, a few words), then Start learning."""
+    steps = "".join(f'<li><span class="how-ico">{home_icon(ic)}</span><span class="how-step"><b>{t}</b><span>{d}</span></span></li>'
+                    for ic, t, d in HOW_STEPS)
+    return (f'<dialog class="how" id="how" aria-labelledby="howTitle"><div class="how-card">'
+            f'<button class="how-close" type="button" data-how-close aria-label="Close">{home_icon("close")}</button>'
+            f'<h2 id="howTitle">How it works</h2><ul class="how-list">{steps}</ul>'
+            f'<a class="btn primary big wide" href="{e(start_href(specs, up))}">Start learning</a></div></dialog>')
+
+
+# How it works opens from the top bar or the menu (closing the menu first), and on arrival at #how; the × , Escape or
+# a tap on the dimmed page closes it, and focus goes back to where it was
+HOW_JS = ("<script>(function(){var d=document.getElementById('how');if(!d||!d.showModal)return;"
+          "function open(){if(!d.open)d.showModal()}"
+          "document.addEventListener('click',function(ev){if(!ev.target.closest('[data-how]'))return;ev.preventDefault();"
+          "var m=document.getElementById('menu');if(m&&!m.hidden)m.querySelector('.menu-close').click();open()});"
+          # the address loses its #how once it is closed (by the button or the dimmed page here, by Escape in its close event)
+          "function clean(){if(location.hash==='#how')history.replaceState(null,'',location.pathname+location.search)}"
+          "d.addEventListener('click',function(ev){if(ev.target===d||ev.target.closest('[data-how-close]')){d.close();clean()}});"
+          "d.addEventListener('close',clean);"
+          "function hash(){if(location.hash==='#how')open()}hash();window.addEventListener('hashchange',hash)})();</script>")
 
 
 def site_foot(site):
@@ -773,8 +799,7 @@ def render_index(site, specs, built, coming, label=""):
     # (on arrival, and when only the address's # changes on an open home page)
     redirect = ("<script>(function(){var ids=" + ids + ";function go(){var h=location.hash.slice(1);"
                 "if(ids.indexOf(h)>=0)location.replace(h+'/index.html');"
-                "else if(h==='lessons'&&ids.length)location.replace(ids[0]+'/index.html');"
-                "else if(h==='how')location.replace('" + HOW_PAGE + "')}"
+                "else if(h==='lessons'&&ids.length)location.replace(ids[0]+'/index.html')}"
                 "go();window.addEventListener('hashchange',go)})();</script>")
     return site_page(site, specs, built, coming, site["title"], body, cls="home", label=label,
                      extra_js=redirect + REVEAL_JS + SIGNUP_JS)
@@ -830,16 +855,11 @@ def render_specialty(site, specs, built, coming, spec, label=""):
                      cls="spec-page", label=label)
 
 
-def render_how(site, specs, built, coming, label=""):
-    """How it works: the three steps of every lesson, and the way in."""
-    steps = [("play", "Watch", "A short video, one idea per chapter."),
-             ("cases", "Practise", "Exam-style cases, in a new order each time."),
-             ("check", "Check", "Why each answer is right, shown after you choose.")]
-    cards = "".join(f'<li class="step"><span class="step-ico">{home_icon(ic)}</span><span class="step-n">{k + 1}</span>'
-                    f'<h2>{t}</h2><p>{d}</p></li>' for k, (ic, t, d) in enumerate(steps))
-    body = (f'<main class="wrap how"><h1 class="wash">How it works</h1><ol class="steps">{cards}</ol>'
-            f'<a class="btn primary big" href="{e(start_href(specs))}">Start learning</a></main>')
-    return site_page(site, specs, built, coming, f'How it works · {site["title"]}', body, here="how", cls="how-page", label=label)
+def render_how(site, label=""):
+    """The old How it works page's address: it opens the home page with How it works showing."""
+    return ('<!DOCTYPE html>\n<html lang="en"><head><meta charset="utf-8"><title>' + e(site["title"] + label) + '</title>'
+            '<meta http-equiv="refresh" content="0;url=index.html#how"><link rel="canonical" href="index.html">'
+            "<script>location.replace('index.html#how')</script></head><body></body></html>")
 
 
 def main():
@@ -901,12 +921,13 @@ def main():
             with open(out, "w", encoding="utf-8", newline="\n") as f:
                 f.write(render_topic(t, spec, site, present))
             print(f"Built {os.path.relpath(out, ROOT)} ({os.path.getsize(out):,} bytes)")
-    # the site around the lessons: the home page, each specialty's lessons and How it works; the presenter's copies
+    # the site around the lessons: the home page and each specialty's lessons (How it works is a card on every page;
+    # its old page's address opens it on the home page); the presenter's copies
     # are the same pages, their lessons opening the decks
     coming = cur.get("coming") or []
     for out, label in ((DIST, ""), (PRESENTER, " · presenter")):
         pages = {"index.html": render_index(site, specs, built, coming, label),
-                 HOW_PAGE: render_how(site, specs, built, coming, label)}
+                 HOW_PAGE: render_how(site, label)}
         for spec in specs:
             pages[spec["id"] + "/index.html"] = render_specialty(site, specs, built, coming, spec, label)
         for rel, text in pages.items():
@@ -921,7 +942,7 @@ def main():
     with open(LOCK, "w", encoding="utf-8", newline="\n") as f:
         f.write("# Every permanent item ID ever built. Maintained by build.py; do not edit by hand.\n")
         f.write("\n".join(lock_ids) + "\n")
-    print("Built the home page, How it works and each specialty's lessons page")
+    print("Built the home page and each specialty's lessons page")
 
 
 if __name__ == "__main__":

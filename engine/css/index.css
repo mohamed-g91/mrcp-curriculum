@@ -1,7 +1,7 @@
-/* ---------- the site around the lessons: home, a specialty's lessons, How it works ----------
+/* ---------- the site around the lessons: home and a specialty's lessons ----------
    Every page stands on sky blue with a pattern of medical line icons; drawings have clear backgrounds, so the
    pattern runs behind them and no edge shows, and a soft sky wash keeps it out from behind headings. One menu
-   (navy) holds the specialties and How it works: it fills a phone's screen and slides in from the right on a tablet
+   (navy) holds the specialties and How it works (a card over the dimmed page): it fills a phone's screen and slides in from the right on a tablet
    or desktop, the page dimmed behind. The home page: the headline, the drawing, Start learning and the email
    sign-up; What you get on a navy band; About me and contact. Each specialty's lessons are its own page, each
    section a card opened by a navy strip. One grid (a 1280 px frame; gutters 20, 32, 48 px), one type scale, one
@@ -48,7 +48,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 /* top bar: the logo, How it works and the menu (on a phone the menu button alone); it stays at the top of the
    longer pages, on the sky so nothing shows through */
 .top{position:relative;z-index:20;flex:none}
-.spec-page .top,.how-page .top{position:sticky;top:0;background:rgba(227,238,249,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.spec-page .top{position:sticky;top:0;background:rgba(227,238,249,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .top-row{display:flex;align-items:center;gap:16px;height:64px}
 .top-row .wordmark{margin-right:auto}
 .top-nav{display:none}
@@ -181,16 +181,28 @@ a.lesson:hover>.ico{color:var(--primary)}
 .more[open] summary::after{transform:rotate(225deg) translateY(-2px)}
 .more ul{margin:0 0 12px;padding-left:20px;color:var(--muted);font-size:15px}
 
-/* ---------- How it works ---------- */
-.how{display:grid;gap:28px;justify-items:start;padding-block:16px 48px;align-content:start}
-.how h1{font-size:32px;line-height:36px}
-.steps{list-style:none;margin:0;padding:0;display:grid;gap:16px;width:100%}
-.step{position:relative;z-index:0;display:flex;flex-direction:column;align-items:flex-start;background:var(--surface);border-radius:16px;padding:24px;box-shadow:var(--card-shadow)}
-.step-ico{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--sky);color:var(--primary)}
-.step-ico .ico{width:24px;height:24px}
-.step-n{position:absolute;top:24px;right:24px;font:500 15px/1 var(--serif);color:var(--muted)}
-.step h2{margin-top:20px;font-size:24px;line-height:29px}
-.step p{margin-top:12px;font-size:16px;line-height:24px;color:var(--muted)}
+/* ---------- How it works: a white card over the dimmed page, on every page ---------- */
+.top-link{border:0;background:none;cursor:pointer;font:600 15px/1 var(--sans);color:#fff;padding:12px 4px;border-radius:6px}
+.top-link:hover{color:var(--navy-accent)}
+button.mi{width:100%;background:none;border-width:0 0 1px;text-align:left;cursor:pointer}
+button.mi:hover>span:first-child{color:var(--navy-accent)}
+html:has(dialog.how[open]){overflow:hidden}
+.how{width:420px;max-width:calc(100% - 32px);padding:0;border:0;border-radius:22px;background:transparent;color:var(--text);overflow:visible}
+.how::backdrop{background:rgba(8,20,36,.55)}
+.how[open]{animation:how-in .25s var(--ease)}
+.how[open]::backdrop{animation:how-fade .25s ease}
+@keyframes how-in{from{opacity:0;transform:translateY(12px) scale(.98)}}
+@keyframes how-fade{from{opacity:0}}
+.how-card{position:relative;background:var(--surface);border-radius:22px;padding:28px 24px 24px;box-shadow:0 20px 60px rgba(8,20,36,.3)}
+.how h2{font-size:26px;line-height:32px;padding-right:48px}
+.how-close{position:absolute;top:16px;right:16px;display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:50%;background:var(--sky);color:var(--ink);cursor:pointer}
+.how-close:hover{background:var(--sky-2)}
+.how-list{list-style:none;margin:20px 0 24px;padding:0;display:grid;gap:16px}
+.how-list li{display:grid;grid-template-columns:46px minmax(0,1fr);gap:14px;align-items:center}
+.how-ico{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--sky);color:var(--primary)}
+.how-ico .ico{width:22px;height:22px}
+.how-step b{display:block;font-size:17px;line-height:22px;color:var(--ink)}
+.how-step span{display:block;font-size:15px;line-height:21px;color:var(--muted)}
 
 .foot{flex:none;font-size:13px;line-height:20px;color:var(--muted)}
 .foot-row{display:flex;flex-wrap:wrap;gap:4px 24px;padding-block:24px 32px;border-top:1px solid rgba(14,31,53,.08)}
@@ -228,15 +240,13 @@ a.lesson:hover>.ico{color:var(--primary)}
   .about h2{font-size:32px;line-height:38px}
   .spec-side{grid-template-columns:minmax(0,260px) minmax(0,1fr);column-gap:28px}
   .spec-pic{height:auto;width:100%;max-width:none}
-  .spec h1,.how h1{font-size:40px;line-height:45px}
+  .spec h1{font-size:40px;line-height:45px}
   .spec-blurb{font-size:18px;line-height:28px}
   .lesson{grid-template-columns:120px 32px minmax(0,1fr) 20px}
   .lesson.is-planned{grid-template-columns:120px 32px minmax(0,1fr)}
   .lesson-pic{display:block}
   .lessons{padding:4px 24px 8px}
   .sec-head{min-height:66px;padding:14px 24px;font-size:23px;line-height:28px}
-  .steps{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .step{min-height:256px}
 }
 
 /* ---------- a desktop: copy and drawing side by side on the same grid ---------- */
@@ -255,17 +265,16 @@ a.lesson:hover>.ico{color:var(--primary)}
   .spec{grid-template-columns:340px minmax(0,1fr);gap:48px;align-items:start;padding-top:16px}
   .spec-side{position:sticky;top:104px;grid-template-columns:1fr}
   .spec-pic{width:100%;margin:0 0 8px}
-  .spec h1,.how h1{font-size:44px;line-height:49px}
+  .spec h1{font-size:44px;line-height:49px}
   .spec-side .btn{display:inline-flex}
   .lesson{grid-template-columns:132px 34px minmax(0,1fr) 20px;gap:18px}
   .lesson.is-planned{grid-template-columns:132px 34px minmax(0,1fr)}
   .lesson-title{font-size:17px;line-height:22px}
   .sec-head{min-height:68px;padding:14px 24px;font-size:24px;line-height:29px}
   .sec-letter{width:36px;height:36px;font-size:18px}
-  .step{min-height:236px}
 }
 /* the top bar is navy at every size, as in the lessons: the logo in white and light blue */
-.top,.spec-page .top,.how-page .top{position:sticky;top:0;background:var(--navy);-webkit-backdrop-filter:none;backdrop-filter:none;--lk-caps:#FFFFFF;--lk-name:var(--navy-accent)}
+.top,.spec-page .top{position:sticky;top:0;background:var(--navy);-webkit-backdrop-filter:none;backdrop-filter:none;--lk-caps:#FFFFFF;--lk-name:var(--navy-accent)}
 .top-nav a{color:#fff}
 .top-nav a:hover{color:var(--navy-accent)}
 .menu-btn{background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}
@@ -283,5 +292,6 @@ a.lesson:hover>.ico{color:var(--primary)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .menu-sheet,.menu-scrim,.btn,.chip,.offer-ico,.more summary::after{transition:none}
+  .how[open],.how[open]::backdrop{animation:none}
   .btn:active{transform:none}
 }

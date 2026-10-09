@@ -36,9 +36,9 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 | `engine/fonts/` | The embedded fonts: Inter and Outfit on every page, Cairo (Arabic letters and Latin part, with its OFL licence) only in a topic with Arabic; `build.py` embeds them as base64 |
 | `engine/css/` | `tokens` (colours, sizes), `base`, `stage` (16:9 canvas), `patterns`, `frame` (the lesson's frame: navy top bar, sky, phone dock), `index` (the site's own pages) |
 | `engine/js/` | `core` (helpers, theme, score, `record()`, click-away), one file per pattern, `deck` (stage, navigation, start-up) |
-| `build.py` | Checks every topic, then builds the candidate's `dist/<specialty>/<slug>.html`, the site around them (`dist/index.html`, each specialty's `dist/<specialty>/index.html`, `dist/how-it-works.html`), and the presenter's copies in `presenter/` (git-ignored, never published) |
+| `build.py` | Checks every topic, then builds the candidate's `dist/<specialty>/<slug>.html`, the site around them (`dist/index.html`, each specialty's `dist/<specialty>/index.html`, with How it works a pop-up on every page; `dist/how-it-works.html` only forwards there), and the presenter's copies in `presenter/` (git-ignored, never published) |
 | `checks/check.mjs` | Drives headless Chrome through a built page: layout at six sizes, every case solved, the recording view, and, where a topic has them, the Arabic titles and ع switch and a drill spectrum's cards, kinds and zoom circles |
-| `checks/check-site.mjs` | The same for the site around the lessons (home, lessons pages, How it works): overflow at six sizes, the home page on one phone screen, the menu, old addresses, missing files |
+| `checks/check-site.mjs` | The same for the site around the lessons (home, lessons pages): overflow at six sizes, the home page on one phone screen, the menu, the How it works pop-up, old addresses, missing files |
 
 Keep `build.py` and `engine/patterns.py` to syntax older Pythons accept (Cloudflare's Python may be older than the one on the author's machine): no f-string with the same quote inside its braces, no `match`.
 

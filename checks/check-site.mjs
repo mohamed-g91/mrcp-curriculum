@@ -1,11 +1,12 @@
-// Automated check of the site around the lessons: the home page, each specialty's lessons page and How it works.
+// Automated check of the site around the lessons: the home page, each specialty's lessons page and the How it works card.
 //
 //   node checks/check-site.mjs [dist] [--shots out-dir]
 //
 // At each window size (the six the lesson check uses) it loads every page and fails on sideways overflow, on a home
 // page whose Start learning is below the first screen, What you get that does not appear when scrolled to, a sign-up
 // that says nothing back, on a menu that does not open, take focus,
-// close on Escape and on the dimmed page, and give focus back, on an old address (/#statistics, #lessons, #how)
+// close on Escape and on the dimmed page, and give focus back, on a How it works card that does not open (from the top
+// bar or the menu), fit the screen or close, on an old address (/#statistics, #lessons, #how, /how-it-works.html)
 // that does not reach its new page, on a lesson link or drawing that points at a missing file, and on any console
 // error or request outside the build. --shots saves each page, and each page with its menu open.
 import { spawn } from "node:child_process";
@@ -30,8 +31,8 @@ const shotsAt = args.indexOf("--shots");
 const shotDir = shotsAt >= 0 ? resolve(args[shotsAt + 1]) : null;
 if (shotDir) mkdirSync(shotDir, { recursive: true });
 const base = pathToFileURL(root).href + "/";
-// the pages: home, How it works, and every folder with an index.html (a specialty)
-const pages = ["index.html", "how-it-works.html",
+// the pages: home, and every folder with an index.html (a specialty)
+const pages = ["index.html",
   ...readdirSync(root, { withFileTypes: true }).filter(d => d.isDirectory() && existsSync(join(root, d.name, "index.html"))).map(d => d.name + "/index.html")];
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -192,8 +193,32 @@ for (const size of SIZES) {
       })()`);
       if (!scrim) fail(`${where}: a tap on the dimmed page did not close the menu`);
     }
+
+    // How it works: opens from the top bar (from a tablet up) or the menu (a phone), fits the screen, locks the page
+    // behind, and closes with its button and with a tap on the dimmed page
+    const how = await js(`(async () => {
+      const d = document.getElementById("how"), wait = ms => new Promise(r => setTimeout(r, ms));
+      const top = document.querySelector(".top-nav [data-how]");
+      if (top && top.getClientRects().length) top.click();
+      else { document.getElementById("menuBtn").click(); await wait(350); document.querySelector("#menu [data-how]").click(); }
+      await wait(350);
+      const c = d.querySelector(".how-card").getBoundingClientRect();
+      const r = { open: d.open, menuShut: document.getElementById("menu").hidden, fits: c.top >= 0 && c.bottom <= innerHeight && c.left >= 0 && c.right <= innerWidth,
+                  locked: getComputedStyle(document.documentElement).overflow === "hidden", start: !!d.querySelector(".btn.primary[href]") };
+      d.querySelector("[data-how-close]").click(); await wait(50); r.closeBtn = !d.open;
+      top && top.getClientRects().length ? top.click() : d.showModal(); await wait(300);
+      d.dispatchEvent(new MouseEvent("click", { bubbles: true })); await wait(50); r.scrim = !d.open;
+      return r;
+    })()`);
+    if (!how.open) fail(`${where}: How it works did not open`);
+    if (!how.menuShut) fail(`${where}: the menu stayed open behind How it works`);
+    if (!how.fits) fail(`${where}: the How it works card does not fit the screen`);
+    if (!how.locked) fail(`${where}: the page behind How it works still scrolls`);
+    if (!how.start) fail(`${where}: How it works has no Start learning`);
+    if (!how.closeBtn) fail(`${where}: the × did not close How it works`);
+    if (!how.scrim) fail(`${where}: a tap on the dimmed page did not close How it works`);
   }
-  console.log(`  ok   ${size.name}: ${pages.length} pages, the menu`);
+  console.log(`  ok   ${size.name}: ${pages.length} pages, the menu, How it works`);
 }
 
 // ---------------------------------------------------------------- short phones keep Start learning on the first screen
@@ -209,12 +234,15 @@ console.log("  ok   short phones: Start learning on the first screen");
 
 // ---------------------------------------------------------------- old addresses reach their new pages
 const specs = pages.filter(p => p.endsWith("/index.html")).map(p => p.split("/")[0]);
-for (const [hash, want] of [...specs.map(s => [s, s + "/index.html"]), ["lessons", specs[0] + "/index.html"], ["how", "how-it-works.html"]]) {
-  where = `index.html#${hash}`;
-  await send("Page.navigate", { url: base + "index.html#" + hash });
+for (const [from, want] of [...specs.map(s => ["index.html#" + s, s + "/index.html"]), ["index.html#lessons", specs[0] + "/index.html"],
+                            ["index.html#how", "index.html"], ["how-it-works.html", "index.html"]]) {
+  where = from;
+  await send("Page.navigate", { url: base + from });
   await sleep(700);
   const at = await js("location.href");
   if (!at.startsWith(base + want)) fail(`${where}: went to ${at.slice(base.length)}, not ${want}`);
+  // #how, and the old How it works page, open the home page with How it works showing
+  if (want === "index.html" && !(await js(`document.getElementById("how").open`))) fail(`${where}: How it works is not showing`);
 }
 console.log("  ok   old addresses");
 
