@@ -8,6 +8,18 @@ site:
   tagline: Internal Medicine Education
   author: Mohamed Gafar
   disclaimer: Not affiliated with the Royal College of Physicians
+  # the home page's email sign-up posts here: the mailing-list service's form address (Buttondown, Mailchimp, Kit…);
+  # until it is set, the form says "Sign-up opens soon"
+  subscribe: null
+  # About me and contact, at the end of the home page. The photo is art/site/about.webp (initials until it exists).
+  # TODO lines are placeholders: build.py warns while any is left, and the site must not go live with them
+  about:
+    role: "TODO: your role, e.g. Internal medicine registrar"
+    bio: "TODO: two lines about you: where you trained, and why you built MRCP Gafar."
+    contacts:
+      - { kind: email,    label: Email,    href: "mailto:TODO@example.com" }
+      - { kind: youtube,  label: YouTube,  href: "https://www.youtube.com/" }
+      - { kind: telegram, label: Telegram, href: "https://t.me/" }
 
 # specialties not started yet: the home page shows them as coming soon, with a cover from art/site/covers/<id>.webp
 coming:

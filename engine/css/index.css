@@ -1,57 +1,71 @@
 /* ---------- the site around the lessons: home, a specialty's lessons, How it works ----------
-   Every page stands on sky blue with a faint pattern of medical line icons; the drawings have clear backgrounds, so
-   the pattern runs behind them and no edge shows. One menu (navy) holds the specialties and How it works: it fills a
-   phone's screen and slides in from the right on a tablet or desktop, the page dimmed behind it. The home page is
-   the front door only; each specialty's lessons are its own page, each section a card opened by a navy strip.
-   Drawings are files beside the home page (img/, from art/site); build.py points url(img/...) at them. */
+   Every page stands on sky blue with a pattern of medical line icons; drawings have clear backgrounds, so the
+   pattern runs behind them and no edge shows, and a soft sky wash keeps it out from behind headings. One menu
+   (navy) holds the specialties and How it works: it fills a phone's screen and slides in from the right on a tablet
+   or desktop, the page dimmed behind. The home page: the headline, the drawing, Start learning and the email
+   sign-up; What you get on a navy band; About me and contact. Each specialty's lessons are its own page, each
+   section a card opened by a navy strip. One grid (a 1280 px frame; gutters 20, 32, 48 px), one type scale, one
+   card finish. Drawings are files beside the home page (img/, from art/site); build.py points url(img/...) at them. */
 :root{
-  --sky:#E3EEF9;--sky-2:#D2E4F6;--navy:#12304F;--navy-text:#CFE0F2;--navy-accent:#9CCBF0;
-  --row-line:#EEF1F5;--chev:#8D9AAC;
+  --sky:#E3EEF9;--sky-2:#D2E4F6;--navy:#12304F;--navy-2:#234765;--navy-text:#CFE0F2;--navy-accent:#9CCBF0;
+  --row-line:#EEF1F5;--chev:#8D9AAC;--card-line:#D7E2EE;
+  --card-shadow:0 2px 4px rgba(18,48,79,.03),0 10px 24px rgba(18,48,79,.06);
+  --gutter:20px;
 }
 *{box-sizing:border-box}
 html{font-synthesis-weight:none;scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
 html.menu-open{overflow:hidden}
+/* the heading washes spread past the gutter; clipping (not hiding) keeps the sticky header working */
+html,body{overflow-x:clip}
 body{margin:0;min-height:100svh;display:flex;flex-direction:column;background:var(--sky) url(img/pattern.webp) 0 0/420px repeat;
-  color:var(--text);font:17px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+  color:var(--text);font:16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+main{flex:1}
 h1,h2,h3{font-family:var(--serif);font-weight:500;color:var(--ink);margin:0;text-wrap:balance}
+p{margin:0}
 a{color:inherit}
-.wrap{width:100%;max-width:1280px;margin:0 auto;padding-inline:clamp(16px,4vw,48px)}
+.wrap{width:100%;max-width:1280px;margin:0 auto;padding-inline:var(--gutter)}
 .ico{width:20px;height:20px;flex:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* a soft sky wash under headings and introductions, so the pattern never runs through the letters */
+.wash{position:relative;isolation:isolate}
+.wash::before{content:"";position:absolute;inset:-36px -44px;z-index:-1;background:var(--sky);filter:blur(22px);
+  border-radius:46% 54% 44% 56%/56% 44% 56% 44%;pointer-events:none}
 
 /* the logo lockup whole; its inks follow the theme */
 .wm-lockup{display:block;height:30px;width:auto}
 .wordmark{display:block;line-height:0;border-radius:6px}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--primary);font:600 15px/1 var(--sans);text-decoration:none;transition:background .15s ease,border-color .15s ease,transform .15s ease}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--primary);font:600 16px/1 var(--sans);text-decoration:none;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .16s ease}
 .btn:hover{border-color:var(--primary)}
 .btn:active{transform:scale(.98)}
 .btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
 .btn.primary:hover{background:var(--primary-hover)}
-.btn.big{min-height:54px;padding:0 28px;font-size:16px}
+.btn.big{min-height:56px;padding:0 32px}
 .btn.wide{width:100%}
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
 
-/* top bar: the logo, How it works and the menu (on a phone the menu button alone) */
-.top{position:relative;z-index:2;flex:none}
+/* top bar: the logo, How it works and the menu (on a phone the menu button alone); it stays at the top of the
+   longer pages, on the sky so nothing shows through */
+.top{position:relative;z-index:20;flex:none}
+.spec-page .top,.how-page .top{position:sticky;top:0;background:rgba(227,238,249,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .top-row{display:flex;align-items:center;gap:16px;height:64px}
 .top-row .wordmark{margin-right:auto}
 .top-nav{display:none}
-.top-nav a{text-decoration:none;font-weight:600;color:var(--ink);font-size:15px}
+.top-nav a{text-decoration:none;font-weight:600;color:var(--ink);font-size:15px;padding:12px 4px}
 .top-nav a:hover{color:var(--primary)}
-.menu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:44px;height:44px;border:0;border-radius:999px;background:rgba(255,255,255,.85);color:var(--ink);font:600 15px/1 var(--sans);cursor:pointer;box-shadow:0 1px 3px rgba(14,31,53,.12)}
+.menu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:44px;height:44px;border:0;border-radius:999px;background:rgba(255,255,255,.9);color:var(--ink);font:600 15px/1 var(--sans);cursor:pointer;box-shadow:0 1px 3px rgba(14,31,53,.12)}
 .menu-btn-label{display:none}
 
 /* the menu */
 .menu{position:fixed;inset:0;z-index:50}
-.menu-scrim{position:absolute;inset:0;background:rgba(14,31,53,.42);opacity:0;transition:opacity .25s ease}
+.menu-scrim{position:absolute;inset:0;background:rgba(14,31,53,.32);opacity:0;transition:opacity .25s ease}
 .menu-sheet{position:absolute;inset:0;overflow-y:auto;padding:0 24px calc(32px + env(safe-area-inset-bottom,0px));background:var(--navy);color:#fff;
   transform:translateX(100%);transition:transform .3s var(--ease);--lk-caps:#FFFFFF;--lk-name:var(--navy-accent)}
 .menu.is-open .menu-scrim{opacity:1}
 .menu.is-open .menu-sheet{transform:none}
 .menu-top{display:flex;align-items:center;justify-content:space-between;height:64px}
 .menu-close{display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;cursor:pointer}
-.menu-close .ico{width:24px;height:24px}
 .menu-sheet a:focus-visible,.menu-sheet button:focus-visible{outline-color:var(--navy-accent)}
 .mlist{list-style:none;margin:28px 0 0;padding:0}
 .mlist+.mlist{margin-top:36px}
@@ -59,67 +73,94 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .mi>span:first-child{flex:1}
 .mi .ico{color:var(--navy-accent)}
 a.mi:hover>span:first-child,.mi[aria-current]>span:first-child{color:var(--navy-accent)}
-.mi.is-soon{color:rgba(255,255,255,.42)}
+.mi.is-soon{color:#8095AB}
 .mi-n{font:700 12px/1 var(--sans);background:var(--navy-accent);color:var(--navy);border-radius:999px;padding:4px 9px}
-.mi-soon{font:700 11px/1 var(--sans);background:rgba(255,255,255,.1);color:rgba(255,255,255,.62);border-radius:999px;padding:5px 9px}
+.mi-soon{font:700 11px/1 var(--sans);background:#203D5A;color:#B4C3D3;border-radius:999px;padding:5px 9px}
 
-/* ---------- home: the headline, the drawing, one button ---------- */
-.home main{flex:1}
-.hero{display:flex;flex-direction:column;min-height:calc(100svh - 64px)}
-.hero-text{padding:6px clamp(16px,6vw,48px) 0}
-.hero h1{font-size:clamp(32px,8.6vw,56px);line-height:1.08}
+/* ---------- home: the hero ---------- */
+.hero-in{display:flex;flex-direction:column;padding-top:4px}
+.hero h1{font-size:32px;line-height:35px}
 .hero h1 span{display:block;color:var(--primary)}
-.hero-sub{margin:12px 0 0;max-width:30em;font-size:clamp(16px,2.4vw,20px);color:var(--text)}
-.hero-art{position:relative;flex:1 1 0;min-height:220px;display:block}
-.hero-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;
-  /* the drawing's soft shapes are cut by its top edge: fade them in so no line shows */
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30%);mask-image:linear-gradient(180deg,transparent 0,#000 30%)}
-/* on a tablet the drawing is narrower than the screen, so its sides fade too */
-@media (min-width:600px) and (max-width:999px){
-  .hero-art img{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30%),linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);-webkit-mask-composite:source-in;
-    mask-image:linear-gradient(180deg,transparent 0,#000 30%),linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);mask-composite:intersect}
-}
-.hero-foot{position:relative;background:var(--surface);border-radius:26px 26px 0 0;padding:20px clamp(16px,6vw,48px) calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 24px rgba(14,31,53,.08)}
-.hero-cta{display:flex;gap:12px;justify-content:center}
-.hero-cta .btn{flex:1 1 0;max-width:340px}
-.hero-cta .browse{display:none}
-.stats{margin:12px 0 0;text-align:center;font-size:13px;color:var(--muted)}
+.hero-sub{margin-top:12px;max-width:30em;font-size:16px;line-height:25px;color:var(--text)}
+.hero-art{display:block;margin:36px auto 0;width:100%;max-width:560px}
+.hero-art img{display:block;width:100%;height:auto;max-height:330px;object-fit:contain}
+.hero-foot{position:relative;margin:20px calc(-1 * var(--gutter)) 0;background:var(--surface);border-radius:24px 24px 0 0;padding:24px var(--gutter) 28px;box-shadow:0 -8px 24px rgba(14,31,53,.06)}
+.hero-foot>.btn{width:100%}
+
+/* the email sign-up: on a phone the field over a full-width button; from a tablet up one pill with the button inside */
+.signup{margin-top:20px}
+.signup-label{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.signup-row{display:grid;gap:10px}
+.signup-field{display:flex;align-items:center;gap:10px;height:52px;padding:0 18px;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface);color:var(--muted)}
+.signup-field input{flex:1;min-width:0;height:100%;border:0;background:transparent;font:16px var(--sans);color:var(--ink);outline:0}
+.signup-field:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px rgba(31,78,140,.18)}
+.signup-row .btn{min-height:52px}
+.signup-note{margin-top:8px;font-size:13px;line-height:20px;color:var(--muted)}
+.signup-status{font-size:14px;line-height:20px;color:var(--muted)}
+.signup-status:not(:empty){margin-top:6px}
+.signup-status.is-error{color:var(--bad-ink)}
+.signup-status.is-ok{color:var(--ok-ink)}
+
+/* What you get, on a navy band */
+.offer{position:relative;background:var(--navy);color:var(--navy-text);padding:48px 0}
+.offer h2{color:#fff;font-size:30px;line-height:36px}
+.offer-list{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:28px}
+.offer-item{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:16px;row-gap:4px;align-items:start}
+.offer-ico{grid-row:span 2;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--navy-2);color:var(--navy-accent);transition:background .16s ease,color .16s ease}
+.offer-ico .ico{width:24px;height:24px}
+.offer-item:hover .offer-ico{background:#2E5A80;color:#C7E3F8}
+.offer-item h3{color:#fff;font-size:20px;line-height:25px}
+.offer-item p{font-size:16px;line-height:24px}
+/* each item rises 12 px into view once (0.5 s, 0.16 s apart); only when scripts run and motion is welcome */
+.reveals .reveal{opacity:0;transform:translateY(12px);transition:opacity .5s var(--ease),transform .5s var(--ease);transition-delay:calc(var(--i,0) * .16s)}
+.reveals .reveal.is-in{opacity:1;transform:none}
+
+/* About me and contact */
+.about{padding:48px 0;overflow:hidden}  /* keeps its heading wash off the navy band above */
+.about-in{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:560px}
+.about-photo{display:block;width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 4px var(--sky-2);margin-bottom:20px}
+.about-photo.is-initials{display:grid;place-items:center;background:var(--primary);color:#fff;font:500 36px/1 var(--serif)}
+.about h2{font-size:32px;line-height:38px}
+.about-name{margin-top:8px;font:500 22px/28px var(--serif);color:var(--ink)}
+.about-role,.about-bio{margin-top:8px;font-size:16px;line-height:26px}
+.chips{list-style:none;margin:24px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:999px;background:var(--surface);border:1px solid var(--card-line);color:var(--ink);font:600 15px/1 var(--sans);text-decoration:none;transition:border-color .16s ease}
+.chip .ico{color:var(--primary)}
+.chip:hover{border-color:var(--primary)}
 
 /* ---------- a specialty's lessons ---------- */
-.spec{display:grid;gap:22px;padding-block:4px 40px;flex:1}
-.spec-side{display:grid;gap:4px}
-.spec-pic{display:block;width:min(100%,440px);height:auto;margin:-6px auto -4px}
-.spec h1{font-size:clamp(32px,7vw,48px);line-height:1.05}
-.spec-blurb{margin:6px 0 0;font-size:16px;color:var(--text)}
-.spec-meta{margin:10px 0 0;font-size:14px;color:var(--muted)}
-.bar{height:6px;border-radius:3px;background:var(--surface);overflow:hidden;margin-top:8px}
-.bar span{display:block;height:100%;border-radius:3px;background:var(--primary)}
-.spec-side .btn{display:none;margin-top:22px}
+.spec{display:grid;gap:22px;padding-block:4px 40px;align-content:start}
+.spec-side{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:16px}
+.spec-pic{display:block;height:130px;width:auto;max-width:42vw;object-fit:contain}
+.spec h1{font-size:32px;line-height:36px}
+.spec-blurb{margin-top:6px;font-size:16px;line-height:25px;color:var(--text)}
+.spec-meta{margin-top:8px;font-size:14px;line-height:20px;color:var(--muted)}
+.spec-side .btn{display:none;margin-top:24px}
 .spec-list{display:grid;gap:18px;align-content:start;min-width:0}
-.sec-card{background:var(--surface);border-radius:22px;overflow:hidden;box-shadow:0 1px 2px rgba(14,31,53,.05),0 10px 28px rgba(14,31,53,.08)}
-.sec-head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--navy);color:#fff;font-size:21px;line-height:1.2}
-.sec-letter{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:9px;background:var(--navy-accent);color:var(--navy);font-size:17px}
+.sec-card{position:relative;background:var(--surface);border-radius:16px;overflow:hidden;box-shadow:var(--card-shadow)}
+.sec-head{display:flex;align-items:center;gap:12px;min-height:62px;padding:12px 18px;background:var(--navy);color:#fff;font-size:21px;line-height:25px}
+.sec-letter{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:8px;background:var(--navy-accent);color:var(--navy);font-size:17px}
 .sec-name{flex:1;min-width:0;color:#fff}
 .sec-n{flex:none;font:600 12px/1 var(--sans);background:rgba(255,255,255,.12);color:var(--navy-text);border-radius:999px;padding:5px 10px}
 .lessons{list-style:none;margin:0;padding:2px 18px 6px}
-.lesson{display:grid;grid-template-columns:32px minmax(0,1fr) 20px;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--row-line);text-decoration:none;color:inherit}
+.lesson{display:grid;grid-template-columns:32px minmax(0,1fr) 20px;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--row-line);text-decoration:none;color:inherit}
 .lessons li:last-child .lesson{border-bottom:0}
-.lesson-pic{display:none;position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#F7F9FC}
-.lesson-pic img{display:block;width:100%;height:100%;object-fit:cover}
+.lesson-pic{display:none;position:relative;aspect-ratio:16/9}
+.lesson-pic img{display:block;width:100%;height:100%;object-fit:contain}
 .lesson-n{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--primary);color:var(--on-primary);font-weight:700;font-size:13px}
-.lesson-body{display:flex;flex-direction:column;gap:2px;min-width:0}
-.lesson-title{font-weight:600;font-size:16px;line-height:1.3;color:var(--ink)}
-.lesson-q{font-size:13px;line-height:1.35;color:var(--muted)}
+.lesson-body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.lesson-title{font-weight:600;font-size:16px;line-height:21px;color:var(--ink)}
+.lesson-q{font-size:14px;line-height:20px;color:var(--muted)}
+.lesson-soon{font-size:12px;line-height:16px;font-weight:600;color:var(--muted)}
 .lesson>.ico{color:var(--chev)}
 a.lesson:hover .lesson-title{color:var(--primary)}
 a.lesson:hover>.ico{color:var(--primary)}
 .lesson.is-planned{grid-template-columns:32px minmax(0,1fr)}
 .lesson.is-planned .lesson-n{background:transparent;border:2px dashed var(--border-strong);color:var(--muted)}
 .lesson.is-planned .lesson-title{color:var(--muted)}
-.lesson.is-planned .lesson-pic{background:var(--gray-bg)}
 .vid-badge{position:absolute;left:6px;bottom:6px;display:inline-flex;align-items:center;gap:4px;padding:2px 8px 2px 5px;border-radius:999px;background:rgba(10,23,41,.75);color:#fff;font-size:11px;font-weight:600}
 .vid-badge .ico{width:13px;height:13px;color:#fff}
-.more{background:rgba(255,255,255,.72);border-radius:18px;padding:4px 18px}
+.more{background:rgba(255,255,255,.78);border-radius:16px;padding:4px 18px}
 .more summary{cursor:pointer;color:var(--primary);font-weight:600;font-size:15px;list-style:none;min-height:48px;display:flex;align-items:center}
 .more summary::-webkit-details-marker{display:none}
 .more summary::after{content:"";width:7px;height:7px;margin-left:10px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s ease}
@@ -127,82 +168,93 @@ a.lesson:hover>.ico{color:var(--primary)}
 .more ul{margin:0 0 12px;padding-left:20px;color:var(--muted);font-size:15px}
 
 /* ---------- How it works ---------- */
-.how{display:grid;gap:24px;justify-items:start;padding-block:12px 48px;flex:1;align-content:start}
-.how h1{font-size:clamp(32px,7vw,48px)}
+.how{display:grid;gap:28px;justify-items:start;padding-block:16px 48px;align-content:start}
+.how h1{font-size:32px;line-height:36px}
 .steps{list-style:none;margin:0;padding:0;display:grid;gap:16px;width:100%}
-.step{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:16px;align-items:center;background:var(--surface);border-radius:22px;padding:20px;box-shadow:0 1px 2px rgba(14,31,53,.05),0 10px 28px rgba(14,31,53,.08)}
-.step-ico{grid-row:span 2;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--sky);color:var(--primary)}
-.step-ico .ico{width:26px;height:26px}
-.step-n{position:absolute;top:14px;right:18px;font:500 15px/1 var(--serif);color:var(--muted)}
-.step h2{font-size:22px}
-.step p{margin:2px 0 0;font-size:15px;color:var(--muted)}
+.step{position:relative;z-index:0;display:flex;flex-direction:column;align-items:flex-start;background:var(--surface);border-radius:16px;padding:24px;box-shadow:var(--card-shadow)}
+.step-ico{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--sky);color:var(--primary)}
+.step-ico .ico{width:24px;height:24px}
+.step-n{position:absolute;top:24px;right:24px;font:500 15px/1 var(--serif);color:var(--muted)}
+.step h2{margin-top:20px;font-size:24px;line-height:29px}
+.step p{margin-top:12px;font-size:16px;line-height:24px;color:var(--muted)}
 
-.foot{flex:none;font-size:13px;color:var(--muted)}
-.foot-row{display:flex;flex-wrap:wrap;gap:4px 24px;padding-block:20px 28px;border-top:1px solid rgba(14,31,53,.08)}
+.foot{flex:none;font-size:13px;line-height:20px;color:var(--muted)}
+.foot-row{display:flex;flex-wrap:wrap;gap:4px 24px;padding-block:24px 32px;border-top:1px solid rgba(14,31,53,.08)}
 .foot-name{color:var(--ink);font-weight:600;margin-right:auto}
 
-/* ---------- a tablet and up: How it works in the top bar, the menu a panel from the right ---------- */
+/* ---------- a tablet and up ---------- */
 @media (min-width:600px){
+  :root{--gutter:32px}
   .top-row{height:80px}
   .wm-lockup{height:34px}
   .top-nav{display:flex}
   .menu-btn{width:auto;padding:0 16px 0 20px;height:46px}
   .menu-btn-label{display:inline}
-  .menu-sheet{left:auto;width:min(440px,100%);padding:0 36px 40px;box-shadow:-20px 0 50px rgba(0,0,0,.22)}
+  .menu-sheet{left:auto;width:min(440px,100%);padding:0 36px 40px;box-shadow:-12px 0 32px rgba(14,31,53,.16)}
   .menu-top{height:80px}
   .mi{font-size:30px}
-  .hero{min-height:calc(100svh - 80px)}
-  .hero-text{padding-top:20px}
-  .hero-cta .browse{display:inline-flex}
-  .hero-foot{padding-bottom:26px}
-  .spec-side{grid-template-columns:minmax(0,300px) minmax(0,1fr);align-items:center;column-gap:28px}
-  .spec-pic{margin:0}
+  .hero-in{padding-top:24px}
+  .hero h1{font-size:52px;line-height:57px}
+  .hero-sub{font-size:18px;line-height:28px}
+  .hero-art{max-width:600px;margin-top:40px}
+  .hero-art img{max-height:460px}
+  .hero-foot{margin-top:24px;padding:28px var(--gutter) 32px}
+  .hero-foot>.btn{width:auto;min-width:280px}
+  .signup-row{position:relative;display:block;width:420px;max-width:100%}
+  .signup-field{height:56px;padding:0 136px 0 18px}
+  .signup-row .btn{position:absolute;top:6px;right:6px;min-height:44px;padding:0 20px}
+  .offer{padding:64px 0}
+  .offer h2{font-size:36px;line-height:43px}
+  .offer-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
+  .offer-item{grid-template-columns:1fr;row-gap:12px}
+  .offer-ico{grid-row:auto}
+  .about{padding:64px 0}
+  .about-photo{width:144px;height:144px}
+  .spec-side{grid-template-columns:minmax(0,260px) minmax(0,1fr);column-gap:28px}
+  .spec-pic{height:auto;width:100%;max-width:none}
+  .spec h1,.how h1{font-size:40px;line-height:45px}
+  .spec-blurb{font-size:18px;line-height:28px}
   .lesson{grid-template-columns:120px 32px minmax(0,1fr) 20px}
   .lesson.is-planned{grid-template-columns:120px 32px minmax(0,1fr)}
   .lesson-pic{display:block}
   .lessons{padding:4px 24px 8px}
-  .sec-head{padding:16px 24px;font-size:24px}
+  .sec-head{min-height:66px;padding:14px 24px;font-size:23px;line-height:28px}
   .steps{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .step{grid-template-columns:1fr;row-gap:12px;align-items:start;padding:24px}
-  .step-ico{grid-row:auto}
+  .step{min-height:256px}
 }
 
-/* ---------- a desktop: the wide drawing beside the headline; the lessons beside the specialty ---------- */
+/* ---------- a desktop: copy and drawing side by side on the same grid ---------- */
 @media (min-width:1000px){
-  .hero{display:grid;grid-template-columns:minmax(0,600px) minmax(0,1fr);grid-template-rows:auto 1fr;min-height:min(calc(100svh - 80px),820px);
-    padding-left:max(48px,calc((100vw - 1280px) / 2))}
-  .hero-text{grid-area:1/1;padding:clamp(48px,11vh,130px) 0 0}
-  .hero h1{font-size:clamp(46px,4.4vw,66px)}
+  :root{--gutter:48px}
+  .hero-in{display:grid;grid-template-columns:560px minmax(0,1fr);grid-template-rows:auto auto;column-gap:48px;align-content:center;
+    min-height:min(calc(100svh - 80px),640px);padding-block:40px 56px}
+  .hero-text{grid-area:1/1;align-self:end}
+  .hero h1{font-size:56px;line-height:61px}
   .hero-sub{margin-top:20px}
-  .hero-foot{grid-area:2/1;background:none;box-shadow:none;border-radius:0;padding:30px 0 48px}
-  .hero-cta{justify-content:flex-start}
-  .hero-cta .btn{flex:none}
-  .stats{text-align:left;margin-top:18px}
-  /* the wide drawing's left side is empty sky, so it may slide under the text column */
-  .hero-art{grid-area:1/2/3/3;min-height:0;margin-left:-90px}
-  .hero-art img{object-position:100% 100%}
-  .spec{grid-template-columns:340px minmax(0,1fr);gap:48px;align-items:start;padding-top:12px}
-  .spec-side{position:sticky;top:20px;grid-template-columns:1fr}
-  .spec-pic{width:100%;margin:0 0 4px}
+  .hero-foot{grid-area:2/1;margin:0;padding:32px 0 0;background:none;box-shadow:none;border-radius:0}
+  .hero-art{grid-area:1/2/3/3;align-self:center;margin:0;max-width:none}
+  .hero-art img{max-height:520px;margin-left:auto}
+  .offer{padding:72px 0}
+  .about{padding:72px 0}
+  .spec{grid-template-columns:340px minmax(0,1fr);gap:48px;align-items:start;padding-top:16px}
+  .spec-side{position:sticky;top:104px;grid-template-columns:1fr}
+  .spec-pic{width:100%;margin:0 0 8px}
+  .spec h1,.how h1{font-size:44px;line-height:49px}
   .spec-side .btn{display:inline-flex}
   .lesson{grid-template-columns:132px 34px minmax(0,1fr) 20px;gap:18px}
   .lesson.is-planned{grid-template-columns:132px 34px minmax(0,1fr)}
-  .lesson-title{font-size:17px}
-  .lesson-q{font-size:14px}
-  .lessons{padding:4px 28px 8px}
-  .sec-head{padding:18px 28px;font-size:26px}
-  .sec-letter{width:40px;height:40px;font-size:20px;border-radius:10px}
+  .lesson-title{font-size:17px;line-height:22px}
+  .sec-head{min-height:68px;padding:14px 24px;font-size:24px;line-height:29px}
+  .sec-letter{width:36px;height:36px;font-size:18px}
+  .step{min-height:236px}
+}
+@media (min-width:1600px){
+  .hero h1{font-size:64px;line-height:69px}
 }
 
-/* a small desktop or a tablet held sideways: a narrower text column leaves the drawing room */
-@media (min-width:1000px) and (max-width:1279px){
-  .hero{grid-template-columns:minmax(0,460px) minmax(0,1fr)}
-  .hero h1{font-size:46px}
-}
-
-/* no sliding menu, smooth scrolling or press effects for someone who asks for less motion */
+/* no sliding menu, rising items, smooth scrolling or press effects for someone who asks for less motion */
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .menu-sheet,.menu-scrim,.btn,.more summary::after{transition:none}
+  .menu-sheet,.menu-scrim,.btn,.chip,.offer-ico,.more summary::after{transition:none}
   .btn:active{transform:none}
 }

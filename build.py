@@ -593,8 +593,16 @@ HOME_ICONS = {
     "check": "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8 12.5l2.8 2.8 5.7-5.8",
     "menu": "M4 7h16M4 12h16M4 17h16",
     "close": "M6 6l12 12M18 6L6 18",
+    "email": "M4 6h16v12H4zM4 7l8 6 8-6",
+    "youtube": "M3 8.5A3.5 3.5 0 0 1 6.5 5h11A3.5 3.5 0 0 1 21 8.5v7a3.5 3.5 0 0 1-3.5 3.5h-11A3.5 3.5 0 0 1 3 15.5zM10 9.5v5l4.5-2.5z",
+    "telegram": "M21 4L3 11l6 2 2 6 3-4 5 4zM9 13l9-7",
+    "link": "M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1",
 }
 HOW_PAGE = "how-it-works.html"
+# What you get, on the home page's navy band: what the site offers (never "free": it will be paid)
+OFFER = [("play", "Short visual lessons", "One idea per chapter, drawn as you watch."),
+         ("cases", "Exam-style cases", "A new order every time you practise."),
+         ("check", "Explained answers", "Why the right answer is right, and why the others are not.")]
 
 
 def home_icon(name):
@@ -611,6 +619,11 @@ def img_tag(rel, cls="", eager=False, up=""):
     return f'<img{c} src="{up}img/{rel}" alt=""{lazy} decoding="async">'
 
 
+def start_href(specs, up=""):
+    """Every Start learning opens the way in, never a lesson: the first specialty's lessons until the pathway page exists."""
+    return f'{up}{specs[0]["id"]}/index.html' if specs else f"{up}{HOW_PAGE}"
+
+
 def site_menu(specs, built, coming, up, here):
     """The site's one menu: every specialty (those not started greyed), then How it works. A navy sheet that fills
     a phone's screen and slides in from the right on a tablet or desktop, the page dimmed behind it."""
@@ -624,23 +637,40 @@ def site_menu(specs, built, coming, up, here):
         items.append(f'<li><span class="mi is-soon"><span>{e(c["title"])}</span><span class="mi-soon">Soon</span></span></li>')
     cur = ' aria-current="page"' if here == "how" else ""
     return (f'<div class="menu" id="menu" hidden><div class="menu-scrim" data-close></div>'
-            f'<nav class="menu-sheet" aria-label="Menu"><div class="menu-top">'
+            f'<div class="menu-sheet" role="dialog" aria-modal="true" aria-label="Menu"><div class="menu-top">'
             f'<a class="wordmark" href="{up}index.html" aria-label="Home">{lockup("lockup")}</a>'
             f'<button class="menu-close" type="button" data-close aria-label="Close the menu">{home_icon("close")}</button></div>'
-            f'<ul class="mlist">{"".join(items)}</ul>'
-            f'<ul class="mlist"><li><a class="mi" href="{up}{HOW_PAGE}"{cur}><span>How it works</span>{home_icon("right")}</a></li></ul>'
-            f'</nav></div>')
+            f'<nav aria-label="Lessons"><ul class="mlist">{"".join(items)}</ul>'
+            f'<ul class="mlist"><li><a class="mi" href="{up}{HOW_PAGE}"{cur}><span>How it works</span>{home_icon("right")}</a></li></ul></nav>'
+            f'</div></div>')
 
 
-# the menu opens and closes; Escape or a tap on the dimmed page closes it, and focus goes back to the button
+# the menu is a modal: the page behind it goes inert (no focus, no taps) while it is open; Escape, the close button or
+# a tap on the dimmed page closes it, and focus goes back to the button
 MENU_JS = ("<script>(function(){var b=document.getElementById('menuBtn'),m=document.getElementById('menu');if(!b||!m)return;"
+           "var rest=[].filter.call(document.body.children,function(x){return x!==m&&x.tagName!=='SCRIPT'});"
            "function open(){m.hidden=false;b.setAttribute('aria-expanded','true');document.documentElement.classList.add('menu-open');"
+           "rest.forEach(function(x){x.inert=true});"
            "requestAnimationFrame(function(){m.classList.add('is-open');var f=m.querySelector('.mi[href]');if(f)f.focus()})}"
            "function close(){m.classList.remove('is-open');b.setAttribute('aria-expanded','false');document.documentElement.classList.remove('menu-open');"
-           "m.hidden=true;b.focus()}"
+           "rest.forEach(function(x){x.inert=false});m.hidden=true;b.focus()}"
            "b.addEventListener('click',function(){m.hidden?open():close()});"
            "m.addEventListener('click',function(ev){if(ev.target.closest('[data-close]'))close()});"
            "document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&!m.hidden)close()})})();</script>")
+
+# What you get rises into view once, as it scrolls in (the site's entrance: 0.5 s each, 0.16 s apart); without
+# scripts, or for someone who asks for less motion, it simply shows
+REVEAL_JS = ("<script>(function(){var els=document.querySelectorAll('.reveal');if(!els.length||!('IntersectionObserver' in window)"
+             "||matchMedia('(prefers-reduced-motion: reduce)').matches)return;document.documentElement.classList.add('reveals');"
+             "var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('is-in');io.unobserve(en.target)}})},{threshold:.25});"
+             "els.forEach(function(x){io.observe(x)})})();</script>")
+
+# the sign-up posts to the mailing-list service named in curriculum.yaml (site: subscribe:); until one is set, it says so
+SIGNUP_JS = ("<script>(function(){var f=document.getElementById('signup');if(!f)return;var s=f.querySelector('.signup-status');"
+             "f.addEventListener('submit',function(ev){var i=f.querySelector('input');if(!i.checkValidity()){ev.preventDefault();"
+             "s.textContent='Enter a full email address, like name@example.com.';s.className='signup-status is-error';i.focus();return}"
+             "if(!f.getAttribute('action')){ev.preventDefault();s.textContent='Sign-up opens soon.';s.className='signup-status';return}"
+             "s.textContent='Check your inbox to confirm.';s.className='signup-status is-ok'})})();</script>")
 
 
 def site_page(site, specs, built, coming, title, body, up="", here="", cls="", label="", extra_js=""):
@@ -669,40 +699,89 @@ def site_foot(site):
             f'<span>{e(site["disclaimer"])}</span></div></footer>')
 
 
+def signup_form(site):
+    """New lessons by email: one field and Subscribe, posting to the mailing-list service in curriculum.yaml."""
+    action = site.get("subscribe") or ""
+    act = f' action="{e(action)}" method="post" target="_blank"' if action else ""
+    return (f'<form class="signup" id="signup"{act} novalidate><p class="signup-label" id="signupLabel">New lessons by email</p>'
+            f'<div class="signup-row"><span class="signup-field">{home_icon("email")}<label class="sr" for="signupEmail">Email address</label>'
+            f'<input id="signupEmail" name="email" type="email" autocomplete="email" required placeholder="Email address" aria-describedby="signupNote"></span>'
+            f'<button class="btn primary" type="submit">Subscribe</button></div>'
+            f'<p class="signup-note" id="signupNote">Unsubscribe any time.</p><p class="signup-status" role="status" aria-live="polite"></p></form>')
+
+
+def about_section(site, up=""):
+    """About me and contact, at the end of the home page, from curriculum.yaml (site: about:)."""
+    about = site.get("about") or {}
+    if not about:
+        return ""
+    photo = img_tag("about.webp", "about-photo", up=up)
+    if not photo:
+        initials = "".join(w[0] for w in site["author"].split()[:2])
+        photo = f'<span class="about-photo is-initials" aria-hidden="true">{e(initials)}</span>'
+    chips = []
+    for c in about.get("contacts") or []:
+        # an email opens the mail app; anything else opens in a new tab
+        out = "" if str(c["href"]).startswith("mailto:") else ' target="_blank" rel="noopener"'
+        kind = c.get("kind") if c.get("kind") in HOME_ICONS else "link"
+        chips.append(f'<li><a class="chip" href="{e(c["href"])}"{out}>{home_icon(kind)}<span>{e(c["label"])}</span></a></li>')
+    chips = "".join(chips)
+    role = f'<p class="about-role">{e(about["role"])}</p>' if about.get("role") else ""
+    bio = f'<p class="about-bio">{e(about["bio"])}</p>' if about.get("bio") else ""
+    return (f'<section class="about" aria-labelledby="aboutTitle"><div class="wrap about-in wash">{photo}'
+            f'<h2 id="aboutTitle">About me</h2><p class="about-name">{e(site["author"])}</p>{role}{bio}'
+            f'<ul class="chips">{chips}</ul></div></section>')
+
+
 def render_index(site, specs, built, coming, label=""):
-    """The home page: the front door only (a headline, one line, Start learning). The lessons are reached
-    through the menu; each specialty has its own page."""
-    ready = [(spec, tp) for spec in specs for tp in spec["topics"] if tp["slug"] in built]
-    n_cases = sum(case_count(built[tp["slug"]]) for _, tp in ready)
-    # Start learning opens the way in, not a lesson (until the pathway page exists, the first specialty's lessons)
-    start = f'{specs[0]["id"]}/index.html' if specs else HOW_PAGE
-    browse = start
+    """The home page: the headline, the drawing, Start learning and the email sign-up; What you get on a navy
+    band; About me and contact. The lessons themselves are reached through the menu."""
     pic = ""
     if os.path.exists(os.path.join(ART, "hero-tall.webp")):
         # the tall drawing on phones and tablets, the wide one beside the headline on a desktop
         pic = ('<picture class="hero-art"><source media="(min-width:1000px)" srcset="img/hero-wide.webp">'
                '<img src="img/hero-tall.webp" alt="" decoding="async"></picture>')
-    # on a phone the drawing stands between the headline and the button; on a desktop it fills the right
-    body = (f'<main class="hero">'
-            f'<div class="hero-text"><h1>Learn MRCP <span>one step at a time.</span></h1>'
+    offer = "".join(f'<li class="offer-item reveal" style="--i:{k}"><span class="offer-ico">{home_icon(ic)}</span>'
+                    f'<h3>{t}</h3><p>{d}</p></li>' for k, (ic, t, d) in enumerate(OFFER))
+    body = (f'<main><section class="hero"><div class="wrap hero-in">'
+            f'<div class="hero-text wash"><h1>Learn MRCP <span>one step at a time.</span></h1>'
             f'<p class="hero-sub">Short video lessons, then exam-style cases you solve yourself.</p></div>{pic}'
-            f'<div class="hero-foot"><div class="hero-cta"><a class="btn primary big" href="{e(start)}">Start learning</a>'
-            f'<a class="btn big browse" href="{e(browse)}">Browse lessons</a></div>'
-            f'<p class="stats">{len(ready)} lessons · {n_cases} exam-style cases · Free</p></div></main>')
+            f'<div class="hero-foot"><a class="btn primary big" href="{e(start_href(specs))}">Start learning</a>{signup_form(site)}</div>'
+            f'</div></section>'
+            f'<section class="offer" aria-labelledby="offerTitle"><div class="wrap"><h2 id="offerTitle">What you get</h2>'
+            f'<ul class="offer-list">{offer}</ul></div></section>'
+            f'{about_section(site)}</main>{site_foot(site)}')
     # old links named a specialty (/#statistics) or a part of the old home page (#lessons, #how): send them on
     ids = json.dumps([s["id"] for s in specs])
     redirect = ("<script>(function(){var h=location.hash.slice(1),ids=" + ids + ";"
                 "if(ids.indexOf(h)>=0)location.replace(h+'/index.html');"
                 "else if(h==='lessons'&&ids.length)location.replace(ids[0]+'/index.html');"
                 "else if(h==='how')location.replace('" + HOW_PAGE + "')})();</script>")
-    return site_page(site, specs, built, coming, site["title"], body, cls="home", label=label, extra_js=redirect)
+    return site_page(site, specs, built, coming, site["title"], body, cls="home", label=label,
+                     extra_js=redirect + REVEAL_JS + SIGNUP_JS)
+
+
+def availability(spec, built):
+    """What a specialty offers today, said plainly: lessons to practise, and how many have their video yet."""
+    ready = [tp for tp in spec["topics"] if tp["slug"] in built]
+    videos = sum(1 for tp in ready if tp.get("video"))
+    n = len(ready)
+    if not n:
+        return "Lessons coming soon"
+    lessons = f'{n} lesson{"" if n == 1 else "s"} to practise'
+    if videos == n:
+        return f'{n} lesson{"" if n == 1 else "s"}'
+    if not videos:
+        return lessons + " · videos coming soon"
+    return f"{lessons} · {videos} with video"
 
 
 def render_specialty(site, specs, built, coming, spec, label=""):
-    """A specialty's lessons: on the left (above, on a phone) its drawing, title, progress and first lesson; then
-    each section as a card opened by a navy strip, its lessons in video order. Planned topics fold away below."""
+    """A specialty's lessons: on the left (above, on a phone) its drawing, title and what is available; then each
+    section as a card opened by a navy strip, its lessons in video order. Planned topics fold away below."""
     rows_by_sec, order, planned = {}, [], []
     sections = spec.get("sections") or {}
+    some_video = any(tp.get("video") for tp in spec["topics"] if tp["slug"] in built)
     for i, tp in enumerate(spec["topics"]):
         if tp["slug"] not in built:
             planned.append((i, tp))
@@ -713,10 +792,12 @@ def render_specialty(site, specs, built, coming, spec, label=""):
             order.append(sec)
         pic = img_tag(f'thumbs/{tp["slug"]}.webp', up="../")
         badge = f'<span class="vid-badge">{home_icon("play")}Video</span>' if tp.get("video") else ""
+        # when some lessons have their video and others not, the others say so before they are opened
+        soon = '<span class="lesson-soon">Video coming soon</span>' if some_video and not tp.get("video") else ""
         rows_by_sec[sec].append(
             f'<li><a class="lesson" href="{e(tp["slug"])}.html"><span class="lesson-pic">{pic}{badge}</span>'
             f'<span class="lesson-n">{i + 1}</span><span class="lesson-body"><span class="lesson-title">{e(tp["title"])}</span>'
-            f'<span class="lesson-q">{e(hook_question(built[tp["slug"]]))}</span></span>{home_icon("right")}</a></li>')
+            f'<span class="lesson-q">{e(hook_question(built[tp["slug"]]))}</span>{soon}</span>{home_icon("right")}</a></li>')
     # the next planned topic sits at the end of its section, if that section is already on the page
     if planned and (planned[0][1].get("section") or "") in rows_by_sec:
         i, tp = planned[0]
@@ -735,13 +816,11 @@ def render_specialty(site, specs, built, coming, spec, label=""):
         names = "".join(f'<li>{e(tp["title"])}</li>' for _, tp in planned)
         more = (f'<details class="more"><summary>{len(planned)} more {e(spec["title"].lower())} topics planned</summary>'
                 f'<ul>{names}</ul></details>')
-    n_ready, total = sum(1 for tp in spec["topics"] if tp["slug"] in built), len(spec["topics"])
     first = next((tp for tp in spec["topics"] if tp["slug"] in built), None)
     start = (f'<a class="btn primary big wide" href="{e(first["slug"])}.html">Start with lesson 1</a>' if first else "")
     blurb = f'<p class="spec-blurb">{e(spec["blurb"])}</p>' if spec.get("blurb") else ""
     body = (f'<main class="wrap spec"><aside class="spec-side">{img_tag("covers/" + spec["id"] + ".webp", "spec-pic", eager=True, up="../")}'
-            f'<div class="spec-text"><h1>{e(spec["title"])}</h1>{blurb}<p class="spec-meta">{n_ready} of {total} ready</p>'
-            f'<div class="bar" role="img" aria-label="{n_ready} of {total} topics ready"><span style="width:{round(100 * n_ready / max(total, 1))}%"></span></div>'
+            f'<div class="spec-text wash"><h1>{e(spec["title"])}</h1>{blurb}<p class="spec-meta">{e(availability(spec, built))}</p>'
             f'{start}</div></aside><div class="spec-list">{"".join(cards)}{more}</div></main>{site_foot(site)}')
     return site_page(site, specs, built, coming, f'{spec["title"]} · {site["title"]}', body, up="../", here=spec["id"],
                      cls="spec-page", label=label)
@@ -749,15 +828,13 @@ def render_specialty(site, specs, built, coming, spec, label=""):
 
 def render_how(site, specs, built, coming, label=""):
     """How it works: the three steps of every lesson, and the way in."""
-    ready = [(spec, tp) for spec in specs for tp in spec["topics"] if tp["slug"] in built]
-    start = f'{ready[0][0]["id"]}/{ready[0][1]["slug"]}.html' if ready else "index.html"
     steps = [("play", "Watch", "A short video, one idea per chapter."),
              ("cases", "Practise", "Exam-style cases, in a new order each time."),
              ("check", "Check", "Why each answer is right, shown after you choose.")]
     cards = "".join(f'<li class="step"><span class="step-ico">{home_icon(ic)}</span><span class="step-n">{k + 1}</span>'
                     f'<h2>{t}</h2><p>{d}</p></li>' for k, (ic, t, d) in enumerate(steps))
-    body = (f'<main class="wrap how"><h1>How it works</h1><ol class="steps">{cards}</ol>'
-            f'<a class="btn primary big" href="{e(start)}">Start learning</a></main>{site_foot(site)}')
+    body = (f'<main class="wrap how"><h1 class="wash">How it works</h1><ol class="steps">{cards}</ol>'
+            f'<a class="btn primary big" href="{e(start_href(specs))}">Start learning</a></main>{site_foot(site)}')
     return site_page(site, specs, built, coming, f'How it works · {site["title"]}', body, here="how", cls="how-page", label=label)
 
 
@@ -797,6 +874,8 @@ def main():
     if not errors:
         id_errs, lock_ids = check_ids([t for _, _, t in topics])
         errors += id_errs
+    if "TODO" in json.dumps(site.get("about") or {}):
+        warnings.append("curriculum.yaml: site.about still has TODO placeholders; fill them in before the site goes live")
     for w in warnings:
         print("warning:", w)
     if errors:

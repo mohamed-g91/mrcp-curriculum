@@ -3,7 +3,8 @@
 //   node checks/check-site.mjs [dist] [--shots out-dir]
 //
 // At each window size (the six the lesson check uses) it loads every page and fails on sideways overflow, on a home
-// page that does not fit one screen on a phone or tablet held upright, on a menu that does not open, take focus,
+// page whose Start learning is below the first screen, What you get that does not appear when scrolled to, a sign-up
+// that says nothing back, on a menu that does not open, take focus,
 // close on Escape and on the dimmed page, and give focus back, on an old address (/#statistics, #lessons, #how)
 // that does not reach its new page, on a lesson link or drawing that points at a missing file, and on any console
 // error or request outside the build. --shots saves each page, and each page with its menu open.
@@ -121,8 +122,25 @@ for (const size of SIZES) {
       return { hscroll: d.scrollWidth > W + 1, wide, tall: d.scrollHeight, h: innerHeight };
     })()`);
     if (m.hscroll || m.wide.length) fail(`${where}: sideways overflow (${m.wide.join(", ")})`);
-    // the home page is one screen on a phone or tablet held upright
-    if (rel === "index.html" && size.width < 1000 && size.height > size.width && m.tall > m.h + 1) fail(`${where}: the home page scrolls (${m.tall} px tall, ${m.h} px screen)`);
+    if (rel === "index.html") {
+      // Start learning is on the first screen; What you get shows once scrolled to; the sign-up answers a bad address
+      const home = await js(`(async () => {
+        const b = document.querySelector(".hero-foot > .btn").getBoundingClientRect();
+        const items = [...document.querySelectorAll(".offer-item")];
+        items[0].scrollIntoView({ block: "center" }); await new Promise(r => setTimeout(r, 1200));
+        const shown = items.every(i => getComputedStyle(i).opacity === "1");
+        window.scrollTo(0, 0);
+        const f = document.getElementById("signup"), i = f.querySelector("input"); i.value = "not-an-email";
+        f.querySelector("button").click(); await new Promise(r => setTimeout(r, 50));
+        const err = f.querySelector(".signup-status").textContent;
+        i.value = "doctor@example.com"; f.querySelector("button").click(); await new Promise(r => setTimeout(r, 50));
+        return { startBottom: b.bottom, shown, err, ok: f.querySelector(".signup-status").textContent, h: innerHeight };
+      })()`);
+      if (home.startBottom > home.h) fail(`${where}: Start learning is below the first screen (${Math.round(home.startBottom)} px)`);
+      if (!home.shown) fail(`${where}: What you get did not appear when scrolled to`);
+      if (!home.err) fail(`${where}: the sign-up said nothing about a bad address`);
+      if (!home.ok) fail(`${where}: the sign-up said nothing after a good address`);
+    }
     // every link inside the build points at a file that exists; every drawing has loaded
     const links = await js(`[...document.querySelectorAll("a[href]")].map(a => a.href).filter(h => h.startsWith(${JSON.stringify(base)}))`);
     for (const h of links) {
