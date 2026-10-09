@@ -36,8 +36,9 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 | `engine/fonts/` | The embedded fonts: Inter and Outfit on every page, Cairo (Arabic letters and Latin part, with its OFL licence) only in a topic with Arabic; `build.py` embeds them as base64 |
 | `engine/css/` | `tokens` (colours, sizes), `base`, `stage` (16:9 canvas), `patterns`, `index` (home page) |
 | `engine/js/` | `core` (helpers, theme, score, `record()`, click-away), one file per pattern, `deck` (stage, navigation, start-up) |
-| `build.py` | Checks every topic, then builds the candidate's `dist/<specialty>/<slug>.html`, `dist/index.html`, and the presenter's `presenter/<specialty>/<slug>.html` and `presenter/index.html` (git-ignored, never published) |
+| `build.py` | Checks every topic, then builds the candidate's `dist/<specialty>/<slug>.html`, the site around them (`dist/index.html`, each specialty's `dist/<specialty>/index.html`, `dist/how-it-works.html`), and the presenter's copies in `presenter/` (git-ignored, never published) |
 | `checks/check.mjs` | Drives headless Chrome through a built page: layout at six sizes, every case solved, the recording view, and, where a topic has them, the Arabic titles and ع switch and a drill spectrum's cards, kinds and zoom circles |
+| `checks/check-site.mjs` | The same for the site around the lessons (home, lessons pages, How it works): overflow at six sizes, the home page on one phone screen, the menu, old addresses, missing files |
 
 Keep `build.py` and `engine/patterns.py` to syntax older Pythons accept (Cloudflare's Python may be older than the one on the author's machine): no f-string with the same quote inside its braces, no `match`.
 
@@ -47,7 +48,7 @@ A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERN
 
 1. Edit the topic YAML (content) or the engine (behaviour and look). Never edit `dist/`.
 2. Build: `python build.py` (or `python build.py --check` to check content only).
-3. Check both builds: `node checks/check.mjs dist/<specialty>/<slug>.html --shots <scratchpad>/shots` (the candidate's page) and the same for `presenter/<specialty>/<slug>.html` (the Learn slides and the recording view), then look at the screenshots. In a cloud container, point it at the browser there and run without the sandbox: `CHROME=/opt/pw-browsers/chromium CHROME_FLAGS=--no-sandbox`. The check fails on overflow, a slide that scrolls on the stage, a case that does not solve, a wrong score, console errors or network requests.
+3. Check both builds: `node checks/check.mjs dist/<specialty>/<slug>.html --shots <scratchpad>/shots` (the candidate's page) and the same for `presenter/<specialty>/<slug>.html` (the Learn slides and the recording view), then look at the screenshots. A change to the home page, a lessons page or How it works is checked with `node checks/check-site.mjs dist --shots <scratchpad>/site-shots`. In a cloud container, point it at the browser there and run without the sandbox: `CHROME=/opt/pw-browsers/chromium CHROME_FLAGS=--no-sandbox`. The check fails on overflow, a slide that scrolls on the stage, a case that does not solve, a wrong score, console errors or network requests.
    Run the two checks one after the other, or together only while the machine copes: a check that dies leaves headless Chrome behind (its profile folder starts `mrcp-check-`), and enough of them exhaust the process limit and break the shell; close them before running again.
 4. Commit with a short message. Cloudflare Pages builds and publishes from `main`.
 5. After recording: put the YouTube ID in the topic's `video:` in `curriculum.yaml`, and each Learn slide's start time as `at: "m:ss"`.

@@ -575,7 +575,7 @@ def next_lessons(spec, built):
     for k, tp in enumerate(topics):
         if tp["slug"] not in built:
             continue
-        nx = {"spec": spec["title"], "all": "../index.html#" + spec["id"]}
+        nx = {"spec": spec["title"], "all": "index.html"}
         if k + 1 < len(topics):
             n = topics[k + 1]
             nx["title"] = n["title"]
@@ -591,7 +591,10 @@ HOME_ICONS = {
     "play": "M4 6.5A1.5 1.5 0 0 1 5.5 5h13A1.5 1.5 0 0 1 20 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5zM10 9.5v5l4-2.5z",
     "cases": "M7 4h9a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM9 8h5M9 11h5M9 14h3",
     "check": "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8 12.5l2.8 2.8 5.7-5.8",
+    "menu": "M4 7h16M4 12h16M4 17h16",
+    "close": "M6 6l12 12M18 6L6 18",
 }
+HOW_PAGE = "how-it-works.html"
 
 
 def home_icon(name):
@@ -599,109 +602,163 @@ def home_icon(name):
             'stroke-linecap="round" stroke-linejoin="round" d="' + HOME_ICONS[name] + '"/></svg>')
 
 
-def img_tag(rel, cls="", eager=False):
+def img_tag(rel, cls="", eager=False, up=""):
     """A drawing from art/site, served beside the home page as img/<rel>; nothing if it is not drawn yet."""
     if not os.path.exists(os.path.join(ART, rel)):
         return ""
     lazy = "" if eager else ' loading="lazy"'
     c = f' class="{cls}"' if cls else ""
-    return f'<img{c} src="img/{rel}" alt=""{lazy} decoding="async">'
+    return f'<img{c} src="{up}img/{rel}" alt=""{lazy} decoding="async">'
+
+
+def site_menu(specs, built, coming, up, here):
+    """The site's one menu: every specialty (those not started greyed), then How it works. A navy sheet that fills
+    a phone's screen and slides in from the right on a tablet or desktop, the page dimmed behind it."""
+    items = []
+    for spec in specs:
+        n = sum(1 for tp in spec["topics"] if tp["slug"] in built)
+        cur = ' aria-current="page"' if here == spec["id"] else ""
+        items.append(f'<li><a class="mi" href="{up}{e(spec["id"])}/index.html"{cur}><span>{e(spec["title"])}</span>'
+                     f'<span class="mi-n">{n}</span>{home_icon("right")}</a></li>')
+    for c in coming:
+        items.append(f'<li><span class="mi is-soon"><span>{e(c["title"])}</span><span class="mi-soon">Soon</span></span></li>')
+    cur = ' aria-current="page"' if here == "how" else ""
+    return (f'<div class="menu" id="menu" hidden><div class="menu-scrim" data-close></div>'
+            f'<nav class="menu-sheet" aria-label="Menu"><div class="menu-top">'
+            f'<a class="wordmark" href="{up}index.html" aria-label="Home">{lockup("lockup")}</a>'
+            f'<button class="menu-close" type="button" data-close aria-label="Close the menu">{home_icon("close")}</button></div>'
+            f'<ul class="mlist">{"".join(items)}</ul>'
+            f'<ul class="mlist"><li><a class="mi" href="{up}{HOW_PAGE}"{cur}><span>How it works</span>{home_icon("right")}</a></li></ul>'
+            f'</nav></div>')
+
+
+# the menu opens and closes; Escape or a tap on the dimmed page closes it, and focus goes back to the button
+MENU_JS = ("<script>(function(){var b=document.getElementById('menuBtn'),m=document.getElementById('menu');if(!b||!m)return;"
+           "function open(){m.hidden=false;b.setAttribute('aria-expanded','true');document.documentElement.classList.add('menu-open');"
+           "requestAnimationFrame(function(){m.classList.add('is-open');var f=m.querySelector('.mi[href]');if(f)f.focus()})}"
+           "function close(){m.classList.remove('is-open');b.setAttribute('aria-expanded','false');document.documentElement.classList.remove('menu-open');"
+           "m.hidden=true;b.focus()}"
+           "b.addEventListener('click',function(){m.hidden?open():close()});"
+           "m.addEventListener('click',function(ev){if(ev.target.closest('[data-close]'))close()});"
+           "document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&!m.hidden)close()})})();</script>")
+
+
+def site_page(site, specs, built, coming, title, body, up="", here="", cls="", label="", extra_js=""):
+    """A page of the site around the lessons (home, a specialty's lessons, How it works): the top bar with the
+    menu, the sky-blue patterned page, and the inline CSS. Drawings are files in img/ beside the home page."""
+    css = (fonts_css() + read(ENGINE, "css", "tokens.css") + read(ENGINE, "css", "index.css")).replace("url(img/", f"url({up}img/")
+    name = e(site["title"])
+    top = (f'<header class="top"><div class="wrap top-row"><a class="wordmark" href="{up}index.html" aria-label="{name}">{lockup("lockup")}</a>'
+           f'<nav class="top-nav" aria-label="Site"><a href="{up}{HOW_PAGE}">How it works</a></nav>'
+           f'<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">'
+           f'<span class="menu-btn-label">Lessons</span>{home_icon("menu")}<span class="sr">Menu</span></button></div></header>')
+    return f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{e(title + label)}</title>{favicon()}<meta name="description" content="Visual MRCP lessons: short videos, then exam-style cases you solve yourself.">
+<style>{css}</style></head>
+<body class="{cls}">
+{top}
+{body}
+{site_menu(specs, built, coming, up, here)}
+{MENU_JS}{extra_js}
+</body></html>"""
+
+
+def site_foot(site):
+    return (f'<footer class="foot"><div class="wrap foot-row"><span class="foot-name">{e(site["title"])} · {e(site["author"])}</span>'
+            f'<span>{e(site["disclaimer"])}</span></div></footer>')
 
 
 def render_index(site, specs, built, coming, label=""):
-    """The home page: a hero, the specialties as tabs, each specialty's lessons as a numbered path grouped by
-    section, the specialties to come, and a footer. Its drawings are files beside it (img/), unlike a topic page."""
+    """The home page: the front door only (a headline, one line, Start learning). The lessons are reached
+    through the menu; each specialty has its own page."""
     ready = [(spec, tp) for spec in specs for tp in spec["topics"] if tp["slug"] in built]
     n_cases = sum(case_count(built[tp["slug"]]) for _, tp in ready)
-    start_href = f'{ready[0][0]["id"]}/{ready[0][1]["slug"]}.html' if ready else "#lessons"
+    # Start learning opens the way in, not a lesson (until the pathway page exists, the first specialty's lessons)
+    start = f'{specs[0]["id"]}/index.html' if specs else HOW_PAGE
+    browse = start
+    pic = ""
+    if os.path.exists(os.path.join(ART, "hero-tall.webp")):
+        # the tall drawing on phones and tablets, the wide one beside the headline on a desktop
+        pic = ('<picture class="hero-art"><source media="(min-width:1000px)" srcset="img/hero-wide.webp">'
+               '<img src="img/hero-tall.webp" alt="" decoding="async"></picture>')
+    # on a phone the drawing stands between the headline and the button; on a desktop it fills the right
+    body = (f'<main class="hero">'
+            f'<div class="hero-text"><h1>Learn MRCP <span>one step at a time.</span></h1>'
+            f'<p class="hero-sub">Short video lessons, then exam-style cases you solve yourself.</p></div>{pic}'
+            f'<div class="hero-foot"><div class="hero-cta"><a class="btn primary big" href="{e(start)}">Start learning</a>'
+            f'<a class="btn big browse" href="{e(browse)}">Browse lessons</a></div>'
+            f'<p class="stats">{len(ready)} lessons · {n_cases} exam-style cases · Free</p></div></main>')
+    # old links named a specialty (/#statistics) or a part of the old home page (#lessons, #how): send them on
+    ids = json.dumps([s["id"] for s in specs])
+    redirect = ("<script>(function(){var h=location.hash.slice(1),ids=" + ids + ";"
+                "if(ids.indexOf(h)>=0)location.replace(h+'/index.html');"
+                "else if(h==='lessons'&&ids.length)location.replace(ids[0]+'/index.html');"
+                "else if(h==='how')location.replace('" + HOW_PAGE + "')})();</script>")
+    return site_page(site, specs, built, coming, site["title"], body, cls="home", label=label, extra_js=redirect)
 
-    tabs, panels = [], []
-    for k, spec in enumerate(specs):
-        n_ready = sum(1 for tp in spec["topics"] if tp["slug"] in built)
-        tabs.append(f'<a class="tab" href="#{e(spec["id"])}" data-tab="{e(spec["id"])}">{e(spec["title"])}'
-                    f'<span class="tab-n">{n_ready}</span></a>')
-        rows, last_sec, planned = [], None, []
-        sections = spec.get("sections") or {}
-        for i, tp in enumerate(spec["topics"]):
-            if tp["slug"] not in built:
-                planned.append((i, tp))
-                continue
-            sec = tp.get("section")
-            if sec != last_sec and sec in sections:
-                rows.append(f'<li class="path-sec"><span>{e(sec)} · {e(sections[sec])}</span></li>')
-                last_sec = sec
-            pic = img_tag(f'thumbs/{tp["slug"]}.webp')
-            badge = f'<span class="vid-badge">{home_icon("play")}Video</span>' if tp.get("video") else ""
-            rows.append(f'<li class="path-item"><span class="path-n">{i + 1}</span>'
-                        f'<a class="lesson" href="{e(spec["id"])}/{e(tp["slug"])}.html">'
-                        f'<span class="lesson-pic">{pic}{badge}</span>'
-                        f'<span class="lesson-body"><span class="lesson-title">{e(tp["title"])}</span>'
-                        f'<span class="lesson-q">{e(hook_question(built[tp["slug"]]))}</span></span>{home_icon("right")}</a></li>')
-        if planned:
-            i, tp = planned[0]
-            rows.append(f'<li class="path-item is-planned"><span class="path-n">{i + 1}</span>'
-                        f'<div class="lesson"><span class="lesson-title">{e(tp["title"])}</span><span class="soon">Coming soon</span></div></li>')
-        more = ""
-        if len(planned) > 1:
-            names = "".join(f'<li>{e(tp["title"])}</li>' for _, tp in planned[1:])
-            more = (f'<details class="more"><summary>{len(planned) - 1} more {e(spec["title"].lower())} topics planned</summary>'
-                    f'<ul>{names}</ul></details>')
-        total = len(spec["topics"])
-        how_id = ' id="how"' if k == 0 else ""
-        pct = round(100 * n_ready / max(total, 1))
-        lesson1 = f'{spec["id"]}/{spec["topics"][0]["slug"]}.html'
-        side = (f'<aside class="side"><div class="side-card">{img_tag("covers/" + spec["id"] + ".webp", "side-pic")}'
-                f'<div class="side-body"><h3>{e(spec["title"])}</h3><p class="muted">{n_ready} of {total} topics ready</p>'
-                f'<div class="bar"><span style="width:{pct}%"></span></div>'
-                f'<a class="btn primary wide" href="{e(lesson1)}">Start with lesson 1</a></div></div>'
-                f'<div class="side-card how"{how_id}><h3>How it works</h3><ul>'
-                f'<li>{home_icon("play")}<span><b>Watch</b>One idea per chapter</span></li>'
-                f'<li>{home_icon("cases")}<span><b>Practise</b>Exam-style cases, a new order each time</span></li>'
-                f'<li>{home_icon("check")}<span><b>Check</b>Why each answer is right</span></li></ul></div></aside>')
-        hidden = "" if k == 0 else " hidden"
-        blurb = f'<p class="muted lead">{e(spec["blurb"])}</p>' if spec.get("blurb") else ""
-        panels.append(f'<section class="panel" id="{e(spec["id"])}" data-panel="{e(spec["id"])}"{hidden}>'
-                      f'<div class="panel-main"><h2>{e(spec["title"])}</h2>{blurb}'
-                      f'<ol class="path">{"".join(rows)}</ol>{more}</div>{side}</section>')
-    for c in coming:
-        tabs.append(f'<span class="tab is-soon" aria-disabled="true">{e(c["title"])}</span>')
 
-    soon_cards = "".join(f'<div class="soon-card">{img_tag("covers/" + c["id"] + ".webp")}<span class="soon-name">{e(c["title"])}</span>'
-                         f'<span class="soon-chip">Coming soon</span></div>' for c in coming)
-    soon = (f'<section class="soon-band"><div class="wrap"><h2>More specialties on the way</h2>'
-            f'<p class="muted">Each one built the same way: watch, practise, check.</p><div class="soon-grid">{soon_cards}</div></div></section>'
-            if coming else "")
-    css = fonts_css() + read(ENGINE, "css", "tokens.css") + read(ENGINE, "css", "index.css")
-    d = datetime.date.today()
-    today = f"{d.day} {d.strftime('%B %Y')}"
-    hero_pic = img_tag("hero.webp", "hero-pic", eager=True)
-    # the tabs: the address names the open specialty (/#statistics), so a link can open on it
-    script = ("<script>(function(){var t=document.querySelectorAll('[data-tab]'),p=document.querySelectorAll('[data-panel]');"
-              "function show(id,first){var ok=false;p.forEach(function(x){if(x.dataset.panel===id)ok=true});if(!ok){if(!first)return;id=p.length?p[0].dataset.panel:''}"
-              "p.forEach(function(x){x.hidden=x.dataset.panel!==id});t.forEach(function(x){if(x.dataset.tab===id)x.setAttribute('aria-current','true');else x.removeAttribute('aria-current')})}"
-              "show(location.hash.slice(1),true);window.addEventListener('hashchange',function(){show(location.hash.slice(1))})})();</script>")
-    name = e(site["title"])
-    return f"""<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(site["title"] + label)}</title>{favicon()}<meta name="description" content="Visual MRCP lessons: short videos, then exam-style cases you solve yourself.">
-<style>{css}</style></head>
-<body>
-<header class="top"><div class="wrap top-row"><a class="wordmark" href="#" aria-label="{name}">{lockup("lockup")}</a>
-<nav class="top-nav"><a href="#lessons">Lessons</a><a href="#how">How it works</a></nav></div></header>
-<main>
-<section class="hero"><div class="hero-art">{hero_pic}</div><div class="wrap hero-text">
-<h1>Learn MRCP <span>one step at a time.</span></h1>
-<p class="hero-sub">Short video lessons, then exam-style cases you solve yourself. Each lesson builds on the one before.</p>
-<div class="hero-cta"><a class="btn primary big" href="{e(start_href)}">Start learning</a><a class="btn big" href="#lessons">Browse lessons</a></div>
-<dl class="stats"><div><dt>{len(ready)}</dt><dd>lessons</dd></div><div><dt>{n_cases}</dt><dd>exam-style cases</dd></div><div><dt>Free</dt><dd>to start, no sign-up</dd></div></dl>
-</div></section>
-<div class="wrap lessons" id="lessons"><nav class="tabs" aria-label="Specialties">{"".join(tabs)}</nav>{"".join(panels)}</div>
-{soon}
-</main>
-<footer class="foot"><div class="wrap foot-row"><span class="foot-name">{name} · {e(site["author"])}</span>
-<span>{e(site["disclaimer"])}</span><span>Last updated {today}</span></div></footer>
-{script}
-</body></html>"""
+def render_specialty(site, specs, built, coming, spec, label=""):
+    """A specialty's lessons: on the left (above, on a phone) its drawing, title, progress and first lesson; then
+    each section as a card opened by a navy strip, its lessons in video order. Planned topics fold away below."""
+    rows_by_sec, order, planned = {}, [], []
+    sections = spec.get("sections") or {}
+    for i, tp in enumerate(spec["topics"]):
+        if tp["slug"] not in built:
+            planned.append((i, tp))
+            continue
+        sec = tp.get("section") or ""
+        if sec not in rows_by_sec:
+            rows_by_sec[sec] = []
+            order.append(sec)
+        pic = img_tag(f'thumbs/{tp["slug"]}.webp', up="../")
+        badge = f'<span class="vid-badge">{home_icon("play")}Video</span>' if tp.get("video") else ""
+        rows_by_sec[sec].append(
+            f'<li><a class="lesson" href="{e(tp["slug"])}.html"><span class="lesson-pic">{pic}{badge}</span>'
+            f'<span class="lesson-n">{i + 1}</span><span class="lesson-body"><span class="lesson-title">{e(tp["title"])}</span>'
+            f'<span class="lesson-q">{e(hook_question(built[tp["slug"]]))}</span></span>{home_icon("right")}</a></li>')
+    # the next planned topic sits at the end of its section, if that section is already on the page
+    if planned and (planned[0][1].get("section") or "") in rows_by_sec:
+        i, tp = planned[0]
+        rows_by_sec[tp.get("section") or ""].append(
+            f'<li><div class="lesson is-planned"><span class="lesson-pic"></span><span class="lesson-n">{i + 1}</span>'
+            f'<span class="lesson-body"><span class="lesson-title">{e(tp["title"])}</span><span class="lesson-q">Coming soon</span></span></div></li>')
+        planned = planned[1:]
+    cards = []
+    for sec in order:
+        n = sum(1 for tp in spec["topics"] if tp["slug"] in built and (tp.get("section") or "") == sec)
+        head = (f'<h2 class="sec-head"><span class="sec-letter">{e(sec)}</span><span class="sec-name">{e(sections.get(sec, ""))}</span>'
+                f'<span class="sec-n">{n} lesson{"" if n == 1 else "s"}</span></h2>') if sec else ""
+        cards.append(f'<section class="sec-card">{head}<ul class="lessons">{"".join(rows_by_sec[sec])}</ul></section>')
+    more = ""
+    if planned:
+        names = "".join(f'<li>{e(tp["title"])}</li>' for _, tp in planned)
+        more = (f'<details class="more"><summary>{len(planned)} more {e(spec["title"].lower())} topics planned</summary>'
+                f'<ul>{names}</ul></details>')
+    n_ready, total = sum(1 for tp in spec["topics"] if tp["slug"] in built), len(spec["topics"])
+    first = next((tp for tp in spec["topics"] if tp["slug"] in built), None)
+    start = (f'<a class="btn primary big wide" href="{e(first["slug"])}.html">Start with lesson 1</a>' if first else "")
+    blurb = f'<p class="spec-blurb">{e(spec["blurb"])}</p>' if spec.get("blurb") else ""
+    body = (f'<main class="wrap spec"><aside class="spec-side">{img_tag("covers/" + spec["id"] + ".webp", "spec-pic", eager=True, up="../")}'
+            f'<div class="spec-text"><h1>{e(spec["title"])}</h1>{blurb}<p class="spec-meta">{n_ready} of {total} ready</p>'
+            f'<div class="bar" role="img" aria-label="{n_ready} of {total} topics ready"><span style="width:{round(100 * n_ready / max(total, 1))}%"></span></div>'
+            f'{start}</div></aside><div class="spec-list">{"".join(cards)}{more}</div></main>{site_foot(site)}')
+    return site_page(site, specs, built, coming, f'{spec["title"]} · {site["title"]}', body, up="../", here=spec["id"],
+                     cls="spec-page", label=label)
+
+
+def render_how(site, specs, built, coming, label=""):
+    """How it works: the three steps of every lesson, and the way in."""
+    ready = [(spec, tp) for spec in specs for tp in spec["topics"] if tp["slug"] in built]
+    start = f'{ready[0][0]["id"]}/{ready[0][1]["slug"]}.html' if ready else "index.html"
+    steps = [("play", "Watch", "A short video, one idea per chapter."),
+             ("cases", "Practise", "Exam-style cases, in a new order each time."),
+             ("check", "Check", "Why each answer is right, shown after you choose.")]
+    cards = "".join(f'<li class="step"><span class="step-ico">{home_icon(ic)}</span><span class="step-n">{k + 1}</span>'
+                    f'<h2>{t}</h2><p>{d}</p></li>' for k, (ic, t, d) in enumerate(steps))
+    body = (f'<main class="wrap how"><h1>How it works</h1><ol class="steps">{cards}</ol>'
+            f'<a class="btn primary big" href="{e(start)}">Start learning</a></main>{site_foot(site)}')
+    return site_page(site, specs, built, coming, f'How it works · {site["title"]}', body, here="how", cls="how-page", label=label)
 
 
 def main():
@@ -761,11 +818,18 @@ def main():
             with open(out, "w", encoding="utf-8", newline="\n") as f:
                 f.write(render_topic(t, spec, site, present))
             print(f"Built {os.path.relpath(out, ROOT)} ({os.path.getsize(out):,} bytes)")
-    # the presenter's home page: the same list of topics, each opening its deck
-    with open(os.path.join(PRESENTER, "index.html"), "w", encoding="utf-8", newline="\n") as f:
-        f.write(render_index(site, specs, built, cur.get("coming") or [], " · presenter"))
-    with open(os.path.join(DIST, "index.html"), "w", encoding="utf-8", newline="\n") as f:
-        f.write(render_index(site, specs, built, cur.get("coming") or []))
+    # the site around the lessons: the home page, each specialty's lessons and How it works; the presenter's copies
+    # are the same pages, their lessons opening the decks
+    coming = cur.get("coming") or []
+    for out, label in ((DIST, ""), (PRESENTER, " · presenter")):
+        pages = {"index.html": render_index(site, specs, built, coming, label),
+                 HOW_PAGE: render_how(site, specs, built, coming, label)}
+        for spec in specs:
+            pages[spec["id"] + "/index.html"] = render_specialty(site, specs, built, coming, spec, label)
+        for rel, text in pages.items():
+            os.makedirs(os.path.dirname(os.path.join(out, rel)), exist_ok=True)
+            with open(os.path.join(out, rel), "w", encoding="utf-8", newline="\n") as f:
+                f.write(text)
     # the home page's drawings sit beside it as files
     for out in (DIST, PRESENTER):
         if os.path.isdir(ART):
@@ -774,7 +838,7 @@ def main():
     with open(LOCK, "w", encoding="utf-8", newline="\n") as f:
         f.write("# Every permanent item ID ever built. Maintained by build.py; do not edit by hand.\n")
         f.write("\n".join(lock_ids) + "\n")
-    print("Built dist/index.html")
+    print("Built the home page, How it works and each specialty's lessons page")
 
 
 if __name__ == "__main__":

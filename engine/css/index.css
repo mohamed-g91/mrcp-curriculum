@@ -1,20 +1,27 @@
-/* ---------- curriculum home page ----------
-   A hero (the ward-round drawing, faded into the page on its left and bottom), the specialties as tabs, each
-   specialty's lessons as a numbered path grouped by section with a side panel, the specialties to come on a
-   navy band, and a navy footer. The drawings are files beside the page (img/), from art/site. */
+/* ---------- the site around the lessons: home, a specialty's lessons, How it works ----------
+   Every page stands on sky blue with a faint pattern of medical line icons; the drawings have clear backgrounds, so
+   the pattern runs behind them and no edge shows. One menu (navy) holds the specialties and How it works: it fills a
+   phone's screen and slides in from the right on a tablet or desktop, the page dimmed behind it. The home page is
+   the front door only; each specialty's lessons are its own page, each section a card opened by a navy strip.
+   Drawings are files beside the home page (img/, from art/site); build.py points url(img/...) at them. */
+:root{
+  --sky:#E3EEF9;--sky-2:#D2E4F6;--navy:#12304F;--navy-text:#CFE0F2;--navy-accent:#9CCBF0;
+  --row-line:#EEF1F5;--chev:#8D9AAC;
+}
 *{box-sizing:border-box}
 html{font-synthesis-weight:none;scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--page);color:var(--text);font:17px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
-h1,h2,h3{font-family:var(--serif);font-weight:500;color:var(--ink);margin:0}
+html.menu-open{overflow:hidden}
+body{margin:0;min-height:100svh;display:flex;flex-direction:column;background:var(--sky) url(img/pattern.webp) 0 0/420px repeat;
+  color:var(--text);font:17px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--serif);font-weight:500;color:var(--ink);margin:0;text-wrap:balance}
 a{color:inherit}
-.wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
-.muted{color:var(--muted)}
+.wrap{width:100%;max-width:1280px;margin:0 auto;padding-inline:clamp(16px,4vw,48px)}
 .ico{width:20px;height:20px;flex:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* the logo lockup whole; its inks follow the theme */
-.wm-lockup{display:block;height:34px;width:auto}
-.wm-letters{display:block;height:1em;width:auto}
-.wm-caps{stroke:var(--brand-ink)}.wm-name{stroke:var(--brand)}
+.wm-lockup{display:block;height:30px;width:auto}
+.wordmark{display:block;line-height:0;border-radius:6px}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--primary);font:600 15px/1 var(--sans);text-decoration:none;transition:background .15s ease,border-color .15s ease,transform .15s ease}
 .btn:hover{border-color:var(--primary)}
@@ -23,134 +30,179 @@ a{color:inherit}
 .btn.primary:hover{background:var(--primary-hover)}
 .btn.big{min-height:54px;padding:0 28px;font-size:16px}
 .btn.wide{width:100%}
-a:focus-visible,.btn:focus-visible,summary:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
 
-/* top bar */
-.top{position:relative;z-index:2}
-.top-row{display:flex;align-items:center;justify-content:space-between;gap:16px;height:84px}
-.wordmark{display:block;line-height:0}
-.top-nav{display:flex;gap:28px}
-.top-nav a{text-decoration:none;font-weight:500;color:var(--text)}
+/* top bar: the logo, How it works and the menu (on a phone the menu button alone) */
+.top{position:relative;z-index:2;flex:none}
+.top-row{display:flex;align-items:center;gap:16px;height:64px}
+.top-row .wordmark{margin-right:auto}
+.top-nav{display:none}
+.top-nav a{text-decoration:none;font-weight:600;color:var(--ink);font-size:15px}
 .top-nav a:hover{color:var(--primary)}
+.menu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:44px;height:44px;border:0;border-radius:999px;background:rgba(255,255,255,.85);color:var(--ink);font:600 15px/1 var(--sans);cursor:pointer;box-shadow:0 1px 3px rgba(14,31,53,.12)}
+.menu-btn-label{display:none}
 
-/* hero: the drawing sits on the right, faded into the page on its left and bottom */
-.hero{position:relative;margin-top:-84px;padding-top:84px;min-height:min(760px,62vw)}
-.hero-art{position:absolute;top:0;right:0;width:min(1140px,78%);height:100%;overflow:hidden;pointer-events:none}
-.hero-pic{position:absolute;top:70px;right:0;width:100%;height:auto;
-  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 25%),linear-gradient(180deg,#000 78%,transparent 100%);-webkit-mask-composite:source-in;
-  mask-image:linear-gradient(90deg,transparent 0,#000 25%),linear-gradient(180deg,#000 78%,transparent 100%);mask-composite:intersect}
-.hero-text{position:relative;padding-top:clamp(40px,7vw,110px);padding-bottom:56px}
-.hero h1{font-size:clamp(40px,4.6vw,66px);line-height:1.08}
-.hero h1 span{display:block;color:var(--primary);white-space:nowrap}
-.hero h1::after{content:"";display:block;width:180px;height:5px;margin-top:22px;border-radius:3px;background:var(--rule)}
-.hero-sub{max-width:31em;margin:22px 0 30px;font-size:clamp(17px,1.5vw,20px);color:var(--text)}
-.hero-cta{display:flex;flex-wrap:wrap;gap:14px}
-.stats{display:flex;flex-wrap:wrap;gap:0;margin:48px 0 0}
-.stats div{padding:0 26px;border-left:1px solid var(--border)}
-.stats div:first-child{padding-left:0;border-left:0}
-.stats dt{font:500 30px/1.1 var(--serif);color:var(--ink)}
-.stats dd{margin:4px 0 0;font-size:14px;color:var(--muted)}
+/* the menu */
+.menu{position:fixed;inset:0;z-index:50}
+.menu-scrim{position:absolute;inset:0;background:rgba(14,31,53,.42);opacity:0;transition:opacity .25s ease}
+.menu-sheet{position:absolute;inset:0;overflow-y:auto;padding:0 24px calc(32px + env(safe-area-inset-bottom,0px));background:var(--navy);color:#fff;
+  transform:translateX(100%);transition:transform .3s var(--ease);--lk-caps:#FFFFFF;--lk-name:var(--navy-accent)}
+.menu.is-open .menu-scrim{opacity:1}
+.menu.is-open .menu-sheet{transform:none}
+.menu-top{display:flex;align-items:center;justify-content:space-between;height:64px}
+.menu-close{display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;cursor:pointer}
+.menu-close .ico{width:24px;height:24px}
+.menu-sheet a:focus-visible,.menu-sheet button:focus-visible{outline-color:var(--navy-accent)}
+.mlist{list-style:none;margin:28px 0 0;padding:0}
+.mlist+.mlist{margin-top:36px}
+.mi{display:flex;align-items:center;gap:12px;min-height:64px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.12);font:500 28px/1.2 var(--serif);color:#fff;text-decoration:none}
+.mi>span:first-child{flex:1}
+.mi .ico{color:var(--navy-accent)}
+a.mi:hover>span:first-child,.mi[aria-current]>span:first-child{color:var(--navy-accent)}
+.mi.is-soon{color:rgba(255,255,255,.42)}
+.mi-n{font:700 12px/1 var(--sans);background:var(--navy-accent);color:var(--navy);border-radius:999px;padding:4px 9px}
+.mi-soon{font:700 11px/1 var(--sans);background:rgba(255,255,255,.1);color:rgba(255,255,255,.62);border-radius:999px;padding:5px 9px}
 
-/* specialty tabs */
-.lessons{position:relative;scroll-margin-top:16px}
-.tabs{display:flex;flex-wrap:wrap;align-items:center;gap:6px 26px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
-.tab{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 6px;font-weight:500;color:var(--muted);text-decoration:none;border-radius:999px}
-a.tab{padding:0 18px;color:var(--primary);font-weight:700}
-a.tab[aria-current="true"]{background:color-mix(in srgb,var(--primary) 12%,var(--surface))}
-.tab-n{display:inline-grid;place-items:center;min-width:28px;height:22px;padding:0 8px;border-radius:11px;background:var(--primary);color:var(--on-primary);font-size:12px;font-weight:700}
-.tab.is-soon{cursor:default}
+/* ---------- home: the headline, the drawing, one button ---------- */
+.home main{flex:1}
+.hero{display:flex;flex-direction:column;min-height:calc(100svh - 64px)}
+.hero-text{padding:6px clamp(16px,6vw,48px) 0}
+.hero h1{font-size:clamp(32px,8.6vw,56px);line-height:1.08}
+.hero h1 span{display:block;color:var(--primary)}
+.hero-sub{margin:12px 0 0;max-width:30em;font-size:clamp(16px,2.4vw,20px);color:var(--text)}
+.hero-art{position:relative;flex:1 1 0;min-height:220px;display:block}
+.hero-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;
+  /* the drawing's soft shapes are cut by its top edge: fade them in so no line shows */
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30%);mask-image:linear-gradient(180deg,transparent 0,#000 30%)}
+/* on a tablet the drawing is narrower than the screen, so its sides fade too */
+@media (min-width:600px) and (max-width:999px){
+  .hero-art img{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30%),linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);-webkit-mask-composite:source-in;
+    mask-image:linear-gradient(180deg,transparent 0,#000 30%),linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);mask-composite:intersect}
+}
+.hero-foot{position:relative;background:var(--surface);border-radius:26px 26px 0 0;padding:20px clamp(16px,6vw,48px) calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 24px rgba(14,31,53,.08)}
+.hero-cta{display:flex;gap:12px;justify-content:center}
+.hero-cta .btn{flex:1 1 0;max-width:340px}
+.hero-cta .browse{display:none}
+.stats{margin:12px 0 0;text-align:center;font-size:13px;color:var(--muted)}
 
-/* a specialty: its path and the side panel */
-.panel{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:48px;padding:56px 0 72px}
-.panel[hidden]{display:none}
-.panel h2{font-size:clamp(30px,3vw,38px)}
-.lead{margin:6px 0 28px}
-.path{list-style:none;margin:0;padding:0;position:relative}
-.path::before{content:"";position:absolute;left:24px;top:52px;bottom:40px;width:3px;border-radius:2px;background:color-mix(in srgb,var(--primary) 25%,var(--page))}
-.path-sec{margin:26px 0 14px}
-.path-sec:first-child{margin-top:0}
-.path-sec span{position:relative;display:inline-block;padding:5px 14px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--primary);font-size:13px;font-weight:700;letter-spacing:.02em}
-.path-item{position:relative;display:grid;grid-template-columns:50px minmax(0,1fr);align-items:center;gap:20px;margin-bottom:18px}
-.path-n{position:relative;display:grid;place-items:center;width:44px;height:44px;margin-left:3px;border-radius:50%;background:var(--primary);color:var(--on-primary);font-weight:700;font-size:15px;box-shadow:0 0 0 6px var(--page)}
-.lesson{display:grid;grid-template-columns:216px minmax(0,1fr) 20px;align-items:center;gap:22px;padding:8px 22px 8px 8px;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);text-decoration:none;transition:border-color .15s ease,transform .15s ease,box-shadow .15s ease}
-a.lesson:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow-lift)}
-.lesson .ico{color:var(--primary)}
-.lesson-pic{position:relative;display:block;aspect-ratio:16/9;border-radius:11px;overflow:hidden;background:#F7F9FC;border:1px solid var(--border)}
+/* ---------- a specialty's lessons ---------- */
+.spec{display:grid;gap:22px;padding-block:4px 40px;flex:1}
+.spec-side{display:grid;gap:4px}
+.spec-pic{display:block;width:min(100%,440px);height:auto;margin:-6px auto -4px}
+.spec h1{font-size:clamp(32px,7vw,48px);line-height:1.05}
+.spec-blurb{margin:6px 0 0;font-size:16px;color:var(--text)}
+.spec-meta{margin:10px 0 0;font-size:14px;color:var(--muted)}
+.bar{height:6px;border-radius:3px;background:var(--surface);overflow:hidden;margin-top:8px}
+.bar span{display:block;height:100%;border-radius:3px;background:var(--primary)}
+.spec-side .btn{display:none;margin-top:22px}
+.spec-list{display:grid;gap:18px;align-content:start;min-width:0}
+.sec-card{background:var(--surface);border-radius:22px;overflow:hidden;box-shadow:0 1px 2px rgba(14,31,53,.05),0 10px 28px rgba(14,31,53,.08)}
+.sec-head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--navy);color:#fff;font-size:21px;line-height:1.2}
+.sec-letter{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:9px;background:var(--navy-accent);color:var(--navy);font-size:17px}
+.sec-name{flex:1;min-width:0;color:#fff}
+.sec-n{flex:none;font:600 12px/1 var(--sans);background:rgba(255,255,255,.12);color:var(--navy-text);border-radius:999px;padding:5px 10px}
+.lessons{list-style:none;margin:0;padding:2px 18px 6px}
+.lesson{display:grid;grid-template-columns:32px minmax(0,1fr) 20px;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--row-line);text-decoration:none;color:inherit}
+.lessons li:last-child .lesson{border-bottom:0}
+.lesson-pic{display:none;position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#F7F9FC}
 .lesson-pic img{display:block;width:100%;height:100%;object-fit:cover}
-.vid-badge{position:absolute;left:8px;bottom:8px;display:inline-flex;align-items:center;gap:5px;padding:3px 9px 3px 6px;border-radius:999px;background:rgba(10,23,41,.75);color:#fff;font-size:12px;font-weight:600}
-.vid-badge .ico{width:14px;height:14px;color:#fff}
-.lesson-body{display:flex;flex-direction:column;gap:6px;min-width:0}
-.lesson-title{font:500 21px/1.25 var(--serif);color:var(--ink)}
-.lesson-q{font-size:15px;color:var(--muted)}
-.path-item.is-planned .path-n{background:var(--surface);color:var(--muted);border:2px dashed var(--border-strong)}
-.path-item.is-planned .lesson{display:flex;justify-content:space-between;padding:22px 26px;background:transparent;border:2px dashed var(--border-strong);box-shadow:none}
-.path-item.is-planned .lesson-title{color:var(--muted);font-size:18px}
-.soon{font-size:14px;color:var(--muted)}
-.more{margin:4px 0 0 70px}
-.more summary{cursor:pointer;color:var(--primary);font-weight:600;list-style:none;min-height:44px;display:flex;align-items:center}
+.lesson-n{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--primary);color:var(--on-primary);font-weight:700;font-size:13px}
+.lesson-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.lesson-title{font-weight:600;font-size:16px;line-height:1.3;color:var(--ink)}
+.lesson-q{font-size:13px;line-height:1.35;color:var(--muted)}
+.lesson>.ico{color:var(--chev)}
+a.lesson:hover .lesson-title{color:var(--primary)}
+a.lesson:hover>.ico{color:var(--primary)}
+.lesson.is-planned{grid-template-columns:32px minmax(0,1fr)}
+.lesson.is-planned .lesson-n{background:transparent;border:2px dashed var(--border-strong);color:var(--muted)}
+.lesson.is-planned .lesson-title{color:var(--muted)}
+.lesson.is-planned .lesson-pic{background:var(--gray-bg)}
+.vid-badge{position:absolute;left:6px;bottom:6px;display:inline-flex;align-items:center;gap:4px;padding:2px 8px 2px 5px;border-radius:999px;background:rgba(10,23,41,.75);color:#fff;font-size:11px;font-weight:600}
+.vid-badge .ico{width:13px;height:13px;color:#fff}
+.more{background:rgba(255,255,255,.72);border-radius:18px;padding:4px 18px}
+.more summary{cursor:pointer;color:var(--primary);font-weight:600;font-size:15px;list-style:none;min-height:48px;display:flex;align-items:center}
 .more summary::-webkit-details-marker{display:none}
 .more summary::after{content:"";width:7px;height:7px;margin-left:10px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s ease}
 .more[open] summary::after{transform:rotate(225deg) translateY(-2px)}
-.more ul{margin:4px 0 0;padding-left:20px;columns:2;column-gap:32px;color:var(--muted);font-size:15px}
+.more ul{margin:0 0 12px;padding-left:20px;color:var(--muted);font-size:15px}
 
-.side{display:flex;flex-direction:column;gap:24px}
-.side-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
-.side-pic{display:block;width:calc(100% - 16px);margin:8px 8px 0;aspect-ratio:16/9;object-fit:cover;border-radius:12px;background:#F7F9FC}
-.side-body{padding:22px 24px 24px}
-.side h3{font-size:24px}
-.side-body p{margin:4px 0 14px;font-size:14px}
-.bar{height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden;margin-bottom:22px}
-.bar span{display:block;height:100%;border-radius:5px;background:var(--primary)}
-.how{padding:24px}
-.how ul{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:18px}
-.how li{display:flex;align-items:center;gap:14px}
-.how li .ico{width:52px;height:52px;padding:14px;border-radius:50%;background:color-mix(in srgb,var(--primary) 12%,var(--surface));color:var(--primary)}
-.how li span{display:flex;flex-direction:column;font-size:14px;color:var(--muted)}
-.how li b{font:500 18px/1.3 var(--serif);color:var(--ink)}
+/* ---------- How it works ---------- */
+.how{display:grid;gap:24px;justify-items:start;padding-block:12px 48px;flex:1;align-content:start}
+.how h1{font-size:clamp(32px,7vw,48px)}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:16px;width:100%}
+.step{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:16px;align-items:center;background:var(--surface);border-radius:22px;padding:20px;box-shadow:0 1px 2px rgba(14,31,53,.05),0 10px 28px rgba(14,31,53,.08)}
+.step-ico{grid-row:span 2;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--sky);color:var(--primary)}
+.step-ico .ico{width:26px;height:26px}
+.step-n{position:absolute;top:14px;right:18px;font:500 15px/1 var(--serif);color:var(--muted)}
+.step h2{font-size:22px}
+.step p{margin:2px 0 0;font-size:15px;color:var(--muted)}
 
-/* the specialties to come, on a navy band */
-.soon-band{background:linear-gradient(135deg,#0E1F35,#14365F);color:#DCE6F2;padding:72px 0 80px}
-.soon-band h2{color:#fff;font-size:clamp(28px,3vw,36px)}
-.soon-band .muted{color:#B9CBE3;margin:8px 0 32px}
-.soon-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px}
-.soon-card{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#F7F9FC}
-.soon-card img{display:block;width:100%;height:100%;object-fit:cover}
-.soon-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(10,23,41,.85))}
-.soon-name{position:absolute;z-index:1;left:22px;bottom:18px;font:500 24px/1.2 var(--serif);color:#fff}
-.soon-chip{position:absolute;z-index:1;right:18px;bottom:20px;padding:5px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.14);color:#fff;font-size:12px;font-weight:600}
+.foot{flex:none;font-size:13px;color:var(--muted)}
+.foot-row{display:flex;flex-wrap:wrap;gap:4px 24px;padding-block:20px 28px;border-top:1px solid rgba(14,31,53,.08)}
+.foot-name{color:var(--ink);font-weight:600;margin-right:auto}
 
-.foot{background:#0A1729;color:#8FA3BD;font-size:14px}
-.foot-row{display:flex;flex-wrap:wrap;gap:8px 28px;padding:32px clamp(16px,4vw,48px)}
-.foot-name{color:#DCE6F2;font-weight:600;margin-right:auto}
-
-/* no smooth scrolling or hover lifts for someone who asks for less motion */
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,a.lesson{transition:none}a.lesson:hover,.btn:active{transform:none}}
-
-/* tablets and phones */
-@media (max-width:1060px){
-  .panel{grid-template-columns:minmax(0,1fr);gap:36px}
-  .side{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+/* ---------- a tablet and up: How it works in the top bar, the menu a panel from the right ---------- */
+@media (min-width:600px){
+  .top-row{height:80px}
+  .wm-lockup{height:34px}
+  .top-nav{display:flex}
+  .menu-btn{width:auto;padding:0 16px 0 20px;height:46px}
+  .menu-btn-label{display:inline}
+  .menu-sheet{left:auto;width:min(440px,100%);padding:0 36px 40px;box-shadow:-20px 0 50px rgba(0,0,0,.22)}
+  .menu-top{height:80px}
+  .mi{font-size:30px}
+  .hero{min-height:calc(100svh - 80px)}
+  .hero-text{padding-top:20px}
+  .hero-cta .browse{display:inline-flex}
+  .hero-foot{padding-bottom:26px}
+  .spec-side{grid-template-columns:minmax(0,300px) minmax(0,1fr);align-items:center;column-gap:28px}
+  .spec-pic{margin:0}
+  .lesson{grid-template-columns:120px 32px minmax(0,1fr) 20px}
+  .lesson.is-planned{grid-template-columns:120px 32px minmax(0,1fr)}
+  .lesson-pic{display:block}
+  .lessons{padding:4px 24px 8px}
+  .sec-head{padding:16px 24px;font-size:24px}
+  .steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .step{grid-template-columns:1fr;row-gap:12px;align-items:start;padding:24px}
+  .step-ico{grid-row:auto}
 }
-@media (max-width:800px){
-  .top-nav{display:none}
-  .hero{min-height:0}
-  .hero-art{position:relative;width:auto;height:auto;margin:0}
-  .hero h1 span{white-space:normal}
-  .hero-pic{position:static;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent);mask-image:linear-gradient(180deg,#000 80%,transparent)}
-  .hero-text{padding-top:8px}
-  .hero-cta .btn{flex:1 1 200px}
-  .stats{display:grid;grid-template-columns:repeat(3,auto);justify-content:start}
-  .stats div{padding:0 14px}
-  .stats dt{font-size:26px}
-  .stats dd{font-size:13px}
-  .lesson{grid-template-columns:120px minmax(0,1fr);gap:14px;padding:6px 12px 6px 6px}
-  .lesson>.ico{display:none}
+
+/* ---------- a desktop: the wide drawing beside the headline; the lessons beside the specialty ---------- */
+@media (min-width:1000px){
+  .hero{display:grid;grid-template-columns:minmax(0,600px) minmax(0,1fr);grid-template-rows:auto 1fr;min-height:min(calc(100svh - 80px),820px);
+    padding-left:max(48px,calc((100vw - 1280px) / 2))}
+  .hero-text{grid-area:1/1;padding:clamp(48px,11vh,130px) 0 0}
+  .hero h1{font-size:clamp(46px,4.4vw,66px)}
+  .hero-sub{margin-top:20px}
+  .hero-foot{grid-area:2/1;background:none;box-shadow:none;border-radius:0;padding:30px 0 48px}
+  .hero-cta{justify-content:flex-start}
+  .hero-cta .btn{flex:none}
+  .stats{text-align:left;margin-top:18px}
+  /* the wide drawing's left side is empty sky, so it may slide under the text column */
+  .hero-art{grid-area:1/2/3/3;min-height:0;margin-left:-90px}
+  .hero-art img{object-position:100% 100%}
+  .spec{grid-template-columns:340px minmax(0,1fr);gap:48px;align-items:start;padding-top:12px}
+  .spec-side{position:sticky;top:20px;grid-template-columns:1fr}
+  .spec-pic{width:100%;margin:0 0 4px}
+  .spec-side .btn{display:inline-flex}
+  .lesson{grid-template-columns:132px 34px minmax(0,1fr) 20px;gap:18px}
+  .lesson.is-planned{grid-template-columns:132px 34px minmax(0,1fr)}
   .lesson-title{font-size:17px}
-  .lesson-q{font-size:13px}
-  .path::before{left:18px}
-  .path-item{grid-template-columns:38px minmax(0,1fr);gap:12px}
-  .path-n{width:34px;height:34px;font-size:13px;margin-left:2px}
-  .more{margin-left:50px}
-  .more ul{columns:1}
-  .tabs{gap:4px 14px;padding:10px}
+  .lesson-q{font-size:14px}
+  .lessons{padding:4px 28px 8px}
+  .sec-head{padding:18px 28px;font-size:26px}
+  .sec-letter{width:40px;height:40px;font-size:20px;border-radius:10px}
+}
+
+/* a small desktop or a tablet held sideways: a narrower text column leaves the drawing room */
+@media (min-width:1000px) and (max-width:1279px){
+  .hero{grid-template-columns:minmax(0,460px) minmax(0,1fr)}
+  .hero h1{font-size:46px}
+}
+
+/* no sliding menu, smooth scrolling or press effects for someone who asks for less motion */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .menu-sheet,.menu-scrim,.btn,.more summary::after{transition:none}
+  .btn:active{transform:none}
 }
