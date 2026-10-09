@@ -187,7 +187,9 @@ a.lesson:hover>.ico{color:var(--primary)}
 button.mi{width:100%;background:none;border-width:0 0 1px;text-align:left;cursor:pointer}
 button.mi:hover>span:first-child{color:var(--navy-accent)}
 html:has(dialog.how[open]){overflow:hidden}
-.how{width:420px;max-width:calc(100% - 32px);padding:0;border:0;border-radius:22px;background:transparent;color:var(--text);overflow:visible}
+.how{width:420px;max-width:calc(100% - 32px);max-height:calc(100% - 32px);padding:0;border:0;border-radius:22px;background:transparent;color:var(--text);overflow:auto;overscroll-behavior:contain}
+/* on a short screen (a phone held sideways) the card scrolls inside itself, so Start learning is always reachable */
+@media (max-height:480px){.how-card{padding:20px 20px 18px}.how-list{margin:14px 0 16px;gap:10px}}
 .how::backdrop{background:rgba(8,20,36,.55)}
 .how[open]{animation:how-in .25s var(--ease)}
 .how[open]::backdrop{animation:how-fade .25s ease}

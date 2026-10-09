@@ -125,3 +125,4 @@ html.fluid .p-video .vid-practise{margin-top:auto}
 
 /* Arabic stands at the right of every heading; only the lesson's own title (the title slide and the video poster) centres
    its Arabic below the English (patterns.css) */
+.vid-title{display:block}  /* a wrapped English title keeps its lines centred */
