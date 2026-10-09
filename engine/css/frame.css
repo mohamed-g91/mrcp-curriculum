@@ -123,8 +123,5 @@ html.fluid .p-video .vid-practise{margin-top:auto}
 /* Practise carries no Arabic: it belongs to Learn and the video (the warm-up and the score heading drop theirs too) */
 .slide[data-part="Practise"] :is(.ar,.ar-title){display:none!important}
 
-/* Arabic always stands at the right: on the title and the video poster it ends where the English title ends */
-.p-title h1{width:fit-content;max-width:100%}
-.p-title h1 .ar-h1{text-align:right}
-.vid-titles{display:grid;justify-items:center}
-.vid-titles .vid-ar{justify-self:end;text-align:right}
+/* Arabic stands at the right of every heading; only the lesson's own title (the title slide and the video poster) centres
+   its Arabic below the English (patterns.css) */
