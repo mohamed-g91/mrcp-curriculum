@@ -120,6 +120,15 @@ def main():
         else:
             # a cover on the old near-white page: the paper around the figures goes
             save(cut_out(im, (255, 255, 255), 24), out)
+    # About me: the author's photo, a square on the face and shoulders for the round portrait (twice its 144 px size)
+    if os.path.exists(os.path.join(DRAFTS, "about-photo.jpg")):
+        ph = Image.open(os.path.join(DRAFTS, "about-photo.jpg")).convert("RGB")
+        side = round(ph.width * 0.78)
+        cx, top = ph.width // 2, round(ph.height * 0.06)
+        ph = ph.crop((cx - side // 2, top, cx + side // 2, top + side)).resize((320, 320), Image.LANCZOS)
+        dest = os.path.join(SITE, "about.webp")
+        ph.save(dest, "WEBP", quality=84, method=6)
+        print(f"about.webp: {os.path.getsize(dest) // 1024} KB")
     if os.path.exists(os.path.join(DRAFTS, "bg-pattern.png")):
         pattern_tile(os.path.join(DRAFTS, "bg-pattern.png"), os.path.join(SITE, "pattern.webp"))
         print("pattern.webp")

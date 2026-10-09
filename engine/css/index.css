@@ -100,6 +100,8 @@ a.mi:hover>span:first-child,.mi[aria-current]>span:first-child{color:var(--navy-
 .signup-status:not(:empty){margin-top:6px}
 .signup-status.is-error{color:var(--bad-ink)}
 .signup-status.is-ok{color:var(--ok-ink)}
+/* on a phone the field and button fill the width, so the line under them sits centred */
+@media (max-width:599px){.signup-note,.signup-status{text-align:center}}
 
 /* What you get, on a navy band */
 .offer{position:relative;background:var(--navy);color:var(--navy-text);padding:48px 0}

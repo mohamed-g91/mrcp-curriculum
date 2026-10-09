@@ -70,7 +70,9 @@ html.site:not(.fluid) .p-title h1{grid-column:1;grid-row:2;align-self:start}
 html.site:not(.fluid) .p-title .part-cards{grid-column:2;grid-row:1/3;align-self:center;grid-template-columns:minmax(0,1fr);gap:16px;padding:20px;
   background:var(--surface);border-radius:16px;box-shadow:var(--panel-shadow)}
 html.site:not(.fluid) .p-title .part-card{min-height:104px}
-html.site.fluid .p-title .title-wrap{gap:20px;padding-top:12px}
+html.site.fluid .p-title .title-wrap{gap:20px;padding-top:12px;justify-content:flex-start}
+/* on a phone the title stands in the middle of the sky above the shelf: equal room above and below it */
+html.site.fluid .p-title .cover{margin-top:auto}
 html.site.fluid .p-title .part-cards{margin:auto calc(-1 * var(--pad)) calc(-1 * clamp(14px,calc(1.6 * var(--u)),20px));width:calc(100% + 2 * var(--pad));padding:20px var(--pad);
   background:var(--surface);border-radius:24px 24px 0 0;box-shadow:0 -8px 24px rgba(14,31,53,.06)}
 
@@ -82,12 +84,18 @@ html.site.fluid .p-title .part-cards{margin:auto calc(-1 * var(--pad)) calc(-1 *
 html:not(.fluid) .slide.p-video.active{height:100%}
 .vid-practise{align-self:stretch;justify-content:center;min-height:48px;border-radius:999px;font-size:var(--fs-body)}
 @container (max-width:900px){.vid-wrap{align-content:start}.vid-side{justify-content:flex-start;gap:20px}}
+/* on a phone Practise waits at the foot of the panel, under the chapters, just above the dock */
+html.fluid .p-video .vid-wrap{display:flex;flex-direction:column;gap:20px}
+html.fluid .p-video .vid-side{flex:1}
+html.fluid .p-video .vid-practise{margin-top:auto}
 .vid-soon{border-style:solid}
 .vid-note{text-transform:none;letter-spacing:0;font-size:var(--fs-small);font-weight:600}
 
 /* practice: the options never jump when one is marked (the tick or cross has its own room), and on a phone or
    tablet they stay two across, however long a label or its Arabic */
-.choice{min-width:0;padding-right:40px;border-radius:16px}
+/* plain options: no concept letter, no Arabic; the label alone, with room to breathe */
+.choice{min-width:0;padding:clamp(14px,calc(1.4 * var(--u)),18px) 40px clamp(14px,calc(1.4 * var(--u)),18px) clamp(16px,calc(1.6 * var(--u)),20px);border-radius:16px;line-height:1.3}
+.choice-label{min-width:0;overflow-wrap:break-word;hyphens:auto}
 .choice .mark{position:absolute;right:12px;top:50%;margin:-11px 0 0}
 /* a label and its Arabic wrap inside a narrow option rather than run out of it */
 .choice>span:not(.choice-dot){min-width:0}
@@ -106,3 +114,6 @@ html:not(.fluid) .slide.p-video.active{height:100%}
 
 /* the credits stand once, on the end slide; on a phone they are one small, quiet block */
 @container (max-width:600px){.credits{font-size:11px;line-height:1.4;gap:0 10px;padding-top:8px}}
+
+/* Practise carries no Arabic: it belongs to Learn and the video (the warm-up and the score heading drop theirs too) */
+.slide[data-part="Practise"] :is(.ar,.ar-title){display:none!important}

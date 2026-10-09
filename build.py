@@ -106,7 +106,8 @@ def check_topic(t, expected_id):
             continue
         if s.get("at") is not None and not CHAPTER_AT.match(str(s["at"])):
             errs.append(f"{where}: at is {s['at']!r}: write where its chapter starts in the video as m:ss (2:15)")
-        if t.get("title_ar") and not s.get("title_ar"):
+        # Arabic belongs to Learn (the recorded video); Practise carries none
+        if t.get("title_ar") and not s.get("title_ar") and s in t["learn"]:
             warns.append(f"{where}: no title_ar (the topic has title_ar)")
         if t.get("title_ar") and s.get("pattern") in ("decision-tree", "question-flow"):
             for k, st in enumerate(s["steps"]):
@@ -702,10 +703,10 @@ def site_foot(site):
 
 
 def signup_form(site):
-    """New lessons by email: one field and Subscribe, posting to the mailing-list service in curriculum.yaml."""
+    """Subscribe for new lessons: one field and Subscribe, posting to the mailing-list service in curriculum.yaml."""
     action = site.get("subscribe") or ""
     act = f' action="{e(action)}" method="post" target="_blank"' if action else ""
-    return (f'<form class="signup" id="signup"{act} novalidate><p class="signup-label" id="signupLabel">New lessons by email</p>'
+    return (f'<form class="signup" id="signup"{act} novalidate><p class="signup-label" id="signupLabel">Subscribe for new lessons</p>'
             f'<div class="signup-row"><span class="signup-field">{home_icon("email")}<label class="sr" for="signupEmail">Email address</label>'
             f'<input id="signupEmail" name="email" type="email" autocomplete="email" required placeholder="Email address" aria-describedby="signupNote"></span>'
             f'<button class="btn primary" type="submit">Subscribe</button></div>'
@@ -763,21 +764,6 @@ def render_index(site, specs, built, coming, label=""):
                      extra_js=redirect + REVEAL_JS + SIGNUP_JS)
 
 
-def availability(spec, built):
-    """What a specialty offers today, said plainly: lessons to practise, and how many have their video yet."""
-    ready = [tp for tp in spec["topics"] if tp["slug"] in built]
-    videos = sum(1 for tp in ready if tp.get("video"))
-    n = len(ready)
-    if not n:
-        return "Lessons coming soon"
-    lessons = f'{n} lesson{"" if n == 1 else "s"} to practise'
-    if videos == n:
-        return f'{n} lesson{"" if n == 1 else "s"}'
-    if not videos:
-        return lessons + " · videos coming soon"
-    return f"{lessons} · {videos} with video"
-
-
 def render_specialty(site, specs, built, coming, spec, label=""):
     """A specialty's lessons: on the left (above, on a phone) its drawing, title and what is available; then each
     section as a card opened by a navy strip, its lessons in video order. Planned topics fold away below."""
@@ -822,7 +808,7 @@ def render_specialty(site, specs, built, coming, spec, label=""):
     start = (f'<a class="btn primary big wide" href="{e(first["slug"])}.html">Start with lesson 1</a>' if first else "")
     blurb = f'<p class="spec-blurb">{e(spec["blurb"])}</p>' if spec.get("blurb") else ""
     body = (f'<main class="wrap spec"><aside class="spec-side">{img_tag("covers/" + spec["id"] + ".webp", "spec-pic", eager=True, up="../")}'
-            f'<div class="spec-text wash"><h1>{e(spec["title"])}</h1>{blurb}<p class="spec-meta">{e(availability(spec, built))}</p>'
+            f'<div class="spec-text wash"><h1>{e(spec["title"])}</h1>{blurb}'
             f'{start}</div></aside><div class="spec-list">{"".join(cards)}{more}</div></main>')
     return site_page(site, specs, built, coming, f'{spec["title"]} · {site["title"]}', body, up="../", here=spec["id"],
                      cls="spec-page", label=label)

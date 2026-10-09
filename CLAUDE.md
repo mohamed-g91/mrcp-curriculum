@@ -8,7 +8,7 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 
 - Minimal text; examples, answers and explanations appear only on tap. No instruction sentences, no eyebrow labels above headings, no sub-labels under circles or choices.
 - Clicking anywhere else clears any open item, but never a figure built over several taps (it has small Back and Next buttons instead); drags, the top and bottom bars and near misses clear nothing; tapping an open item again closes it; only the tapped item grows.
-- One label, letter and colour per concept everywhere. Labels come from the topic's `concepts` block, never retyped on a slide.
+- One label, letter and colour per concept everywhere in Learn. Labels come from the topic's `concepts` block, never retyped on a slide. Practise is plain: a case's options are the label alone, with no letter circle and no Arabic.
 - A case gives nothing away: options shuffled per case, no hints until a wrong answer, the clue lit only after a wrong answer.
 - Practise deals the cases in a random order (the solved example first) and numbers them by their place in the run.
 - A teaching slide fits the 1280 × 720 stage with its answers open.
@@ -19,7 +19,7 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 - One figure builds in one motion: moving from one view of the same data to another never swaps to a second figure.
 - Distribution graphs show both axes (value, and % of people); neutral items stay grey, with no colour flashes.
 - Reading order, one control per job, and lines only where they mean something (see DESIGN.md, Behaviour rules).
-- Arabic (for videos recorded in Arabic): titles and major terms only, never sentences or the page's controls. `title_ar` on the topic and every slide, `ar` on every concept, family, spectrum stop and kind, `q_ar` on a tree question; the Arabic title stands at the right edge of the heading line, a term's Arabic is a small tinted capsule to its right, and the ع button in the top bar hides it all. Cairo is embedded (only in a topic with Arabic). Claude drafts the wording and the user reviews it: flag every term as a draft until approved, reuse the approved terms (the list is in DESIGN.md, Arabic) in every lesson, and add new ones there. Built on lessons 1–7 (titles and terms); lesson 8, and the labels inside the story, curve and dot-plot figures, are each their own pass with a mockup first (see DESIGN.md, Arabic).
+- Arabic (for videos recorded in Arabic): titles and major terms only, never sentences or the page's controls. `title_ar` on the topic and every Learn slide (Practise carries no Arabic), `ar` on every concept, family, spectrum stop and kind, `q_ar` on a tree question; the Arabic title stands at the right edge of the heading line, a term's Arabic is a small tinted capsule to its right, and the ع button in the top bar hides it all. Cairo is embedded (only in a topic with Arabic). Claude drafts the wording and the user reviews it: flag every term as a draft until approved, reuse the approved terms (the list is in DESIGN.md, Arabic) in every lesson, and add new ones there. Built on lessons 1–7 (titles and terms); lesson 8, and the labels inside the story, curve and dot-plot figures, are each their own pass with a mockup first (see DESIGN.md, Arabic).
 - The logo is the open-book G in one flat finish: `engine/logo.svg` on the pages, `logo/open-knowledge/` for large uses (see DESIGN.md, Brand and Logo sizes).
 
 ## How it is built

@@ -25,12 +25,11 @@ function bringIntoView(node) {
 }
 
 function buildCaseSlide(Q, c, num) {
+  // Practise carries no Arabic and no concept letters: plain options leave the stem and answers the room
   const title = c.solved ? "Solved example" : `Case ${num}`;
-  // a topic with Arabic gives each case its Arabic heading too, at the right edge
-  const titleAr = TOPIC.ar ? (c.solved ? "مثال محلول" : `الحالة ${num}`) : "";
   const sec = el("section", { class: `slide case p-stem-quiz${c.solved ? " solved" : ""}`, "data-id": c.solved ? "case-solved" : `case-${num}`,
     "data-case": c.id, "data-part": "Practise", "aria-label": title });
-  sec.innerHTML = `<div class="case-head"><h2>${title}</h2>${c.solved ? '<span class="solved-badge">Not scored</span>' : ""}${arTitle(titleAr)}</div>
+  sec.innerHTML = `<div class="case-head"><h2>${title}</h2>${c.solved ? '<span class="solved-badge">Not scored</span>' : ""}</div>
     <div class="case-row">${c.scene ? `<figure class="fig case-fig">${c.scene}</figure>` : ""}<div class="stem-card"><p class="stem-text">${c.stem}</p><p class="stem-q">${esc(c.question)}</p></div></div>`;
   if (c.solved) {
     $$("mark", sec).forEach(m => m.classList.add("lit"));
@@ -43,7 +42,7 @@ function buildCaseSlide(Q, c, num) {
   caseOrder(c.options || Q.options, c.id).forEach(key => {
     const k = concept(key) || { label: key, family: "gray", letter: "" };
     const b = el("button", { class: `choice f-${k.family}`, type: "button", "data-key": key },
-      (conceptMark(k) ? `<span class="choice-dot">${conceptMark(k)}</span>` : "") + `<span>${esc(k.label)}${arTail(k.ar)}</span>` +
+      `<span class="choice-label">${esc(k.label)}</span>` +
       `<svg class="ico mark mark-ok" aria-hidden="true"><use href="#i-check"/></svg><svg class="ico mark mark-bad" aria-hidden="true"><use href="#i-cross"/></svg>`);
     // quiet: replaying a saved run, so nothing is reported, shaken or lit again
     b._pick = quiet => {

@@ -745,7 +745,8 @@ async function resumePass() {
   if (!problems.some(p => p.startsWith("resume"))) console.log("  ok   Practise asks to carry on a run left part-way; Continue and Start again");
 }
 
-// a topic with Arabic: each slide's Arabic title stands at the right edge of the line its English title is on, and the
+// a topic with Arabic: each Learn slide's Arabic title stands at the right edge of the line its English title is on
+// (Practise shows no Arabic), and the
 // ع switch hides every Arabic title and term, brings them back, and is remembered across a reload
 async function arabicPass() {
   await load(SIZES[0]);
@@ -754,6 +755,12 @@ async function arabicPass() {
     const out = [];
     for (const [k, s] of Deck.slides.entries()) {
       Deck.go(k); await new Promise(r => setTimeout(r, 150));
+      // Practise carries no Arabic: none may show on its slides
+      if (s.dataset.part === "Practise") {
+        const n = [...s.querySelectorAll(".ar, .ar-title")].filter(x => x.getBoundingClientRect().width > 0).length;
+        if (n) out.push(s.dataset.id + ": Arabic shows in Practise (" + n + ")");
+        continue;
+      }
       const h = s.querySelector("h2");
       if (!h) continue;
       const row = h.querySelector(".ar-title") ? h : h.parentElement, a = row.querySelector(".ar-title");
@@ -768,7 +775,7 @@ async function arabicPass() {
   // the embedded Arabic face is the one in use, not the device's own
   const face = await js(`(async () => { await document.fonts.ready; const t = document.querySelector(".ar-title, .ar"); return { loaded: document.fonts.check('500 20px "Cairo"', "ع1"), family: t ? getComputedStyle(t).fontFamily : "" }; })()`);
   if (!face.loaded || !/Cairo/.test(face.family)) fail(`arabic: the Cairo face is not loaded (${JSON.stringify(face)})`);
-  const i = await js(`Deck.slides.findIndex(s => s.querySelector(".ar-title") && s.dataset.part)`);
+  const i = await js(`Deck.slides.findIndex(s => s.querySelector(".ar-title") && s.dataset.part && s.dataset.part !== "Practise")`);
   await js(`Deck.go(${i}), true`);
   await sleep(500);
   const seen = () => js(`[...Deck.slides[Deck.i].querySelectorAll(".ar, .ar-title")].filter(n => n.getBoundingClientRect().width > 0).length`);
