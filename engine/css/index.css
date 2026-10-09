@@ -129,7 +129,7 @@ a.mi:hover>span:first-child,.mi[aria-current]>span:first-child{color:var(--navy-
 .about h2{font-size:28px;line-height:34px}
 .about-name{margin-top:4px;font:500 24px/30px var(--serif);color:var(--ink)}
 .about-role{margin-top:4px;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
-.about-role+.about-role{margin-top:0;font-weight:400;color:var(--text)}
+.about-role+.about-role{margin-top:0}
 .about-bio{margin-top:10px;font-size:16px;line-height:26px}
 .chips{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px}
 .about-in>.chips{grid-column:1/-1}
