@@ -22,6 +22,7 @@ import datetime
 import json
 import os
 import re
+import shutil
 import sys
 
 import yaml
@@ -34,6 +35,7 @@ ENGINE = os.path.join(ROOT, "engine")
 DIST = os.path.join(ROOT, "dist")
 PRESENTER = os.path.join(ROOT, "presenter")  # local only: git ignores it and Cloudflare never sees it
 LOCK = os.path.join(ROOT, "content", "ids.lock")
+ART = os.path.join(ROOT, "art", "site")  # the home page's drawings, made small by art/make_site_images.py; copied to <build>/img/
 CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css"]
 JS_FILES = ["core.js", "video.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "working.js", "sort.js", "quiz.js", "present.js", "deck.js"]
 # the Arabic switch in the top bar: shows or hides every Arabic title and term (engine/js/core.js)
@@ -538,36 +540,167 @@ def render_topic(t, spec, site, present=False):
         "{{PAGE_TITLE}}": e(page_title), "{{DESCRIPTION}}": e(t["description"]), "{{AUTHOR}}": e(site["author"]),
         "{{MODE}}": ("present-deck" if present else "site") + (" has-ar" if t.get("title_ar") else ""),
         "{{ARBTN}}": AR_BUTTON if t.get("title_ar") else "",
-        "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{SITE}}": e(site["title"]), "{{WORDMARK}}": wordmark(site["title"]), "{{FAVICON}}": favicon(), "{{ICONS}}": read(ENGINE, "icons.svg"),
+        "{{TITLE}}": e(t["title"]), "{{SPECIALTY}}": e(spec["title"]), "{{SPEC_ID}}": e(spec["id"]), "{{SITE}}": e(site["title"]), "{{WORDMARK}}": wordmark(site["title"]), "{{FAVICON}}": favicon(), "{{ICONS}}": read(ENGINE, "icons.svg"),
         "{{SLIDES}}": "\n".join(slides), "{{DATA}}": data, "{{CSS}}": css, "{{JS}}": js,
     }.items():
         shell = shell.replace(k, v)
     return shell
 
 
-def render_index(site, specs, label=""):
-    rows = []
-    for spec in specs:
-        items = []
-        for tp in spec["topics"]:
-            status = tp.get("status", "planned")
-            name = e(tp["title"])
-            # the whole row is the button, not just the name; a planned topic has nowhere to go yet
-            inner = f'<span class="topic-name">{name}</span><span class="status">{status}</span>'
-            row = (f'<a class="topic-row" href="{spec["id"]}/{tp["slug"]}.html">{inner}</a>' if status != "planned"
-                   else f'<div class="topic-row">{inner}</div>')
-            items.append(f'<li class="topic s-{status}">{row}</li>')
-        rows.append(f'<section class="spec-block"><h2>{e(spec["title"])}</h2><ul class="topics">{"".join(items)}</ul></section>')
+def art_data_uri(rel):
+    """A drawing from art/site as a data URI, for a self-contained topic page; empty if it is not drawn yet."""
+    path = os.path.join(ART, rel)
+    if not os.path.exists(path):
+        return ""
+    with open(path, "rb") as f:
+        return "data:image/webp;base64," + base64.b64encode(f.read()).decode("ascii")
+
+
+def hook_question(t):
+    """A lesson's opening question: its hook slide's title."""
+    for s in t.get("learn", []):
+        if s.get("pattern") == "hook":
+            return s.get("title", "")
+    return ""
+
+
+def case_count(t):
+    return sum(len(s.get("cases") or []) for s in t.get("practise", []))
+
+
+def next_lessons(spec, built):
+    """For each built topic in a specialty, the lesson after it, for the end slide's next-lesson card:
+    a built lesson (with its picture and opening question), a planned one (title only), or none."""
+    out, topics = {}, spec["topics"]
+    for k, tp in enumerate(topics):
+        if tp["slug"] not in built:
+            continue
+        nx = {"spec": spec["title"], "all": "../index.html#" + spec["id"]}
+        if k + 1 < len(topics):
+            n = topics[k + 1]
+            nx["title"] = n["title"]
+            if n["slug"] in built:
+                nx.update(slug=n["slug"], href=n["slug"] + ".html", n=k + 2, question=hook_question(built[n["slug"]]),
+                          thumb=art_data_uri(os.path.join("thumbs", n["slug"] + ".webp")))
+        out[tp["slug"]] = nx
+    return out
+
+
+HOME_ICONS = {
+    "right": "M9 5l7 7-7 7",
+    "play": "M4 6.5A1.5 1.5 0 0 1 5.5 5h13A1.5 1.5 0 0 1 20 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5zM10 9.5v5l4-2.5z",
+    "cases": "M7 4h9a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM9 8h5M9 11h5M9 14h3",
+    "check": "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8 12.5l2.8 2.8 5.7-5.8",
+}
+
+
+def home_icon(name):
+    return ('<svg class="ico" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" '
+            'stroke-linecap="round" stroke-linejoin="round" d="' + HOME_ICONS[name] + '"/></svg>')
+
+
+def img_tag(rel, cls="", eager=False):
+    """A drawing from art/site, served beside the home page as img/<rel>; nothing if it is not drawn yet."""
+    if not os.path.exists(os.path.join(ART, rel)):
+        return ""
+    lazy = "" if eager else ' loading="lazy"'
+    c = f' class="{cls}"' if cls else ""
+    return f'<img{c} src="img/{rel}" alt=""{lazy} decoding="async">'
+
+
+def render_index(site, specs, built, coming, label=""):
+    """The home page: a hero, the specialties as tabs, each specialty's lessons as a numbered path grouped by
+    section, the specialties to come, and a footer. Its drawings are files beside it (img/), unlike a topic page."""
+    ready = [(spec, tp) for spec in specs for tp in spec["topics"] if tp["slug"] in built]
+    n_cases = sum(case_count(built[tp["slug"]]) for _, tp in ready)
+    start_href = f'{ready[0][0]["id"]}/{ready[0][1]["slug"]}.html' if ready else "#lessons"
+
+    tabs, panels = [], []
+    for k, spec in enumerate(specs):
+        n_ready = sum(1 for tp in spec["topics"] if tp["slug"] in built)
+        tabs.append(f'<a class="tab" href="#{e(spec["id"])}" data-tab="{e(spec["id"])}" role="tab">{e(spec["title"])}'
+                    f'<span class="tab-n">{n_ready}</span></a>')
+        rows, last_sec, planned = [], None, []
+        sections = spec.get("sections") or {}
+        for i, tp in enumerate(spec["topics"]):
+            if tp["slug"] not in built:
+                planned.append((i, tp))
+                continue
+            sec = tp.get("section")
+            if sec != last_sec and sec in sections:
+                rows.append(f'<li class="path-sec"><span>{e(sec)} · {e(sections[sec])}</span></li>')
+                last_sec = sec
+            pic = img_tag(f'thumbs/{tp["slug"]}.webp')
+            badge = f'<span class="vid-badge">{home_icon("play")}Video</span>' if tp.get("video") else ""
+            rows.append(f'<li class="path-item"><span class="path-n">{i + 1}</span>'
+                        f'<a class="lesson" href="{e(spec["id"])}/{e(tp["slug"])}.html">'
+                        f'<span class="lesson-pic">{pic}{badge}</span>'
+                        f'<span class="lesson-body"><span class="lesson-title">{e(tp["title"])}</span>'
+                        f'<span class="lesson-q">{e(hook_question(built[tp["slug"]]))}</span></span>{home_icon("right")}</a></li>')
+        if planned:
+            i, tp = planned[0]
+            rows.append(f'<li class="path-item is-planned"><span class="path-n">{i + 1}</span>'
+                        f'<div class="lesson"><span class="lesson-title">{e(tp["title"])}</span><span class="soon">Coming soon</span></div></li>')
+        more = ""
+        if len(planned) > 1:
+            names = "".join(f'<li>{e(tp["title"])}</li>' for _, tp in planned[1:])
+            more = (f'<details class="more"><summary>{len(planned) - 1} more {e(spec["title"].lower())} topics planned</summary>'
+                    f'<ul>{names}</ul></details>')
+        total = len(spec["topics"])
+        pct = round(100 * n_ready / max(total, 1))
+        lesson1 = f'{spec["id"]}/{spec["topics"][0]["slug"]}.html'
+        side = (f'<aside class="side"><div class="side-card">{img_tag("covers/" + spec["id"] + ".webp", "side-pic")}'
+                f'<div class="side-body"><h3>{e(spec["title"])}</h3><p class="muted">{n_ready} of {total} topics ready</p>'
+                f'<div class="bar"><span style="width:{pct}%"></span></div>'
+                f'<a class="btn primary wide" href="{e(lesson1)}">Start with lesson 1</a></div></div>'
+                f'<div class="side-card how" id="how"><h3>How it works</h3><ul>'
+                f'<li>{home_icon("play")}<span><b>Watch</b>One idea per chapter</span></li>'
+                f'<li>{home_icon("cases")}<span><b>Practise</b>Exam-style cases, a new order each time</span></li>'
+                f'<li>{home_icon("check")}<span><b>Check</b>Why each answer is right</span></li></ul></div></aside>')
+        hidden = "" if k == 0 else " hidden"
+        blurb = f'<p class="muted lead">{e(spec["blurb"])}</p>' if spec.get("blurb") else ""
+        panels.append(f'<section class="panel" id="{e(spec["id"])}" data-panel="{e(spec["id"])}"{hidden}>'
+                      f'<div class="panel-main"><h2>{e(spec["title"])}</h2>{blurb}'
+                      f'<ol class="path">{"".join(rows)}</ol>{more}</div>{side}</section>')
+    for c in coming:
+        tabs.append(f'<span class="tab is-soon" aria-disabled="true">{e(c["title"])}</span>')
+
+    soon_cards = "".join(f'<div class="soon-card">{img_tag("covers/" + c["id"] + ".webp")}<span class="soon-name">{e(c["title"])}</span>'
+                         f'<span class="soon-chip">Coming soon</span></div>' for c in coming)
+    soon = (f'<section class="soon-band"><div class="wrap"><h2>More specialties on the way</h2>'
+            f'<p class="muted">Each one built the same way: watch, practise, check.</p><div class="soon-grid">{soon_cards}</div></div></section>'
+            if coming else "")
     css = fonts_css() + read(ENGINE, "css", "tokens.css") + read(ENGINE, "css", "index.css")
     d = datetime.date.today()
     today = f"{d.day} {d.strftime('%B %Y')}"
+    hero_pic = img_tag("hero.webp", "hero-pic", eager=True)
+    # the tabs: the address names the open specialty (/#statistics), so a link can open on it
+    script = ("<script>(function(){var t=document.querySelectorAll('[data-tab]'),p=document.querySelectorAll('[data-panel]');"
+              "function show(id){var ok=false;p.forEach(function(x){if(x.dataset.panel===id)ok=true});if(!ok&&p.length)id=p[0].dataset.panel;"
+              "p.forEach(function(x){x.hidden=x.dataset.panel!==id});t.forEach(function(x){x.setAttribute('aria-selected',x.dataset.tab===id?'true':'false')})}"
+              "show(location.hash.slice(1));window.addEventListener('hashchange',function(){show(location.hash.slice(1))})})();</script>")
+    name = e(site["title"])
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(site["title"] + label)}</title>{favicon()}<meta name="description" content="Interactive MRCP revision pages, one per topic.">
+<title>{e(site["title"] + label)}</title>{favicon()}<meta name="description" content="Visual MRCP lessons: short videos, then exam-style cases you solve yourself.">
 <style>{css}</style></head>
-<body><main class="index"><header class="masthead"><h1 aria-label="{e(site["title"] + " · " + site["tagline"])}">{lockup("lockup-tagline")}</h1></header>{"".join(rows)}
-<p class="credits"><span>Created by {e(site["author"])}</span><span>{e(site["disclaimer"])}</span><span>Last updated {today}</span></p>
-</main></body></html>"""
+<body>
+<header class="top"><div class="wrap top-row"><a class="wordmark" href="#" aria-label="{name}">{lockup("lockup")}</a>
+<nav class="top-nav"><a href="#lessons">Lessons</a><a href="#how">How it works</a></nav></div></header>
+<main>
+<section class="hero"><div class="hero-art">{hero_pic}</div><div class="wrap hero-text">
+<h1>Learn MRCP <span>one step at a time.</span></h1>
+<p class="hero-sub">Short video lessons, then exam-style cases you solve yourself. Each lesson builds on the one before.</p>
+<div class="hero-cta"><a class="btn primary big" href="{e(start_href)}">Start learning</a><a class="btn big" href="#lessons">Browse lessons</a></div>
+<dl class="stats"><div><dt>{len(ready)}</dt><dd>lessons</dd></div><div><dt>{n_cases}</dt><dd>exam-style cases</dd></div><div><dt>Free</dt><dd>to start, no sign-up</dd></div></dl>
+</div></section>
+<div class="wrap lessons" id="lessons"><nav class="tabs" role="tablist" aria-label="Specialties">{"".join(tabs)}</nav>{"".join(panels)}</div>
+{soon}
+</main>
+<footer class="foot"><div class="wrap foot-row"><span class="foot-name">{name} · {e(site["author"])}</span>
+<span>{e(site["disclaimer"])}</span><span>Last updated {today}</span></div></footer>
+{script}
+</body></html>"""
 
 
 def main():
@@ -583,7 +716,7 @@ def main():
     for spec in specs:
         for tp in spec["topics"]:
             # an unquoted comma in a { } line splits the title into stray keys ("Centre, shape and spread")
-            stray = set(tp) - {"slug", "title", "status", "video"}
+            stray = set(tp) - {"slug", "title", "status", "section", "video"}
             if stray:
                 errors.append(f'{spec["prefix"]}.{tp.get("slug")}: unknown keys {sorted(stray)} in curriculum.yaml; quote a title that has a comma')
             if tp.get("status", "planned") == "planned":
@@ -615,7 +748,12 @@ def main():
     print(f"Content OK: {len(topics)} topic(s).")
     if only_check:
         return
+    built = {tp["slug"]: t for _, tp, t in topics}
+    nexts = {}
+    for spec in specs:
+        nexts.update(next_lessons(spec, built))
     for spec, tp, t in topics:
+        t["_next"] = nexts.get(tp["slug"])
         for present, out in ((False, os.path.join(DIST, spec["id"], tp["slug"] + ".html")),
                              (True, os.path.join(PRESENTER, spec["id"], tp["slug"] + ".html"))):
             os.makedirs(os.path.dirname(out), exist_ok=True)
@@ -624,9 +762,14 @@ def main():
             print(f"Built {os.path.relpath(out, ROOT)} ({os.path.getsize(out):,} bytes)")
     # the presenter's home page: the same list of topics, each opening its deck
     with open(os.path.join(PRESENTER, "index.html"), "w", encoding="utf-8", newline="\n") as f:
-        f.write(render_index(site, specs, " · presenter"))
+        f.write(render_index(site, specs, built, cur.get("coming") or [], " · presenter"))
     with open(os.path.join(DIST, "index.html"), "w", encoding="utf-8", newline="\n") as f:
-        f.write(render_index(site, specs))
+        f.write(render_index(site, specs, built, cur.get("coming") or []))
+    # the home page's drawings sit beside it as files
+    for out in (DIST, PRESENTER):
+        if os.path.isdir(ART):
+            shutil.rmtree(os.path.join(out, "img"), ignore_errors=True)
+            shutil.copytree(ART, os.path.join(out, "img"))
     with open(LOCK, "w", encoding="utf-8", newline="\n") as f:
         f.write("# Every permanent item ID ever built. Maintained by build.py; do not edit by hand.\n")
         f.write("\n".join(lock_ids) + "\n")

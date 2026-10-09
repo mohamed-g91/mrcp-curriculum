@@ -8,3 +8,7 @@ content/figures/undraw_*
 
 # presenter decks for recording: built locally, never published
 presenter/
+
+# Codex drafts (large PNGs) stay local; the approved, compressed drawings are in art/site/
+art/drafts/
+art/*.log

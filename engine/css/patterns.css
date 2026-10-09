@@ -496,6 +496,24 @@ html.fluid .ask{position:fixed}
 .final-score{font-family:var(--serif);font-weight:600;font-size:clamp(56px,calc(7.5 * var(--u)),96px);line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
 .final-msg{font-size:var(--fs-body);color:var(--text)}
 .end-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+/* the next lesson beside the score (end slide A): its picture, title and opening question; dashed when only planned */
+.end-row{display:flex;gap:clamp(16px,calc(2.5 * var(--u)),32px);align-items:stretch}
+.end-row .end-card{align-self:stretch}
+.next-card{flex:1;min-width:0;display:grid;grid-template-columns:minmax(0,46%) minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:clamp(14px,calc(2 * var(--u)),24px);row-gap:12px;padding:clamp(14px,calc(1.6 * var(--u)),20px);background:var(--surface);border:1px solid var(--border);border-top:6px solid var(--primary);border-radius:var(--radius-lg);box-shadow:var(--edge),var(--shadow)}
+.next-thumb{display:block;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;background:#F7F9FC;border:1px solid var(--border)}
+.next-thumb img{display:block;width:100%;height:100%;object-fit:cover}
+.next-body{align-self:center;min-width:0}
+.next-title{margin:0;font:600 var(--fs-h3)/1.25 var(--serif);color:var(--ink)}
+.next-q{margin:6px 0 0;font-size:var(--fs-small);color:var(--muted)}
+.next-card .end-actions{grid-column:1/-1;align-self:end;margin-top:0}
+.next-card .btn{text-decoration:none}
+.next-card.is-planned{background:transparent;box-shadow:none;border:2px dashed var(--border-strong)}
+.next-card.is-planned .next-thumb{display:grid;place-items:center;background:var(--surface-2);border:0}
+.next-card.is-planned .next-title{color:var(--muted)}
+.next-soon{padding:4px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:var(--fs-label);font-weight:600;color:var(--muted)}
+.next-card.is-last{display:flex;align-items:center;justify-content:center;flex:0 1 auto;background:transparent;box-shadow:none;border:0;padding:0}
+@container (max-width:900px){.end-row{flex-direction:column}.end-row .end-card{align-self:stretch}}
+@container (max-width:600px){.next-card{grid-template-columns:minmax(0,1fr)}.next-thumb{max-width:360px}.next-card.is-planned .next-thumb{display:none}.next-card.is-planned .next-title::after{content:" · Coming soon";font:500 var(--fs-small)/1 var(--sans);color:var(--muted)}}
 
 /* a final answer with examples opens them in a zoom circle */
 /* a tree laid out in rows: steps and finals take their cells as the trail reaches them, and lines follow the answers */

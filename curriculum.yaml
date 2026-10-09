@@ -9,40 +9,49 @@ site:
   author: Mohamed Gafar
   disclaimer: Not affiliated with the Royal College of Physicians
 
+# specialties not started yet: the home page shows them as coming soon, with a cover from art/site/covers/<id>.webp
+coming:
+  - { id: cardiology,  title: Cardiology }
+  - { id: nephrology,  title: Nephrology }
+  - { id: neurology,   title: Neurology }
+
 specialties:
   - id: statistics
     prefix: stats
     title: Statistics
+    blurb: From your first data set to the size of a trial.
+    # each topic's section: its group on the home page's path
+    sections: { A: Describing data, B: Testing ideas, C: Measuring disease and effect, D: Diagnostic tests and screening, E: Study design and evidence }
     # A foundations series for beginners, in video order: each lesson leans only on the ones before it.
     # Topics are kept when they help the next lesson, even if the MRCP rarely asks them
     # (the Part 1 blueprint gives statistics, epidemiology and EBM about 5 of 200 questions).
     topics:
       # A. Describing data
-      - { slug: data-types,               title: Types of data,                        status: reviewed,  video: null }
-      - { slug: centre-shape-spread,      title: "Centre, shape and spread",           status: reviewed,  video: null }
-      - { slug: standard-error,           title: Standard error,                       status: reviewed,  video: null }
+      - { slug: data-types,               title: Types of data,                        status: reviewed, section: A,  video: null }
+      - { slug: centre-shape-spread,      title: "Centre, shape and spread",           status: reviewed, section: A,  video: null }
+      - { slug: standard-error,           title: Standard error,                       status: reviewed, section: A,  video: null }
       # B. Testing ideas
-      - { slug: hypothesis-testing,       title: Hypothesis testing,                   status: reviewed,  video: null }
-      - { slug: testing-a-difference,     title: Testing a difference,                 status: reviewed,  video: null }
-      - { slug: ci-and-p,                 title: Confidence intervals and p,           status: reviewed,  video: null }
-      - { slug: errors,                   title: Type I and type II errors,            status: reviewed,  video: null }
-      - { slug: power,                    title: Power and sample size,                status: draft,   video: null }
-      - { slug: choose-the-right-test,    title: Choosing the right test,              status: planned, video: null }
-      - { slug: correlation-regression,   title: Correlation and regression,           status: planned, video: null }
-      - { slug: survival-analysis,        title: Survival analysis,                    status: planned, video: null }
-      - { slug: adjusting-for-confounders, title: Adjusting for confounders,           status: planned, video: null }
+      - { slug: hypothesis-testing,       title: Hypothesis testing,                   status: reviewed, section: B,  video: null }
+      - { slug: testing-a-difference,     title: Testing a difference,                 status: reviewed, section: B,  video: null }
+      - { slug: ci-and-p,                 title: Confidence intervals and p,           status: reviewed, section: B,  video: null }
+      - { slug: errors,                   title: Type I and type II errors,            status: reviewed, section: B,  video: null }
+      - { slug: power,                    title: Power and sample size,                status: draft, section: B,   video: null }
+      - { slug: choose-the-right-test,    title: Choosing the right test,              status: planned, section: B, video: null }
+      - { slug: correlation-regression,   title: Correlation and regression,           status: planned, section: B, video: null }
+      - { slug: survival-analysis,        title: Survival analysis,                    status: planned, section: B, video: null }
+      - { slug: adjusting-for-confounders, title: Adjusting for confounders,           status: planned, section: B, video: null }
       # C. Measuring disease and effect
-      - { slug: incidence-prevalence,     title: Incidence and prevalence,             status: planned, video: null }
-      - { slug: risk-and-odds,            title: Risk and odds,                        status: planned, video: null }
-      - { slug: nnt-nnh,                  title: NNT and NNH,                          status: planned, video: null }
+      - { slug: incidence-prevalence,     title: Incidence and prevalence,             status: planned, section: C, video: null }
+      - { slug: risk-and-odds,            title: Risk and odds,                        status: planned, section: C, video: null }
+      - { slug: nnt-nnh,                  title: NNT and NNH,                          status: planned, section: C, video: null }
       # D. Diagnostic tests and screening
-      - { slug: sensitivity-specificity,  title: Sensitivity and specificity,          status: planned, video: null }
-      - { slug: predictive-values,        title: Predictive values,                    status: planned, video: null }
-      - { slug: likelihood-ratios,        title: Likelihood ratios,                    status: planned, video: null }
-      - { slug: screening,                title: Screening,                            status: planned, video: null }
+      - { slug: sensitivity-specificity,  title: Sensitivity and specificity,          status: planned, section: D, video: null }
+      - { slug: predictive-values,        title: Predictive values,                    status: planned, section: D, video: null }
+      - { slug: likelihood-ratios,        title: Likelihood ratios,                    status: planned, section: D, video: null }
+      - { slug: screening,                title: Screening,                            status: planned, section: D, video: null }
       # E. Study design and evidence
-      - { slug: study-designs,            title: Study designs,                        status: planned, video: null }
-      - { slug: bias-confounding,         title: Bias and confounding,                 status: planned, video: null }
-      - { slug: clinical-trials,          title: Clinical trials,                      status: planned, video: null }
-      - { slug: meta-analysis,            title: Systematic reviews and meta-analysis, status: planned, video: null }
-      - { slug: health-economics,         title: Health economics,                     status: planned, video: null }
+      - { slug: study-designs,            title: Study designs,                        status: planned, section: E, video: null }
+      - { slug: bias-confounding,         title: Bias and confounding,                 status: planned, section: E, video: null }
+      - { slug: clinical-trials,          title: Clinical trials,                      status: planned, section: E, video: null }
+      - { slug: meta-analysis,            title: Systematic reviews and meta-analysis, status: planned, section: E, video: null }
+      - { slug: health-economics,         title: Health economics,                     status: planned, section: E, video: null }

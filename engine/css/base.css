@@ -35,6 +35,10 @@ a.wordmark:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
 .brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap;min-width:0}
 .brand b{font-family:var(--serif);font-size:clamp(16px,calc(1.5 * var(--u)),19px)}
 .brand-sub{font-size:var(--fs-label);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+/* the specialty is a link back to its lessons on the home page */
+a.brand-sub{text-decoration:none;border-radius:4px}
+a.brand-sub:hover{color:var(--primary);text-decoration:underline;text-underline-offset:3px}
+a.brand-sub:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .part-label{flex:1;min-width:0;font-size:var(--fs-small);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .score-pill{font-size:var(--fs-small);font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink);background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:3px 12px;white-space:nowrap}
 .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--ink)}

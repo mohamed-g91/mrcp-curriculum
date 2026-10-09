@@ -570,12 +570,32 @@ def p_stem_quiz(slide, topic):
 
 
 def p_end(slide, topic):
+    nx = topic.get("_next") or {}
+    # every lesson ends with a way on: its specialty's lessons, and the next lesson when there is one
+    all_btn = (f'<a class="btn{"" if nx.get("slug") else " primary"}" href="{e(nx["all"])}">{icon("list")}All {e(nx["spec"].lower())} lessons</a>'
+               if nx.get("all") else "")
     return (heading(slide) +
-            '<div class="center-body"><div class="end-card">'
+            '<div class="center-body"><div class="end-row"><div class="end-card">'
             '<div class="final-score" id="finalScore">0 / 0</div><p class="final-msg" id="finalMsg"></p>'
             f'<div class="end-actions"><button class="btn primary" type="button" id="restartBtn">{icon("refresh")}New cases</button>'
-            f'<button class="btn" type="button" id="toStartBtn">{icon("home")}Back to start</button></div>'
-            f'</div></div>{credits(topic)}')
+            f'<button class="btn" type="button" id="toStartBtn">{icon("start")}Back to start</button></div>'
+            f'</div>{next_card(nx, all_btn)}</div></div>{credits(topic)}')
+
+
+def next_card(nx, all_btn):
+    """The next lesson beside the score: its picture, title and opening question, or a dashed card when it is
+    only planned; with no lesson after this one, just the way back to the specialty's lessons."""
+    if not nx.get("title"):
+        return f'<div class="next-card is-last"><div class="end-actions">{all_btn}</div></div>' if all_btn else ""
+    if not nx.get("slug"):
+        return (f'<div class="next-card is-planned"><div class="next-thumb"><span class="next-soon">Coming soon</span></div>'
+                f'<div class="next-body"><h3 class="next-title">{e(nx["title"])}</h3></div>'
+                f'<div class="end-actions">{all_btn}</div></div>')
+    pic = f'<img src="{nx["thumb"]}" alt="">' if nx.get("thumb") else ""
+    return (f'<div class="next-card"><a class="next-thumb" href="{e(nx["href"])}" tabindex="-1" aria-hidden="true">{pic}</a>'
+            f'<div class="next-body"><h3 class="next-title">{e(nx["title"])}</h3>'
+            + (f'<p class="next-q">{e(nx["question"])}</p>' if nx.get("question") else "") +
+            f'</div><div class="end-actions"><a class="btn primary" href="{e(nx["href"])}">Lesson {nx["n"]}{icon("right")}</a>{all_btn}</div></div>')
 
 
 def credits(topic):
