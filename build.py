@@ -600,6 +600,8 @@ HOME_ICONS = {
     "youtube": "M3 8.5A3.5 3.5 0 0 1 6.5 5h11A3.5 3.5 0 0 1 21 8.5v7a3.5 3.5 0 0 1-3.5 3.5h-11A3.5 3.5 0 0 1 3 15.5zM10 9.5v5l4.5-2.5z",
     "telegram": "M21 4L3 11l6 2 2 6 3-4 5 4zM9 13l9-7",
     "link": "M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1",
+    "teach": "M2 9l10-5 10 5-10 5zM6 11v5c0 1.2 2.7 3 6 3s6-1.8 6-3v-5M22 9v6",
+    "medic": "M6 3v6a4 4 0 0 0 8 0V3M10 13v2a5 5 0 0 0 10 0v-2M20 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
 }
 HOW_PAGE = "how-it-works.html"
 # What you get, on the home page's navy band: what the site offers (never "free": it will be paid)
@@ -729,9 +731,14 @@ def about_section(site, up=""):
         kind = c.get("kind") if c.get("kind") in HOME_ICONS else "link"
         chips.append(f'<li><a class="chip" href="{e(c["href"])}"{out}>{home_icon(kind)}<span>{e(c["label"])}</span></a></li>')
     chips = "".join(chips)
-    # roles: one line each under the name (a single role: works too)
+    # roles: a badge each under the name, the first filled (a plain string or {text, icon}; a single role: works too)
     roles = about.get("roles") or ([about["role"]] if about.get("role") else [])
-    role = "".join(f'<p class="about-role">{e(r)}</p>' for r in roles)
+    badges = []
+    for r in roles:
+        r = r if isinstance(r, dict) else {"text": r}
+        ic = home_icon(r["icon"]) if r.get("icon") in HOME_ICONS else ""
+        badges.append(f'<li class="role">{ic}<span>{e(r["text"])}</span></li>')
+    role = f'<ul class="roles">{"".join(badges)}</ul>' if badges else ""
     bio = f'<p class="about-bio">{e(about["bio"])}</p>' if about.get("bio") else ""
     # no "About me" heading on the page: the name leads, and the section is named for screen readers
     return (f'<section class="about" aria-label="About me"><div class="wrap about-in wash">{photo}'
