@@ -87,6 +87,16 @@ Opus plans the change, reviews what comes back, and lands it.
 - A delegated task carries its own context: the files, the exact change and the rule it must follow.
 - If a delegate is out of reach or misses the point, do the work directly and say so.
 
+### Independent QA review by Codex (Sol 6.1)
+
+Every major code change (several engine files, `build.py`, a new pattern) and every layout change to the web pages (home page or lesson pages) is tested by Codex on `gpt-6.1-sol` after it is built and committed locally, and before it is pushed.
+
+- Run the Codex desktop app's own binary (`%LOCALAPPDATA%\OpenAI\Codex\bin\<hash>\codex.exe`): the `codex` on PATH is an older copy that is refused `gpt-6.1-sol` on the user's plan. Never use `gpt-6-astra`.
+- The brief gives context only: the commit to test, what the project is, how to build, where DESIGN.md, CLAUDE.md and `checks/check.mjs` are. It does not list tests; Codex decides what to test and tests everything it thinks matters.
+- It reports and never fixes: no file in the repository is edited, created or committed (building into `dist/` and `presenter/` is allowed); scratch work goes to a temp folder. Its final message is the findings, most severe first, then what passed.
+- Its Windows sandbox fails on this machine, so it runs without it (`codex exec -m gpt-6.1-sol --dangerously-bypass-approvals-and-sandbox -o <report> - < <brief>`), approved by the user on 9 October 2026. Afterwards confirm with `git status` that nothing tracked changed.
+- Opus verifies every finding against the code, says which are worth fixing, and discusses them with the user before fixing; the fixes are rebuilt, checked and committed before the push.
+
 ## Future (do not block these)
 
 - Hosting: Cloudflare Pages (static now; serverless functions later for payment webhooks).
