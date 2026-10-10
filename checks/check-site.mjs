@@ -128,7 +128,9 @@ for (const size of SIZES) {
       const home = await js(`(async () => {
         const b = document.querySelector(".hero-foot > .btn").getBoundingClientRect();
         const items = [...document.querySelectorAll(".offer-item")];
-        items[0].scrollIntoView({ block: "center" }); await new Promise(r => setTimeout(r, 1200));
+        // each point rises as it scrolls in, so visit each (on a phone they stack past one screen)
+        for (const it of items) { it.scrollIntoView({ block: "center" }); await new Promise(r => setTimeout(r, 400)); }
+        await new Promise(r => setTimeout(r, 1000));
         const shown = items.every(i => getComputedStyle(i).opacity === "1");
         window.scrollTo(0, 0);
         const f = document.getElementById("signup"), i = f.querySelector("input"); i.value = "not-an-email";

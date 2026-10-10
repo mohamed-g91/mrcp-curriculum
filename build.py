@@ -496,13 +496,24 @@ CAIRO_FACES = (
 )
 
 
-def fonts_css(arabic=False):
+def fonts_css(arabic=False, home=False):
     b64 = {n: base64.b64encode(open(os.path.join(ENGINE, "fonts", n), "rb").read()).decode("ascii")
            for n in ("inter.woff2", "outfit.woff2")}
     cairo = "".join(
         '@font-face{font-family:"Cairo";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:200 1000;unicode-range:%s;font-display:swap}\n'
         % (base64.b64encode(open(os.path.join(ENGINE, "fonts", n), "rb").read()).decode("ascii"), rng)
         for n, rng in CAIRO_FACES) if arabic else ""
+    if home:
+        have = set(open(os.path.join(ENGINE, "fonts", "cairo-home.txt"), encoding="utf-8").read().strip())
+        if not set(HOME_ARABIC + HOME_LATIN) <= have:
+            sys.exit("The home page's Arabic has letters its Cairo lacks: run python engine/fonts/make_cairo_home.py")
+        # the home page's few letters only, at weight 500 (engine/fonts/make_cairo_home.py); the Latin face covers
+        # just the letters inside the Arabic line, and Cairo comes first only there, so the English keeps its own faces
+        latin = ",".join("U+%04X" % ord(ch) for ch in sorted(set(HOME_LATIN)))
+        cairo = "".join(
+            '@font-face{font-family:"Cairo";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:500;unicode-range:%s;font-display:swap}\n'
+            % (base64.b64encode(open(os.path.join(ENGINE, "fonts", n), "rb").read()).decode("ascii"), rng)
+            for n, rng in (("cairo-home.woff2", CAIRO_FACES[0][1]), ("cairo-home-latin.woff2", latin)))
     return cairo + ('@font-face{font-family:"Inter";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:100 900;font-display:swap}\n'
             # Outfit is a variable font; declaring it at 500 alone pins every heading to Medium
             '@font-face{font-family:"Outfit";src:url(data:font/woff2;base64,%s) format("woff2");font-weight:500;font-display:swap}\n'
@@ -610,7 +621,15 @@ HOW_STEPS = [("play", "Watch", "A short video lesson"), ("cases", "Practise", "E
 # What you get, on the home page's navy band: what the site offers (never "free": it will be paid)
 OFFER = [("play", "Short visual lessons", "One idea per chapter, drawn as you watch."),
          ("cases", "Exam-style cases", "A new order every time you practise."),
-         ("check", "Explained answers", "Why the right answer is right, and why the others are not.")]
+         ("check", "Explained answers", "Why the right answer is right, and why the others are not."),
+         # the fourth point is the Arabic: its title in Arabic alone, ع for its icon, and the lessons' ع switch named
+         ("ar", "التعلم بالعربية", "Use the ع toggle to show or hide Arabic terms.")]
+# the home page's Arabic line under the headline (MRCP stays in Latin letters inside it)
+HERO_AR = "اتعلم MRCP خطوة بخطوة"
+# every Arabic letter the home page shows: engine/fonts/make_cairo_home.py cuts Cairo down to these (cairo-home.woff2)
+HOME_ARABIC = "".join(ch for ch in HERO_AR + "".join(t + d for _, t, d in OFFER) if "؀" <= ch <= "ۿ")
+# and the Latin letters inside the Arabic line (MRCP), drawn in Cairo's own Latin so they match it (cairo-home-latin.woff2)
+HOME_LATIN = "".join(ch for ch in HERO_AR if ch.isascii() and ch.isalpha())
 
 
 def home_icon(name):
@@ -687,7 +706,7 @@ SIGNUP_JS = ("<script>(function(){var f=document.getElementById('signup');if(!f)
 def site_page(site, specs, built, coming, title, body, up="", here="", cls="", label="", extra_js=""):
     """A page of the site around the lessons (home, a specialty's lessons): the top bar with the
     menu, the sky-blue patterned page, and the inline CSS. Drawings are files in img/ beside the home page."""
-    css = (fonts_css() + read(ENGINE, "css", "tokens.css") + read(ENGINE, "css", "index.css")).replace("url(img/", f"url({up}img/")
+    css = (fonts_css(home=(cls == "home")) + read(ENGINE, "css", "tokens.css") + read(ENGINE, "css", "index.css")).replace("url(img/", f"url({up}img/")
     name = e(site["title"])
     top = (f'<header class="top"><div class="wrap top-row"><a class="wordmark" href="{up}index.html" aria-label="{name}">{lockup("lockup")}</a>'
            f'<nav class="top-nav" aria-label="Site"><button class="top-link" type="button" data-how>How it works</button></nav>'
@@ -784,10 +803,19 @@ def render_index(site, specs, built, coming, label=""):
         # the tall drawing on phones and tablets, the wide one beside the headline on a desktop
         pic = ('<picture class="hero-art"><source media="(min-width:1000px)" srcset="img/hero-wide.webp">'
                '<img src="img/hero-tall.webp" alt="" decoding="async"></picture>')
-    offer = "".join(f'<li class="offer-item reveal" style="--i:{k}"><span class="offer-ico">{home_icon(ic)}</span>'
-                    f'<h3>{t}</h3><p>{d}</p></li>' for k, (ic, t, d) in enumerate(OFFER))
+    def offer_item(k, ic, t, d):
+        if ic != "ar":
+            return (f'<li class="offer-item reveal" style="--i:{k}"><span class="offer-ico">{home_icon(ic)}</span>'
+                    f'<h3>{t}</h3><p>{d}</p></li>')
+        # the Arabic point: ع in the circle, the title in Arabic, and the ع inside the line set in Arabic too
+        d = e(d).replace("ع", '<span class="ar-k" lang="ar">ع</span>')
+        return (f'<li class="offer-item reveal" style="--i:{k}"><span class="offer-ico offer-ico-ar" lang="ar" aria-hidden="true">ع</span>'
+                f'<h3 class="ar-t" lang="ar" dir="rtl">{e(t)}</h3><p>{d}</p></li>')
+    offer = "".join(offer_item(k, *o) for k, o in enumerate(OFFER))
+    hero_ar = e(HERO_AR).replace("MRCP", '<bdi dir="ltr">MRCP</bdi>')
     body = (f'<main><section class="hero"><div class="wrap hero-in">'
-            f'<div class="hero-text wash"><h1>Learn MRCP <span>one step at a time.</span></h1>'
+            f'<div class="hero-text wash"><h1>Learn MRCP <span>one step at a time.</span>'
+            f'<span class="hero-ar" lang="ar" dir="rtl">{hero_ar}</span></h1>'
             f'<p class="hero-sub">Short video lessons, then exam-style cases you solve yourself.</p></div>{pic}'
             f'<div class="hero-foot"><a class="btn primary big" href="{e(start_href(specs))}">Start learning</a>{signup_form(site)}</div>'
             f'</div></section>'

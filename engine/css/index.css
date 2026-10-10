@@ -81,6 +81,9 @@ a.mi:hover>span:first-child,.mi[aria-current]>span:first-child{color:var(--navy-
 .hero-in{display:flex;flex-direction:column;padding-top:clamp(18px,4.5svh,36px)}
 .hero h1{font-size:32px;line-height:35px}
 .hero h1 span{display:block;color:var(--primary)}
+/* the Arabic line under the headline: at the right edge of the copy, Cairo 500 in ink, 22 / 28 / 30 px; MRCP inside it in Cairo's Latin */
+.hero h1 .hero-ar{margin-top:8px;font:500 22px/1.4 "Cairo",var(--serif);letter-spacing:0;color:var(--ink);text-align:right;font-synthesis:none}
+.hero h1 .hero-ar bdi{color:inherit}
 .hero-sub{margin-top:12px;max-width:30em;font-size:16px;line-height:25px;color:var(--text)}
 .hero-art{display:block;margin:clamp(14px,4svh,36px) auto 0;width:100%;max-width:560px}
 /* the drawing gives way on a short phone, so Start learning stays on the first screen */
@@ -116,6 +119,11 @@ a.mi:hover>span:first-child,.mi[aria-current]>span:first-child{color:var(--navy-
 .offer-item:hover .offer-ico{background:#2E5A80;color:#C7E3F8}
 .offer-item h3{color:#fff;font-size:20px;line-height:25px}
 .offer-item p{font-size:16px;line-height:24px}
+/* the Arabic point: ع in the circle, its title in Arabic; Arabic never takes letter-spacing or a synthesised bold */
+.offer-ico-ar,.offer-item .ar-t,.offer-item .ar-k{font-family:var(--arabic);font-weight:500;letter-spacing:0;font-synthesis:none}
+.offer-ico-ar{font-size:22px;line-height:1;padding-bottom:4px}  /* as the lessons' ع switch: lifted to sit centred */
+.offer-item .ar-k{font-size:1.15em}
+.offer-item .ar-t{font-size:22px;line-height:28px}
 /* each item rises 12 px into view once (0.5 s, 0.16 s apart); only when scripts run and motion is welcome */
 .reveals .reveal{opacity:0;transform:translateY(12px);transition:opacity .5s var(--ease),transform .5s var(--ease);transition-delay:calc(var(--i,0) * .16s)}
 .reveals .reveal.is-in{opacity:1;transform:none}
@@ -234,6 +242,7 @@ html:has(dialog.how[open]){overflow:hidden}
   .mi{font-size:30px}
   .hero-in{padding-top:24px}
   .hero h1{font-size:52px;line-height:57px}
+  .hero h1 .hero-ar{font-size:28px}
   .hero-sub{font-size:18px;line-height:28px}
   .hero-art{max-width:600px;margin-top:40px}
   .hero-art img{max-height:460px}
@@ -244,7 +253,7 @@ html:has(dialog.how[open]){overflow:hidden}
   .signup-row .btn{position:absolute;top:6px;right:6px;min-height:44px;padding:0 20px}
   .offer{padding:64px 0}
   .offer h2{font-size:36px;line-height:43px}
-  .offer-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
+  .offer-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
   .offer-item{row-gap:12px}
   .about{padding:64px 0}
   .about-in{column-gap:32px}
@@ -269,6 +278,7 @@ html:has(dialog.how[open]){overflow:hidden}
     min-height:min(calc(100svh - 80px),640px);padding-block:40px 56px}
   .hero-text{grid-area:1/1;align-self:end}
   .hero h1{font-size:56px;line-height:61px}
+  .hero h1 .hero-ar{font-size:30px}
   .hero-sub{margin-top:20px}
   .hero-foot{grid-area:2/1;margin:0;padding:32px 0 0;background:none;box-shadow:none;border-radius:0}
   .hero-art{grid-area:1/2/3/3;align-self:center;margin:0;max-width:none}
@@ -296,6 +306,10 @@ html:has(dialog.how[open]){overflow:hidden}
 @media (min-width:1000px){
   .top-row{height:72px}
   .hero-in{min-height:min(calc(100svh - 72px),640px)}
+}
+/* What you get: one column on a phone, two on a tablet, all four in a row from 1200 px */
+@media (min-width:1200px){
+  .offer-list{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
 @media (min-width:1600px){
   .hero h1{font-size:64px;line-height:69px}
