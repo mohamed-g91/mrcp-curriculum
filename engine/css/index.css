@@ -146,7 +146,7 @@ a.mi:hover>span:first-child,.mi[aria-current]>span:first-child{color:var(--navy-
 .chips{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px}
 /* the contact buttons line up with the bio: on a phone a row of quiet outline circles (the label kept for screen
    readers only), from a tablet up soft sky pills with the label */
-.about-in>.chips{gap:8px;justify-content:space-between}
+.about-in>.chips{gap:8px;justify-content:space-evenly}
 .chip{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:52px;height:52px;border-radius:50%;background:var(--surface);border:1px solid #9CB4CD;color:var(--primary);font:600 14px/20px var(--sans);text-decoration:none;transition:background-color .16s ease,color .16s ease}
 .chip .ico{width:22px;height:22px}
 .chip>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
