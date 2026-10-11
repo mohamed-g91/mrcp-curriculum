@@ -130,10 +130,9 @@ a.mi:hover>span:first-child,.mi[aria-current]>span:first-child{color:var(--navy-
 
 /* About me and contact */
 .about{padding:48px 0;overflow:hidden}  /* keeps its heading wash off the navy band above */
-/* the photo on the left, the heading, name, role and two lines beside it; the contact buttons below */
-.about-in{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:18px;align-items:start;max-width:760px}
-.about-in>:not(.about-photo){grid-column:2}
-.about-photo{grid-row:1/span 4;display:block;width:88px;height:88px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 4px var(--sky-2)}
+/* on a phone the photo above the name, roles, two lines and contact buttons; from a tablet up the photo on the left and the rest beside it */
+.about-in{display:grid;grid-template-columns:minmax(0,1fr);column-gap:18px;align-items:start;max-width:760px}
+.about-photo{display:block;width:112px;height:112px;margin-bottom:16px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 4px var(--sky-2)}
 .about-photo.is-initials{display:grid;place-items:center;background:var(--primary);color:#fff;font:500 36px/1 var(--serif)}
 .about h2{font-size:28px;line-height:34px}
 .about-name{margin-top:4px;font:500 24px/30px var(--serif);color:var(--ink)}
@@ -147,7 +146,7 @@ a.mi:hover>span:first-child,.mi[aria-current]>span:first-child{color:var(--navy-
 .chips{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px}
 /* the contact buttons line up with the bio: on a phone a row of quiet outline circles (the label kept for screen
    readers only), from a tablet up soft sky pills with the label */
-.about-in>.chips{grid-column:2;gap:8px}
+.about-in>.chips{gap:8px}
 .chip{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:52px;height:52px;border-radius:50%;background:var(--surface);border:1px solid #9CB4CD;color:var(--primary);font:600 14px/20px var(--sans);text-decoration:none;transition:background-color .16s ease,color .16s ease}
 .chip .ico{width:22px;height:22px}
 .chip>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -249,8 +248,9 @@ html:has(dialog.how[open]){overflow:hidden}
   .offer-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
   .offer-item{row-gap:12px}
   .about{padding:64px 0}
-  .about-in{column-gap:32px}
-  .about-photo{width:144px;height:144px}
+  .about-in{grid-template-columns:auto minmax(0,1fr);column-gap:32px}
+  .about-in>:not(.about-photo){grid-column:2}
+  .about-photo{grid-row:1/span 4;width:144px;height:144px;margin-bottom:0}
   .about-in>.chips{gap:12px}
   .chip{width:auto;height:48px;padding:0 20px;border:0;border-radius:999px;background:var(--sky-2)}
   .chip .ico{width:20px;height:20px}
