@@ -1,12 +1,14 @@
 // Automated page check: drives headless Chrome through a built topic page.
 //
-//   node checks/check.mjs dist/statistics/data-types.html [--shots out-dir]
+//   node checks/check.mjs dist/statistics/data-types.html [--shots out-dir [--shots-on-fail]] [--json report.json]
 //
 // For each window size (1280 x 720 stage, 1920 x 1080 recording, 1920 x 940 browser, 768 x 1024 and 1024 x 768 tablet, 375 x 812 phone) it visits
 // every slide, opens every reveal on it, and checks there is no sideways overflow and, on the
 // stage, no vertical scrolling. Then it solves every case, sorts the warm-up, tries the recording
 // view's pen and zoom on a 16:10 tablet, and fails on any
-// console error or network request. --shots saves a screenshot of every slide and open state.
+// console error or network request. --shots saves a screenshot of every slide and open state;
+// with --shots-on-fail, only the first one after each failure (fewer pictures for an agent to look at).
+// --json writes the outcome as JSON: the slide outline (from the page's agent tools) and every problem.
 import { spawn } from "node:child_process";
 import { mkdirSync, mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -25,9 +27,12 @@ const SIZES = [
 ];
 
 const args = process.argv.slice(2);
-const page = args.find(a => !a.startsWith("--"));
+const page = args.find((a, k) => !a.startsWith("--") && !["--shots", "--json"].includes(args[k - 1]));
 const shotsAt = args.indexOf("--shots");
 const shotDir = shotsAt >= 0 ? resolve(args[shotsAt + 1]) : null;
+const onFail = args.includes("--shots-on-fail");
+const jsonAt = args.indexOf("--json");
+const jsonOut = jsonAt >= 0 ? resolve(args[jsonAt + 1]) : null;
 if (!page) { console.error("usage: node checks/check.mjs <page.html> [--shots dir]"); process.exit(2); }
 if (shotDir) mkdirSync(shotDir, { recursive: true });
 const url = pathToFileURL(resolve(page)).href;
@@ -81,8 +86,10 @@ const js = async expr => {
   if (r.exceptionDetails) throw new Error(`page error in: ${expr.slice(0, 80)}\n${r.exceptionDetails.exception?.description || r.exceptionDetails.text}`);
   return r.result.value;
 };
+let shotAt = 0;  // the problems already pictured, for --shots-on-fail
 const shot = async name => {
   if (!shotDir) return;
+  if (onFail) { if (problems.length === shotAt) return; shotAt = problems.length; }
   const { data } = await send("Page.captureScreenshot", { format: "png" });
   writeFileSync(join(shotDir, name + ".png"), Buffer.from(data, "base64"));
 };
@@ -109,16 +116,8 @@ async function load(size) {
 }
 
 // ---------------------------------------------------------------- layout checks
-const MEASURE = W => `(() => {
-  const d = document.documentElement, deck = document.getElementById("deck");
-  const fluid = d.classList.contains("fluid");
-  const s = Deck.slides[Deck.i];
-  // anything poking out of the screen sideways
-  const wide = [...s.querySelectorAll("*")].filter(n => { const r = n.getBoundingClientRect(); return r.width && (r.right > ${W} + 1 || r.left < -1); })
-    .slice(0, 3).map(n => n.className || n.tagName);
-  return { id: s.dataset.id, fluid, hscroll: d.scrollWidth > ${W} + 1 || innerWidth > ${W}, wide,
-           vscroll: !fluid && deck.scrollHeight > deck.clientHeight + 1, over: deck.scrollHeight - deck.clientHeight };
-})()`;
+// the measurements live in the page itself (engine/js/agent.js), where agents use them too
+const MEASURE = W => `MRCP_TOOLS["layout-report"].execute({ width: ${W} })`;
 
 async function measure(size, label) {
   const m = await js(MEASURE(size.width));
@@ -130,16 +129,7 @@ async function measure(size, label) {
 }
 
 // the open zoom circle: its name and every example pill must sit inside the circle
-const BUBBLE_SPILL = `s => {
-  const b = s.querySelector(".spec-bubble.open");
-  if (!b) return "no zoom circle opened";
-  const r = b.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, R = r.width / 2 - 4;
-  const out = [...b.querySelectorAll(".bubble-label, .bubble-ex li")].filter(n => {
-    const q = n.getBoundingClientRect();
-    return [[q.left, q.top], [q.right, q.top], [q.left, q.bottom], [q.right, q.bottom]].some(([x, y]) => Math.hypot(x - cx, y - cy) > R);
-  });
-  return out.length ? b.getAttribute("aria-label") + " spills out of its circle: " + out.slice(0, 3).map(n => n.textContent).join(", ") : "";
-}`;
+const BUBBLE_SPILL = `(() => { const r = MRCP_TOOLS["layout-report"].execute(); return r.spill === null ? "no zoom circle opened" : r.spill; })`;
 
 // open every reveal on the current slide, one at a time, measuring each state
 const REVEALS = `(() => {
@@ -216,7 +206,7 @@ async function layoutPass(size) {
             await js(`Deck.slides[Deck.i].querySelectorAll("${sel}")[${d}].click(), true`);
             await sleep(1600);
             await measure(size, `slide ${i + 1} card ${k + 1} ${what} ${d + 1}`);
-            const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`);
+            const out = await js(`${BUBBLE_SPILL}()`);
             if (out) fail(`${where}: ${out}`);
             if (k === 0 && d === 0 && what === "circle") await shot(`${tag}-zoom`);
             if (k === 1 && d === 0 && what === "kind") await shot(`${tag}-kind-zoom`);
@@ -273,7 +263,7 @@ async function layoutPass(size) {
         await measure(size, `slide ${i + 1} circle ${k + 1} built`);
         await shot(`${tag}-built${k + 1}`);
       }
-      if (zoomed) { const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`); if (out) fail(`${size.name} slide ${i + 1}: ${out}`); }
+      if (zoomed) { const out = await js(`${BUBBLE_SPILL}()`); if (out) fail(`${size.name} slide ${i + 1}: ${out}`); }
       if (k === 2 || k === r.dots - 1) await shot(`${tag}-open${k + 1}`);
     }
     for (let k = 0; k < r.cards; k++) {
@@ -340,7 +330,7 @@ async function layoutPass(size) {
       if (await js(`!!Deck.slides[Deck.i].querySelector("${fin}")`)) {
         await js(`Deck.slides[Deck.i].querySelector("${fin}").click(), true`);
         await sleep(2200);
-        const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`);
+        const out = await js(`${BUBBLE_SPILL}()`);
         if (out) fail(`${size.name} slide ${i + 1}: ${out}`);
         await shot(`${tag}-zoom`);
         await js(`document.body.click(), true`);
@@ -368,7 +358,7 @@ async function layoutPass(size) {
       const z = await js(`(() => { const s = Deck.slides[Deck.i]; return { bubble: !!s.querySelector(".spec-bubble.open"), kept: !!s.querySelector(".tg-final.shown") }; })()`);
       if (!z.bubble) fail(`${size.name} slide ${i + 1}: tapping the final answer did not open its examples`);
       if (!z.kept) fail(`${size.name} slide ${i + 1}: tapping the final answer reset the tree`);
-      const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`);
+      const out = await js(`${BUBBLE_SPILL}()`);
       if (out) fail(`${size.name} slide ${i + 1}: ${out}`);
       await shot(`${tag}-zoom`);
       await js(`document.body.click(), true`);
@@ -409,7 +399,7 @@ async function layoutPass(size) {
         for (let k = 0; k < finals; k++) {
           await js(`Deck.slides[Deck.i].querySelectorAll(".tree-final.zoomable")[${k}].click(), true`);
           await sleep(2200);
-          const out = await js(`(${BUBBLE_SPILL})(Deck.slides[Deck.i])`);
+          const out = await js(`${BUBBLE_SPILL}()`);
           if (out) fail(`${size.name} slide ${i + 1}: ${out}`);
           await js(`document.body.click(), true`);
           await sleep(600);
@@ -802,6 +792,42 @@ async function arabicPass() {
   if (!problems.some(p => p.startsWith("arabic"))) console.log("  ok   Arabic titles stand at the right edge; the ع switch hides, restores and is remembered");
 }
 
+// the agent tools (engine/js/agent.js): the outline matches the deck, go-to-slide reaches every slide by number and id,
+// a bad slide is an error the agent can act on, and no tool's answer on a case holds its answer, hint or explanation
+async function agentPass() {
+  console.log("\nagent tools");
+  await load(SIZES[0]);
+  const r = await js(`(() => {
+    const T = MRCP_TOOLS, bad = [], o = T["lesson-outline"].execute();
+    if (o.slides.length !== Deck.slides.length) bad.push("the outline has " + o.slides.length + " slides, the deck " + Deck.slides.length);
+    o.slides.forEach(x => {
+      const a = T["go-to-slide"].execute({ slide: x.n }), b = T["go-to-slide"].execute({ slide: x.id });
+      if (a.id !== x.id || b.id !== x.id || a.n !== x.n) bad.push("go-to-slide did not reach " + x.n + " " + x.id);
+    });
+    if (!T["go-to-slide"].execute({ slide: "no-such-slide" }).error) bad.push("go-to-slide gave no error for a missing slide");
+    const cases = Object.values(TOPIC.quizzes).flatMap(Q => Q.cases);
+    Deck.slides.forEach((s, k) => {
+      if (!s.dataset.case) return;
+      const c = cases.find(x => x.id === s.dataset.case);
+      Deck.go(k);
+      const ans = (TOPIC.concepts[c.answer] || {}).label || c.answer;
+      const leaks = () => {
+        const out = JSON.stringify([T["slide-state"].execute(), T["lesson-outline"].execute().slides[k], T["layout-report"].execute()]);
+        return [ans, c.hint, c.why, c.tutor].some(t => t && out.includes(t));
+      };
+      // before any answer, and after a wrong one (when the hint and the lit clue are on the page)
+      let leaked = leaks();
+      const wrong = [...s.querySelectorAll(".choice")].find(b => b.dataset.key !== c.answer && !b.disabled);
+      if (wrong) { wrong.click(); leaked = leaked || leaks(); }
+      if (leaked) bad.push("a tool gives away case " + s.dataset.id);
+    });
+    if (!Deck.slides.some(s => s.dataset.case)) bad.push("no case slides to try");
+    return bad;
+  })()`);
+  r.forEach(m => fail("agent tools: " + m));
+  if (!r.length) console.log("  ok   outline, go-to-slide, slide-state and layout-report; no case given away");
+}
+
 // dark mode: screenshots of every slide on the stage, for a look (layout is the same as light)
 async function darkPass() {
   if (!shotDir) return;
@@ -820,13 +846,16 @@ async function darkPass() {
   await js(`localStorage.removeItem("mrcp-theme"), true`);
 }
 
+let outline = null;
 try {
   for (const size of SIZES) await layoutPass(size);
+  outline = await js(`MRCP_TOOLS["lesson-outline"].execute()`);
   await solvePass();
   await arabicPass();
   await presentPass();
   await startPass();
   await resumePass();
+  await agentPass();
   await darkPass();
 } catch (e) {
   fail(e.message);
@@ -836,5 +865,6 @@ try {
   await sleep(300);
   try { rmSync(profile, { recursive: true, force: true }); } catch (e) {}
 }
+if (jsonOut) writeFileSync(jsonOut, JSON.stringify({ page, ok: !problems.length, problems, outline }, null, 1));
 console.log(problems.length ? `\n${problems.length} problem(s).` : "\nAll checks passed.");
 process.exit(problems.length ? 1 : 0);

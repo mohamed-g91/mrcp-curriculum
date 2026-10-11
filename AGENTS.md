@@ -26,11 +26,15 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 | `engine/patterns.py` | One Python function per slide pattern, turning YAML into HTML |
 | `engine/shell.html`, `engine/icons.svg` | The page frame and the icon set |
 | `engine/css/` | `tokens` (colours, sizes), `base`, `stage` (16:9 canvas), `patterns`, `index` (home page) |
-| `engine/js/` | `core` (helpers, theme, score, `record()`, click-away), one file per pattern, `deck` (stage, navigation, start-up) |
+| `engine/js/` | `core` (helpers, theme, score, `record()`, click-away), one file per pattern, `deck` (stage, navigation, start-up), `agent` (the agent tools, below) |
 | `build.py` | Checks every topic, then builds `dist/<specialty>/<slug>.html` and `dist/index.html` |
 | `checks/check.mjs` | Drives headless Chrome through a built page: layout at three sizes, every case solved |
 
 A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERNS`), its CSS in `engine/css/patterns.css`, its behaviour in a new `engine/js/<name>.js` (added to `JS_FILES` in `build.py`), its checks in `build.py`, and a row in the DESIGN.md pattern table.
+
+## Agent tools
+
+Every built page has `window.MRCP_TOOLS` (`engine/js/agent.js`): `lesson-outline`, `slide-state`, `go-to-slide` and `layout-report`, each `{ description, inputSchema, execute(args) }`. Use them (through the DevTools protocol's `Runtime.evaluate`) to read a page's state as JSON before reaching for screenshots.
 
 ## Workflow
 

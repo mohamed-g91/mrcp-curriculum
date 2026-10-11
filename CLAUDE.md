@@ -35,9 +35,9 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 | `art/` | The home page's drawings (see DESIGN.md, Home page): `site/` the approved ones as small WebP (committed; `build.py` copies them to `img/` beside the home page), `make_site_images.py` that makes them, `prompts/` the Codex style and subjects; `drafts/` holds Codex's large PNGs, local only |
 | `engine/fonts/` | The embedded fonts: Inter and Outfit on every page, Cairo (Arabic letters and Latin part, with its OFL licence) only in a topic with Arabic, and on the home page a small cut of it (`cairo-home*.woff2`, remade by `make_cairo_home.py` when its Arabic changes); `build.py` embeds them as base64 |
 | `engine/css/` | `tokens` (colours, sizes), `base`, `stage` (16:9 canvas), `patterns`, `frame` (the lesson's frame: navy top bar, sky, phone dock), `index` (the site's own pages) |
-| `engine/js/` | `core` (helpers, theme, score, `record()`, click-away), one file per pattern, `deck` (stage, navigation, start-up) |
+| `engine/js/` | `core` (helpers, theme, score, `record()`, click-away), one file per pattern, `deck` (stage, navigation, start-up), `agent` (the agent tools, below) |
 | `build.py` | Checks every topic, then builds the candidate's `dist/<specialty>/<slug>.html`, the site around them (`dist/index.html`, each specialty's `dist/<specialty>/index.html`, with How it works a pop-up on every page; `dist/how-it-works.html` only forwards there), and the presenter's copies in `presenter/` (git-ignored, never published) |
-| `checks/check.mjs` | Drives headless Chrome through a built page: layout at six sizes, every case solved, the recording view, and, where a topic has them, the Arabic titles and ع switch and a drill spectrum's cards, kinds and zoom circles |
+| `checks/check.mjs` | Drives headless Chrome through a built page: layout at six sizes, every case solved, the recording view, and, where a topic has them, the Arabic titles and ع switch and a drill spectrum's cards, kinds and zoom circles, and the agent tools |
 | `checks/check-site.mjs` | The same for the site around the lessons (home, lessons pages): overflow at six sizes, the home page on one phone screen, the menu, the How it works pop-up, old addresses, missing files |
 
 Keep `build.py` and `engine/patterns.py` to syntax older Pythons accept (Cloudflare's Python may be older than the one on the author's machine): no f-string with the same quote inside its braces, no `match`.
@@ -56,6 +56,14 @@ A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERN
 Draw a mockup on the real slide, so it looks like the page: crop the page's own screenshot (the check's `--shots`) into the SVG, reuse the drawings in `content/figures` and the embedded fonts (`engine/fonts`), and redraw only what changes. A change to a pattern's look or behaviour is shown as three mockups first, each in its two or three states (first, then after a tap), and built only once one is chosen.
 
 Mockups go to the user as a picture: write a static SVG (no scripts), render it to PNG with headless Chrome (`chrome --headless=new --screenshot=<png> --window-size=W,H file:///<svg>`) and send the PNG. Inline widgets and HTML pages with scripts do not show for them.
+
+## Agent tools
+
+Every page carries a few tools in WebMCP's shape (`engine/js/agent.js`): `lesson-outline`, `slide-state`, `go-to-slide` and `layout-report`. An agent reads the page through them as JSON instead of screenshots: `window.MRCP_TOOLS["slide-state"].execute()` through the DevTools protocol, as `checks/check.mjs` does, or `document.modelContext` in a browser with WebMCP, which is offered the navigation tools on every page and `layout-report` only on the presenter's deck.
+
+- No tool ever returns a case's answer, hint or explanation, nor anything that points to them; the check fails if one does.
+- A measurement the checks need goes in `layout-report` (or a new tool), not inline in the check, so agents get it too.
+- Keep the tools few and their descriptions short: every tool costs tokens in an agent's prompt.
 
 ## Permanent IDs
 
@@ -93,7 +101,7 @@ Opus plans the change, reviews what comes back, and lands it.
 Every major code change (several engine files, `build.py`, a new pattern) and every layout change to the web pages (home page or lesson pages) is tested by Codex on `gpt-6.1-sol` after it is built and committed locally, and before it is pushed.
 
 - Use Codex 0.162 or newer (`codex --version`): the npm global install, updated with `npm install -g @openai/codex@latest`. An older copy is refused `gpt-6.1-sol` on the user's plan with a misleading "not supported with a ChatGPT account" error; the old standalone install was taken off PATH on 9 October 2026 because its updater fails. Never use `gpt-6-astra`.
-- The brief gives context only: the commit to test, what the project is, how to build, where DESIGN.md, CLAUDE.md and `checks/check.mjs` are. It does not list tests; Codex decides what to test and tests everything it thinks matters.
+- The brief gives context only: the commit to test, what the project is, how to build, where DESIGN.md, CLAUDE.md and `checks/check.mjs` are, and that the page's agent tools (CLAUDE.md, Agent tools) read its state as JSON. It does not list tests; Codex decides what to test and tests everything it thinks matters.
 - It reports and never fixes: no file in the repository is edited, created or committed (building into `dist/` and `presenter/` is allowed); scratch work goes to a temp folder. Its final message is the findings, most severe first, then what passed.
 - Its Windows sandbox fails on this machine, so it runs without it (`codex exec -m gpt-6.1-sol --dangerously-bypass-approvals-and-sandbox -o <report> - < <brief>`), approved by the user on 9 October 2026. Afterwards confirm with `git status` that nothing tracked changed.
 - Opus verifies every finding against the code, says which are worth fixing, and discusses them with the user before fixing; the fixes are rebuilt, checked and committed before the push.
