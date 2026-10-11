@@ -33,6 +33,7 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 | `engine/shell.html`, `engine/icons.svg` | The page frame and the icon set |
 | `engine/logo.svg`, `logo/` | The logo: the icon the pages use, and in `logo/open-knowledge/` the full artwork (avatar, lockups, exports) for YouTube and social posts |
 | `art/` | The home page's drawings (see DESIGN.md, Home page): `site/` the approved ones as small WebP (committed; `build.py` copies them to `img/` beside the home page), `make_site_images.py` that makes them, `prompts/` the Codex style and subjects; `drafts/` holds Codex's large PNGs, local only |
+| `archive/` | Old exploration kept for reference and never built (`brand/`: the October 2026 logo, colour and lettering proposals) |
 | `engine/fonts/` | The embedded fonts: Inter and Outfit on every page, Cairo (Arabic letters and Latin part, with its OFL licence) only in a topic with Arabic, and on the home page a small cut of it (`cairo-home*.woff2`, remade by `make_cairo_home.py` when its Arabic changes); `build.py` embeds them as base64 |
 | `engine/css/` | `tokens` (colours, sizes), `base`, `stage` (16:9 canvas), `patterns`, `frame` (the lesson's frame: navy top bar, sky, phone dock), `index` (the site's own pages) |
 | `engine/js/` | `core` (helpers, theme, score, `record()`, click-away), one file per pattern, `deck` (stage, navigation, start-up), `agent` (the agent tools, below) |

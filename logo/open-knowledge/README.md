@@ -1,6 +1,6 @@
 # MRCP Gafar — approved Open knowledge logo
 
-Approved by Mohamed Gafar on 2 October 2026 for future project use. This is the **right-hand logo with rounded inner G corners** from the final comparison in `brand/`: the wider open-book G, mint page fold and rounded crossbar. This folder is the committed, self-contained artwork package; the exploratory brand files are not required to use it.
+Approved by Mohamed Gafar on 2 October 2026 for future project use. This is the **right-hand logo with rounded inner G corners** from the final comparison in `archive/brand/`: the wider open-book G, mint page fold and rounded crossbar. This folder is the committed, self-contained artwork package; the exploratory brand files are not required to use it.
 
 ## Artwork
 

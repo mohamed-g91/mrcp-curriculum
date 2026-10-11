@@ -10,7 +10,7 @@
 # the numbers above in the browser; the narration says "about".
 # Two-sided throughout: a gap of 4 counts either way.
 # IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
-# The slides and items that left for lessons 5 and 6 are kept in notes/hypothesis-testing-moved.yaml.
+# The slides and items that left went to lessons 5 and 6 (testing-a-difference, ci-and-p); the parked copy was deleted once both were built.
 
 id: stats.hypothesis-testing
 title: Hypothesis testing
