@@ -46,12 +46,34 @@ A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERN
 
 ## Workflow
 
+Agree on paper, build once. Lessons 5–8 went in 1–5 commits each because their slide list, numbers and figures were settled before the build; lessons 2–4 took 14–19 because figures and even the lesson's scope changed after it was built.
+
+### A new lesson: three gates
+
+The user decides at three gates; everything between them is batched.
+
+1. **Plan note** (`notes/<slug>-plan.md`, nothing built). The question the lesson answers, its checked numbers, what it leans on from earlier lessons, a slide table (what each shows; each figure reused or new), the cases, and what is left out on purpose. The user marks it up; a change here is cheap, the same change to a built story is not. The note is also the next session's handoff: it ends with a status line ("Agreed", "Mockups sent", "Built", "Approved").
+2. **One mockup sheet** (nothing built). Every new figure in the lesson on one PNG, three options each in their states, so the user chooses them all in one reply. A timing or speed question is shown as A, B and C side by side, never tuned across commits.
+3. **One review.** The user goes through the built lesson and sends one list; it is fixed in one pass, checked once, committed once.
+
+The same holds for an engine or site change: plan in a few lines, mockups if it changes a look, build, one review.
+
+### Building and checking
+
 1. Edit the topic YAML (content) or the engine (behaviour and look). Never edit `dist/`.
 2. Build: `python build.py` (or `python build.py --check` to check content only).
-3. Check both builds: `node checks/check.mjs dist/<specialty>/<slug>.html --shots <scratchpad>/shots` (the candidate's page) and the same for `presenter/<specialty>/<slug>.html` (the Learn slides and the recording view), then look at the screenshots. A change to the home page, a lessons page or How it works is checked with `node checks/check-site.mjs dist --shots <scratchpad>/site-shots`. In a cloud container, point it at the browser there and run without the sandbox: `CHROME=/opt/pw-browsers/chromium CHROME_FLAGS=--no-sandbox`. The check fails on overflow, a slide that scrolls on the stage, a case that does not solve, a wrong score, console errors or network requests.
+3. Check both builds: `node checks/check.mjs dist/<specialty>/<slug>.html` (the candidate's page) and the same for `presenter/<specialty>/<slug>.html` (the Learn slides and the recording view). While fixing, add `--shots <scratchpad>/shots --shots-on-fail --json <scratchpad>/check.json`: a passing run then leaves no pictures to look at, and a failing one a picture of each failure. Once the lesson or change is done, take the full `--shots` set and look at it. A change to the home page, a lessons page or How it works is checked with `node checks/check-site.mjs dist --shots <scratchpad>/site-shots`. In a cloud container, point it at the browser there and run without the sandbox: `CHROME=/opt/pw-browsers/chromium CHROME_FLAGS=--no-sandbox`. The check fails on overflow, a slide that scrolls on the stage, a case that does not solve, a wrong score, console errors or network requests.
    Run the two checks one after the other, or together only while the machine copes: a check that dies leaves headless Chrome behind (its profile folder starts `mrcp-check-`), and enough of them exhaust the process limit and break the shell; close them before running again.
-4. Commit with a short message. Cloudflare builds and publishes from `main` (the Worker `mrcp-curriculum`, serving the built pages as static assets; its build is set in the Cloudflare dashboard, not in this repo).
+4. Commit at each gate, not each tweak (about three or four commits a lesson), with a short message. Cloudflare builds and publishes from `main` (the Worker `mrcp-curriculum`, serving the built pages as static assets; its build is set in the Cloudflare dashboard, not in this repo).
 5. After recording: put the YouTube ID in the topic's `video:` in `curriculum.yaml`, and each Learn slide's start time as `at: "m:ss"`.
+
+### Saving tokens
+
+- One lesson, or one engine change, per session. Start from the plan note and `git log -5`; open YAML and engine files only where the work touches them.
+- Read DESIGN.md by section, not whole (about 19k tokens): its contents list says which section a task needs; `grep -n "^## " DESIGN.md` gives where each starts.
+- Read a page's state through the agent tools (below) before taking a screenshot.
+- A bug on a device (pen, tablet, phone): first a readout the user runs once and sends back, then the fix. Not fixed in two rounds: park it and say so, rather than ship guesses.
+- Codex QA runs once per change, after the review's fixes, not after each tweak.
 
 Draw a mockup on the real slide, so it looks like the page: crop the page's own screenshot (the check's `--shots`) into the SVG, reuse the drawings in `content/figures` and the embedded fonts (`engine/fonts`), and redraw only what changes. A change to a pattern's look or behaviour is shown as three mockups first, each in its two or three states (first, then after a tap), and built only once one is chosen.
 
@@ -78,7 +100,7 @@ Every page carries a few tools in WebMCP's shape (`engine/js/agent.js`): `lesson
 - Topic content must be accurate for the MRCP. List the sources in the topic's `sources`. Flag anything uncertain to the user instead of guessing.
 - If the user asks for a number that the data on screen cannot give, show the arithmetic and say so; if they keep it, note the choice in a YAML comment beside it.
 - Question bank items must be original, written from guidelines and textbooks. PassMedicine or Pastest material can guide which topics to cover and their weight, never be copied.
-- Before building a new topic, confirm its slide list, steps and cases with the user.
+- Before building a new topic, the user approves its plan note (Workflow, gate 1): slide list, steps, numbers and cases.
 - British English; plain, short sentences on slides.
 - Credits (from `curriculum.yaml`) sit on the end slide only, automatically; on the site, the footer is on the home page only.
 

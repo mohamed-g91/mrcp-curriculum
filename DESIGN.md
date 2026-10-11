@@ -2,6 +2,22 @@
 
 Design rules for every topic page in the MRCP curriculum. Each page is both the visual for a short YouTube video and a practice page viewers come back to. Carried over from the first page (Choosing the right test) and extended in September 2026 for the 16:9 video stage and the bolder look.
 
+Contents (read only the section a task needs; `grep -n "^## " DESIGN.md` gives where each starts):
+
+| Section | Read it for |
+| --- | --- |
+| Core principles | Any new lesson or slide: what a page teaches and how |
+| Visual system | Colours, type, sizes, figures |
+| Home page | The home page and the lessons pages |
+| The lesson's frame | The top bar, sky and phone dock around a lesson |
+| Arabic | Arabic titles and terms, and the approved wording |
+| Interaction patterns | The slide patterns and what each is for; the Story row is long (every story kind), so grep for the kind needed, e.g. `**gap**` |
+| Behaviour rules | Taps, click-away, entrance timing, reading order, one control per job |
+| Layout and responsiveness | The stage, tablets and phones |
+| Presenter's deck | The presenter's build |
+| Recording view | The tablet recording view, pen and tray |
+| Slide blueprint and checklist | Planning a slide, and checking it before it is built |
+
 ## Core principles
 
 Every page teaches one decision process: show the skeleton first, and let the learner tap for the detail.
