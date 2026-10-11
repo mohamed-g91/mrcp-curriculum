@@ -4,12 +4,7 @@ Interactive MRCP revision pages, one per topic. Each page is the topic's YouTube
 
 ## Topics
 
-| Specialty | Topic | Status |
-| --- | --- | --- |
-| Statistics | Types of data | Draft |
-| Statistics | Choosing the right test | Planned (moving over from the first repo) |
-
-The full list and each topic's status live in [curriculum.yaml](curriculum.yaml).
+Statistics is under way: eight lessons built (seven reviewed, Power and sample size in draft), more planned. The full list and each topic's status live in [curriculum.yaml](curriculum.yaml).
 
 ## Build and check
 
@@ -29,17 +24,9 @@ The built pages land in `dist/`: `dist/index.html` is the home page, and each to
 
 Run `python build.py`, then open `presenter/index.html` and pick the topic; its deck holds every Learn slide. Use a full-screen browser window, or press P for the tablet recording view. To record on the tablet, copy the topic's one file from `presenter/<specialty>/` to the tablet (USB, Google Drive or Quick Share) and open it in Chrome; it works offline. On any screen of at least 900 × 480 the page is a fixed 16:9 stage, so a 1920 × 1080 recording frames the same every time. Use the arrow keys to move between slides.
 
-## Publishing on Cloudflare Pages
+## Publishing
 
-Connect this repository in Cloudflare (Workers & Pages → Create → Pages → Connect to Git) with these settings:
-
-| Setting | Value |
-| --- | --- |
-| Production branch | `main` |
-| Build command | `pip install -r requirements.txt && python build.py` |
-| Build output directory | `dist` |
-
-Every push to `main` then rebuilds and publishes the site.
+The site is a Cloudflare Worker (`mrcp-curriculum`) that serves the built pages as static assets on [mrcp-gafar.com](https://mrcp-gafar.com), the only address it answers on. Every push to `main` rebuilds and publishes it; the build (`pip install -r requirements.txt && python build.py`, output `dist`) is set in the Cloudflare dashboard.
 
 After recording a video, put its YouTube ID in the topic's `video:` in `curriculum.yaml` and each Learn slide's start time as `at: "m:ss"` in the topic's YAML.
 

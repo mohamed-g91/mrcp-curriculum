@@ -1,0 +1,2 @@
+# build.py writes ids.lock with LF endings; keep the working copy LF so it stops showing as changed on Windows
+content/ids.lock text eol=lf

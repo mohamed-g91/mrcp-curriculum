@@ -1,4 +1,4 @@
-# built pages: Cloudflare Pages runs build.py itself
+# built pages: Cloudflare runs build.py itself when it publishes main
 dist/
 __pycache__/
 *.pyc
