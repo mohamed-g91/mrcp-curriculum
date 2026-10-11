@@ -50,7 +50,7 @@ A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERN
 2. Build: `python build.py` (or `python build.py --check` to check content only).
 3. Check both builds: `node checks/check.mjs dist/<specialty>/<slug>.html --shots <scratchpad>/shots` (the candidate's page) and the same for `presenter/<specialty>/<slug>.html` (the Learn slides and the recording view), then look at the screenshots. A change to the home page, a lessons page or How it works is checked with `node checks/check-site.mjs dist --shots <scratchpad>/site-shots`. In a cloud container, point it at the browser there and run without the sandbox: `CHROME=/opt/pw-browsers/chromium CHROME_FLAGS=--no-sandbox`. The check fails on overflow, a slide that scrolls on the stage, a case that does not solve, a wrong score, console errors or network requests.
    Run the two checks one after the other, or together only while the machine copes: a check that dies leaves headless Chrome behind (its profile folder starts `mrcp-check-`), and enough of them exhaust the process limit and break the shell; close them before running again.
-4. Commit with a short message. Cloudflare Pages builds and publishes from `main`.
+4. Commit with a short message. Cloudflare builds and publishes from `main` (the Worker `mrcp-curriculum`, serving the built pages as static assets; its build is set in the Cloudflare dashboard, not in this repo).
 5. After recording: put the YouTube ID in the topic's `video:` in `curriculum.yaml`, and each Learn slide's start time as `at: "m:ss"`.
 
 Draw a mockup on the real slide, so it looks like the page: crop the page's own screenshot (the check's `--shots`) into the SVG, reuse the drawings in `content/figures` and the embedded fonts (`engine/fonts`), and redraw only what changes. A change to a pattern's look or behaviour is shown as three mockups first, each in its two or three states (first, then after a tap), and built only once one is chosen.
@@ -100,7 +100,7 @@ Every major code change (several engine files, `build.py`, a new pattern) and ev
 
 ## Future (do not block these)
 
-- Hosting: Cloudflare Pages (static now; serverless functions later for payment webhooks).
+- Hosting: a Cloudflare Worker with static assets on `mrcp-gafar.com`, the only address (the workers.dev and preview addresses are off, `www` and `http` redirect to it). Static now; the same Worker can take server code later for payment webhooks.
 - Login and results database (e.g. Supabase), payments (Stripe), traffic analytics (cookie-free, e.g. Plausible or Cloudflare Web Analytics). All plug in through `record()` and permanent IDs.
 - The full question bank and paid content must not ship inside static files (anyone can read a static file's answers); they will be served after login. Free sample questions can stay static.
 - Videos are hosted on YouTube (free) or Cloudflare Stream (paid); only their IDs go in `curriculum.yaml`. The player lives in `engine/js/video.js`; another host changes only that file and the poster, not the chapters.
