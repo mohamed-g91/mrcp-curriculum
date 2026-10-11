@@ -759,7 +759,7 @@ def about_section(site, up=""):
         # an email opens the mail app; anything else opens in a new tab
         out = "" if str(c["href"]).startswith("mailto:") else ' target="_blank" rel="noopener"'
         kind = c.get("kind") if c.get("kind") in HOME_ICONS else "link"
-        chips.append(f'<li><a class="chip" href="{e(c["href"])}"{out}>{home_icon(kind)}<span>{e(c["label"])}</span></a></li>')
+        chips.append(f'<li><a class="chip is-{kind}" href="{e(c["href"])}"{out}>{home_icon(kind)}<span>{e(c["label"])}</span></a></li>')
     chips = "".join(chips)
     # roles: a badge each under the name, the first filled (a plain string or {text, icon}; a single role: works too)
     roles = about.get("roles") or ([about["role"]] if about.get("role") else [])
