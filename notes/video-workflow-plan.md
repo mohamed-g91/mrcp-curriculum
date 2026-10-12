@@ -46,6 +46,17 @@ A private Artifact, opened on the phone or the computer:
 
 Recommended over a shared document because a tap on a word carries its exact time, which a comment in a document does not, and because Claude reads a few lines of choices instead of the whole transcript back.
 
+### Getting the transcript right (Whisper's faults on lesson 1, and the fix for each)
+
+| Fault | Cause | Fix in `video/make.py` |
+| --- | --- | --- |
+| English terms in Arabic letters ("البلاد جروب", "البين سكور") | Whisper does not know the lesson's terms | Its prompt is built from the topic YAML (concept labels, slide titles, case wording), so terms come out in English and spelt right |
+| The same misspelling in every lesson | Some words are always misheard | `video/glossary.json` applied to every transcript; each fix made once is kept |
+| Words lost at the cuts | The words were timed on the recording, before the cuts | A second transcription of the edited audio, which the subtitles are timed from |
+| A line invented over silence ("ترجمة نانسي قنقر") | Whisper fills silence with lines learnt from subtitles | Its voice-activity filter on |
+| A misheard phrase ("هجم أوروبا") | Unclear or casual speech | The larger `large-v3` model (about twice the time); low-confidence words marked on the review page, where the presenter corrects them once and the subtitles follow |
+| All of the above, a little | Recording sound | A microphone close to the mouth in a quiet room |
+
 ### Edits that break the monotony (suggested per lesson, each accepted or rejected in the review)
 
 Kept within DESIGN.md's minimal style; no stickers, sound effects or music under the voice.
@@ -78,7 +89,7 @@ Kept within DESIGN.md's minimal style; no stickers, sound effects or music under
 
 1. **Slide log in the recording view** (`engine/js/present.js`): while recording, keep each slide change and each tap's opened element with its box (from the same layout data `layout-report` uses); a button saves it as `<slug>-log.json` beside the recording. No change for candidates. Needs the usual check run and DESIGN.md's recording-view section updated.
 2. **`video/make.py`** (from `art/drafts/youtube/work/edit.py`, committed; recordings and renders stay git-ignored): one command per lesson, steps 3 and 6 above, plus a `--from` option to redo only the later steps. Plans per lesson in `video/plans/<slug>.json`.
-3. **`video/glossary.json`**: the subtitle fixes, growing each lesson.
+3. **`video/glossary.json`**: the subtitle fixes, growing each lesson; seeded with lesson 1's (البلاد جروب -> blood group, البين سكور -> pain score, السرج -> surgery, أدلت -> adult, الهموجلو من A1C -> HbA1c, …). Whisper's prompt built from the topic YAML; a second transcription of the edited audio for the subtitles.
 4. **The transcript review page**: one Artifact template the script fills per lesson (transcript, proposed cuts, Claude's suggestions), with a shared database for the marks and comments; the script reads the marks back into the plan file.
 5. **The extra edits** in `video/make.py`: spotlight, chapter card, "pause and think" card, key-term caption, recap card, speed-up. Each new card is drawn as three mockups first (DESIGN.md).
 
