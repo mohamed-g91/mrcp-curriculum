@@ -566,7 +566,7 @@ def p_reveal_cards(slide, topic):
     return heading(slide) + f'<div class="center-body"><div class="reveal-grid">{"".join(cards)}</div>{nxt}</div>'
 
 
-# the walls of the 3D heart, in the order of their buttons; the Arabic is a draft for the author's review
+# the walls of the 3D heart, in the order of their buttons; the Arabic approved by the user on 2026-10-14
 HEART_WALLS = [("inferior", "Inferior", "سفلي"), ("septal", "Septal", "حاجزي"), ("anterior", "Anterior", "أمامي"),
                ("lateral", "Lateral", "جانبي"), ("posterior", "Posterior", "خلفي"), ("rv", "Right ventricle", "البطين الأيمن")]
 

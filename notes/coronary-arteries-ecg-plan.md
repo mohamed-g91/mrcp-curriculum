@@ -198,4 +198,4 @@ Third review (ca4e65d, cce1bb4): posterior card (V1–V3 down) as a fifth reveal
 
 Codex QA (Sol 6.1, 2026-10-14) on 102c89c..cce1bb4: fixed the four the user chose: the 3D drag turned the slide on a touch screen; the slice moved when the card widened; the algorithm's arrowheads resolved to the RV drawing's marker; a tap inside the slice's card closed it. Left by choice (presenter-only slide): a chosen 3D wall stays on click-away (reset clears it), no screen-reader text or agent-tool state for the 3D leads, no fallback without WebGL.
 
-**Status: pushed 2026-10-14 on the user's go-ahead after the QA fixes; the topic stays `status: draft` until the user approves it and its Arabic drafts.**
+**Status: approved by the user 2026-10-14 (lesson and Arabic terms); status: reviewed. Live.**
