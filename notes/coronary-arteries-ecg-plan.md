@@ -192,4 +192,6 @@ Picks (comments 2026-10-13): 1B card beside the slice (roomier lead cards); 4A n
 
 Picks: RV A (side by side), MI and bradycardia A (walls with the conduction system between), lines kept between the five walls. **Revision built 2026-10-13**: heart-slice pattern (engine/heartsvg.py, engine/js/heartslice.js) for Three arteries and The mirror; blind reveal cards; drawings heart-rv, heart-brady, heart-algorithm. All checks pass. To verify before approval: a checked source for IV fluids in RV infarction (ESC 2023 main text covers only nitrates).
 
-**Status: revision built; awaiting the user's review. Not pushed; Codex QA still to run.**
+Second review (2026-10-13), fixed in 86d3b4a: mirror cards placed so the dashed line crosses the wall the mirror leads face; 3D labels pushed apart on screen (V1/V2 in Septal, I/aVL in Lateral); with no wall chosen, chest leads fade by facing (V7–V9 come in from behind); RV lit with the inferior wall on MI and bradycardia; extensive card says "proximal LAD or the left main".
+
+**Status: second review fixed; awaiting the user's review. Not pushed; Codex QA still to run.**
