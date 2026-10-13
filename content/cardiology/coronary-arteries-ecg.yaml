@@ -18,6 +18,8 @@ sources:
   - Zimetbaum PJ, Josephson ME. Use of the electrocardiogram in acute myocardial infarction. N Engl J Med 2003;348:933–40.
   - de Zwaan C, Bär FW, Wellens HJ. Characteristic electrocardiographic pattern indicating a critical stenosis high in left anterior descending coronary artery. Am Heart J 1982;103:730–6.
   - NICE NG185. Acute coronary syndromes, 2020.
+  - Haji SA, Movahed A. Right ventricular infarction: diagnosis and treatment. Clin Cardiol 2000;23:473–82 (volume loading to keep the RV's preload).
+  - Ibanez B, James S, Agewall S, et al. 2017 ESC Guidelines for the management of acute myocardial infarction in patients presenting with ST-segment elevation. Eur Heart J 2018;39:119–77 (8.2.2.1: in RV infarction, avoid volume overload).
 retired: []
 cover: concepts
 
@@ -171,7 +173,7 @@ practise:
         question: Which drug should be avoided?
         answer: Glyceryl trinitrate
         hint: What does the right ventricle depend on when it is starved?
-        why: "A right ventricular infarct: the heart depends on preload. Nitrates lower it and the pressure falls further (ESC 2023). Fluids help."
+        why: "A right ventricular infarct: the heart depends on preload. Nitrates lower it and the pressure falls further (ESC 2023). Fluids, given with care, help."
 
       - id: c07
         options: [Critical proximal LAD stenosis, Old anterior infarct, Pericarditis, Left ventricular hypertrophy]
