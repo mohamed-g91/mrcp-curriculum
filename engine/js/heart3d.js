@@ -3,7 +3,8 @@
    V1–V6 on the chest in front, aVR, I and aVL above, III, aVF and II below (I between the arms). Drag to turn the
    body. A wall's button turns that wall to the front and lights it (one teal for every wall), shows its own leads
    with ST elevation and its mirror leads (dashed) with ST depression, placed far below the heart (above it for the
-   inferior wall, whose own leads are below), and hides the rest. V7–V9 and V4R appear only with their walls.
+   inferior wall, whose own leads are below), and hides the rest. V4R appears only with the RV; with no wall chosen, V7–V9 come in (and V1–V6 fade) as
+   the back turns to the viewer.
    The reset button clears the wall and turns back to the front. The page embeds three.js (engine/vendor) only when
    the topic has this pattern; without it the slide stays empty. Approved as a prototype on 2026-10-13
    (art/drafts/cardiology/turn-the-heart-prototype.html). */
@@ -88,6 +89,9 @@ function buildHearts() {
         V7: V(2.6, -0.8, -1.9), V8: V(1.4, -0.8, -2.8), V9: V(0.2, -0.8, -3.1), V4R: V(-2.9, -1.0, 2.2)
       };
       const EXTRA = new Set(["V7", "V8", "V9", "V4R"]);
+      // with no wall chosen, the chest leads show while they face the viewer: turn the heart round and V1–V6 fade
+      // as V7–V9 come in (the user, 2026-10-13)
+      const CHEST = ["V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9"];
       const OWN = { inferior: ["II", "III", "aVF"], septal: ["V1", "V2"], anterior: ["V3", "V4"], lateral: ["I", "aVL", "V5", "V6"], posterior: ["V7", "V8", "V9"], rv: ["V4R"] };
       const MIRROR = { inferior: ["I", "aVL"], lateral: ["III", "aVF"], anterior: ["II", "III", "aVF"], posterior: ["V1", "V2", "V3"], septal: [], rv: [] };
       const AT = { inferior: V(0, -2.52, 0), septal: V(-0.57, -0.3, 1.09), anterior: V(0.26, -0.4, 1.3), lateral: V(1.3, -0.3, 0), posterior: V(0.31, -0.3, -1.25), rv: V(-1.4, -0.4, 0.78) };
@@ -109,7 +113,7 @@ function buildHearts() {
           g.moveTo(x0, b); g.lineTo(x0 + 12, b); g.lineTo(x0 + 18, b + 6); g.lineTo(x0 + 26, b - 42); g.lineTo(x0 + 33, b + 8);
           g.lineTo(x0 + 38, b + 14 * k); g.lineTo(x0 + 58, b + 14 * k); g.quadraticCurveTo(x0 + 72, b + 14 * k - 22, x0 + 86, b); g.lineTo(x0 + 100, b); g.stroke();
         }
-        s.material.map.needsUpdate = true;
+        s.userData.w = w / 384 * 2.3; s.material.map.needsUpdate = true;
       };
       for (const [name, p] of Object.entries(LEADS)) {
         const c = document.createElement("canvas"); c.width = 384; c.height = 128;
@@ -134,6 +138,29 @@ function buildHearts() {
           w.z = c.z + 1.2; markers[n].s.position.copy(w.applyQuaternion(qi));
         });
       };
+      // a wall's labels never overlap on screen in its view: pills that meet are pushed apart sideways (V1 and V2 in
+      // Septal; I and aVL in Lateral, where aVL comes nearer and so looks higher). Measured as the camera sees them.
+      const spread = names => {
+        const q = viewQ(current), qi = q.clone().invert(), D = camera.position.z;
+        const pts = names.map(n => { const v = markers[n].s.position.clone().applyQuaternion(q), f = D / (D - v.z); return { n, v, f, x: v.x * f, y: v.y * f, w: markers[n].s.userData.w * f }; });
+        for (let k = 0; k < 60; k++) {
+          let moved = false;
+          for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+            const a = pts[i], b = pts[j], need = (a.w + b.w) / 2 + 0.2, dx = b.x - a.x;
+            if (Math.abs(a.y - b.y) > 0.6 * Math.max(a.f, b.f) || Math.abs(dx) >= need) continue;
+            const push = (need - Math.abs(dx)) / 2 * (dx < 0 || (dx === 0 && i > j) ? -1 : 1);
+            a.x -= push; b.x += push; moved = true;
+          }
+          if (!moved) break;
+        }
+        pts.forEach(p => { p.v.x = p.x / p.f; markers[p.n].s.position.copy(p.v.applyQuaternion(qi)); });
+      };
+      const facing = () => {
+        CHEST.forEach(n => {
+          const m = markers[n], z = m.p.clone().applyQuaternion(root.quaternion).z, o = Math.max(0, Math.min(1, (z + 0.3) / 0.9));
+          m.s.material.opacity = o; m.s.visible = o > 0.02;
+        });
+      };
       const apply = () => {
         const col = lvGeo.attributes.color, c = new T.Color();
         for (let i = 0; i < pos.count; i++) { c.copy(GREY); if (current && WGT[current]) c.lerp(LIT, Math.min(1, WGT[current][i] * 1.2)); col.setXYZ(i, c.r, c.g, c.b); }
@@ -146,12 +173,13 @@ function buildHearts() {
         const ink = css("--text"), bg = css("--surface"), bd = css("--gray-bd"), soft = css("--muted");
         for (const [name, m] of Object.entries(markers)) {
           const on = own.includes(name), rec = mir.includes(name);
-          m.s.visible = current ? on || rec : !EXTRA.has(name); m.line.visible = on || rec;
-          if (on || rec) { const to = AT[current]; m.line.geometry.setFromPoints([m.s.position.clone().lerp(to, 0.12), to]); m.line.computeLineDistances(); }
+          m.s.visible = current ? on || rec : !EXTRA.has(name); m.line.visible = on || rec; m.s.material.opacity = 1;
           if (on) { paint(m.s, css("--se-ink"), css("--se-bg"), css("--se-solid"), "up"); m.line.material.color.set(css("--se-solid")); }
           else if (rec) { paint(m.s, ink, bg, soft, "down", true); m.line.material.color.set(soft); }
           else paint(m.s, ink, bg, bd);
         }
+        if (current) spread(own.concat(mir)); else facing();
+        own.concat(mir).forEach(n => { const m = markers[n], to = AT[current]; m.line.geometry.setFromPoints([m.s.position.clone().lerp(to, 0.12), to]); m.line.computeLineDistances(); });
         walls.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.wall === current)));
         box.dataset.wall = current || "";
       };
@@ -177,6 +205,7 @@ function buildHearts() {
       const frame = () => {
         if (!running) return;
         if (target) { root.quaternion.slerp(target, 0.12); if (root.quaternion.angleTo(target) < 0.002) { root.quaternion.copy(target); target = null; } }
+        if (!current) facing();
         renderer.render(scene, camera); requestAnimationFrame(frame);
       };
       // the theme can change while the slide is open: repaint the labels

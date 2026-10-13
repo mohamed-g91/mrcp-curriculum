@@ -131,12 +131,14 @@ def rhythm(x, y, w, wide=False, col="var(--ink)"):
 
 
 base, node, lit_br = conduction(430, 200, .78)
+# the RV lights with the inferior wall: the RCA feeds both (the user, 2026-10-13)
+lit_rv = '<path d="%s" fill="var(--se-bg)" stroke="var(--se-solid)" stroke-width="3"/>' % rv_path(160, 140, 82)
 br = [base,
-      '<g data-beat="1"><text x="140" y="40">Inferior MI</text>%s%s%s%s%s</g>'
-      % (grey_slice(140, 140, 82, 50, rv=False), lit(140, 140, 82, 50, "inferior"), node,
+      '<g data-beat="1"><text x="140" y="40">Inferior MI</text>%s%s%s%s%s%s</g>'
+      % (grey_slice(160, 140, 82, 50), lit_rv, lit(160, 140, 82, 50, "inferior"), node,
          rhythm(30, 300, 220), pill(140, 362, 250, "ok", "Narrow · usually passes")),
       '<g data-beat="2"><text x="720" y="40">Anterior MI</text>%s%s%s%s%s%s</g>'
-      % (grey_slice(720, 140, 82, 50, rv=False), lit(720, 140, 82, 50, "anterior"), lit(720, 140, 82, 50, "septal"), lit_br,
+      % (grey_slice(750, 140, 82, 50), lit(750, 140, 82, 50, "anterior"), lit(750, 140, 82, 50, "septal"), lit_br,
          rhythm(610, 300, 220, wide=True, col="var(--bad-solid)"), pill(720, 362, 250, "bad", "Wide · unstable · pace"))]
 svg("heart-brady", "0 0 860 420", "Bradycardia after MI: the AV node in inferior MI, the bundle branches in anterior MI", "".join(br))
 

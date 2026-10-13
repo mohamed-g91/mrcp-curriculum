@@ -79,7 +79,7 @@ learn:
       - { family: se,  figure: heart-card-inferior,  label: "II, III, aVF",        answer: "Inferior wall: the RCA (in most hearts)" }
       - { family: cat, figure: heart-card-anterior,  label: "V1–V4",               answer: "Septum and front wall: the LAD" }
       - { family: par, figure: heart-card-lateral,   label: "I, aVL, V5, V6",      answer: "Lateral wall: the circumflex" }
-      - { family: cat, figure: heart-card-extensive, label: "V1–V6, I, aVL",       answer: "Front and side together: the proximal LAD" }
+      - { family: cat, figure: heart-card-extensive, label: "V1–V6, I, aVL",       answer: "Front and side together: the proximal LAD or the left main" }
 
   # His pressure, as the right heart, the lungs and the left heart in a row (the user, 2026-10-13), a beat per tap:
   # a proximal RCA blockage starves the RV, which fails; blood dams back into the veins (JVP up, Kussmaul's sign);

@@ -584,9 +584,11 @@ def p_heart3d(slide, topic):
 # the 2D heart slice (engine/heartsvg.py): every wall is tapped on its own; a card beside it names the wall and its
 # artery; with mode: mirror the wall's own leads (ST up) and its mirror leads (dashed, ST down) join it
 HS_CX, HS_CY, HS_R, HS_r = 420, 250, 140, 86
-# where each part's lead cards stand in the 820 × 500 drawing: (own x, y), (mirror x, y)
-HS_CARDS = {"anterior": ((300, 0), (300, 396)), "septal": ((0, 20), None), "lateral": ((600, 150), (0, 330)),
-            "posterior": ((600, 384), (0, 20)), "inferior": ((300, 396), (600, 20)), "rv": ((0, 384), None)}
+# where each part's lead cards stand in the 820 × 500 drawing: (own x, y), (mirror x, y). A mirror card stands where
+# the line from the tapped wall runs on through the wall its leads face (lateral and anterior: the inferior wall;
+# inferior: the lateral wall; posterior: the front of the septum), so the dashed line crosses that wall
+HS_CARDS = {"anterior": ((300, 0), (293, 396)), "septal": ((0, 20), None), "lateral": ((600, 150), (265, 396)),
+            "posterior": ((600, 384), (211, 0)), "inferior": ((300, 396), (522, 0)), "rv": ((0, 384), None)}
 
 
 def _hs_lead(x, y, label, up, fam, wall_xy):
