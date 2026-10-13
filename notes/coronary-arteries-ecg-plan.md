@@ -160,7 +160,7 @@ Leads chosen: **B, body beside the 12-lead grid**, with the user's changes: III 
 
 **3D slide approved by the user 2026-10-13** (prototype version 11; source in art/drafts/cardiology/turn-the-heart-prototype.html, local only).
 
-**Slides agreed 2026-10-13: seven Learn slides.** The 3D slide replaces Twelve cameras and The mirror (so the human-figure grid 2B and the opposite-cameras mirror 3B drop out; posterior is explained over the 3D Posterior view):
-1 Hook (12-lead strip) · 2 Three arteries ثلاثة شرايين (slice) · 3 Turn the heart أدر القلب (3D) · 4 Leads to artery من رسم القلب إلى الشريان (reveal cards, slice) · 5 The right ventricle البطين الأيمن (slice, RV shaded) · 6 The slow heart تباطؤ ضربات القلب (slice, AV node) · 7 Solve the hook (clue-stem). Cases c01–c11 unchanged. This replaces the slide table above.
+**Slides agreed 2026-10-13: eight Learn slides.** The 3D slide replaces Twelve cameras (so the human-figure grid 2B drops out); The mirror (opposite cameras on the slice, 3B) stays, right after the 3D slide:
+1 Hook (12-lead strip) · 2 Three arteries ثلاثة شرايين (slice) · 3 Turn the heart أدر القلب (3D) · 4 The mirror المرآة (opposite cameras on the slice) · 5 Leads to artery من رسم القلب إلى الشريان (reveal cards, slice) · 6 The right ventricle البطين الأيمن (slice, RV shaded) · 7 The slow heart تباطؤ ضربات القلب (slice, AV node) · 8 Solve the hook (clue-stem). Cases c01–c11 unchanged. This replaces the slide table above.
 
 **Status: gate 2 done (three 2D figures chosen, 3D "Turn the heart" slide approved); open: the section list. Next: build.**
