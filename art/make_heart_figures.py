@@ -88,7 +88,7 @@ rv = [DEFS,
       '<g data-beat="2"><path d="M60 400 V250 Q60 205 110 205" fill="none" stroke="%s" stroke-width="28" stroke-linecap="round"/>%s</g>'
       % (VEIN, pill(68, 150, 120, "bad", "JVP ↑")),
       '<g data-until="1">%s</g>' % half(190, 230, 1, "RV"),
-      '<g data-beat="1">%s</g>' % half(190, 230, 1, "RV", "var(--se-bg)", "var(--se-solid)"),
+      '<g data-beat="1">%s%s</g>' % (half(190, 230, 1, "RV", "var(--se-bg)", "var(--se-solid)"), pill(190, 384, 80, "bad", "MI")),
       '<g data-until="3">%s%s</g>' % (arrow(265, 160, 330, 160), arrow(530, 160, 595, 160)),
       lungs(430, 200),
       '<g data-beat="3">%s%s%s</g>' % (arrow(265, 160, 330, 160, dash=True), arrow(530, 160, 595, 160, dash=True), pill(430, 330, 170, "ok", "Lungs clear")),
@@ -116,8 +116,14 @@ def conduction(cx, cy, k):
             '<path d="%s" fill="none" stroke="var(--wall)" stroke-width="3" stroke-linecap="round"/>'
             '<circle cx="%.0f" cy="%.0f" r="%.0f" fill="var(--wall)"/>'
             % (heart, cx - 80 * k, cy - 120 * k, 9 * k, branches, cx, cy - 30 * k, 14 * k))
-    node = '<circle cx="%.0f" cy="%.0f" r="%.0f" fill="var(--se-solid)"/>' % (cx, cy - 30 * k, 15 * k)
-    lit_br = '<path d="%s" fill="none" stroke="var(--cat-solid)" stroke-width="6" stroke-linecap="round"/>' % branches
+    # each lit part is named as it lights (the user, 2026-10-13)
+    node = ('<circle cx="%.0f" cy="%.0f" r="%.0f" fill="var(--se-solid)"/>'
+            '<text x="%.0f" y="%.0f" style="text-anchor:start;font-size:17px;fill:var(--se-ink)">AV node</text>'
+            % (cx, cy - 30 * k, 15 * k, cx + 22 * k, cy - 24 * k))
+    lit_br = ('<path d="%s" fill="none" stroke="var(--cat-solid)" stroke-width="6" stroke-linecap="round"/>'
+              '<text x="%.0f" y="%.0f" style="font-size:17px;fill:var(--cat-ink)">Bundle</text>'
+              '<text x="%.0f" y="%.0f" style="font-size:17px;fill:var(--cat-ink)">branches</text>'
+              % (branches, cx - 85 * k, cy + 40 * k, cx - 85 * k, cy + 40 * k + 20))
     return base, node, lit_br
 
 
@@ -176,7 +182,8 @@ svg("heart-algorithm", "0 0 860 420", "The hook solved step by step: leads, wall
 
 # ---- slide 5's cards: one small slice each; its territory grey until the card opens (class fig-lit)
 CX, CY, R, r = 130, 95, 70, 43
-cards = {"inferior": ["inferior"], "anterior": ["anterior", "septal"], "lateral": ["lateral"], "extensive": ["anterior", "septal", "lateral"]}
+cards = {"inferior": ["inferior"], "anterior": ["anterior", "septal"], "lateral": ["lateral"], "extensive": ["anterior", "septal", "lateral"],
+         "posterior": ["posterior"]}
 for name, walls in cards.items():
     body = grey_slice(CX, CY, R, r) + "".join(lit(CX, CY, R, r, w, "cat" if name == "extensive" else None, "fig-lit") for w in walls)
     svg("heart-card-" + name, "0 0 260 190", "A slice of the heart with one territory marked", body)

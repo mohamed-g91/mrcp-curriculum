@@ -80,6 +80,8 @@ learn:
       - { family: cat, figure: heart-card-anterior,  label: "V1–V4",               answer: "Septum and front wall: the LAD" }
       - { family: par, figure: heart-card-lateral,   label: "I, aVL, V5, V6",      answer: "Lateral wall: the circumflex" }
       - { family: cat, figure: heart-card-extensive, label: "V1–V6, I, aVL",       answer: "Front and side together: the proximal LAD or the left main" }
+      # posterior MI shows only as its mirror in V1–V3; V7–V9 confirm it; usually the circumflex (ESC 2023, 3.2.1)
+      - { family: par, figure: heart-card-posterior, label: "V1–V3, ST down",      answer: "Posterior wall, in its mirror: the circumflex" }
 
   # His pressure, as the right heart, the lungs and the left heart in a row (the user, 2026-10-13), a beat per tap:
   # a proximal RCA blockage starves the RV, which fails; blood dams back into the veins (JVP up, Kussmaul's sign);
