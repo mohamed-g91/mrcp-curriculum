@@ -172,4 +172,24 @@ Leads chosen: **B, body beside the 12-lead grid**, with the user's changes: III 
 
 Cardiology sections agreed 2026-10-13 (the user): the twelve above, A Coronary heart disease first.
 
-**Status: gate 2 done (three 2D figures chosen, 3D "Turn the heart" slide approved); open: the section list. Next: build.**
+**Built 2026-10-13** (commit 102c89c, local): content/cardiology/coronary-arteries-ecg.yaml (status draft), the heart drawings (art/make_heart_figures.py), the heart3d pattern, cardiology on the site. All page and site checks pass; statistics lessons re-checked. Review copy of the deck: https://claude.ai/artifact/SbgjjWjMUAs5xhEzW1Rfmj. Codex QA running.
+
+## Revision after the user's review (2026-10-13, agreed)
+
+Seven comments on the review deck; agreed plan, nine Learn slides:
+1. Three arteries: the slice opens grey with LV and RV labelled; every wall tappable on its own (not in sequence), a tap lights it with a pill "wall · artery"; tap again closes. New tappable figure (engine).
+2. The mirror: the same tappable slice; a wall's own leads (ST up) and its mirror leads across the heart (ST down). Pairs: inferior → I, aVL (aVL most sensitive); lateral → III, aVF (often II); anterior → II, III, aVF (points to proximal LAD, Zimetbaum and Josephson 2003); posterior → V1–V3; septal alone and RV none.
+3. Leads to artery: the closed card shows only the leads and a grey slice; opening it shows the coloured wall, the answer and the Arabic tag (the tag and colour gave the artery away).
+4. The right ventricle, deeper, one beat per tap: proximal RCA starves the RV too (about a third of inferior MIs: to confirm); RV cannot pump, LV underfilled, BP falls; blood backs up, raised JVP (Kussmaul) with clear lungs (the triad); V4R ST elevation ≥ 1 mm; do fluids and early reperfusion, avoid nitrates and diuretics (ESC 2023 for nitrates; fluids: a checked source to cite).
+5. The slow heart: the first tap lights the RCA, the inferior wall and the AV node together.
+6. New slide after it, anterior MI with heart block: septal infarct (LAD) below the AV node, Mobitz II or complete heart block with a wide slow escape, unstable, worse prognosis, needs pacing; against inferior: AV nodal, narrow escape, usually passes (bank: Mobitz II after anterior MI → pace; CHB after inferior MI, stable → observe; ESC 2023 on pacing).
+7. Back to the hook as an algorithm, a step per tap with the stem words lighting: leads → wall → artery, then supporting clues (pulse 42 → AV node → RCA; low BP + raised JVP + clear chest → RV → RCA).
+Next: one mockup sheet (the tappable slice, RV in beats, anterior heart block, the algorithm), three options each.
+
+Revision mockups sent 2026-10-13: https://claude.ai/artifact/RVah6aU3c53krWVKjS52h9 (recommended 1A pill by the wall, 2C two pumps, 3B conduction system, 4A numbered steps). New slide title: Anterior MI and heart block / الاحتشاء الأمامي وإحصار القلب (draft).
+
+Picks (comments 2026-10-13): 1B card beside the slice (roomier lead cards); 4A numbered steps; RV figure rebuilt as right heart | lungs | left heart (new options); The slow heart and the anterior heart block merge into one slide, MI and bradycardia (الاحتشاء وبطء القلب, draft), inferior then anterior. Round 2 mockups on the same page.
+
+Picks: RV A (side by side), MI and bradycardia A (walls with the conduction system between), lines kept between the five walls. **Revision built 2026-10-13**: heart-slice pattern (engine/heartsvg.py, engine/js/heartslice.js) for Three arteries and The mirror; blind reveal cards; drawings heart-rv, heart-brady, heart-algorithm. All checks pass. To verify before approval: a checked source for IV fluids in RV infarction (ESC 2023 main text covers only nitrates).
+
+**Status: revision built; awaiting the user's review. Not pushed; Codex QA still to run.**

@@ -130,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
   buildCurves();
   buildStories();
   buildHearts();
+  buildHeartSlices();
   buildWorkings();
   buildClueStems();
   buildRevealCards();

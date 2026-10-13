@@ -548,10 +548,14 @@ def p_reveal_cards(slide, topic):
             label_ar = cd.get("ar", family_ar(topic, fam))
         # a picture of the idea above its name, in place of the icon
         top = figure(cd["figure"], "rcard-fig") if cd.get("figure") else f'<span class="rcard-ico">{icon(ico)}</span>'
+        # a blind slide gives nothing away until a card opens: no colour, no Arabic; both come with the answer
+        blind = slide.get("blind")
+        name = e(label) if blind else named(label, label_ar)
+        answer = e(cd["answer"]) + (ar(label_ar) if blind else "")
         cards.append(
-            f'<div class="rcard f-{fam} reveal-item" role="button" tabindex="0" aria-expanded="false">'
-            f'{top}<b class="rcard-label">{named(label, label_ar)}</b>'
-            f'<span class="rcard-answer">{e(cd["answer"])}</span></div>')
+            f'<div class="rcard f-{fam} reveal-item{" blind" if blind else ""}" role="button" tabindex="0" aria-expanded="false">'
+            f'{top}<b class="rcard-label">{name}</b>'
+            f'<span class="rcard-answer">{answer}</span></div>')
     nxt = ""
     if slide.get("next"):
         n = slide["next"]
@@ -575,6 +579,64 @@ def p_heart3d(slide, topic):
     return (heading(slide) + '<div class="h3d f-se"><div class="h3d-stage" role="img" aria-label="A heart in 3D with its ECG leads; drag to turn it">'
             f'<button class="h3d-reset icon-btn" type="button" aria-label="Back to the front, all leads">{icon("refresh")}</button></div>'
             f'<div class="h3d-walls" role="group" aria-label="Walls">{walls}</div></div>')
+
+
+# the 2D heart slice (engine/heartsvg.py): every wall is tapped on its own; a card beside it names the wall and its
+# artery; with mode: mirror the wall's own leads (ST up) and its mirror leads (dashed, ST down) join it
+HS_CX, HS_CY, HS_R, HS_r = 420, 250, 140, 86
+# where each part's lead cards stand in the 820 × 500 drawing: (own x, y), (mirror x, y)
+HS_CARDS = {"anterior": ((300, 0), (300, 396)), "septal": ((0, 20), None), "lateral": ((600, 150), (0, 330)),
+            "posterior": ((600, 384), (0, 20)), "inferior": ((300, 396), (600, 20)), "rv": ((0, 384), None)}
+
+
+def _hs_lead(x, y, label, up, fam, wall_xy):
+    """A lead card: the leads on their own line, one beat under them (ST up for the wall's own leads, down for its
+    mirror, dashed), and a dotted line to the wall."""
+    from engine.heartsvg import beat
+    w, h = 220, 104
+    dash = '' if up else ' stroke-dasharray="9 7"'
+    wx, wy = wall_xy
+    sx, sy = x + w / 2.0, (y + h if y < wy else y)
+    line_col = "var(--%s-solid)" % fam if up else "var(--muted)"
+    return ('<line x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke="%s" stroke-width="2.5" stroke-dasharray="5 7"/>'
+            '<rect x="%d" y="%d" width="%d" height="%d" rx="14" fill="var(--surface)" stroke="%s" stroke-width="2.5"%s/>'
+            '<text x="%d" y="%d" class="hs-lead">%s</text>'
+            '<path d="%s" fill="none" stroke="%s" stroke-width="4" stroke-linejoin="round"/>'
+            % (sx, sy, wx, wy, line_col, x, y, w, h, "var(--%s-solid)" % fam if up else "var(--gray-bd)", dash,
+               x + 16, y + 30, e(label), beat(x + 26, y + 82, w - 52, 36, st=.3 if up else -.3, t=.35 if up else .25),
+               "var(--%s-solid)" % fam if up else "var(--muted)"))
+
+
+def p_heart_slice(slide, topic):
+    from engine.heartsvg import WALLS, RV, slice_parts, pt
+    mirror = slide.get("mode") == "mirror"
+    cx, cy, R, r = HS_CX, HS_CY, HS_R, HS_r
+    parts, rest = slice_parts(cx, cy, R, r)
+    walls_ar = dict((w, a) for w, _, a in HEART_WALLS)
+    info, body, leads = {}, "", ""
+    for key, name, ang, art, own, mir in WALLS + [RV]:
+        c = concept(topic, art)
+        fam = c["family"]
+        info[key] = {"name": name, "ar": walls_ar.get(key, ""), "artery": c["label"], "artery_ar": c.get("ar", ""),
+                     "family": fam, "letter": c.get("letter", "")}
+        body += parts[key].replace('<path ', '<path class="hs-part f-%s" tabindex="0" role="button" aria-label="%s wall" ' % (fam, e(name)), 1)
+        if mirror:
+            if ang:
+                wx, wy = pt(cx, cy, (R + r) / 2.0, sum(ang) / 2.0)
+            else:
+                wx, wy = cx - 200 * R / 150.0, cy
+            own_xy, mir_xy = HS_CARDS[key]
+            g = _hs_lead(own_xy[0], own_xy[1], own, True, fam, (wx, wy))
+            if mir and mir_xy:
+                g += _hs_lead(mir_xy[0], mir_xy[1], mir, False, fam, (wx, wy))
+            leads += '<g class="hs-leads" data-for="%s">%s</g>' % (key, g)
+    # without lead cards the drawing is cropped to the slice itself
+    svg = ('<svg class="hs-svg" viewBox="%s" role="img" aria-label="A slice across both ventricles; tap a wall">'
+           '%s%s%s</svg>' % ("0 0 820 500" if mirror else "180 76 400 348", body, rest, leads))
+    card = ('<div class="hs-card off" aria-live="polite"><b class="hs-wall"></b>'
+            '<span class="hs-art"><span class="hs-dot"></span><span class="hs-artname"></span></span></div>')
+    return (heading(slide) + '<div class="hs%s" data-hs="%s"><figure class="hs-fig">%s</figure>%s</div>'
+            % (" hs-mirror" if mirror else "", e(json.dumps(info, ensure_ascii=False)), svg, card))
 
 
 # ---------------------------------------------------------------- practise patterns
@@ -634,6 +696,7 @@ PATTERNS = {
     "curve": p_curve,
     "story": p_story,
     "heart3d": p_heart3d,
+    "heart-slice": p_heart_slice,
     "working": p_working,
     "clue-stem": p_clue_stem,
     "reveal-cards": p_reveal_cards,
