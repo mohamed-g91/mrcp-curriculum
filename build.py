@@ -649,9 +649,12 @@ def img_tag(rel, cls="", eager=False, up=""):
     return f'<img{c} src="{up}img/{rel}" alt=""{lazy} decoding="async">'
 
 
+START_PAGE = "start.html"
+
+
 def start_href(specs, up=""):
-    """Every Start learning opens the way in, never a lesson: the first specialty's lessons until the pathway page exists."""
-    return f'{up}{specs[0]["id"]}/index.html' if specs else f"{up}index.html"
+    """Every Start learning opens the way in, never a lesson: the Start page, where the doctor picks a specialty."""
+    return f"{up}{START_PAGE}"
 
 
 def site_menu(specs, built, coming, up, here):
@@ -886,6 +889,24 @@ def render_specialty(site, specs, built, coming, spec, label=""):
                      cls="spec-page", label=label)
 
 
+def render_start(site, specs, built, coming, label=""):
+    """The Start page, where every Start learning goes: one card per specialty, its drawing and name on a navy strip,
+    opening its lessons; the specialties not started greyed with Soon (chosen 2026-10-14, mockup C, name only)."""
+    cards, soon = [], [spec for spec in specs if not any(tp["slug"] in built for tp in spec["topics"])] + list(coming)
+    for spec in specs:
+        if spec in soon:
+            continue
+        cards.append(f'<li><a class="sp-card" href="{e(spec["id"])}/index.html"><span class="sp-pic">'
+                     f'{img_tag("covers/" + spec["id"] + ".webp", eager=True)}</span>'
+                     f'<span class="sp-name">{e(spec["title"])}</span>{home_icon("right")}</a></li>')
+    for c in soon:
+        cards.append(f'<li><div class="sp-card is-soon"><span class="sp-pic">{img_tag("covers/" + c["id"] + ".webp") if c.get("id") else ""}</span>'
+                     f'<span class="sp-name">{e(c["title"])}</span><span class="sp-soon">Soon</span></div></li>')
+    body = (f'<main class="wrap start"><div class="start-head wash"><h1>Start learning</h1><p>Choose a specialty.</p></div>'
+            f'<ul class="sp-grid">{"".join(cards)}</ul></main>')
+    return site_page(site, specs, built, coming, f'Start learning · {site["title"]}', body, here="start", cls="start-page", label=label)
+
+
 def render_how(site, label=""):
     """The old How it works page's address: it opens the home page with How it works showing."""
     return ('<!DOCTYPE html>\n<html lang="en"><head><meta charset="utf-8"><title>' + e(site["title"] + label) + '</title>'
@@ -958,6 +979,7 @@ def main():
     coming = cur.get("coming") or []
     for out, label in ((DIST, ""), (PRESENTER, " · presenter")):
         pages = {"index.html": render_index(site, specs, built, coming, label),
+                 START_PAGE: render_start(site, specs, built, coming, label),
                  HOW_PAGE: render_how(site, label)}
         for spec in specs:
             pages[spec["id"] + "/index.html"] = render_specialty(site, specs, built, coming, spec, label)

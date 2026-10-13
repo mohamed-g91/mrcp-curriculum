@@ -33,6 +33,7 @@ IMAGES = {
     "thumbs/ci-and-p.webp": ("line-6.png", 640),
     "thumbs/errors.webp": ("line-7.png", 640),
     "thumbs/power.webp": ("line-8.png", 640),
+    "thumbs/coronary-arteries-ecg.webp": ("cardiology/thumb-cardio-c.png", 640),
 }
 
 

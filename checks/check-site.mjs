@@ -31,8 +31,8 @@ const shotsAt = args.indexOf("--shots");
 const shotDir = shotsAt >= 0 ? resolve(args[shotsAt + 1]) : null;
 if (shotDir) mkdirSync(shotDir, { recursive: true });
 const base = pathToFileURL(root).href + "/";
-// the pages: home, and every folder with an index.html (a specialty)
-const pages = ["index.html",
+// the pages: home, the Start page, and every folder with an index.html (a specialty)
+const pages = ["index.html", "start.html",
   ...readdirSync(root, { withFileTypes: true }).filter(d => d.isDirectory() && existsSync(join(root, d.name, "index.html"))).map(d => d.name + "/index.html")];
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -143,6 +143,14 @@ for (const size of SIZES) {
       if (!home.shown) fail(`${where}: What you get did not appear when scrolled to`);
       if (!home.err) fail(`${where}: the sign-up said nothing about a bad address`);
       if (!home.ok) fail(`${where}: the sign-up said nothing after a good address`);
+    }
+    // every Start learning opens the Start page; the Start page offers each specialty with lessons, and only those
+    const starts = await js(`[...document.querySelectorAll("a.btn")].filter(a => a.textContent.trim() === "Start learning").map(a => a.href)`);
+    for (const h of starts) if (!h.split("#")[0].endsWith("/start.html")) fail(`${where}: Start learning opens ${h}, not the Start page`);
+    if (rel === "start.html") {
+      const sp = await js(`[...document.querySelectorAll("a.sp-card")].map(a => a.getAttribute("href"))`);
+      const want = pages.filter(p => p.endsWith("/index.html"));
+      if (!sp.length || sp.some(h => !want.includes(h))) fail(`${where}: specialty cards ${sp.join(", ")}`);
     }
     // every link inside the build points at a file that exists; every drawing has loaded
     const links = await js(`[...document.querySelectorAll("a[href]")].map(a => a.href).filter(h => h.startsWith(${JSON.stringify(base)}))`);
