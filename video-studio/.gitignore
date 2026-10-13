@@ -1,0 +1,7 @@
+# downloaded packages and rendered videos stay local
+node_modules/
+output/
+*.wav
+*.mp4
+.claude/
+.vite/

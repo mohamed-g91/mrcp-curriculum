@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phone Mockup Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E9E4D9; --stage:#F5F1E8; --ink:#1F1D1A; --muted:#7A746B;
+    --accent:#D97848; --screen:#FBF9F4; --line:#E4DED2; --bubble:#EDE6D8;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#171614; } }
+  :root[data-theme="dark"]{ --bg:#171614; }
+
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:var(--bg);font-family:Inter,system-ui,sans-serif;
+       display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:14px}
+  #wrap{width:100%;max-width:1100px;aspect-ratio:16/9;position:relative;overflow:hidden;border-radius:14px;
+        box-shadow:0 20px 60px rgba(0,0,0,.18)}
+  #stage{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;background:var(--stage);overflow:hidden}
+
+  /* Title block */
+  #title{position:absolute;left:120px;top:250px;width:520px;opacity:0}
+  #title .kicker{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:16px}
+  #title h1{font-family:Fraunces,Georgia,serif;font-weight:400;font-size:62px;line-height:1.05;margin:0 0 18px;color:var(--ink)}
+  #title p{font-size:20px;line-height:1.5;color:var(--muted);margin:0}
+
+  /* Phone */
+  #phone{position:absolute;left:780px;top:50px;width:310px;height:620px;border-radius:50px;background:#1C1B19;padding:11px;
+         box-shadow:0 30px 70px rgba(40,30,20,.28), inset 0 0 0 2px #3a3835;opacity:0}
+  #screen{width:100%;height:100%;border-radius:40px;background:var(--screen);overflow:hidden;position:relative;display:flex;flex-direction:column}
+  .island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:96px;height:28px;background:#111;border-radius:20px;z-index:2}
+  .status{height:48px;display:flex;justify-content:space-between;align-items:center;padding:6px 26px 0;font-size:14px;font-weight:600;color:var(--ink)}
+  .status .icons{display:flex;gap:5px;align-items:center}
+  .status .bar{width:16px;height:9px;border-radius:2px;border:1.5px solid var(--ink);position:relative}
+  .status .bar::after{content:"";position:absolute;inset:1px;right:4px;background:var(--ink);border-radius:1px}
+  .header{display:flex;align-items:center;gap:10px;padding:8px 18px 12px;border-bottom:1px solid var(--line)}
+  .avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);display:grid;place-items:center}
+  .avatar::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--screen)}
+  .header .name{font-weight:600;font-size:15px;color:var(--ink)}
+  .header .sub{font-size:11px;color:var(--muted)}
+
+  #msgs{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+  .user{align-self:flex-end;max-width:82%;background:var(--ink);color:#fff;padding:10px 13px;border-radius:18px 18px 4px 18px;font-size:13.5px;line-height:1.4}
+  .bot{align-self:flex-start;max-width:90%;font-size:13.5px;line-height:1.45;color:var(--ink)}
+  .dots{display:flex;gap:4px;padding:8px 2px}
+  .dots span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:b 1s infinite ease-in-out}
+  .dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
+  @keyframes b{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 11px;margin-top:7px;font-size:12.5px;display:flex;gap:8px}
+  .card b{color:var(--accent)}
+
+  .inputbar{padding:10px 12px 26px;display:flex;gap:8px;align-items:center}
+  #field{flex:1;min-height:40px;border-radius:20px;border:1px solid var(--line);background:#fff;padding:10px 14px;font-size:13.5px;color:var(--ink);line-height:1.4}
+  #field .ph{color:#aaa49a}
+  #caret{display:inline-block;width:1.5px;height:15px;background:var(--accent);vertical-align:-3px;margin-left:1px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  #send{width:38px;height:38px;border-radius:50%;background:var(--accent);display:grid;place-items:center;flex:none}
+  #send svg{width:16px;height:16px}
+
+  /* Finger + ripple */
+  #finger{position:absolute;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;
+          background:rgba(31,29,26,.20);border:2.5px solid rgba(255,255,255,.95);box-shadow:0 6px 18px rgba(0,0,0,.2);
+          opacity:0;z-index:10;left:1200px;top:760px;
+          transition:left .8s cubic-bezier(.65,0,.35,1), top .8s cubic-bezier(.65,0,.35,1), opacity .3s}
+  .ripple{position:absolute;border-radius:50%;border:3px solid var(--accent);pointer-events:none;z-index:9;width:20px;height:20px;margin:-10px 0 0 -10px}
+
+  /* Caption */
+  #caption{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);max-width:900px;text-align:center;
+           background:rgba(20,19,17,.82);color:#fff;font-size:22px;line-height:1.35;padding:8px 18px;border-radius:8px;
+           opacity:0;transition:opacity .35s}
+
+  #replay{font:500 15px Inter,sans-serif;padding:10px 22px;border-radius:999px;border:none;background:var(--accent);color:#fff;cursor:pointer}
+  #replay:hover{filter:brightness(1.05)}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="stage">
+    <div id="title">
+      <div class="kicker">Demo</div>
+      <h1>Ask from<br>your phone</h1>
+      <p>Phone mock-up, tap and typing effects, all built in code.</p>
+    </div>
+
+    <div id="phone">
+      <div id="screen">
+        <div class="island"></div>
+        <div class="status"><span>9:41</span><span class="icons"><span class="bar"></span></span></div>
+        <div class="header">
+          <div class="avatar"></div>
+          <div><div class="name">Assistant</div><div class="sub">Online</div></div>
+        </div>
+        <div id="msgs"></div>
+        <div class="inputbar">
+          <div id="field"><span class="ph">Message…</span></div>
+          <div id="send"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="finger"></div>
+    <div id="caption"></div>
+  </div>
+</div>
+<button id="replay">Replay</button>
+
+<script>
+const $ = s => document.querySelector(s);
+const wrap = $('#wrap'), stage = $('#stage');
+let S = 1;
+function fit(){ S = wrap.clientWidth / 1280; stage.style.transform = `scale(${S})`; }
+addEventListener('resize', fit); fit();
+
+const SENTENCE = "Turn today's cardiology notes into 3 quick flashcards";
+const CARDS = [
+  "First-line rate control in AF?",
+  "ECG sign of hyperkalaemia?",
+  "Murmur of aortic stenosis radiates to…?"
+];
+const ease = 'cubic-bezier(.16,1,.3,1)';
+let runId = 0;
+
+function pos(el, fx = .5, fy = .5){
+  const r = el.getBoundingClientRect(), s = stage.getBoundingClientRect();
+  return { x: (r.left + r.width * fx - s.left) / S, y: (r.top + r.height * fy - s.top) / S };
+}
+
+async function run(){
+  const id = ++runId;
+  const wait = ms => new Promise((res, rej) => setTimeout(() => id === runId ? res() : rej('stale'), ms));
+  const finger = $('#finger'), cap = $('#caption'), field = $('#field'), msgs = $('#msgs');
+
+  // reset
+  msgs.innerHTML = '';
+  field.innerHTML = '<span class="ph">Message…</span>';
+  finger.style.transition = 'none'; finger.style.opacity = 0; finger.style.left = '1200px'; finger.style.top = '780px';
+  finger.offsetWidth; finger.style.transition = '';
+  cap.style.opacity = 0;
+  $('#phone').getAnimations().forEach(a => a.cancel());
+  $('#title').getAnimations().forEach(a => a.cancel());
+
+  const caption = async text => { cap.style.opacity = 0; await wait(250); cap.textContent = text; cap.style.opacity = text ? 1 : 0; };
+
+  const moveTo = async (el, fx, fy) => {
+    const p = pos(el, fx, fy);
+    finger.style.opacity = 1; finger.style.left = p.x + 'px'; finger.style.top = p.y + 'px';
+    await wait(850);
+  };
+  const tap = async () => {
+    finger.animate([{transform:'scale(1)'},{transform:'scale(.78)'},{transform:'scale(1)'}], {duration:260, easing:'ease-out'});
+    const r = document.createElement('div'); r.className = 'ripple';
+    r.style.left = finger.style.left; r.style.top = finger.style.top; stage.appendChild(r);
+    r.animate([{transform:'scale(1)',opacity:.9},{transform:'scale(4.5)',opacity:0}], {duration:600, easing:'ease-out'}).onfinish = () => r.remove();
+    await wait(300);
+  };
+
+  try {
+    // 1. Title + phone slide in
+    $('#title').animate([{opacity:0, transform:'translateY(24px)'},{opacity:1, transform:'none'}], {duration:900, easing:ease, fill:'forwards'});
+    await wait(250);
+    $('#phone').animate([{opacity:0, transform:'translateY(90px) rotate(5deg) scale(.96)'},{opacity:1, transform:'none'}],
+                        {duration:1200, easing:ease, fill:'forwards'});
+    await caption("Here's a phone mock-up, built entirely in code.");
+    await wait(1300);
+
+    // 2. Finger taps the input
+    await caption("A tap shows exactly where the finger lands…");
+    await moveTo(field, .35, .5);
+    await tap();
+    field.innerHTML = '<span id="typed"></span><span id="caret"></span>';
+    await wait(350);
+
+    // 3. Typing effect
+    await caption("…and the message types itself out, letter by letter.");
+    const typed = $('#typed');
+    for (const ch of SENTENCE){
+      typed.textContent += ch;
+      await wait(ch === ' ' ? 70 : 38 + Math.random() * 55);
+    }
+    await wait(400);
+
+    // 4. Tap send
+    await moveTo($('#send'));
+    await tap();
+    field.innerHTML = '<span class="ph">Message…</span>';
+    const u = document.createElement('div'); u.className = 'user'; u.textContent = SENTENCE; msgs.appendChild(u);
+    u.animate([{opacity:0, transform:'translateY(14px) scale(.96)'},{opacity:1, transform:'none'}], {duration:450, easing:ease});
+    finger.style.opacity = 0;
+    await wait(500);
+
+    // 5. Thinking dots, then streamed reply
+    await caption("Then the reply streams in, just like the real app.");
+    const b = document.createElement('div'); b.className = 'bot';
+    b.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
+    msgs.appendChild(b);
+    await wait(1100);
+    b.innerHTML = '<span id="stream"></span>';
+    const st = $('#stream');
+    for (const w of "Done! Here are 3 flashcards from today's notes:".split(' ')){
+      st.textContent += (st.textContent ? ' ' : '') + w;
+      await wait(85);
+    }
+    for (let i = 0; i < CARDS.length; i++){
+      await wait(350);
+      const c = document.createElement('div'); c.className = 'card';
+      c.innerHTML = `<b>${i + 1}</b><span>${CARDS[i]}</span>`;
+      b.appendChild(c);
+      c.animate([{opacity:0, transform:'translateY(10px)'},{opacity:1, transform:'none'}], {duration:420, easing:ease});
+    }
+    await wait(1800);
+    await caption("");
+  } catch (e) { if (e !== 'stale') throw e; }
+}
+
+$('#replay').addEventListener('click', run);
+document.fonts.ready.then(() => setTimeout(run, 300));
+</script>
+</body>
+</html>

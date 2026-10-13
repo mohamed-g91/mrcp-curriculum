@@ -1,6 +1,6 @@
 # Drawing prompts
 
-The home page's drawings are made with Codex image generation (`codex exec -m gpt-5.5`, which writes into `art/drafts/`),
+The home page's drawings are made with Codex image generation (`codex exec -m gpt-6.1-sol`, its built-in image generator, which writes into `art/drafts/`),
 always with approved drawings attached as references (`-i art/drafts/adult-hero-2.png -i art/drafts/line-se.png`; the drafts are
 kept locally, not in git). A sample is shown and approved before a set is made. `art/make_site_images.py` then makes the approved
 drawings small (WebP) into `art/site/`.
