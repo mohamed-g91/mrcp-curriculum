@@ -2,7 +2,7 @@
 //
 //   node checks/check.mjs dist/statistics/data-types.html [--shots out-dir [--shots-on-fail]] [--json report.json]
 //
-// For each window size (1280 x 720 stage, 1920 x 1080 recording, 1920 x 940 browser, 768 x 1024 and 1024 x 768 tablet, 375 x 812 phone) it visits
+// For each window size (1280 x 720 stage, 1920 x 1080 recording, 1920 x 940 browser, 768 x 1024 and 1024 x 768 tablet, 375 x 812 phone, skipped on the presenter's deck) it visits
 // every slide, opens every reveal on it, and checks there is no sideways overflow and, on the
 // stage, no vertical scrolling. Then it solves every case, sorts the warm-up, tries the recording
 // view's pen and zoom on a 16:10 tablet, and fails on any
@@ -850,7 +850,10 @@ async function darkPass() {
 
 let outline = null;
 try {
-  for (const size of SIZES) await layoutPass(size);
+  // the presenter's deck is recorded on a tablet or shown on a desktop, never opened on a phone: no phone pass
+  await layoutPass(SIZES[0]);
+  const deckOnly = await js("PRESENTER");
+  for (const size of SIZES.slice(1)) if (!(deckOnly && size.name === "phone")) await layoutPass(size);
   outline = await js(`MRCP_TOOLS["lesson-outline"].execute()`);
   await solvePass();
   await arabicPass();

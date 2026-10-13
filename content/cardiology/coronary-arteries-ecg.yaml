@@ -71,7 +71,7 @@ learn:
 
   - id: table
     pattern: reveal-cards
-    title: Leads to artery
+    title: From ECG leads to artery
     title_ar: من رسم القلب إلى الشريان
     # closed cards show only the leads on a grey slice; the colour, the answer and the Arabic come when one opens
     blind: true
