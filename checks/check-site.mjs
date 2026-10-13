@@ -150,7 +150,7 @@ for (const size of SIZES) {
     if (rel === "start.html") {
       const sp = await js(`[...document.querySelectorAll("a.sp-card")].map(a => a.getAttribute("href"))`);
       const want = pages.filter(p => p.endsWith("/index.html"));
-      if (!sp.length || sp.some(h => !want.includes(h))) fail(`${where}: specialty cards ${sp.join(", ")}`);
+      if (sp.slice().sort().join() !== want.slice().sort().join()) fail(`${where}: specialty cards ${sp.join(", ")}`);
     }
     // every link inside the build points at a file that exists; every drawing has loaded
     const links = await js(`[...document.querySelectorAll("a[href]")].map(a => a.href).filter(h => h.startsWith(${JSON.stringify(base)}))`);
