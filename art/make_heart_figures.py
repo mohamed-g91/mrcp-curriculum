@@ -15,6 +15,8 @@ WALL = dict((k, (a, art)) for k, _, a, art, _, _ in WALLS)
 
 
 def svg(name, vb, label, body):
+    # the drawings share one page, so each figure's arrowhead gets its own id (Codex QA, 2026-10-14)
+    body = body.replace("hf-ar", "hf-ar-" + name)
     with open(os.path.join(OUT, name + ".svg"), "w", encoding="utf-8") as f:
         f.write('<svg class="scene" viewBox="%s" role="img" aria-label="%s">\n%s\n</svg>\n' % (vb, label, body))
     print(name)

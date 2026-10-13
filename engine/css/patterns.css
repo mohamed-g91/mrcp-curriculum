@@ -1155,9 +1155,10 @@ html.has-ar:not(.ar-off) .choices:has(.ar):has(> :nth-child(4)){--per:2}
 .h3d.h3d-off .h3d-stage{background:var(--surface-2)}
 
 /* ---------- heart-slice: the tappable slice (engine/js/heartslice.js) ---------- */
-.hs{display:grid;grid-template-columns:min(700px,calc(100% - 300px)) auto;align-items:center;justify-content:center;gap:clamp(16px,calc(3 * var(--u)),40px);width:100%;margin:clamp(8px,calc(1.5 * var(--u)),20px) auto 0}
+/* the card's column has one width, so opening a wall never moves the slice (Codex QA, 2026-10-14) */
+.hs{display:grid;grid-template-columns:min(700px,calc(100% - 340px)) 300px;align-items:center;justify-content:center;gap:clamp(16px,calc(3 * var(--u)),40px);width:100%;margin:clamp(8px,calc(1.5 * var(--u)),20px) auto 0}
 .hs-fig{margin:0;min-width:0}
-.hs:not(.hs-mirror){grid-template-columns:min(430px,calc(100% - 300px)) auto}
+.hs:not(.hs-mirror){grid-template-columns:min(430px,calc(100% - 340px)) 300px}
 .hs-svg{display:block;width:100%;height:auto;overflow:visible}
 .hs-card.off{visibility:hidden}
 .hs-part{cursor:pointer;transition:fill .25s ease,stroke .25s ease;outline:none}
@@ -1168,9 +1169,9 @@ html.has-ar:not(.ar-off) .choices:has(.ar):has(> :nth-child(4)){--per:2}
 .hs-lead{font:750 22px var(--sans);fill:var(--ink)}
 .hs-leads{opacity:0;pointer-events:none;transition:opacity .4s ease}
 .hs-leads.on{opacity:1}
-.hs-card{flex:0 0 auto;display:flex;flex-direction:column;gap:14px;padding:22px 26px;min-width:220px;background:var(--surface);border:3px solid var(--x-solid);border-radius:var(--radius-lg);box-shadow:var(--shadow);animation:specIn .35s var(--ease)}
+.hs-card{flex:0 0 auto;display:flex;flex-direction:column;gap:14px;padding:22px 26px;min-width:0;background:var(--surface);border:3px solid var(--x-solid);border-radius:var(--radius-lg);box-shadow:var(--shadow);animation:specIn .35s var(--ease)}
 .hs-wall{font-family:var(--serif);font-size:clamp(20px,calc(2.4 * var(--u)),30px);color:var(--ink);font-weight:600}
-.hs-art{display:flex;align-items:center;gap:10px;font-weight:700;font-size:clamp(17px,calc(2 * var(--u)),24px);color:var(--x-ink)}
+.hs-art{display:flex;align-items:center;min-width:0;gap:10px;font-weight:700;font-size:clamp(17px,calc(2 * var(--u)),24px);color:var(--x-ink)}
 .hs-dot{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--x-solid);color:var(--on-solid);font:750 18px var(--sans)}
 @container (max-width:700px){.hs{grid-template-columns:minmax(0,1fr)}.hs-card{min-width:0}}
 

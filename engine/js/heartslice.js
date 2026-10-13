@@ -21,6 +21,6 @@ function buildHeartSlices() {
       p.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); p.dispatchEvent(new MouseEvent("click", { bubbles: true })); } });
     });
     onEnter(box, () => set(null));
-    ClickAway.add(e => { if (!e.target.closest(".hs-part")) set(null); });
+    ClickAway.add(e => { if (!e.target.closest(".hs-part, .hs-card")) set(null); });
   });
 }

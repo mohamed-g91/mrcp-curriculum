@@ -162,11 +162,11 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#prevBtn").addEventListener("click", () => Deck.prev());
   $("#homeBtn").addEventListener("click", () => Deck.go(0));
   $("#homeTop").addEventListener("click", () => Deck.go(0));
-  // swipe left for Next, right for Back (any touch screen; a sort chip's drag is left alone)
+  // swipe left for Next, right for Back (any touch screen; a sort chip's drag and the 3D heart's turn are left alone)
   let touch = null;
   $("#deck").addEventListener("touchstart", e => {
     // the pen, a resting palm and a pinch never turn the page
-    touch = e.touches.length === 1 && e.touches[0].touchType !== "stylus" && !Present.busy() && !e.target.closest(".chip, .spec-bubble") ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+    touch = e.touches.length === 1 && e.touches[0].touchType !== "stylus" && !Present.busy() && !e.target.closest(".chip, .spec-bubble, .h3d-stage") ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
   }, { passive: true });
   $("#deck").addEventListener("touchend", e => {
     if (!touch || Present.busy()) { touch = null; return; }
