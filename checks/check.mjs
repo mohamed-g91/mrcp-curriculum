@@ -46,6 +46,8 @@ const profile = mkdtempSync(join(tmpdir(), "mrcp-check-"));
 const chrome = spawn(CHROME, [
   "--headless=new", "--remote-debugging-port=0", `--user-data-dir=${profile}`,
   "--hide-scrollbars", "--no-first-run", "--no-default-browser-check", "--allow-file-access-from-files",
+  // WebGL without a GPU, for the 3D heart (engine/js/heart3d.js)
+  "--use-angle=swiftshader", "--enable-unsafe-swiftshader",
   // extra flags from the environment, e.g. CHROME_FLAGS=--no-sandbox in a container running as root
   ...(process.env.CHROME_FLAGS || "").split(" ").filter(Boolean), "about:blank",
 ], { stdio: "ignore" });

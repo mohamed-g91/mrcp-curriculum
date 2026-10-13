@@ -61,7 +61,8 @@
            each row's 2 SE line, β below it and power beyond it, each on a pill
    plan    where a trial starts: a timeline with power crossed off after the trial; then what is chosen before it, one row
            per tap (each concept's icon and value); last, the sum with the unknown on a gold pill
-   art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …); its words come
+   art     a drawing from content/figures whose parts join beat by beat (data-beat="1", "2" …) and may leave on a later
+           one (data-until); its words come
            from the slide's slots, with {key} standing for a concept's label (so H₀ is never retyped) */
 const ST = { W: 760, H: 350, AX: 270, TOP: 34 };
 
@@ -1183,7 +1184,11 @@ const STORIES = {
     [...src.cloneNode(true).childNodes].forEach(n => svg.appendChild(n));
     $$("[data-slot]", svg).forEach(t => { t.textContent = String(S.slots[t.dataset.slot]).replace(/\{(\w+)\}/g, (m, k) => concept(k).label); });
     const last = Math.max(...$$("[data-beat]", svg).map(g => +g.dataset.beat));
-    return Array.from({ length: last }, (_, i) => () => $$(`[data-beat="${i + 1}"]`, svg).forEach(g => g.classList.add("st-on")));
+    // a part with data-until leaves on that beat, so one drawing can swap a view for the next
+    return Array.from({ length: last }, (_, i) => () => {
+      $$(`[data-beat="${i + 1}"]`, svg).forEach(g => g.classList.add("st-on"));
+      $$(`[data-until="${i + 1}"]`, svg).forEach(g => g.classList.add("st-off"));
+    });
   },
   mean(svg, S, later) {
     const v = Stats.sorted(S.values), lo = v[0] - 1, hi = v[v.length - 1] + 1, m = Stats.mean(v);

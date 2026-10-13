@@ -1,4 +1,15 @@
 # Every permanent item ID ever built. Maintained by build.py; do not edit by hand.
+cardio.coronary-arteries-ecg.c01
+cardio.coronary-arteries-ecg.c02
+cardio.coronary-arteries-ecg.c03
+cardio.coronary-arteries-ecg.c04
+cardio.coronary-arteries-ecg.c05
+cardio.coronary-arteries-ecg.c06
+cardio.coronary-arteries-ecg.c07
+cardio.coronary-arteries-ecg.c08
+cardio.coronary-arteries-ecg.c09
+cardio.coronary-arteries-ecg.c10
+cardio.coronary-arteries-ecg.c11
 stats.centre-shape-spread.c01
 stats.centre-shape-spread.c02
 stats.centre-shape-spread.c03

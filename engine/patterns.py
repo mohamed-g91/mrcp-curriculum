@@ -562,6 +562,21 @@ def p_reveal_cards(slide, topic):
     return heading(slide) + f'<div class="center-body"><div class="reveal-grid">{"".join(cards)}</div>{nxt}</div>'
 
 
+# the walls of the 3D heart, in the order of their buttons; the Arabic is a draft for the author's review
+HEART_WALLS = [("inferior", "Inferior", "سفلي"), ("septal", "Septal", "حاجزي"), ("anterior", "Anterior", "أمامي"),
+               ("lateral", "Lateral", "جانبي"), ("posterior", "Posterior", "خلفي"), ("rv", "Right ventricle", "البطين الأيمن")]
+
+
+def p_heart3d(slide, topic):
+    """The heart in 3D with its leads, drawn in the browser (engine/js/heart3d.js, with three.js embedded by build.py).
+    Drag to turn it; a wall's button turns that wall to the front with its leads and their mirror."""
+    walls = "".join(f'<button class="h3d-wall" type="button" data-wall="{w}" aria-pressed="false">{named(label, a)}</button>'
+                    for w, label, a in HEART_WALLS)
+    return (heading(slide) + '<div class="h3d f-se"><div class="h3d-stage" role="img" aria-label="A heart in 3D with its ECG leads; drag to turn it">'
+            f'<button class="h3d-reset icon-btn" type="button" aria-label="Back to the front, all leads">{icon("refresh")}</button></div>'
+            f'<div class="h3d-walls" role="group" aria-label="Walls">{walls}</div></div>')
+
+
 # ---------------------------------------------------------------- practise patterns
 
 def p_sort(slide, topic):
@@ -618,6 +633,7 @@ PATTERNS = {
     "dot-plot": p_dot_plot,
     "curve": p_curve,
     "story": p_story,
+    "heart3d": p_heart3d,
     "working": p_working,
     "clue-stem": p_clue_stem,
     "reveal-cards": p_reveal_cards,

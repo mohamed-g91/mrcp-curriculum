@@ -163,4 +163,13 @@ Leads chosen: **B, body beside the 12-lead grid**, with the user's changes: III 
 **Slides agreed 2026-10-13: eight Learn slides.** The 3D slide replaces Twelve cameras (so the human-figure grid 2B drops out); The mirror (opposite cameras on the slice, 3B) stays, right after the 3D slide:
 1 Hook (12-lead strip) · 2 Three arteries ثلاثة شرايين (slice) · 3 Turn the heart أدر القلب (3D) · 4 The mirror المرآة (opposite cameras on the slice) · 5 Leads to artery من رسم القلب إلى الشريان (reveal cards, slice) · 6 The right ventricle البطين الأيمن (slice, RV shaded) · 7 The slow heart تباطؤ ضربات القلب (slice, AV node) · 8 Solve the hook (clue-stem). Cases c01–c11 unchanged. This replaces the slide table above.
 
+**Checked against sources 2026-10-13 (before build):**
+- ESC 2023 ACS (local PDF, section 3.2.1): V1–V3 ST depression (positive terminal T) and/or V7–V9 elevation = posterior occlusion, often the circumflex; V3R/V4R elevation = RV ischaemia; ST depression ≥1 mm in ≥6 leads with ST elevation in aVR and/or V1 = multivessel or left main (c11 stem: "six or more leads"); Wellens' sign (biphasic or deep negative T) = severe proximal LAD stenosis; nitrates not given in RV infarction (4.2.2.2); V3R, V4R, V7–V9 recommended in inferior STEMI. STEMI thresholds there too (for lesson 3).
+- Zimetbaum PJ, Josephson ME. Use of the electrocardiogram in acute myocardial infarction. N Engl J Med 2003;348:933–40 (PMID 12621138): citation confirmed.
+- de Zwaan C, Bär FW, Wellens HJ. Am Heart J 1982;103:730–6: confirmed (types A biphasic and B deep T inversion in V2–V3, pain-free).
+- Dominance and nodal supply vary by study: right-dominant about 70–85%, left about 10%; RCA supplies the AV node in about 85–90%, the SA node in about 55–60%. Slides say "most hearts" and "about 9 in 10" (AV node), no SA figure.
+- Reciprocal pairs (inferior ↔ I, aVL; lateral ↔ III, aVF; anterior ↔ inferior leads; posterior ↔ V1–V3): standard teaching, consistent with ESC; septal and RV have none shown.
+
+Cardiology sections agreed 2026-10-13 (the user): the twelve above, A Coronary heart disease first.
+
 **Status: gate 2 done (three 2D figures chosen, 3D "Turn the heart" slide approved); open: the section list. Next: build.**

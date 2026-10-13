@@ -1,0 +1,216 @@
+# Coronary arteries and the ECG: MRCP Part 1 cardiology. Lesson 1 of chapter A, coronary heart disease.
+# The question: given the leads with ST changes, which wall is hurt and which artery is blocked?
+# One patient runs through the lesson: a 62-year-old man, 40 minutes of central chest pain, pulse 42, BP 88/56,
+# JVP raised, chest clear; ST elevation 2 mm in II, III and aVF, ST depression in I and aVL (V4R 1 mm, on slide 5 only).
+# He is the RCA (slides 2 to 4), his mirror is I and aVL (slide 4), his pressure the right ventricle (5), his pulse the AV node (6).
+# Checked 2026-10-13 against ESC 2023 ACS (3.2.1, 3.2.2, 4.2.2.2), Zimetbaum and Josephson (NEJM 2003) and de Zwaan et al. (1982);
+# see notes/coronary-arteries-ecg-plan.md. Dominance and nodal supply vary by study, so the slides say "most hearts".
+# IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
+
+id: cardio.coronary-arteries-ecg
+title: Coronary arteries and the ECG
+title_ar: الشرايين التاجية وتخطيط القلب
+description: Which artery is blocked? The three coronary arteries, the walls they feed, the leads that face each wall and their mirror. Learn from one patient with an inferior STEMI, then practise on exam-style ECG stems.
+status: draft
+updated: 2026-10-13
+sources:
+  - Byrne RA, Rossello X, Coughlan JJ, et al. 2023 ESC Guidelines for the management of acute coronary syndromes. Eur Heart J 2023;44:3720–3826 (sections 3.2.1, 3.2.2, 4.2.2.2).
+  - Zimetbaum PJ, Josephson ME. Use of the electrocardiogram in acute myocardial infarction. N Engl J Med 2003;348:933–40.
+  - de Zwaan C, Bär FW, Wellens HJ. Characteristic electrocardiographic pattern indicating a critical stenosis high in left anterior descending coronary artery. Am Heart J 1982;103:730–6.
+  - NICE NG185. Acute coronary syndromes, 2020.
+retired: []
+cover: concepts
+
+# One colour per artery; a wall takes its artery's colour on the 2D figures (the 3D heart lights every wall in one teal).
+families:
+  cat: LAD
+  par: Circumflex
+  se: RCA
+  gray: Neutral
+families_ar:
+  cat: الأمامي النازل
+  par: المنعطف
+  se: التاجي الأيمن
+  gray: محايد
+
+concepts:
+  lad: { label: LAD,        ar: الشريان الأمامي النازل الأيسر, family: cat, letter: L, icon: artery }
+  lcx: { label: Circumflex, ar: الشريان المنعطف,              family: par, letter: C, icon: artery }
+  rca: { label: RCA,        ar: الشريان التاجي الأيمن,         family: se,  letter: R, icon: artery }
+
+learn:
+  - id: hook
+    pattern: hook
+    title: Which artery is blocked?
+    title_ar: أي شريان مسدود؟
+    stem: "A 62-year-old man has 40 minutes of central chest pain. Pulse 42, blood pressure 88/56 mmHg, JVP raised, chest clear. His ECG:"
+    question: Which artery is blocked?
+    figure: ecg-inferior
+
+  # The slice across both ventricles (anterior at the top, the RV on the left); one artery per tap, its territory shading.
+  - id: arteries
+    pattern: story
+    title: Three arteries
+    title_ar: ثلاثة شرايين
+    kind: art
+    art: heart-arteries
+    slots: { lad: "{lad}", lcx: "{lcx}", rca: "{rca}" }
+
+  # The 3D heart: drag to turn it; a wall turns to face you, its leads with ST up, the mirror leads (dashed) with ST down.
+  - id: turn
+    pattern: heart3d
+    title: Turn the heart
+    title_ar: أدر القلب
+
+  # Reciprocal change on the slice: the inferior wall seen by II (ST up) and by aVL across the heart (ST down); then
+  # the posterior wall, which no standard lead faces: V1–V3 show its mirror, V7–V9 its ST elevation (ESC 2023, 3.2.1).
+  - id: mirror
+    pattern: story
+    title: The mirror
+    title_ar: المرآة
+    kind: art
+    art: heart-mirror
+    slots: { inf: Inferior, post: Posterior }
+
+  - id: table
+    pattern: reveal-cards
+    title: Leads to artery
+    title_ar: من رسم القلب إلى الشريان
+    cards:
+      - { family: se,  figure: heart-card-inferior,  label: "II, III, aVF",        answer: "Inferior wall: the RCA (in most hearts)" }
+      - { family: cat, figure: heart-card-anterior,  label: "V1–V4",               answer: "Septum and front wall: the LAD" }
+      - { family: par, figure: heart-card-lateral,   label: "I, aVL, V5, V6",      answer: "Lateral wall: the circumflex" }
+      - { family: cat, figure: heart-card-extensive, label: "V1–V6, I, aVL",       answer: "Front and side together: the proximal LAD" }
+
+  # His pressure: a proximal RCA blockage starves the RV; V4R shows it; nitrates drop preload and the pressure falls further.
+  - id: rv
+    pattern: story
+    title: The right ventricle
+    title_ar: البطين الأيمن
+    kind: art
+    art: heart-rv
+    slots: { v4r: V4R, nogtn: No GTN, fluids: IV fluids }
+
+  # His pulse: in most hearts the RCA feeds the AV node, so inferior MI brings bradycardia and AV block (management: lesson 6).
+  - id: slow
+    pattern: story
+    title: The slow heart
+    title_ar: تباطؤ ضربات القلب
+    kind: art
+    art: heart-av
+    slots: { node: AV node, pulse: Pulse 42 }
+
+  - id: solve
+    pattern: clue-stem
+    title: Back to the hook
+    title_ar: العودة إلى الحالة
+    stem: "A 62-year-old man has had 40 minutes of central chest pain. His [[rca|pulse is 42]] and his blood pressure 88/56 mmHg; his [[rca|JVP is raised and his chest is clear]]. His ECG shows [[rca|ST elevation in II, III and aVF]] with [[rca|ST depression in I and aVL]]."
+    clues:
+      lad: ["V1–V4", "Deep T inversion in V2–V3, pain-free", "V1–V6 with I, aVL: proximal"]
+      lcx: ["I, aVL, V5, V6", "ST depression in V1–V3: posterior", "T inversion in V5–V6"]
+      rca: ["II, III, aVF", "Slow pulse or heart block", "Low BP, raised JVP, clear chest: V4R"]
+
+practise:
+  - id: cases
+    pattern: stem-quiz
+    title: Which artery?
+    title_ar: أي شريان؟
+    # concept options; cases that need Left main bring their own list
+    options: [lad, lcx, rca]
+    # The first case is the solved example; the rest are dealt in a random order.
+    cases:
+      - id: c01
+        options: [lad, lcx, rca, Left main]
+        solved: true
+        stem: "A 62-year-old man has had 40 minutes of central chest pain. His pulse is 42 and his blood pressure 88/56 mmHg. His ECG shows [[ST elevation in II, III and aVF]] with ST depression in I and aVL."
+        question: Which artery is blocked?
+        answer: rca
+        hint: Which wall do II, III and aVF face?
+        why: "II, III and aVF face the inferior wall, which the RCA feeds in most hearts. The slow pulse fits: the RCA also feeds the AV node."
+        tutor: "Leads, then wall, then artery: II, III, aVF, the inferior wall, the RCA."
+
+      - id: c02
+        options: [lad, lcx, rca, Left main]
+        stem: "A 55-year-old woman has crushing chest pain. Her ECG shows [[ST elevation in V1 to V4]] with ST depression in II, III and aVF."
+        question: Which artery is blocked?
+        answer: lad
+        hint: Which walls do V1 to V4 face?
+        why: "V1 and V2 face the septum and V3 and V4 the front wall: both are fed by the LAD. The inferior depression is its mirror."
+
+      - id: c03
+        options: [lad, lcx, rca, Left main]
+        stem: "A 68-year-old man has chest pain radiating to his left arm. His ECG shows [[ST elevation in I, aVL, V5 and V6]] with ST depression in III and aVF."
+        question: Which artery is blocked?
+        answer: lcx
+        hint: Which wall do I, aVL, V5 and V6 face?
+        why: "These four leads face the lateral wall, fed by the circumflex. III and aVF show the mirror."
+
+      - id: c04
+        options: [Proximal LAD, Distal LAD, lcx, rca]
+        stem: "A 49-year-old man is pale and breathless with chest pain. His ECG shows [[ST elevation from V1 to V6 and in I and aVL]]."
+        question: Where is the blockage?
+        answer: Proximal LAD
+        hint: How many walls are involved?
+        why: "The septum, the front wall and the lateral wall at once: the LAD blocked high up, before its first branches."
+
+      - id: c05
+        options: [Posterior leads V7–V9, Right-sided leads V3R–V4R, Repeat troponin in 3 hours, Echocardiogram]
+        stem: "A 71-year-old woman has ongoing central chest pain. Her ECG shows [[ST depression in V1 to V3 with tall R waves and upright T waves]]."
+        question: What is the next step?
+        answer: Posterior leads V7–V9
+        hint: Which wall has no lead facing it on a standard ECG?
+        why: "V1–V3 see the posterior wall from the front, upside down: the depression is its mirror. ST elevation in V7–V9 confirms a posterior STEMI, often the circumflex."
+
+      - id: c06
+        options: [Glyceryl trinitrate, Aspirin, Morphine, IV fluids]
+        stem: "A 60-year-old man has an inferior STEMI. His blood pressure is 84/50 mmHg, his [[JVP is raised and his chest is clear]]. V4R shows 1 mm ST elevation."
+        question: Which drug should be avoided?
+        answer: Glyceryl trinitrate
+        hint: What does the right ventricle depend on when it is starved?
+        why: "A right ventricular infarct: the heart depends on preload. Nitrates lower it and the pressure falls further (ESC 2023). Fluids help."
+
+      - id: c07
+        options: [Critical proximal LAD stenosis, Old anterior infarct, Pericarditis, Left ventricular hypertrophy]
+        stem: "A 52-year-old man had chest pain yesterday and is now pain-free. His ECG shows [[deep, symmetrical T-wave inversion in V2 and V3]]; his troponin is just above the upper limit."
+        question: What does the ECG show?
+        answer: Critical proximal LAD stenosis
+        hint: The patient is pain-free now. What is about to happen?
+        why: "Wellens' pattern: a critical stenosis high in the LAD, about to block. It needs angiography, not a stress test."
+
+      - id: c08
+        options: [I and aVL, V1–V3, V5 and V6, aVR]
+        stem: "A 66-year-old woman has an [[inferior STEMI]] with ST elevation in II, III and aVF."
+        question: Where is the reciprocal ST depression most likely?
+        answer: I and aVL
+        hint: Which leads look at the heart from the opposite side?
+        why: "I and aVL look from the upper left, across the heart from the inferior wall, so they see the same injury upside down."
+
+      - id: c09
+        options: [lad, lcx, rca, Left main]
+        stem: "A 74-year-old man has chest pain and a pulse of 38. His ECG shows [[complete heart block with a narrow QRS]] and ST elevation in II, III and aVF."
+        question: Which artery is blocked?
+        answer: rca
+        hint: Which artery feeds the AV node in most hearts?
+        why: "Inferior STEMI with heart block: the RCA, which feeds the AV node in about 9 in 10 hearts."
+
+      - id: c10
+        options: [lad, lcx, rca, Left main]
+        stem: "A 58-year-old woman had chest pain this morning. Her troponin is raised; there is no ST elevation, but [[T-wave inversion in V5 and V6]]."
+        question: Which artery is most likely narrowed?
+        answer: lcx
+        hint: Which wall do V5 and V6 face?
+        why: "V5 and V6 face the lateral wall, fed by the circumflex."
+
+      - id: c11
+        twist: true
+        options: [Left main, lad, lcx, rca]
+        stem: "A 77-year-old man is breathless and hypotensive with chest pain. His ECG shows [[ST elevation in aVR with ST depression in six or more leads]]."
+        question: Which artery is most likely blocked?
+        answer: Left main
+        hint: What does widespread depression with ST elevation in aVR suggest?
+        why: "ST elevation in aVR with widespread ST depression suggests left main or three-vessel disease (ESC 2023)."
+
+  - id: end
+    pattern: end
+    title: Your score
+    title_ar: نتيجتك

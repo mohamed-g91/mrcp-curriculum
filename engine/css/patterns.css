@@ -680,6 +680,7 @@ html.fluid .ask{position:fixed}
 .st-wait .dp-pt,.st-wait .dp-count{display:none}
 .scene [data-beat]{opacity:0;transition:opacity .5s ease}
 .scene [data-beat].st-on{opacity:1}
+.scene [data-beat].st-on.st-off{opacity:0}
 /* the coin story: ten coins land, each with the chance so far; the p-value in the testing colour */
 .st-cpill{animation:pillIn .5s var(--ease) both}
 .st-cpill rect{fill:var(--x-bg);stroke:var(--x-solid);stroke-width:3}
@@ -1139,3 +1140,15 @@ html.has-ar:not(.ar-off) .choices:has(.ar):has(> :nth-child(4)){--per:2}
 .spec-ex li.spec-sub-h .ar{font-size:1.25em;margin-left:.6em}
 /* when the heading wraps (a narrow page) the Arabic gets its own line, so it keeps its margins */
 @container (max-width:900px){h2 .ar-title,.case-head>.ar-title{margin-block:0}}
+
+/* ---------- heart3d: the heart in 3D (engine/js/heart3d.js) ---------- */
+.h3d{display:flex;flex-direction:column;gap:14px;flex:1;min-height:0}
+.h3d-stage{position:relative;flex:1;min-height:300px;border-radius:var(--radius-lg);background:var(--surface);border:1px solid var(--border);overflow:hidden;touch-action:none;cursor:grab}
+.h3d-stage:active{cursor:grabbing}
+.h3d-stage canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+.h3d-reset{position:absolute;right:12px;top:12px;z-index:1}
+.h3d-walls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.h3d-wall{padding:8px 16px;border-radius:999px;border:2px solid var(--border-strong);background:var(--surface);color:var(--ink);font-weight:700;font-size:var(--fs-small);transition:background .2s ease,border-color .2s ease}
+.h3d-wall[aria-pressed="true"]{background:var(--x-bg);border-color:var(--x-solid);color:var(--x-ink)}
+.fig-ecg-inferior svg{width:100%;height:auto}
+.h3d.h3d-off .h3d-stage{background:var(--surface-2)}

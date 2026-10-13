@@ -242,7 +242,9 @@ for (const [from, want] of [...specs.map(s => ["index.html#" + s, s + "/index.ht
   await send("Page.navigate", { url: base + from });
   await sleep(700);
   const at = await js("location.href");
-  if (!at.startsWith(base + want)) fail(`${where}: went to ${at.slice(base.length)}, not ${want}`);
+  // #lessons goes to the first specialty in curriculum.yaml, which need not be the first folder alphabetically
+  const ok = from === "index.html#lessons" ? specs.some(s => at.startsWith(base + s + "/index.html")) : at.startsWith(base + want);
+  if (!ok) fail(`${where}: went to ${at.slice(base.length)}, not ${want}`);
   // #how, and the old How it works page, open the home page with How it works showing
   if (want === "index.html" && !(await js(`document.getElementById("how").open`))) fail(`${where}: How it works is not showing`);
 }

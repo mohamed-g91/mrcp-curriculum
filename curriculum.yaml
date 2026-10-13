@@ -27,7 +27,6 @@ site:
 
 # specialties not started yet: the home page shows them as coming soon, with a cover from art/site/covers/<id>.webp
 coming:
-  - { id: cardiology,  title: Cardiology }
   - { id: nephrology,  title: Nephrology }
   - { id: neurology,   title: Neurology }
 
@@ -71,3 +70,19 @@ specialties:
       - { slug: clinical-trials,          title: Clinical trials,                      status: planned, section: E, video: null }
       - { slug: meta-analysis,            title: Systematic reviews and meta-analysis, status: planned, section: E, video: null }
       - { slug: health-economics,         title: Health economics,                     status: planned, section: E, video: null }
+
+  - id: cardiology
+    prefix: cardio
+    title: Cardiology
+    blurb: From the coronary arteries to the failing heart, one picture at a time.
+    # sections in the bank's topic groups (the user, 2026-10-13); chapter A first, by bank weight (ACS 113 + stable angina 39)
+    sections: { A: Coronary heart disease, B: Arrhythmias, C: Heart failure, D: Cardiomyopathy and myocarditis, E: Valve disease, F: Infective endocarditis, G: Pericardial disease, H: Congenital heart disease, I: Hypertension, J: Aorta and vessels, K: Pulmonary hypertension, L: VTE and anticoagulation }
+    topics:
+      # A. Coronary heart disease (notes/coronary-arteries-ecg-plan.md)
+      - { slug: coronary-arteries-ecg,    title: Coronary arteries and the ECG,        status: draft,   section: A, video: null }
+      - { slug: stable-angina,            title: Stable angina,                        status: planned, section: A, video: null }
+      - { slug: diagnosing-acs,           title: Diagnosing ACS,                       status: planned, section: A, video: null }
+      - { slug: reperfusion,              title: Reperfusion,                          status: planned, section: A, video: null }
+      - { slug: acs-antithrombotics,      title: Antiplatelets and anticoagulants in ACS, status: planned, section: A, video: null }
+      - { slug: mi-complications,         title: Complications of MI,                  status: planned, section: A, video: null }
+      - { slug: after-mi,                 title: After the MI,                         status: planned, section: A, video: null }

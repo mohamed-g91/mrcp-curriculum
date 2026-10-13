@@ -37,7 +37,7 @@ PRESENTER = os.path.join(ROOT, "presenter")  # local only: git ignores it and Cl
 LOCK = os.path.join(ROOT, "content", "ids.lock")
 ART = os.path.join(ROOT, "art", "site")  # the home page's drawings, made small by art/make_site_images.py; copied to <build>/img/
 CSS_FILES = ["tokens.css", "base.css", "stage.css", "patterns.css", "frame.css"]
-JS_FILES = ["core.js", "video.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "working.js", "sort.js", "quiz.js", "present.js", "deck.js", "agent.js"]
+JS_FILES = ["core.js", "video.js", "spectrum.js", "flow.js", "clues.js", "reveal.js", "tree.js", "dotplot.js", "curve.js", "story.js", "heart3d.js", "working.js", "sort.js", "quiz.js", "present.js", "deck.js", "agent.js"]
 # the Arabic switch in the top bar: shows or hides every Arabic title and term (engine/js/core.js)
 AR_BUTTON = '<button class="icon-btn" id="arBtn" type="button" aria-pressed="true" aria-label="Show or hide the Arabic" lang="ar">ع</button>'
 ITEM_ID = re.compile(r"^[a-z]\d{2,3}$")
@@ -548,6 +548,9 @@ def render_topic(t, spec, site, present=False):
     # the site's pattern behind the candidate's lesson, embedded so the page stays one offline file
     css = css.replace("url(img/pattern.webp)", "url(" + art_data_uri("pattern.webp") + ")")
     js = "".join(read(ENGINE, "js", f) for f in JS_FILES)
+    # three.js (MIT, engine/vendor) only in a topic with a 3D slide: it is about 600 KB
+    if any(s.get("pattern") == "heart3d" for s in t.get("learn", []) + t.get("practise", [])):
+        js = read(ENGINE, "vendor", "three.min.js") + ";\n" + js
     data = json.dumps(topic_data(t), ensure_ascii=False).replace("</", "<\\/")
     page_title = f'{t["title"]} · {site["title"]}'
     for k, v in {
