@@ -203,64 +203,127 @@ ft.append('<g data-beat="5"><text x="430" y="384" style="font-size:16px;font-wei
 svg("angina-features", "0 0 860 420", "The three features of anginal pain, and how many make typical, atypical or non-anginal pain", "".join(ft))
 
 
-# ---- slide 4: typical and atypical angina, NICE CG95's path: known heart disease or not
-tp = [DEFS,
-      '<g data-beat="1">%s%s%s</g>' % (box(430, 6, 330, 50, "Typical or atypical angina"), arrow(430, 58, 430, 82),
-                                       box(430, 84, 300, 48, "Known heart disease?")),
-      '<g data-beat="2">%s%s%s</g>' % (arrow(330, 120, 230, 168), t(262, 140, "No", 16, 750, "var(--muted)"),
-                                       box(220, 170, 290, 50, "CT coronary angiography", "se")),
-      '<g data-beat="3">%s%s%s</g>' % (arrow(220, 222, 220, 256), t(232, 246, "uncertain", 14, 650, "var(--muted)", "start"),
-                                       box(220, 258, 290, 50, "Functional imaging")),
-      '<g data-beat="4">%s%s%s</g>' % (arrow(220, 310, 220, 344), t(232, 334, "inconclusive", 14, 650, "var(--muted)", "start"),
-                                       box(220, 346, 290, 50, "Invasive angiography")),
-      '<g data-beat="5">%s%s%s</g>' % (arrow(530, 120, 630, 168), t(600, 140, "Yes", 16, 750, "var(--muted)"),
-                                       box(650, 170, 300, 66, "Functional test", None, "old MI, stent or bypass · or exercise ECG")),
-      '<g data-beat="6"><rect x="500" y="300" width="300" height="70" rx="14" fill="var(--bad-bg)" stroke="var(--bad-solid)" stroke-width="2.5"/>'
-      '%s%s</g>' % (t(650, 330, "Exercise ECG is not", 18, 750, "var(--bad-ink)"), t(650, 354, "a first-line test", 18, 750, "var(--bad-ink)"))]
+# ---- the patients again, small, inside the story drawings (their case figures, without the pop-in)
+def person(name, x, y, sc):
+    with open(os.path.join(OUT, name + ".svg"), encoding="utf-8") as f:
+        src = f.read()
+    inner = src[src.index(">", src.index("<svg")) + 1:src.rindex("</svg>")].replace(' class="sc-pop" style="--i:0"', "")
+    return '<g transform="translate(%d %d) scale(%.2f)">%s</g>' % (x, y, sc, inner)
+
+
+def elbow(x1, y1, x2, y2, label=None, lx=None, ly=None):
+    """A square connector: down, across, down, its arrowhead touching the top edge of the box below."""
+    ym = (y1 + y2) // 2
+    d = ("M%d %d V%d H%d V%d" % (x1, y1, ym, x2, y2 - 2)) if x1 != x2 else ("M%d %d V%d" % (x1, y1, y2 - 2))
+    out = '<path d="%s" fill="none" stroke="var(--muted)" stroke-width="3" stroke-linejoin="round" marker-end="url(#ag-ar)"/>' % d
+    if label:
+        out += t(lx, ly, label, 15, 700, "var(--muted)", "start")
+    return out
+
+
+# small icons for the tests, drawn at the left of their box
+def ic_ct(cx, cy):
+    return ('<circle cx="%d" cy="%d" r="15" fill="none" stroke="var(--ink)" stroke-width="5"/>'
+            '<rect x="%d" y="%d" width="34" height="6" rx="3" fill="var(--ink)"/>' % (cx, cy - 3, cx - 17, cy + 12))
+
+
+def ic_stress(cx, cy):
+    return ('<path d="M%d %d c-10 -10 -24 -2 -18 10 c4 8 18 16 18 16 c0 0 14 -8 18 -16 c6 -12 -8 -20 -18 -10 z" fill="var(--cat-bg)" stroke="var(--cat-solid)" stroke-width="2.5"/>'
+            '<path d="M%d %d l5 0 l3 -6 l4 12 l3 -6 l5 0" fill="none" stroke="var(--cat-solid)" stroke-width="2.5" stroke-linejoin="round"/>'
+            % (cx, cy - 6, cx - 10, cy + 2))
+
+
+def ic_cath(cx, cy):
+    return ('<path d="M%d %d C%d %d %d %d %d %d" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>'
+            '<circle cx="%d" cy="%d" r="4" fill="var(--ink)"/>' % (cx - 16, cy + 14, cx - 6, cy - 16, cx + 12, cy - 16, cx + 14, cy - 4, cx + 14, cy - 4))
+
+
+def ic_none(cx, cy):
+    return ('<circle cx="%d" cy="%d" r="15" fill="var(--ok-bg)" stroke="var(--ok-solid)" stroke-width="2.5"/>'
+            '<path d="M%d %d l5 5 l9 -10" fill="none" stroke="var(--ok-solid)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' % (cx, cy, cx - 7, cy))
+
+
+def tbox(cx, y, w, h, label, icon, fam=None, sub=None):
+    """A test's box: its icon at the left, its name (and a line under it) to the right."""
+    fill, bd, ink = (("var(--%s-bg)" % fam, "var(--%s-solid)" % fam, "var(--%s-ink)" % fam) if fam
+                     else ("var(--surface)", "var(--gray-bd)", "var(--ink)"))
+    x = cx - w / 2.0
+    out = '<rect x="%.1f" y="%d" width="%d" height="%d" rx="14" fill="%s" stroke="%s" stroke-width="2.5"/>' % (x, y, w, h, fill, bd)
+    out += icon(x + 34, y + h // 2)
+    if sub:
+        out += t(x + 62, y + h / 2.0 - 4, label, 18, 750, ink, "start") + t(x + 62, y + h / 2.0 + 17, sub, 13, 600, "var(--muted)", "start")
+    else:
+        out += t(x + 62, y + h / 2.0 + 6, label, 18, 750, ink, "start")
+    return out
+
+
+def qpill(cx, y, w, label):
+    return ('<rect x="%.1f" y="%d" width="%d" height="48" rx="24" fill="var(--surface)" stroke="var(--primary)" stroke-width="3"/>'
+            % (cx - w / 2.0, y, w) + t(cx, y + 31, label, 19, 750, "var(--primary)"))
+
+
+def mini_ecg(x, y, tw):
+    return ('<rect x="%d" y="%d" width="96" height="54" rx="8" fill="var(--surface)" stroke="var(--gray-bd)" stroke-width="1.5"/>'
+            '<path d="%s" fill="none" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round"/>' % (x, y, beat(x + 8, y + 36, 80, 22, st=0, r=1.0, t=tw)))
+
+
+# ---- slide 4: typical and atypical angina, NICE CG95's path. The review (2026-10-14): no opening box, square arrows,
+# icons and the patient; the last tap clears the path and leaves the exercise ECG line alone in the centre
+tp = [DEFS, '<g data-until="6">',
+      '<g data-beat="1">%s</g>' % qpill(430, 12, 290, "Known heart disease?"),
+      '<g data-beat="2">%s%s%s</g>' % (elbow(380, 60, 260, 118, "No", 272, 110), person("case-chest-man", 14, 108, .4),
+                                       tbox(260, 118, 300, 56, "CT coronary angiography", ic_ct, "se")),
+      '<g data-beat="3">%s%s</g>' % (elbow(260, 174, 260, 206, "uncertain", 272, 196), tbox(260, 206, 300, 56, "Functional imaging", ic_stress)),
+      '<g data-beat="4">%s%s</g>' % (elbow(260, 262, 260, 294, "inconclusive", 272, 284), tbox(260, 294, 300, 56, "Invasive angiography", ic_cath)),
+      '<g data-beat="5">%s%s</g>' % (elbow(480, 60, 665, 118, "Yes", 677, 110),
+                                     tbox(665, 118, 340, 64, "Functional test", ic_stress, None, "old MI, stent, bypass · or exercise ECG")),
+      '</g>',
+      '<g data-beat="6"><rect x="190" y="130" width="480" height="150" rx="20" fill="var(--bad-bg)" stroke="var(--bad-solid)" stroke-width="3"/>'
+      '%s%s</g>' % (t(430, 196, "Exercise ECG is not", 30, 800, "var(--bad-ink)"), t(430, 238, "a first-line test", 30, 800, "var(--bad-ink)"))]
 svg("angina-typical", "0 0 860 420", "Typical or atypical angina: no known heart disease, CT coronary angiography first; known disease, a functional test",
     "".join(tp))
 
 
-# ---- slide 5: non-anginal chest pain, on the resting ECG
+# ---- slide 5: non-anginal chest pain, on the resting ECG (the same review: no opening box, square arrows, figures)
 na = [DEFS,
-      '<g data-beat="1">%s%s%s</g>' % (box(430, 10, 330, 52, "Non-anginal chest pain", "se"), arrow(430, 64, 430, 92),
-                                       box(430, 94, 240, 48, "Resting ECG")),
-      '<g data-beat="2">%s%s%s</g>' % (arrow(330, 130, 230, 196), t(258, 156, "Normal", 16, 750, "var(--muted)"),
-                                       box(210, 198, 330, 74, "No cardiac test", None, "look for another cause: gut, chest wall")),
-      '<g data-beat="3">%s%s%s%s</g>' % (arrow(530, 130, 630, 196), t(612, 156, "Abnormal", 16, 750, "var(--muted)"),
-                                         box(650, 198, 330, 74, "CT coronary angiography", "se", "as for angina"),
-                                         t(650, 306, "ST-T changes or Q waves", 16, 650, "var(--muted)"))]
+      '<g data-beat="1">%s</g>' % qpill(430, 12, 240, "Resting ECG?"),
+      '<g data-beat="2">%s%s%s</g>' % (elbow(380, 60, 220, 128, "Normal", 232, 120), mini_ecg(40, 72, .35),
+                                       tbox(220, 128, 330, 70, "No cardiac test", ic_none, None, "look for another cause: gut, chest wall")),
+      '<g data-beat="3">%s%s%s%s%s</g>' % (elbow(480, 60, 640, 128, "Abnormal", 652, 120), mini_ecg(758, 72, -.35),
+                                           tbox(640, 128, 330, 70, "CT coronary angiography", ic_ct, "se", "ST-T changes or Q waves: as for angina"),
+                                           person("case-chest-woman", 560, 214, .55), t(660, 300, "Patient B", 16, 750, "var(--muted)", "start"))]
 svg("angina-nonanginal", "0 0 860 420", "Non-anginal chest pain: no cardiac test if the resting ECG is normal; CT coronary angiography if it is not",
     "".join(na))
 
 
-# ---- slide 7: angina with a normal angiogram (option A): syndrome X, then Prinzmetal
+# ---- slide 7: angina with a normal angiogram (option A). The review (2026-10-14): each card first without its name,
+# explained in the presenter's words; the names come on the third and fourth taps; a patient in each card.
 def tube(x, y, w, pinch=False):
     if pinch:
-        top = "M%d %d L%d %d C%d %d %d %d %d %d C%d %d %d %d %d %d L%d %d" % (
-            x, y - 14, x + w * .38, y - 14, x + w * .44, y - 14, x + w * .45, y - 4, x + w * .5, y - 4, x + w * .55, y - 4, x + w * .56, y - 14, x + w * .62, y - 14, x + w, y - 14)
-        bot = top.replace("y", "y")
-        bot = "M%d %d L%d %d C%d %d %d %d %d %d C%d %d %d %d %d %d L%d %d" % (
-            x, y + 14, x + w * .38, y + 14, x + w * .44, y + 14, x + w * .45, y + 4, x + w * .5, y + 4, x + w * .55, y + 4, x + w * .56, y + 14, x + w * .62, y + 14, x + w, y + 14)
+        def edge(s):
+            return "M%d %d L%d %d C%d %d %d %d %d %d C%d %d %d %d %d %d L%d %d" % (
+                x, y + s * 14, x + w * .38, y + s * 14, x + w * .44, y + s * 14, x + w * .45, y + s * 4, x + w * .5, y + s * 4,
+                x + w * .55, y + s * 4, x + w * .56, y + s * 14, x + w * .62, y + s * 14, x + w, y + s * 14)
+        top, bot = edge(-1), edge(1)
     else:
         top, bot = "M%d %d L%d %d" % (x, y - 14, x + w, y - 14), "M%d %d L%d %d" % (x, y + 14, x + w, y + 14)
-    return ''.join('<path d="%s" fill="none" stroke="var(--se-solid)" stroke-width="4" stroke-linecap="round"/>' % d for d in (top, bot))
+    return "".join('<path d="%s" fill="none" stroke="var(--se-solid)" stroke-width="4" stroke-linecap="round"/>' % d for d in (top, bot))
 
 
 def small_vessels(x, y):
-    out = tube(x, y, 150)
-    for dy in (-50, 0, 50):
-        out += '<path d="M%d %d Q%d %.1f %d %d" fill="none" stroke="var(--se-solid)" stroke-width="3.5" stroke-linecap="round"/>' % (x + 150, y, x + 175, y + dy * .3, x + 200, y + dy)
-        for ddy in (-16, 0, 16):
-            ex, ey = x + 250, y + dy + ddy
-            out += '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="var(--se-solid)" stroke-width="2"/>' % (x + 200, y + dy, ex, ey)
-            out += '<circle cx="%.1f" cy="%.1f" r="4.5" fill="var(--bad-bd)" stroke="var(--bad-solid)" stroke-width="1.5"/>' % ((x + 200 + ex) / 2.0 + 4, (y + dy + ey) / 2.0)
+    out = tube(x, y, 130)
+    for dy in (-46, 0, 46):
+        out += '<path d="M%d %d Q%d %.1f %d %d" fill="none" stroke="var(--se-solid)" stroke-width="3.5" stroke-linecap="round"/>' % (x + 130, y, x + 155, y + dy * .3, x + 180, y + dy)
+        for ddy in (-14, 0, 14):
+            ex, ey = x + 226, y + dy + ddy
+            out += '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="var(--se-solid)" stroke-width="2"/>' % (x + 180, y + dy, ex, ey)
+            out += '<circle cx="%.1f" cy="%.1f" r="4.5" fill="var(--bad-bd)" stroke="var(--bad-solid)" stroke-width="1.5"/>' % ((x + 180 + ex) / 2.0 + 4, (y + dy + ey) / 2.0)
     return out
 
 
 def clamp(x, y):
-    out = tube(x, y, 250, pinch=True)
-    cx = x + 125
+    out = tube(x, y, 226, pinch=True)
+    cx = x + 113
     return out + ('<path d="M%d %d l0 18 m-8 -8 l8 8 l8 -8 M%d %d l0 -18 m-8 8 l8 -8 l8 8" fill="none" stroke="var(--bad-solid)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>'
                   % (cx, y - 44, cx, y + 44))
 
@@ -270,35 +333,38 @@ def ecg_box(x, y, st):
             '<path d="%s" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>' % (x, y, beat(x + 12, y + 52, 106, 30, st=st, r=1.0, t=.35 if st >= 0 else .25)))
 
 
-def nm_card(x, title, when, art, st, st_label):
+def nm_card(x, when, art, st, st_label, who, sc):
     return ('<rect x="%d" y="6" width="414" height="408" rx="18" fill="var(--surface)" stroke="var(--gray-bd)" stroke-width="2"/>' % x
-            + t(x + 24, 48, title, 24, 750, "var(--ink)", "start")
-            + '<rect x="%d" y="64" width="%d" height="36" rx="18" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>' % (x + 24, len(when) * 9 + 30)
-            + t(x + 39, 88, when, 15, 650, "var(--text)", "start")
-            + ecg_box(x + 264, 36, st) + t(x + 329, 134, st_label, 15, 700, "var(--muted)")
-            + art + t(x + 24, 392, "Large arteries clear", 16, 600, "var(--muted)", "start"))
+            + '<rect x="%d" y="70" width="%d" height="36" rx="18" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>' % (x + 24, len(when) * 9 + 30)
+            + t(x + 39, 94, when, 15, 650, "var(--text)", "start")
+            + ecg_box(x + 264, 64, st) + t(x + 329, 162, st_label, 15, 700, "var(--muted)")
+            + person(who, x + 18, 196, sc)
+            + art + t(x + 24, 396, "Large arteries clear", 16, 600, "var(--muted)", "start"))
 
 
-nm = ['<g data-beat="1">%s</g>' % nm_card(6, "Syndrome X", "On exertion", small_vessels(60, 260), -.3, "ST down"),
-      '<g data-beat="2">%s</g>' % nm_card(440, "Prinzmetal", "At rest, often at dawn", clamp(522, 260), .45, "ST up")]
+nm = ['<g data-beat="1">%s</g>' % nm_card(6, "On exertion", small_vessels(170, 280), -.3, "ST down", "case-chest-woman", .8),
+      '<g data-beat="2">%s</g>' % nm_card(440, "At rest, often at dawn", clamp(612, 280), .45, "ST up", "case-smoking", .8),
+      '<g data-beat="3">%s</g>' % t(30, 52, "Syndrome X", 26, 800, "var(--ink)", "start"),
+      '<g data-beat="4">%s</g>' % t(464, 52, "Prinzmetal angina", 26, 800, "var(--ink)", "start")]
 svg("angina-normal", "0 0 860 420", "Angina with clear coronary arteries: syndrome X in the small vessels, Prinzmetal angina in a spasm of the artery",
     "".join(nm))
 
 
-# ---- slide 8: back to the hook. The two stems above; three steps below, each lighting its words in both stems
-A = [("Man of 61: diabetes, hypertension, smokes.", None), ("No heart disease before.", 3),
+# ---- slide 8: back to the hook. The two stems above, each with its patient (the review, 2026-10-14); three steps
+# below, each lighting its words in both stems
+A = [("61, diabetes, hypertension, smokes.", None), ("No heart disease before.", 3),
      ("Tight chest walking uphill,", 1), ("gone 3 minutes after he stops.", 1), ("Resting ECG normal.", 2)]
-B = [("Woman of 58: hypertension, smokes.", None), ("No heart disease before.", 3),
+B = [("58, hypertension, smokes.", None), ("No heart disease before.", 3),
      ("Tight chest watching television,", 1), ("fades after half an hour.", 1), ("T waves inverted in V4–V6.", 2)]
 sv = [DEFS]
-for x0, name, lines in ((6, "A", A), (436, "B", B)):
+for x0, name, who, lines in ((6, "A", "case-chest-man", A), (436, "B", "case-chest-woman", B)):
     sv.append('<rect x="%d" y="34" width="418" height="176" rx="16" fill="var(--surface)" stroke="var(--gray-bd)" stroke-width="2"/>' % x0)
-    sv.append('<circle cx="%d" cy="60" r="14" fill="var(--primary)"/>%s' % (x0 + 30, t(x0 + 30, 66, name, 16, 800, "var(--on-primary)")))
+    sv.append(person(who, x0 + 8, 44, .44) + t(x0 + 44, 150, "Patient " + name, 13, 750, "var(--muted)"))
     for i, (words, b) in enumerate(lines):
         y = 66 + i * 32
         if b:
-            sv.append('<g data-beat="%d"><rect x="%d" y="%d" width="%d" height="28" rx="7" fill="var(--hl)"/></g>' % (b, x0 + 52, y - 19, int(len(words) * 8.6) + 14))
-        sv.append(t(x0 + 58, y, words, 16, 550, "var(--text)", "start"))
+            sv.append('<g data-beat="%d"><rect x="%d" y="%d" width="%d" height="28" rx="7" fill="var(--hl)"/></g>' % (b, x0 + 90, y - 19, int(len(words) * 8.6) + 14))
+        sv.append(t(x0 + 96, y, words, 16, 550, "var(--text)", "start"))
 steps = [("1", "Count the features", ("A: 3 · typical", "cat"), ("B: 1 · non-anginal", "se")),
          ("2", "The resting ECG", ("A: normal · excludes nothing", None), ("B: abnormal · onto the track", None))]
 for i, (n, head, a, b) in enumerate(steps):
@@ -313,3 +379,5 @@ sv.append('<g data-beat="3"><circle cx="610" cy="240" r="15" fill="var(--ink)"/>
              box(730, 266, 240, 114, "CT coronary angiography", "se", "for both", 17)))
 svg("angina-solve", "0 0 860 420", "The hook solved: count the features, read the resting ECG, then no known disease: CT coronary angiography for both",
     "".join(sv))
+
+

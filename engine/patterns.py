@@ -557,8 +557,10 @@ def p_reveal_cards(slide, topic):
         top = figure(cd["figure"], "rcard-fig") if cd.get("figure") else f'<span class="rcard-ico">{icon(ico)}</span>'
         # a blind slide gives nothing away until a card opens: no colour, no Arabic; both come with the answer
         blind = slide.get("blind")
-        name = e(label) if blind else named(label, label_ar)
-        answer = e(cd["answer"]) + (ar(label_ar) if blind else "")
+        # a card's own Arabic translates its label, so it shows while closed; a family's Arabic would give the answer away
+        own = blind and cd.get("ar")
+        name = e(label) if blind and not own else named(label, label_ar)
+        answer = e(cd["answer"]) + (ar(label_ar) if blind and not own else "")
         cards.append(
             f'<div class="rcard f-{fam} reveal-item{" blind" if blind else ""}" role="button" tabindex="0" aria-expanded="false">'
             f'{top}<b class="rcard-label">{name}</b>'
