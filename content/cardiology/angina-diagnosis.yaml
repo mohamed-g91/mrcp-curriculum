@@ -1,0 +1,201 @@
+# Is it angina? MRCP Part 1 cardiology. Lesson 2 of chapter A, coronary heart disease (stable angina, part 1: diagnosis).
+# The question: a patient with chest pain; is it angina, and which test does NICE want first?
+# Two patients open the lesson (the user, 2026-10-14), both with risk factors and no known heart disease:
+#   A, a man of 61, typical angina (three features), resting ECG normal  -> CT coronary angiography;
+#   B, a woman of 58, non-anginal pain (one feature), T-wave inversion V4-V6 -> CT coronary angiography too.
+# Checked 2026-10-14 against NICE CG95, section 1.3 (read on nice.org.uk); see notes/angina-diagnosis-plan.md.
+# Exercise ECG appears only where NICE keeps it (known disease, 1.3.4.4); when to stop it is left out (the user).
+# IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
+
+id: cardio.angina-diagnosis
+title: Is it angina?
+title_ar: هل هي ذبحة صدرية؟
+description: Typical, atypical or non-anginal chest pain, and the test NICE wants first. Learn from two patients with risk factors, then practise on exam-style stems.
+status: draft
+updated: 2026-10-14
+sources:
+  - NICE CG95. Recent-onset chest pain of suspected cardiac origin, assessment and diagnosis, 2010, updated 2016 (section 1.3; read 2026-10-14).
+  - Vrints C, Andreotti F, Koskinas KC, et al. 2024 ESC Guidelines for the management of chronic coronary syndromes. Eur Heart J 2024;45:3415–3537 (vasospastic and microvascular angina).
+retired: []
+cover: concepts
+
+# One colour per kind of chest pain.
+families:
+  cat: Typical
+  sol: Atypical
+  se: Non-anginal
+  gray: Neutral
+families_ar:
+  cat: نموذجية
+  sol: غير نموذجية
+  se: غير ذبحي
+  gray: محايد
+
+concepts:
+  typical:    { label: Typical angina,  ar: ذبحة نموذجية,      family: cat, letter: T, icon: check }
+  atypical:   { label: Atypical angina, ar: ذبحة غير نموذجية,  family: sol, letter: A, icon: dash }
+  nonanginal: { label: Non-anginal,     ar: ألم صدري غير ذبحي, family: se,  letter: N, icon: cross }
+
+learn:
+  # Two patients side by side, each drawn above their own card (mockup C, the user, 2026-10-14). The stems name no pain
+  # type: B's pain sounds cardiac (tight, central) and only counting the features shows it is non-anginal.
+  - id: hook
+    pattern: hook
+    title: Two patients
+    title_ar: مريضان
+    question: What is the next step in management?
+    patients:
+      - name: Patient A
+        person: case-chest-man
+        stem: "A 61-year-old man with type 2 diabetes and hypertension, who smokes, has no history of heart disease. For four months he has had central chest tightness walking uphill, spreading to his left arm and gone three minutes after he stops. Examination is normal. His resting ECG:"
+        figure: ecg-v4v6-normal
+      - name: Patient B
+        person: case-chest-woman
+        stem: "A 58-year-old woman with hypertension, who smokes, has no history of heart disease. For six weeks she has had a tight feeling in the centre of her chest while she watches television in the evening, fading by itself after about half an hour. Examination is normal. Her resting ECG:"
+        figure: ecg-v4v6-tinv
+
+  # Why the pain comes on exertion and goes with rest (kept short, the user): the narrowing lets through what rest needs,
+  # not what the hill needs; the arrows match the numbers (mockup B, the user, 2026-10-14).
+  - id: supply
+    pattern: story
+    title: Supply and demand
+    title_ar: العرض والطلب
+    kind: art
+    art: angina-supply
+
+  # NICE CG95 1.3.3.1: three features typical, two atypical, one or none non-anginal; 1.3.3.5: what makes angina unlikely.
+  - id: features
+    pattern: story
+    title: Anginal or non-anginal?
+    title_ar: ذبحي أم غير ذبحي؟
+    kind: art
+    art: angina-features
+
+  # 1.3.4.3: typical or atypical, no known disease -> CTCA; 1.3.5.1 uncertain -> functional imaging; 1.3.5.2 inconclusive
+  # -> invasive angiography; 1.3.4.4 known disease -> functional test (or exercise ECG); 1.3.6.5 exercise ECG never first.
+  # The "for everyone" work-up is cut (the user, review 1).
+  - id: typical
+    pattern: story
+    title: Typical and atypical angina
+    title_ar: الذبحة النموذجية وغير النموذجية
+    kind: art
+    art: angina-typical
+
+  # 1.3.1.1 and 1.3.3.12: non-anginal pain with a normal resting ECG needs no cardiac test; with ST-T changes or Q waves,
+  # CTCA (1.3.4.3). Patient B is the second branch.
+  - id: nonanginal
+    pattern: story
+    title: Non-anginal chest pain
+    title_ar: ألم صدري غير ذبحي
+    kind: art
+    art: angina-nonanginal
+
+  # 1.3.6.1-3: the functional tests and their stress agents. Adenosine and dipyridamole can cause bronchospasm, so asthma
+  # takes dobutamine. Exercise ECG only where NICE keeps it: known disease (1.3.4.4), never to diagnose (1.3.6.5).
+  - id: stress
+    pattern: reveal-cards
+    title: Stressing the heart
+    title_ar: اختبارات الإجهاد
+    blind: true
+    cards:
+      - { family: gray, icon: artery, label: "Perfusion scan (SPECT)", ar: التصوير النووي للتروية, answer: "Blood flow to the muscle. Adenosine, dipyridamole or dobutamine" }
+      - { family: gray, icon: artery, label: "Stress echo",            ar: تخطيط صدى القلب بالإجهاد, answer: "Wall movement. Exercise or dobutamine" }
+      - { family: gray, icon: artery, label: "Stress MRI",             ar: الرنين بالإجهاد, answer: "Blood flow: adenosine or dipyridamole. Wall movement: dobutamine" }
+      - { family: gray, icon: bulb,   label: "Asthma?",                ar: الربو, answer: "Dobutamine: adenosine and dipyridamole tighten the airways" }
+      - { family: gray, icon: dash,   label: "Exercise ECG",           ar: تخطيط القلب بالجهد, answer: "Known disease only; never to diagnose angina" }
+
+  # 1.3.7.3: typical pain with clear epicardial arteries; syndrome X (microvascular), then Prinzmetal (vasospastic, at
+  # rest, transient ST elevation; ESC 2024). Prinzmetal pain comes at rest, so it is angina-like rather than typical.
+  - id: normal
+    pattern: story
+    title: Angina with a normal angiogram
+    title_ar: ذبحة مع تصوير شرايين طبيعي
+    kind: art
+    art: angina-normal
+
+  # Back to the hook: count the features, read the resting ECG, then no known disease -> CTCA for both.
+  - id: solve
+    pattern: story
+    title: Back to the hook
+    title_ar: العودة إلى الحالة
+    kind: art
+    art: angina-solve
+
+practise:
+  - id: cases
+    pattern: stem-quiz
+    title: Is it angina?
+    title_ar: هل هي ذبحة صدرية؟
+    options: [typical, atypical, nonanginal]
+    # The first case is the solved example; the rest are dealt in a random order.
+    cases:
+      - id: c01
+        solved: true
+        options: [CTCA for both, "CTCA for A; no test for B", Exercise ECG for both, "Invasive angiography for A; CTCA for B"]
+        stem: "Two patients with risk factors and no history of heart disease. A, a man of 61, has central chest tightness walking uphill, gone three minutes after he stops; his resting ECG is normal. B, a woman of 58, has a tight feeling in her chest while she watches television, fading after half an hour; her resting ECG shows [[T-wave inversion in V4–V6]]."
+        question: What is the next step in management?
+        answer: CTCA for both
+        hint: Does an abnormal resting ECG change the plan for non-anginal pain?
+        why: "A has typical angina; a normal ECG does not rule it out. B's pain is non-anginal, but her ST-T changes put her on the same track. With no known heart disease, both get CT coronary angiography (NICE CG95)."
+        tutor: "Count the features, read the resting ECG, then ask about known heart disease."
+
+      - id: c02
+        options: [typical, atypical, nonanginal, Unstable angina]
+        stem: "A 57-year-old man has had two months of central chest tightness when he climbs the stairs at work. [[It takes 20 minutes to settle]] after he stops."
+        question: How is his chest pain classed?
+        answer: atypical
+        hint: Count the three features. Which one is missing?
+        why: "Constricting and brought on by exertion, but not relieved within about 5 minutes: two features, atypical angina."
+
+      - id: c03
+        options: [No cardiac test, CT coronary angiography, Exercise ECG, Stress echocardiogram]
+        stem: "A 35-year-old woman with no risk factors has a sharp pain under her left breast at rest, lasting seconds and [[worse when she breathes in]]. Her resting ECG is normal."
+        question: What is the next step?
+        answer: No cardiac test
+        hint: How many of the three features does her pain have?
+        why: "Her pain is non-anginal and her resting ECG is normal, so angina is excluded and no cardiac test is offered (NICE CG95). Look for another cause."
+
+      - id: c04
+        options: [Stress echocardiogram, CT coronary angiography, Invasive coronary angiography, Chest X-ray]
+        stem: "A 66-year-old man [[had a coronary stent three years ago]]. He now has chest tightness when he walks fast, easing with rest."
+        question: What is the next step?
+        answer: Stress echocardiogram
+        hint: Is there known coronary disease?
+        why: "With known coronary disease, the question is whether this narrowing causes the pain: a functional test such as a stress echo, not CT coronary angiography (NICE CG95)."
+
+      - id: c05
+        options: [Invasive coronary angiography, Exercise ECG, Repeat CT coronary angiography, Discharge]
+        stem: "A 59-year-old woman has typical angina. CT coronary angiography shows disease of uncertain significance, and a [[stress perfusion MRI is inconclusive]]."
+        question: What is the next step?
+        answer: Invasive coronary angiography
+        hint: What comes after functional imaging that does not decide it?
+        why: "CTCA first, functional imaging when it is uncertain, and invasive coronary angiography when that is inconclusive (NICE CG95)."
+
+      - id: c06
+        options: [Dobutamine, Adenosine, Dipyridamole]
+        stem: "A 70-year-old man with known coronary disease needs a functional test to find whether a narrowing causes his chest pain. He has [[severe asthma]]."
+        question: Which stress agent should be used?
+        answer: Dobutamine
+        hint: Which agents can tighten the airways?
+        why: "Adenosine and dipyridamole can cause bronchospasm. Dobutamine stresses the heart as exercise does, and suits a stress echo."
+
+      - id: c07
+        options: [Microvascular angina, Vasospastic angina, Hypertrophic cardiomyopathy, Pericarditis]
+        stem: "A 54-year-old woman has typical angina. A stress echocardiogram shows [[ischaemia on exertion]], but invasive angiography shows clear coronary arteries."
+        question: What is the most likely diagnosis?
+        answer: Microvascular angina
+        hint: Where can the blood flow fail if the large arteries are clear?
+        why: "Exertional angina with ischaemia on stress testing and clear large arteries: the small vessels fail, cardiac syndrome X."
+
+      - id: c08
+        options: [Vasospastic angina, Microvascular angina, Stable angina, Pericarditis]
+        stem: "A 38-year-old woman who smokes wakes at 05:00 with chest pain at rest. Her ECG during the pain shows [[transient ST elevation]]; coronary angiography is normal."
+        question: What is the most likely diagnosis?
+        answer: Vasospastic angina
+        hint: Pain at rest, at dawn, with ST elevation that comes and goes?
+        why: "Prinzmetal (vasospastic) angina: the artery clamps itself shut at rest, often early in the morning, with transient ST elevation and a normal angiogram."
+
+  - id: end
+    pattern: end
+    title: Your score
+    title_ar: نتيجتك

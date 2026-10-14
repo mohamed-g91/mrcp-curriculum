@@ -214,6 +214,13 @@ def figure(name, cls=""):
 
 
 def p_hook(slide, topic):
+    if slide.get("patients"):  # two (or more) patients side by side, each drawn above their own stem card
+        cards = "".join(
+            f'<div class="hook-patient"><div class="hp-head">{figure(p["person"], "hp-person")}<b class="hp-name">{e(p["name"])}</b></div>'
+            f'<div class="stem-card hook"><p class="stem-text">{stem_html(p["stem"], lit=True)}</p>'
+            f'{figure(p["figure"]) if p.get("figure") else ""}</div></div>' for p in slide["patients"])
+        return (heading(slide) + f'<div class="center-body"><div class="hook-pair" style="--n:{len(slide["patients"])}">{cards}</div>'
+                f'<p class="stem-q hook-pair-q">{e(slide["question"])}</p></div>')
     fig = figure(slide["figure"]) if slide.get("figure") else ""
     card = (f'<div class="stem-card hook"><p class="stem-text">{stem_html(slide["stem"], lit=True)}</p>{fig}'
             f'<p class="stem-q">{e(slide["question"])}</p></div>')

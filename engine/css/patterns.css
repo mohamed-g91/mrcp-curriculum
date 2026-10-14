@@ -599,6 +599,19 @@ html.fluid .ask{position:fixed}
 .scene .sc-pop{transform-box:fill-box;transform-origin:bottom center;animation:pillIn .5s var(--ease) both;animation-delay:calc(.1s + var(--i) * 160ms)}
 @media (prefers-reduced-motion:reduce){.scene .sc-pop{animation:none}}
 @container (max-width:900px){.hook-row{grid-template-columns:minmax(0,1fr)}.hook-row>.fig{order:-1;width:min(70%,300px);margin-inline:auto}}
+/* two patients side by side: each drawn above their own stem card, the one question under both */
+.hook-pair{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:clamp(14px,calc(2.2 * var(--u)),30px);width:100%;max-width:1480px;margin-inline:auto;align-items:stretch}
+.hook-patient{display:flex;flex-direction:column;gap:clamp(6px,calc(.8 * var(--u)),10px);min-width:0}
+.hp-head{display:flex;align-items:flex-end;gap:clamp(8px,calc(1.2 * var(--u)),16px)}
+.hp-head .fig{margin:0;flex:none}
+.hp-head .fig svg{height:clamp(46px,calc(5.6 * var(--u)),72px);width:auto;display:block}
+.hp-name{font-family:var(--serif);font-weight:600;font-size:var(--fs-h3);color:var(--ink);padding-bottom:4px}
+.hook-pair .stem-card.hook{flex:1;max-width:none;display:flex;flex-direction:column;gap:clamp(6px,calc(1 * var(--u)),12px);padding:clamp(12px,calc(1.6 * var(--u)),22px) clamp(14px,calc(2 * var(--u)),26px)}
+.hook-pair .hook .stem-text{font-size:clamp(14px,calc(1.5 * var(--u)),19px);line-height:1.45}
+.hook-pair .stem-card .fig{margin:0}
+.hook-pair .stem-card .fig svg{width:min(100%,clamp(200px,calc(23 * var(--u)),290px));height:auto;display:block}
+.hook-pair-q{width:100%;max-width:1480px;margin:0 auto;font-size:clamp(21px,calc(2.5 * var(--u)),32px)}
+@container (max-width:900px){.hook-pair{grid-template-columns:minmax(0,1fr)}}
 
 /* ---------- tree figures: an icon beside each question, a chart beside each answer ---------- */
 .tree-q{position:relative}

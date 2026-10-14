@@ -1,4 +1,12 @@
 # Every permanent item ID ever built. Maintained by build.py; do not edit by hand.
+cardio.angina-diagnosis.c01
+cardio.angina-diagnosis.c02
+cardio.angina-diagnosis.c03
+cardio.angina-diagnosis.c04
+cardio.angina-diagnosis.c05
+cardio.angina-diagnosis.c06
+cardio.angina-diagnosis.c07
+cardio.angina-diagnosis.c08
 cardio.coronary-arteries-ecg.c01
 cardio.coronary-arteries-ecg.c02
 cardio.coronary-arteries-ecg.c03

@@ -218,3 +218,11 @@ LAD and its Arabic reused from lesson 1 (approved); everything else is a draft.
 ## Status
 
 Lesson 2: **Agreed** 2026-10-14 after review 1 (page https://claude.ai/artifact/B9SBpdr2M8zbpgdJsnQNpH); next, gate 2, the mockup sheet. Lesson 3 left for later.
+
+Gate 2 (2026-10-14): mockup sheet sent, https://claude.ai/artifact/1jCWdc6zjnCemfd22QiHUn (hook A two cards / B one split card / C two cards with V4–V6 drawn; supply and demand A pipe and muscle / B scales / C slice; features A list + type cards / B icons + count bar / C circles with ticks; normal angiogram A two cards / B one artery / C icon + ECG). Recommended C, A, A, A. Status: Mockups sent.
+
+Picks (comments 2026-10-14): hook **C** plus a figure of each patient with chest pain; supply and demand: none, "make a more relating cardiac figure" (round 2); features **A** but "needs figures" (round 2: an icon per feature); normal angiogram **A**.
+Round 2 mockups sent 2026-10-14, same page (hook C with the patients drawn: A bust by name / B scene / C above the card; supply and demand: A heart with LAD narrowed / B heart + zoom on the plaque / C patient beside his heart; features A with figures: A icon per row / B picture tiles / C patient beside the list). Recommended B, B, A. Normal angiogram A chosen.
+Picks, round 2 (comments 2026-10-14): hook **C** (each patient drawn above their card); supply and demand **B** (heart + zoom), with the arrows matching the numbers; features **A** (an icon per row); normal angiogram **A**. Gate 2 done; building.
+
+**Built 2026-10-14** (draft): content/cardiology/angina-diagnosis.yaml, drawings from art/make_angina_figures.py, the hook's two-patient layout (patients in p_hook). Practise cases renumbered c01–c08 (never built before): c01 hook, c02 atypical, c03 no test, c04 stent → stress echo, c05 invasive, c06 dobutamine, c07 microvascular, c08 vasospastic. Stress-test cards cut to five (the two MRI cards merged) to fit the stage. All page and site checks pass. Status: Built, awaiting the user's review.
