@@ -257,6 +257,10 @@ def tbox(cx, y, w, h, label, icon, fam=None, sub=None):
     return out
 
 
+def ic_ecg(cx, cy):
+    return '<path d="%s" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>' % beat(cx - 18, cy + 8, 36, 20, st=0, r=1.0, t=.35)
+
+
 def qpill(cx, y, w, label):
     return ('<rect x="%.1f" y="%d" width="%d" height="48" rx="24" fill="var(--surface)" stroke="var(--primary)" stroke-width="3"/>'
             % (cx - w / 2.0, y, w) + t(cx, y + 31, label, 19, 750, "var(--primary)"))
@@ -269,16 +273,19 @@ def mini_ecg(x, y, tw):
 
 # ---- slide 4: typical and atypical angina, NICE CG95's path. The review (2026-10-14): no opening box, square arrows,
 # icons and the patient; the last tap clears the path and leaves the exercise ECG line alone in the centre
-tp = [DEFS, '<g data-until="6">',
+tp = [DEFS, '<g data-until="7">',
       '<g data-beat="1">%s</g>' % qpill(430, 12, 290, "Known heart disease?"),
       '<g data-beat="2">%s%s%s</g>' % (elbow(380, 60, 260, 118, "No", 272, 110), person("case-chest-man", 14, 108, .4),
                                        tbox(260, 118, 300, 56, "CT coronary angiography", ic_ct, "se")),
       '<g data-beat="3">%s%s</g>' % (elbow(260, 174, 260, 206, "uncertain", 272, 196), tbox(260, 206, 300, 56, "Functional imaging", ic_stress)),
       '<g data-beat="4">%s%s</g>' % (elbow(260, 262, 260, 294, "inconclusive", 272, 284), tbox(260, 294, 300, 56, "Invasive angiography", ic_cath)),
       '<g data-beat="5">%s%s</g>' % (elbow(480, 60, 665, 118, "Yes", 677, 110),
-                                     tbox(665, 118, 340, 64, "Functional test", ic_stress, None, "old MI, stent, bypass · or exercise ECG")),
+                                     tbox(665, 118, 340, 64, "Functional test", ic_stress, None, "old MI, stent or bypass")),
+      # NICE 1.3.4.4: with known disease, an exercise ECG may be used instead of functional imaging (its own step: the user)
+      '<g data-beat="6">%s%s</g>' % (elbow(665, 182, 665, 214, "or instead", 677, 204),
+                                     tbox(665, 214, 340, 56, "Exercise ECG", ic_ecg)),
       '</g>',
-      '<g data-beat="6"><rect x="190" y="130" width="480" height="150" rx="20" fill="var(--bad-bg)" stroke="var(--bad-solid)" stroke-width="3"/>'
+      '<g data-beat="7"><rect x="190" y="130" width="480" height="150" rx="20" fill="var(--bad-bg)" stroke="var(--bad-solid)" stroke-width="3"/>'
       '%s%s</g>' % (t(430, 196, "Exercise ECG is not", 30, 800, "var(--bad-ink)"), t(430, 238, "a first-line test", 30, 800, "var(--bad-ink)"))]
 svg("angina-typical", "0 0 860 420", "Typical or atypical angina: no known heart disease, CT coronary angiography first; known disease, a functional test",
     "".join(tp))

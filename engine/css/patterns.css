@@ -1195,3 +1195,8 @@ html.has-ar:not(.ar-off) .choices:has(.ar):has(> :nth-child(4)){--per:2}
 .rcard.blind:not(.on) .rcard-label{color:var(--ink)}
 .rcard.blind:not(.on) .fig-lit{fill:var(--gray-bg);stroke:var(--wall)}
 .rcard.blind .rcard-answer .ar{margin-inline-start:8px}
+/* a pitfall card (an exam trick) stands apart, open or closed: amber, a dashed edge */
+.rcard.pitfall,.rcard.blind.pitfall:not(.on){background:var(--sol-bg);border:2px dashed var(--sol-solid);border-top:6px solid var(--sol-solid)}
+.rcard.pitfall .rcard-label,.rcard.blind.pitfall:not(.on) .rcard-label{color:var(--sol-ink)}
+.rcard.pitfall .rcard-ico{background:var(--sol-solid);color:var(--on-solid)}
+.rcard.pitfall .rcard-answer{border-top-color:var(--sol-bd)}

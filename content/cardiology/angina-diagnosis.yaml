@@ -92,6 +92,7 @@ learn:
 
   # 1.3.6.1-3: the functional tests and their stress agents. Adenosine and dipyridamole can cause bronchospasm, so asthma
   # takes dobutamine. Exercise ECG only where NICE keeps it: known disease (1.3.4.4), never to diagnose (1.3.6.5).
+  # Asthma is the exam's trick, so it comes last and stands apart (the user, 2026-10-14).
   - id: stress
     pattern: reveal-cards
     title: Stressing the heart
@@ -101,8 +102,8 @@ learn:
       - { family: gray, icon: artery, label: "Perfusion scan (SPECT)", ar: التصوير النووي, answer: "Blood flow to the muscle. Adenosine, dipyridamole or dobutamine" }
       - { family: gray, icon: artery, label: "Stress echo",            ar: إيكو بالإجهاد, answer: "Wall movement. Exercise or dobutamine" }
       - { family: gray, icon: artery, label: "Stress MRI",             ar: رنين بالإجهاد, answer: "Blood flow: adenosine or dipyridamole. Wall movement: dobutamine" }
-      - { family: gray, icon: bulb,   label: "Asthma?",                ar: الربو, answer: "Dobutamine: adenosine and dipyridamole tighten the airways" }
       - { family: gray, icon: dash,   label: "Exercise ECG",           ar: تخطيط بالجهد, answer: "Known disease only; never to diagnose angina" }
+      - { family: gray, icon: bulb, pitfall: true, label: "Asthma?",                ar: الربو, answer: "Dobutamine: adenosine and dipyridamole tighten the airways" }
 
   # 1.3.7.3: typical pain with clear epicardial arteries; syndrome X (microvascular), then Prinzmetal (vasospastic, at
   # rest, transient ST elevation; ESC 2024). Prinzmetal pain comes at rest, so it is angina-like rather than typical.

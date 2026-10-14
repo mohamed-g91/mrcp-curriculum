@@ -562,7 +562,7 @@ def p_reveal_cards(slide, topic):
         name = e(label) if blind and not own else named(label, label_ar)
         answer = e(cd["answer"]) + (ar(label_ar) if blind and not own else "")
         cards.append(
-            f'<div class="rcard f-{fam} reveal-item{" blind" if blind else ""}" role="button" tabindex="0" aria-expanded="false">'
+            f'<div class="rcard f-{fam} reveal-item{" blind" if blind else ""}{" pitfall" if cd.get("pitfall") else ""}" role="button" tabindex="0" aria-expanded="false">'
             f'{top}<b class="rcard-label">{name}</b>'
             f'<span class="rcard-answer">{answer}</span></div>')
     nxt = ""
