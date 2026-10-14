@@ -119,6 +119,11 @@ def check_topic(t, expected_id):
         p = s["pattern"]
         drawings = [s.get("figure"), s.get("scene")] + list((s.get("charts") or {}).values()) + list(s.get("side") or [])
         drawings += [st.get("figure") for st in s.get("steps") or []] + [g.get("figure") for g in s.get("groups") or []]
+        drawings += [s.get("art")] + [c.get("figure") for c in s.get("cards") or []]
+        for pt in s.get("patients") or []:
+            drawings += [pt.get("person"), pt.get("figure")]
+            if not (pt.get("name") and pt.get("person") and pt.get("stem")):
+                errs.append(f"{where}: each patient needs a name, a person and a stem")
         for name in filter(None, drawings):
             if not os.path.exists(os.path.join(ROOT, "content", "figures", name + ".svg")):
                 errs.append(f"{where}: no drawing at content/figures/{name}.svg")

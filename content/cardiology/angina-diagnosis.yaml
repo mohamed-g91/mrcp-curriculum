@@ -1,6 +1,7 @@
 # Is it angina? MRCP Part 1 cardiology. Lesson 2 of chapter A, coronary heart disease (stable angina, part 1: diagnosis).
 # The question: a patient with chest pain; is it angina, and which test does NICE want first?
-# Two patients open the lesson (the user, 2026-10-14), both with risk factors and no known heart disease:
+# Two patients open the lesson (the user, 2026-10-14), both with risk factors and no known heart disease. B's episodes last
+# about ten minutes, the last two weeks ago: rest pain over 15 minutes may be ACS (CG95 1.2.1.3; Codex QA, 2026-10-15).
 #   A, a man of 61, typical angina (three features), resting ECG normal  -> CT coronary angiography;
 #   B, a woman of 58, non-anginal pain (one feature), T-wave inversion V4-V6 -> CT coronary angiography too.
 # Checked 2026-10-14 against NICE CG95, section 1.3 (read on nice.org.uk); see notes/angina-diagnosis-plan.md.
@@ -51,7 +52,7 @@ learn:
         figure: ecg-v4v6-normal
       - name: Patient B
         person: case-chest-woman
-        stem: "A 58-year-old woman with hypertension, who smokes, has no history of heart disease. For six weeks she has had a tight feeling in the centre of her chest while she watches television in the evening, fading by itself after about half an hour. Examination is normal. Her resting ECG:"
+        stem: "A 58-year-old woman with hypertension, who smokes, has no history of heart disease. For six weeks she has had a tight central chest feeling while watching television, fading after about ten minutes; the last was two weeks ago. Examination is normal. Her resting ECG:"
         figure: ecg-v4v6-tinv
 
   # Why the pain comes on exertion and goes with rest (kept short, the user): the narrowing lets through what rest needs,
@@ -80,6 +81,7 @@ learn:
     title_ar: الذبحة النموذجية وغير النموذجية
     kind: art
     art: angina-typical
+    start: 1
 
   # 1.3.1.1 and 1.3.3.12: non-anginal pain with a normal resting ECG needs no cardiac test; with ST-T changes or Q waves,
   # CTCA (1.3.4.3). Patient B is the second branch.
@@ -89,6 +91,7 @@ learn:
     title_ar: ألم صدري غير ذبحي
     kind: art
     art: angina-nonanginal
+    start: 1
 
   # 1.3.6.1-3: the functional tests and their stress agents. Adenosine and dipyridamole can cause bronchospasm, so asthma
   # takes dobutamine. Exercise ECG only where NICE keeps it: known disease (1.3.4.4), never to diagnose (1.3.6.5).
@@ -101,8 +104,8 @@ learn:
     cards:
       - { family: gray, icon: artery, label: "Perfusion scan (SPECT)", ar: التصوير النووي, answer: "Blood flow to the muscle. Adenosine, dipyridamole or dobutamine" }
       - { family: gray, icon: artery, label: "Stress echo",            ar: إيكو بالإجهاد, answer: "Wall movement. Exercise or dobutamine" }
-      - { family: gray, icon: artery, label: "Stress MRI",             ar: رنين بالإجهاد, answer: "Blood flow: adenosine or dipyridamole. Wall movement: dobutamine" }
-      - { family: gray, icon: dash,   label: "Exercise ECG",           ar: تخطيط بالجهد, answer: "Known disease only; never to diagnose angina" }
+      - { family: gray, icon: artery, label: "Stress MRI",             ar: رنين بالإجهاد, answer: "Blood flow: adenosine or dipyridamole. Wall movement: exercise or dobutamine" }
+      - { family: gray, icon: dash,   label: "Exercise ECG",           ar: تخطيط بالجهد, answer: "Known disease only; never to diagnose angina without it" }
       - { family: gray, icon: bulb, pitfall: true, label: "Asthma?",                ar: الربو, answer: "Dobutamine: adenosine and dipyridamole tighten the airways" }
 
   # 1.3.7.3: typical pain with clear epicardial arteries; syndrome X (microvascular), then Prinzmetal (vasospastic, at
@@ -133,7 +136,7 @@ practise:
       - id: c01
         solved: true
         options: [CTCA for both, "CTCA for A; no test for B", Exercise ECG for both, "Invasive angiography for A; CTCA for B"]
-        stem: "Two patients with risk factors and no history of heart disease. A, a man of 61, has central chest tightness walking uphill, gone three minutes after he stops; his resting ECG is normal. B, a woman of 58, has a tight feeling in her chest while she watches television, fading after half an hour; her resting ECG shows [[T-wave inversion in V4–V6]]."
+        stem: "Two patients with risk factors and no history of heart disease. A, a man of 61, has central chest tightness walking uphill, gone three minutes after he stops; his resting ECG is normal. B, a woman of 58, has a tight feeling in her chest while she sits watching television, fading after about ten minutes, last two weeks ago; her resting ECG shows [[T-wave inversion in V4–V6]]."
         question: What is the next step in management?
         answer: CTCA for both
         hint: Does an abnormal resting ECG change the plan for non-anginal pain?

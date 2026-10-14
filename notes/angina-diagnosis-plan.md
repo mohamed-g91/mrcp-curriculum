@@ -232,3 +232,9 @@ Review 1 of the build (comments on the review deck, 2026-10-14), fixed: the typi
 Review 2 of the build (2026-10-14), fixed: Asthma is the last stress card and a pitfall card (amber, dashed edge; engine: `pitfall` on a reveal card); on the typical slide, Exercise ECG is its own step after the functional test ("or instead", NICE 1.3.4.4), then the closing line. All checks pass.
 
 **Approved by the user 2026-10-15; status: reviewed.** Next: Codex QA (Sol 6.1) on adbb71d..HEAD before pushing.
+
+Codex QA (Sol 6.1, 2026-10-15) on adbb71d..3ecf0f3: six findings, all fixed. Patient B's episodes now last about ten minutes,
+the last two weeks ago (30 minutes of rest pain could read as ACS, CG95 1.2.1.3); the closing line and the exercise ECG card keep
+NICE's condition ("without known heart disease"); the hook's ECGs say what they show to screen readers; the two pathway slides
+open on their question (start: 1); stress MRI wall motion lists exercise too; build.py checks the hook's patients, art stories
+and card figures. Then pushed.

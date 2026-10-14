@@ -97,8 +97,8 @@ def leads(name, label, tw):
     svg(name, "0 0 334 96", label, "".join(cells))
 
 
-leads("ecg-v4v6-normal", "His resting ECG, V4 to V6", .35)
-leads("ecg-v4v6-tinv", "Her resting ECG, V4 to V6", -.35)
+leads("ecg-v4v6-normal", "His resting ECG, V4 to V6: normal", .35)
+leads("ecg-v4v6-tinv", "Her resting ECG, V4 to V6: T waves inverted", -.35)
 
 
 # ---- slide 2: supply and demand. A heart with its LAD and a plaque, and a zoom on the narrowing.
@@ -286,7 +286,8 @@ tp = [DEFS, '<g data-until="7">',
                                      tbox(665, 214, 340, 56, "Exercise ECG", ic_ecg)),
       '</g>',
       '<g data-beat="7"><rect x="190" y="130" width="480" height="150" rx="20" fill="var(--bad-bg)" stroke="var(--bad-solid)" stroke-width="3"/>'
-      '%s%s</g>' % (t(430, 196, "Exercise ECG is not", 30, 800, "var(--bad-ink)"), t(430, 238, "a first-line test", 30, 800, "var(--bad-ink)"))]
+      '%s%s</g>' % (t(430, 188, "Exercise ECG is not", 30, 800, "var(--bad-ink)"), t(430, 228, "a first-line test", 30, 800, "var(--bad-ink)")
+         + t(430, 262, "without known heart disease", 18, 700, "var(--bad-ink)"))]
 svg("angina-typical", "0 0 860 420", "Typical or atypical angina: no known heart disease, CT coronary angiography first; known disease, a functional test",
     "".join(tp))
 
@@ -362,7 +363,7 @@ svg("angina-normal", "0 0 860 420", "Angina with clear coronary arteries: syndro
 A = [("61, diabetes, hypertension, smokes.", None), ("No heart disease before.", 3),
      ("Tight chest walking uphill,", 1), ("gone 3 minutes after he stops.", 1), ("Resting ECG normal.", 2)]
 B = [("58, hypertension, smokes.", None), ("No heart disease before.", 3),
-     ("Tight chest watching television,", 1), ("fades after half an hour.", 1), ("T waves inverted in V4–V6.", 2)]
+     ("Tight chest watching television,", 1), ("fades after ten minutes.", 1), ("T waves inverted in V4–V6.", 2)]
 sv = [DEFS]
 for x0, name, who, lines in ((6, "A", "case-chest-man", A), (436, "B", "case-chest-woman", B)):
     sv.append('<rect x="%d" y="34" width="418" height="176" rx="16" fill="var(--surface)" stroke="var(--gray-bd)" stroke-width="2"/>' % x0)
