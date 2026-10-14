@@ -11,7 +11,7 @@ id: cardio.angina-diagnosis
 title: Is it angina?
 title_ar: هل هي ذبحة صدرية؟
 description: Typical, atypical or non-anginal chest pain, and the test NICE wants first. Learn from two patients with risk factors, then practise on exam-style stems.
-status: draft
+status: reviewed
 updated: 2026-10-14
 sources:
   - NICE CG95. Recent-onset chest pain of suspected cardiac origin, assessment and diagnosis, 2010, updated 2016 (section 1.3; read 2026-10-14).

@@ -81,7 +81,7 @@ specialties:
       # A. Coronary heart disease (notes/coronary-arteries-ecg-plan.md)
       - { slug: coronary-arteries-ecg,    title: Coronary arteries and the ECG,        status: reviewed, section: A, video: null }
       # stable angina split in two (the user, 2026-10-14): notes/angina-diagnosis-plan.md, notes/angina-treatment-plan.md
-      - { slug: angina-diagnosis,         title: "Is it angina?",                      status: draft,   section: A, video: null }
+      - { slug: angina-diagnosis,         title: "Is it angina?",                      status: reviewed,  section: A, video: null }
       - { slug: angina-treatment,         title: Treating stable angina,               status: planned, section: A, video: null }
       - { slug: diagnosing-acs,           title: Diagnosing ACS,                       status: planned, section: A, video: null }
       - { slug: reperfusion,              title: Reperfusion,                          status: planned, section: A, video: null }

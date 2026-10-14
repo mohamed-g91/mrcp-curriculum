@@ -230,3 +230,5 @@ Picks, round 2 (comments 2026-10-14): hook **C** (each patient drawn above their
 Review 1 of the build (comments on the review deck, 2026-10-14), fixed: the typical and non-anginal slides open on their question (no opening box), square connectors with labels off the lines, an icon per test and the patient; the typical slide's last tap clears the path and leaves "Exercise ECG is not a first-line test" alone in the centre; the stress cards show their own Arabic while closed (engine: a blind card with its own `ar`); the normal-angiogram cards come first without names (the presenter explains them), the names on taps 3 and 4, with a patient in each; patients added to Back to the hook. All checks pass.
 
 Review 2 of the build (2026-10-14), fixed: Asthma is the last stress card and a pitfall card (amber, dashed edge; engine: `pitfall` on a reveal card); on the typical slide, Exercise ECG is its own step after the functional test ("or instead", NICE 1.3.4.4), then the closing line. All checks pass.
+
+**Approved by the user 2026-10-15; status: reviewed.** Next: Codex QA (Sol 6.1) on adbb71d..HEAD before pushing.
