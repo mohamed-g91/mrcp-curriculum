@@ -1205,6 +1205,11 @@ html.has-ar:not(.ar-off) .choices:has(.ar):has(> :nth-child(4)){--per:2}
 .hsi-mark.on{opacity:1}
 .hsi-label{position:absolute;display:inline-flex;align-items:center;white-space:nowrap;padding:.32em .8em;font:700 2cqw/1.2 var(--sans);color:var(--x-ink);background:var(--x-bg);border:max(1.5px,.12cqw) solid var(--x-bd);border-radius:999px;opacity:0;pointer-events:none;transition:opacity .5s ease}
 .hsi-label.on{opacity:1}
+/* Three arteries: the whole heart beside the slice; the slice's walls light, not tapped */
+.hsa{display:grid;grid-template-columns:minmax(0,710px) minmax(0,300px);gap:clamp(12px,calc(2 * var(--u)),32px)}
+.hsa .hsi-fig{width:100%;aspect-ratio:1520/941}
+.hsa-wall{transition:fill .35s ease,stroke .35s ease}
+.hsa-wall.on{fill:var(--x-bg);stroke:var(--x-solid);stroke-width:3.5}
 .hsi-r{transform:translateY(-50%)}
 .hsi-l{transform:translate(-100%,-50%)}
 .hsi-b{transform:translate(-50%,-50%)}

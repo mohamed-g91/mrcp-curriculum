@@ -51,8 +51,20 @@ learn:
 
   # The slice across both ventricles (anterior at the top, the RV on the left), LV and RV named; every wall tapped on
   # its own lights in its artery's colour, and the card beside it names the wall and its artery (the user, 2026-10-13).
+  # Rebuilt on Codex's whole heart from the front (art/make_heart_drawings.py), beside the slice: tapping an artery
+  # names it and lights the walls it feeds (the user chose B, 2026-10-16). The left main lights the LAD's and the
+  # circumflex's walls; its Arabic is a draft until the user approves it.
   - id: arteries
     pattern: heart-slice
+    image: heart-front
+    image_box: [400, 0, 800, 900]   # where the WebP sits in the drawing's 1672 x 941 pixels
+    # each artery: a concept (or a name of its own), its point on the drawing, where its name stands
+    # (R or L column, at that height) and the walls it feeds
+    arteries:
+      - { key: lm, label: Left main, ar: الجذع الرئيسي الأيسر, family: gray, point: [772, 252], name: [R, 200], walls: [anterior, septal, lateral, posterior] }
+      - { key: lad, point: [880, 452], name: [R, 470], walls: [anterior, septal] }
+      - { key: lcx, point: [1000, 336], name: [R, 320], walls: [lateral, posterior] }
+      - { key: rca, point: [552, 382], name: [L, 382], walls: [inferior, rv] }
     title: Three arteries
     title_ar: ثلاثة شرايين
 
@@ -65,7 +77,7 @@ learn:
   # The same slice: a tapped wall shows its own leads (ST up) and its mirror leads across the heart (dashed, ST down).
   # Pairs: inferior / I, aVL; lateral / III, aVF; anterior / II, III, aVF (a sign of a proximal LAD); posterior: V7–V9
   # with its mirror in V1–V3 (ESC 2023, 3.2.1); septal and RV none (Zimetbaum and Josephson 2003).
-  # On Codex's drawing of the heart cut across (art/make_heart_section.py), seen as on an echo's short axis: each tap
+  # On Codex's drawing of the heart cut across (art/make_heart_drawings.py), seen as on an echo's short axis: each tap
   # names the next wall, in the 3D slide's order, and shows its own leads and its mirror (the user chose B, 2026-10-15).
   - id: mirror
     pattern: heart-slice

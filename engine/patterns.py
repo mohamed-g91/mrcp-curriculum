@@ -698,8 +698,56 @@ def p_heart_image(slide, topic):
             % (e(slide.get("alt", "The heart cut across both ventricles; tap a wall")), svg, labels))
 
 
+# Three arteries on a painted drawing (an `image` without mode: mirror): the whole heart beside the flat slice. Each
+# artery is a grey spot on the drawing; tapping one names it and lights, on the slice, the walls it feeds, each in
+# its own artery's colour (the left main lights the LAD's and the circumflex's). One artery at a time
+HSA_BOX = (120, 0, 1520, 941)
+HSA_COLUMNS = {"R": 1260, "L": 520}
+
+
+def p_heart_arteries(slide, topic):
+    import base64
+    from engine.heartsvg import WALLS, RV, slice_parts
+    with open(os.path.join(FIGURES, slide["image"] + ".webp"), "rb") as f:
+        data = base64.b64encode(f.read()).decode("ascii")
+    bx, by, bw, bh = HSA_BOX
+    ix, iy, iw, ih = slide["image_box"]
+    pct = lambda x, y: "left:%.2f%%;top:%.2f%%" % ((x - bx) * 100.0 / bw, (y - by) * 100.0 / bh)
+    feeds = dict((k, []) for k, _, _, _, _, _ in WALLS + [RV])
+    marks, spots, labels = "", "", ""
+    for i, a in enumerate(slide["arteries"]):
+        c = topic["concepts"].get(a["key"]) or a          # a concept, or an artery named on the slide (the left main)
+        fam = c.get("family", "gray")
+        px, py = a["point"]
+        side, at = a["name"]
+        x0 = HSA_COLUMNS[side]
+        for w in a["walls"]:
+            feeds[w].append(str(i))
+        marks += ('<line class="hsi-mark" data-i="%d" x1="%d" y1="%d" x2="%d" y2="%d" stroke="var(--%s)" stroke-width="4"/>'
+                  % (i, px, py, x0, at, "%s-solid" % fam if fam != "gray" else "muted"))
+        spots += ('<g class="hsi-spot f-%s" data-i="%d" tabindex="0" role="button" aria-pressed="false" aria-label="%s">'
+                  '<circle class="hsi-hit" cx="%d" cy="%d" r="48"/><circle class="hsi-dot" cx="%d" cy="%d" r="15"/></g>'
+                  % (fam, i, e(c["label"]), px, py, px, py))
+        labels += ('<span class="hsi-label hsi-%s f-%s" data-i="%d" style="%s">%s</span>'
+                   % (side.lower(), fam, i, pct(x0, at), named(c["label"], c.get("ar", ""))))
+    svg = ('<svg class="hsi-svg" viewBox="%d %d %d %d"><image href="data:image/webp;base64,%s" x="%d" y="%d" width="%d" height="%d"/>%s%s</svg>'
+           % (bx, by, bw, bh, data, ix, iy, iw, ih, marks, spots))
+    # the slice: each wall in its own artery's colour when lit, not tappable here
+    parts, rest = slice_parts(HS_CX, HS_CY, HS_R, HS_r)
+    body = ""
+    for key, name, ang, art, own, mir in WALLS + [RV]:
+        fam = concept(topic, art)["family"]
+        body += parts[key].replace('<path ', '<path class="hsa-wall f-%s" data-is="%s" ' % (fam, " ".join(feeds[key])), 1)
+    slc = ('<svg class="hs-svg hsa-slice" viewBox="180 76 400 348" role="img" aria-label="A slice across both ventricles">%s%s</svg>'
+           % (body, rest))
+    return (heading(slide) + '<div class="hsi hsa"><figure class="hsi-fig" aria-label="%s">%s%s</figure>%s</div>'
+            % (e(slide.get("alt", "The whole heart and its coronary arteries; tap an artery")), svg, labels, slc))
+
+
 def p_heart_slice(slide, topic):
     from engine.heartsvg import WALLS, RV, slice_parts, pt
+    if slide.get("image") and slide.get("mode") != "mirror":
+        return p_heart_arteries(slide, topic)
     if slide.get("image"):
         return p_heart_image(slide, topic)
     mirror = slide.get("mode") == "mirror"

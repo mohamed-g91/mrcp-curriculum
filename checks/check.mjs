@@ -2,7 +2,7 @@
 //
 //   node checks/check.mjs dist/statistics/data-types.html [--shots out-dir [--shots-on-fail]] [--json report.json]
 //
-// For each window size (1280 x 720 stage, 1920 x 1080 recording, 1920 x 940 browser, 768 x 1024 and 1024 x 768 tablet, 375 x 812 phone, skipped on the presenter's deck) it visits
+// For each window size (1280 x 720 stage, 1920 x 1080 recording, 1920 x 940 browser, 768 x 1024 and 1024 x 768 tablet, 375 x 812 phone; the presenter's deck skips the portrait tablet and the phone) it visits
 // every slide, opens every reveal on it, and checks there is no sideways overflow and, on the
 // stage, no vertical scrolling. Then it solves every case, sorts the warm-up, tries the recording
 // view's pen and zoom on a 16:10 tablet, and fails on any
@@ -151,19 +151,21 @@ async function layoutPass(size) {
     const m = await measure(size, `slide ${i + 1}`);
     const tag = `${size.name}-${String(i + 1).padStart(2, "0")}-${m.id}`;
     await shot(tag);
-    // the mirror on a drawing: each wall on its own, one at a time, measured; a stray click closes it
+    // a painted drawing's spots (the mirror's walls, Three arteries' arteries): each on its own, one at a time,
+    // measured; it names itself and shows its leads, or lights the walls it feeds; a stray click closes it
     const spots = await js(`Deck.slides[Deck.i].querySelectorAll(".hsi-spot").length`);
     for (let k = 0; k < spots; k++) {
       await js(`Deck.slides[Deck.i].querySelectorAll(".hsi-spot")[${k}].dispatchEvent(new MouseEvent("click", { bubbles: true })), true`);
       await sleep(600);
-      await measure(size, `slide ${i + 1} wall ${k + 1}`);
-      const st = await js(`(() => { const s = Deck.slides[Deck.i]; return { leads: s.querySelectorAll(".hs-leads.on").length, names: s.querySelectorAll(".hsi-label.on").length }; })()`);
-      if (st.leads !== 1 || st.names !== 1) fail(`${size.name} slide ${i + 1}: wall ${k + 1} did not open on its own (${st.leads} leads, ${st.names} names)`);
-      await shot(`${tag}-wall${k + 1}`);
+      await measure(size, `slide ${i + 1} spot ${k + 1}`);
+      const st = await js(`(() => { const s = Deck.slides[Deck.i]; return { leads: s.querySelectorAll(".hs-leads.on").length, hasLeads: !!s.querySelector(".hs-leads"), lit: s.querySelectorAll("[data-is].on").length, hasLit: !!s.querySelector("[data-is]"), names: s.querySelectorAll(".hsi-label.on").length }; })()`);
+      if (st.names !== 1 || (st.hasLeads && st.leads !== 1) || (st.hasLit && !st.lit))
+        fail(`${size.name} slide ${i + 1}: spot ${k + 1} did not open on its own (${st.names} names, ${st.leads} leads, ${st.lit} walls lit)`);
+      await shot(`${tag}-spot${k + 1}`);
     }
     if (spots) {
       await js(`document.querySelector(".slide.active h2")?.click(), true`);
-      if (await js(`!!Deck.slides[Deck.i].querySelector(".hs-leads.on")`)) fail(`${size.name} slide ${i + 1}: a click elsewhere did not close the wall`);
+      if (await js(`!!Deck.slides[Deck.i].querySelector(".hsi-label.on, .hs-leads.on, [data-is].on")`)) fail(`${size.name} slide ${i + 1}: a click elsewhere did not close it`);
     }
     // a story or a working: tap it through every beat, measuring each
     if (await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`)) {
@@ -864,10 +866,10 @@ async function darkPass() {
 
 let outline = null;
 try {
-  // the presenter's deck is recorded on a tablet or shown on a desktop, never opened on a phone: no phone pass
+  // the presenter's deck is recorded on a landscape tablet or shown on a desktop: no portrait tablet or phone pass
   await layoutPass(SIZES[0]);
   const deckOnly = await js("PRESENTER");
-  for (const size of SIZES.slice(1)) if (!(deckOnly && size.name === "phone")) await layoutPass(size);
+  for (const size of SIZES.slice(1)) if (!(deckOnly && ["phone", "tablet"].includes(size.name))) await layoutPass(size);
   outline = await js(`MRCP_TOOLS["lesson-outline"].execute()`);
   await solvePass();
   await arabicPass();
