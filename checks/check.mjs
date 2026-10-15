@@ -167,6 +167,21 @@ async function layoutPass(size) {
       await js(`document.querySelector(".slide.active h2")?.click(), true`);
       if (await js(`!!Deck.slides[Deck.i].querySelector(".hsi-label.on, .hs-leads.on, [data-is].on")`)) fail(`${size.name} slide ${i + 1}: a click elsewhere did not close it`);
     }
+    // the slice and its leads: each wall's button on its own, measured; its own leads and its mirror light, the rest
+    // fade; a stray click closes it
+    const hslWalls = await js(`Deck.slides[Deck.i].querySelectorAll(".hsl-wall").length`);
+    for (let k = 0; k < hslWalls; k++) {
+      await js(`Deck.slides[Deck.i].querySelectorAll(".hsl-wall")[${k}].click(), true`);
+      await sleep(600);
+      await measure(size, `slide ${i + 1} wall ${k + 1}`);
+      const st = await js(`(() => { const s = Deck.slides[Deck.i]; return { pressed: s.querySelectorAll('.hsl-wall[aria-pressed="true"]').length, own: s.querySelectorAll(".hsl-lead.own").length, lines: s.querySelectorAll(".hsl-lines.on").length }; })()`);
+      if (st.pressed !== 1 || !st.own || st.lines !== 1) fail(`${size.name} slide ${i + 1}: wall ${k + 1} did not light on its own (${st.pressed} pressed, ${st.own} leads)`);
+      await shot(`${tag}-wall${k + 1}`);
+    }
+    if (hslWalls) {
+      await js(`document.querySelector(".slide.active h2")?.click(), true`);
+      if (await js(`!!Deck.slides[Deck.i].querySelector(".hsl-lines.on, .hsl-lead.own")`)) fail(`${size.name} slide ${i + 1}: a click elsewhere did not close the wall`);
+    }
     // a story or a working: tap it through every beat, measuring each
     if (await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`)) {
       for (let n = 0; n < 20 && await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`); n++) {

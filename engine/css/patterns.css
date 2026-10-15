@@ -1210,6 +1210,24 @@ html.has-ar:not(.ar-off) .choices:has(.ar):has(> :nth-child(4)){--per:2}
 .hsa .hsi-fig{width:100%;aspect-ratio:1520/941}
 .hsa-wall{transition:fill .35s ease,stroke .35s ease}
 .hsa-wall.on{fill:var(--x-bg);stroke:var(--x-solid);stroke-width:3.5}
+/* the slice and its leads: the leads stand round the painted slice; a wall's button lights its own and its mirror */
+.hsl{display:flex;flex-direction:column;gap:14px;flex:1;min-height:0}
+.hsl-fig{position:relative;flex:1 1 auto;min-height:300px;margin:0}
+.hsl-svg{position:absolute;inset:0;display:block;width:100%;height:100%;overflow:visible}
+.hsl-spot{fill:var(--gray-bg);stroke:var(--muted);stroke-width:3.5;transition:fill .3s ease}
+.hsl-spot.on{fill:var(--x-solid);stroke:var(--surface);stroke-width:4}
+.hsl-lines{opacity:0;transition:opacity .4s ease}
+.hsl-lines.on{opacity:1}
+.hsl-lead{transition:opacity .4s ease}
+.hsl-lead rect{fill:var(--surface);stroke:var(--border-strong);stroke-width:3;transition:fill .3s ease,stroke .3s ease}
+.hsl-lead text{font:700 30px var(--sans);fill:var(--ink)}
+.hsl-up,.hsl-down{fill:none;stroke-width:4.5;stroke-linejoin:round;opacity:0;transition:opacity .4s ease}
+.hsl-lead.own rect{fill:var(--x-bg);stroke:var(--x-solid);stroke-width:4}
+.hsl-lead.own text{fill:var(--x-ink)}
+.hsl-lead.own .hsl-up{opacity:1;stroke:var(--x-solid)}
+.hsl-lead.mir rect{stroke:var(--muted);stroke-dasharray:10 8}
+.hsl-lead.mir .hsl-down{opacity:1;stroke:var(--muted)}
+.hsl-lead.fade{opacity:.3}
 .hsi-r{transform:translateY(-50%)}
 .hsi-l{transform:translate(-100%,-50%)}
 .hsi-b{transform:translate(-50%,-50%)}

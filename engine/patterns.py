@@ -744,8 +744,81 @@ def p_heart_arteries(slide, topic):
             % (e(slide.get("alt", "The whole heart and its coronary arteries; tap an artery")), svg, labels, slc))
 
 
+# the slice and its leads (mode: leads, on the painted slice alone): the leads stand round the slice where they look
+# from, as an echo's short axis shows it; a wall's button lights the wall, its own leads (in its artery's colour,
+# ST up) with dotted lines to it, and its mirror leads (dashed, ST down) with dashed lines on through the heart;
+# the rest fade. One wall at a time
+
+
+def _hsl_names(text, leads):
+    """A wall's leads as the slide's lead names: "II, III, aVF" -> three; a range is one name if the slide has it
+    (V7–V9), else each lead in it (V1–V3)."""
+    out = []
+    for part in [t.strip() for t in (text or "").split(",") if t.strip()]:
+        if part in leads:
+            out.append(part)
+        elif "–" in part:
+            a, b = part.split("–")
+            out += ["V%d" % n for n in range(int(a[1:]), int(b[1:]) + 1)]
+        else:
+            out.append(part)
+    return out
+
+
+def p_heart_leads(slide, topic):
+    import base64
+    from engine.heartsvg import WALLS, RV, beat
+    with open(os.path.join(FIGURES, slide["image"] + ".webp"), "rb") as f:
+        data = base64.b64encode(f.read()).decode("ascii")
+    vx, vy, vw, vh = slide["view"]
+    ix, iy, iw, ih = slide["image_box"]
+    leads, spots = slide["leads"], slide["walls"]
+    cx = ix + iw / 2.0
+    names = dict((w, (label, a)) for w, label, a in HEART_WALLS)
+    info, lines, dots, buttons = {}, "", "", ""
+    # the buttons in the lesson's order for the walls (HEART_WALLS: inferior first)
+    order = [w for w, _, _ in HEART_WALLS]
+    for key, name, ang, art, own, mir in sorted(WALLS + [RV], key=lambda w: order.index(w[0])):
+        fam = concept(topic, art)["family"]
+        o, m = _hsl_names(own, leads), _hsl_names(mir, leads)
+        info[key] = {"own": o, "mir": m, "family": fam}
+        px, py = spots[key]
+        g = ""
+        for n in o:
+            lx, ly = leads[n]
+            g += ('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="var(--%s-solid)" stroke-width="4" stroke-dasharray="3 10" stroke-linecap="round"/>'
+                  % (lx, ly, px, py, fam))
+        for n in m:
+            lx, ly = leads[n]
+            g += '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="var(--muted)" stroke-width="4" stroke-dasharray="12 10"/>' % (px, py, lx, ly)
+        lines += '<g class="hsl-lines" data-wall="%s">%s</g>' % (key, g)
+        dots += '<circle class="hsl-spot f-%s" data-wall="%s" cx="%d" cy="%d" r="14"/>' % (fam, key, px, py)
+        label, arabic = names[key]
+        buttons += ('<button class="h3d-wall hsl-wall f-%s" type="button" data-wall="%s" aria-pressed="false">%s</button>'
+                    % (fam, key, named(label, arabic)))
+    pills = ""
+    for n, (lx, ly) in leads.items():
+        w, h = len(n) * 17 + 40, 54
+        # the beat stands outside the pill, away from the heart
+        bx = lx + w / 2.0 + 10 if lx >= cx else lx - w / 2.0 - 100
+        pills += ('<g class="hsl-lead" data-lead="%s"><rect x="%.0f" y="%.0f" width="%d" height="%d" rx="27"/>'
+                  '<text x="%d" y="%d" text-anchor="middle">%s</text>'
+                  '<path class="hsl-up" d="%s"/><path class="hsl-down" d="%s"/></g>'
+                  % (e(n), lx - w / 2.0, ly - h / 2.0, w, h, lx, ly + 11, e(n),
+                     beat(bx, ly + 12, 90, 34, st=.3, t=.35), beat(bx, ly + 4, 90, 34, st=-.3, t=.25)))
+    svg = ('<svg class="hsl-svg" viewBox="%d %d %d %d" role="img" aria-label="%s">'
+           '<image href="data:image/webp;base64,%s" x="%d" y="%d" width="%d" height="%d"/>%s%s%s</svg>'
+           % (vx, vy, vw, vh, e(slide.get("alt", "A slice across both ventricles with the ECG leads round it")),
+              data, ix, iy, iw, ih, lines, dots, pills))
+    return (heading(slide) + '<div class="hsl" data-hsl="%s"><figure class="hsl-fig">%s</figure>'
+            '<div class="h3d-walls" role="group" aria-label="Walls">%s</div></div>'
+            % (e(json.dumps(info, ensure_ascii=False)), svg, buttons))
+
+
 def p_heart_slice(slide, topic):
     from engine.heartsvg import WALLS, RV, slice_parts, pt
+    if slide.get("mode") == "leads":
+        return p_heart_leads(slide, topic)
     if slide.get("image") and slide.get("mode") != "mirror":
         return p_heart_arteries(slide, topic)
     if slide.get("image"):

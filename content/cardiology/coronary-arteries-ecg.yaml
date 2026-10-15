@@ -69,8 +69,33 @@ learn:
     title_ar: ثلاثة شرايين
 
   # The 3D heart: drag to turn it; a wall turns to face you, its leads with ST up, the mirror leads (dashed) with ST down.
+  # The slice alone (art/make_heart_drawings.py: heart-section-a3 with the rest of the heart masked away), the leads
+  # round it where they look from, as an echo's short axis shows it; a wall's button lights its own leads (dotted
+  # lines to it) and its mirror (dashed, on through the heart) (the user chose C, 2026-10-16; it replaced the 3D heart)
   - id: turn
-    pattern: heart3d
+    pattern: heart-slice
+    mode: leads
+    image: heart-cut
+    image_box: [660, 330, 650, 530]   # where the WebP sits in the drawing's 1672 x 941 pixels
+    view: [480, 220, 1020, 760]       # the part of that grid the slide shows
+    # each wall's point on the drawing
+    walls: { inferior: [1020, 725], septal: [890, 580], anterior: [1040, 395], lateral: [1205, 580], posterior: [1160, 690], rv: [697, 630] }
+    # where each lead stands, round the slice: anterior up, inferior down, the septum and right ventricle left
+    leads:
+      V1: [614, 441]
+      V2: [726, 335]
+      V3: [911, 270]
+      V4: [1099, 278]
+      I: [1264, 350]
+      aVL: [1372, 472]
+      V5: [1402, 619]
+      V6: [1361, 741]
+      V7–V9: [1242, 857]
+      II: [1071, 920]
+      aVF: [897, 920]
+      III: [738, 864]
+      V4R: [571, 653]
+      aVR: [560, 320]
     title: Turn the heart
     title_ar: أدر القلب
 

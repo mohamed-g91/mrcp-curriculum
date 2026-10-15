@@ -47,3 +47,27 @@ function buildHeartImages() {
     ClickAway.add(e => { if (!e.target.closest(".hsi-spot")) set(-1); });
   });
 }
+
+/* the slice and its leads (p_heart_leads): a wall's button lights the wall, its own leads and the dotted lines to it,
+   and its mirror leads with the dashed lines on through the heart; the other leads fade. One wall at a time:
+   tapping its button again, or anywhere else, closes it. */
+function buildHeartLeads() {
+  $$(".hsl").forEach(box => {
+    const info = JSON.parse(box.dataset.hsl), buttons = $$(".hsl-wall", box);
+    let open = null;
+    const set = key => {
+      open = key;
+      const w = key ? info[key] : null;
+      buttons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.wall === key)));
+      $$(".hsl-spot", box).forEach(c => c.classList.toggle("on", c.dataset.wall === key));
+      $$(".hsl-lines", box).forEach(g => g.classList.toggle("on", g.dataset.wall === key));
+      $$(".hsl-lead", box).forEach(g => {
+        const n = g.dataset.lead, own = !!w && w.own.includes(n), mir = !!w && w.mir.includes(n);
+        g.setAttribute("class", "hsl-lead" + (own ? " own f-" + w.family : mir ? " mir" : w ? " fade" : ""));
+      });
+    };
+    buttons.forEach(b => b.addEventListener("click", () => set(open === b.dataset.wall ? null : b.dataset.wall)));
+    onEnter(box, () => set(null));
+    ClickAway.add(e => { if (!e.target.closest(".hsl-wall")) set(null); });
+  });
+}
