@@ -618,8 +618,90 @@ def _hs_lead(x, y, label, up, fam, wall_xy):
                "var(--%s-solid)" % fam if up else "var(--muted)"))
 
 
+# with an `image` (a painted drawing in content/figures, its walls' points in the drawing's own pixels) the mirror
+# works as on the flat slice: each wall is a grey spot on the drawing; tapping one lights it, names it and shows its
+# leads (ST up) on a card just outside it and its mirror leads (dashed, ST down) on a card just outside the wall they
+# face, with one dashed straight line from card to card through the heart. One wall at a time. The names are HTML over the drawing, so
+# the Arabic switch and the page's fonts work on them; the box below is the drawing's own grid, from x 80 to 1720
+HSI_BOX = (80, 0, 1640, 941)
+HSI_ROW = 870                 # a name in the bottom row (B) stands on this line
+HSI_CW, HSI_CH = 250, 115     # a lead card
+HSI_CENTRE = (1040, 560)      # the middle of the left ventricle, for walls with no mirror
+
+
+def _hsi_card(cx, cy, label, up, fam):
+    from engine.heartsvg import beat
+    x, y, w, h = cx - HSI_CW / 2.0, cy - HSI_CH / 2.0, HSI_CW, HSI_CH
+    col = "var(--%s-solid)" % fam if up else "var(--muted)"
+    return ('<rect x="%.0f" y="%.0f" width="%d" height="%d" rx="18" fill="var(--surface)" stroke="%s" stroke-width="3.5"%s/>'
+            '<text x="%.0f" y="%.0f" class="hsi-lead">%s</text>'
+            '<path d="%s" fill="none" stroke="%s" stroke-width="5" stroke-linejoin="round"/>'
+            % (x, y, w, h, "var(--%s-solid)" % fam if up else "var(--gray-bd)", '' if up else ' stroke-dasharray="12 9"',
+               x + 20, y + 38, e(label), beat(x + 26, y + 92, w - 52, 38, st=.3 if up else -.3, t=.35 if up else .25), col))
+
+
+def _hsi_out(p, q):
+    """Where a card stands: beyond p, on the line from q through p, clear of the slice (80 units past the wall
+    plus the card's own half-size along the line)."""
+    dx, dy = p[0] - q[0], p[1] - q[1]
+    n = (dx * dx + dy * dy) ** .5
+    ux, uy = dx / n, dy / n
+    d = 80 + abs(ux) * HSI_CW / 2.0 + abs(uy) * HSI_CH / 2.0
+    return p[0] + d * ux, p[1] + d * uy
+
+
+def p_heart_image(slide, topic):
+    import base64
+    from engine.heartsvg import WALLS, RV
+    walls = dict((k, (name, art, own, mir)) for k, name, ang, art, own, mir in WALLS + [RV])
+    names = dict((w, (label, a)) for w, label, a in HEART_WALLS)
+    with open(os.path.join(FIGURES, slide["image"] + ".webp"), "rb") as f:
+        data = base64.b64encode(f.read()).decode("ascii")
+    bx, by, bw, bh = HSI_BOX
+    ix, iy, iw, ih = slide["image_box"]
+    spots = slide["walls"]
+    pct = lambda x, y: "left:%.2f%%;top:%.2f%%" % ((x - bx) * 100.0 / bw, (y - by) * 100.0 / bh)
+    marks, leads, labels, spots_svg = "", "", "", ""
+    for i, (key, spot) in enumerate(spots.items()):
+        px, py, side, at = spot[:4]
+        _, art, own, mir = walls[key]
+        fam = concept(topic, art)["family"]
+        label, arabic = names[key]
+        # a name stands in the right (R) or left (L) column at height `at`, or in the bottom row (B) at x `at`
+        x0 = slide["columns"][side] if side in "RL" else at
+        y0 = at if side in "RL" else HSI_ROW
+        ex, ey = (x0, y0) if side in "RL" else (x0, y0 - 32)
+        marks += ('<line class="hsi-mark" data-i="%d" x1="%d" y1="%d" x2="%d" y2="%d" stroke="var(--%s-solid)" stroke-width="4"/>'
+                  % (i, px, py, ex, ey, fam))
+        spots_svg += ('<g class="hsi-spot f-%s" data-i="%d" tabindex="0" role="button" aria-pressed="false" aria-label="%s wall">'
+                      '<circle class="hsi-hit" cx="%d" cy="%d" r="48"/><circle class="hsi-dot" cx="%d" cy="%d" r="15"/></g>'
+                      % (fam, i, e(label), px, py, px, py))
+        # the mirror leads face another wall (`faces`: a wall's key, or a point); with none the card stands out from the middle
+        face = (slide.get("faces") or {}).get(key)
+        if mir and face:
+            q = tuple(spots[face][:2]) if isinstance(face, str) else tuple(face)
+            a = _hsi_out((px, py), q)
+            b = _hsi_out(q, (px, py))
+            g = ('<line x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke="var(--muted)" stroke-width="4" stroke-dasharray="14 12"/>'
+                 % (a[0], a[1], b[0], b[1]) + _hsi_card(a[0], a[1], own, True, fam) + _hsi_card(b[0], b[1], mir, False, fam))
+        else:
+            # a card can be placed by hand (`card_at`) where the line out from the middle would cover another wall
+            a = tuple((slide.get("card_at") or {}).get(key) or _hsi_out((px, py), HSI_CENTRE))
+            g = ('<line x1="%.0f" y1="%.0f" x2="%d" y2="%d" stroke="var(--%s-solid)" stroke-width="4" stroke-dasharray="14 12"/>'
+                 % (a[0], a[1], px, py, fam) + _hsi_card(a[0], a[1], own, True, fam))
+        leads += '<g class="hs-leads" data-i="%d">%s</g>' % (i, g)
+        labels += '<span class="hsi-label hsi-%s f-%s" data-i="%d" style="%s">%s</span>' % (side.lower(), fam, i, pct(x0, y0), named(label, arabic))
+    svg = ('<svg class="hsi-svg" viewBox="%d %d %d %d">'
+           '<image href="data:image/webp;base64,%s" x="%d" y="%d" width="%d" height="%d"/>%s%s%s</svg>'
+           % (bx, by, bw, bh, data, ix, iy, iw, ih, marks, leads, spots_svg))
+    return (heading(slide) + '<div class="hsi"><figure class="hsi-fig" aria-label="%s">%s%s</figure></div>'
+            % (e(slide.get("alt", "The heart cut across both ventricles; tap a wall")), svg, labels))
+
+
 def p_heart_slice(slide, topic):
     from engine.heartsvg import WALLS, RV, slice_parts, pt
+    if slide.get("image"):
+        return p_heart_image(slide, topic)
     mirror = slide.get("mode") == "mirror"
     cx, cy, R, r = HS_CX, HS_CY, HS_R, HS_r
     parts, rest = slice_parts(cx, cy, R, r)

@@ -1189,6 +1189,25 @@ html.has-ar:not(.ar-off) .choices:has(.ar):has(> :nth-child(4)){--per:2}
 .hs-art{display:flex;align-items:center;min-width:0;gap:10px;font-weight:700;font-size:clamp(17px,calc(2 * var(--u)),24px);color:var(--x-ink)}
 .hs-dot{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--x-solid);color:var(--on-solid);font:750 18px var(--sans)}
 @container (max-width:700px){.hs{grid-template-columns:minmax(0,1fr)}.hs-card{min-width:0}}
+/* the mirror on a painted drawing: the names are HTML over the drawing, sized from its width (1640 units across) */
+.hsi{display:flex;justify-content:center;align-items:center;width:100%;min-height:0;flex:1 1 auto;margin-top:clamp(4px,calc(1 * var(--u)),14px)}
+.hsi-fig{position:relative;flex:none;margin:0;aspect-ratio:1640/941;height:auto;width:min(100%,790px);container-type:inline-size}
+/* each wall a grey spot until it is tapped; the hit area is wider than the dot */
+.hsi-spot{cursor:pointer;outline:none}
+.hsi-hit{fill:transparent}
+.hsi-dot{fill:var(--gray-bg);stroke:var(--muted);stroke-width:4;transition:fill .25s ease,stroke .25s ease}
+.hsi-spot:hover .hsi-dot{fill:var(--x-bg);stroke:var(--x-solid)}
+.hsi-spot:focus-visible .hsi-dot{stroke:var(--primary);stroke-width:7}
+.hsi-spot.on .hsi-dot{fill:var(--x-solid);stroke:var(--surface)}
+.hsi-svg{display:block;width:100%;height:auto;overflow:visible}
+.hsi-lead{font:750 34px var(--sans);fill:var(--ink)}
+.hsi-mark{opacity:0;transition:opacity .5s ease}
+.hsi-mark.on{opacity:1}
+.hsi-label{position:absolute;display:inline-flex;align-items:center;white-space:nowrap;padding:.32em .8em;font:700 2cqw/1.2 var(--sans);color:var(--x-ink);background:var(--x-bg);border:max(1.5px,.12cqw) solid var(--x-bd);border-radius:999px;opacity:0;pointer-events:none;transition:opacity .5s ease}
+.hsi-label.on{opacity:1}
+.hsi-r{transform:translateY(-50%)}
+.hsi-l{transform:translate(-100%,-50%)}
+.hsi-b{transform:translate(-50%,-50%)}
 
 /* reveal cards on a blind slide: grey, no Arabic and no colour until the card opens */
 .rcard.blind:not(.on){border-color:var(--border);border-top-color:var(--gray-bd)}

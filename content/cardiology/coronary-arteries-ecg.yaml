@@ -65,9 +65,28 @@ learn:
   # The same slice: a tapped wall shows its own leads (ST up) and its mirror leads across the heart (dashed, ST down).
   # Pairs: inferior / I, aVL; lateral / III, aVF; anterior / II, III, aVF (a sign of a proximal LAD); posterior: V7–V9
   # with its mirror in V1–V3 (ESC 2023, 3.2.1); septal and RV none (Zimetbaum and Josephson 2003).
+  # On Codex's drawing of the heart cut across (art/make_heart_section.py), seen as on an echo's short axis: each tap
+  # names the next wall, in the 3D slide's order, and shows its own leads and its mirror (the user chose B, 2026-10-15).
   - id: mirror
     pattern: heart-slice
     mode: mirror
+    image: heart-section
+    image_box: [320, 0, 1020, 870]   # where the WebP sits in the drawing's 1672 x 941 pixels
+    # each wall: its point on the drawing, then where its name stands: R or L, a column at that height; B, the bottom row at that x
+    columns: {R: 1330, L: 560}
+    walls:
+      inferior:  [1020, 725, L, 880]
+      septal:    [890, 580, L, 470]
+      anterior:  [1040, 395, R, 330]
+      lateral:   [1205, 580, R, 600]
+      posterior: [1160, 690, R, 720]
+      rv:        [697, 630, L, 780]
+    # the wall each mirror faces: its leads' card stands beyond it, on one dashed line through the heart from the
+    # wall's own card (inferior: I, aVL face the lateral wall; lateral and anterior: III / II, III, aVF the inferior;
+    # posterior: V1–V3 face the front of the septum)
+    faces: {inferior: lateral, lateral: inferior, anterior: inferior, posterior: [930, 430]}
+    # the septum's card stands below the heart, so it does not cover the right ventricle
+    card_at: {septal: [700, 830]}
     title: The mirror
     title_ar: المرآة
 

@@ -131,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
   buildStories();
   buildHearts();
   buildHeartSlices();
+  buildHeartImages();
   buildWorkings();
   buildClueStems();
   buildRevealCards();

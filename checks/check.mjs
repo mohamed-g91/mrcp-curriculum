@@ -151,6 +151,20 @@ async function layoutPass(size) {
     const m = await measure(size, `slide ${i + 1}`);
     const tag = `${size.name}-${String(i + 1).padStart(2, "0")}-${m.id}`;
     await shot(tag);
+    // the mirror on a drawing: each wall on its own, one at a time, measured; a stray click closes it
+    const spots = await js(`Deck.slides[Deck.i].querySelectorAll(".hsi-spot").length`);
+    for (let k = 0; k < spots; k++) {
+      await js(`Deck.slides[Deck.i].querySelectorAll(".hsi-spot")[${k}].dispatchEvent(new MouseEvent("click", { bubbles: true })), true`);
+      await sleep(600);
+      await measure(size, `slide ${i + 1} wall ${k + 1}`);
+      const st = await js(`(() => { const s = Deck.slides[Deck.i]; return { leads: s.querySelectorAll(".hs-leads.on").length, names: s.querySelectorAll(".hsi-label.on").length }; })()`);
+      if (st.leads !== 1 || st.names !== 1) fail(`${size.name} slide ${i + 1}: wall ${k + 1} did not open on its own (${st.leads} leads, ${st.names} names)`);
+      await shot(`${tag}-wall${k + 1}`);
+    }
+    if (spots) {
+      await js(`document.querySelector(".slide.active h2")?.click(), true`);
+      if (await js(`!!Deck.slides[Deck.i].querySelector(".hs-leads.on")`)) fail(`${size.name} slide ${i + 1}: a click elsewhere did not close the wall`);
+    }
     // a story or a working: tap it through every beat, measuring each
     if (await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`)) {
       for (let n = 0; n < 20 && await js(`!!Deck.slides[Deck.i].querySelector(".stepper")`); n++) {

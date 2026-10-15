@@ -24,3 +24,24 @@ function buildHeartSlices() {
     ClickAway.add(e => { if (!e.target.closest(".hs-part, .hs-card")) set(null); });
   });
 }
+
+/* the mirror on a painted drawing (p_heart_image): each wall is a spot on the drawing; tapping one lights it, names it
+   and shows its own leads and its mirror, joined by a dashed line through the heart. One wall at a time: tapping
+   it again, or anywhere else, closes it. */
+function buildHeartImages() {
+  $$(".hsi-fig").forEach(fig => {
+    const spots = $$(".hsi-spot", fig);
+    let open = -1;
+    const set = i => {
+      open = i;
+      $$(".hsi-label, .hsi-mark, .hs-leads", fig).forEach(x => x.classList.toggle("on", +x.dataset.i === i));
+      spots.forEach(p => { const on = +p.dataset.i === i; p.classList.toggle("on", on); p.setAttribute("aria-pressed", String(on)); });
+    };
+    spots.forEach(p => {
+      p.addEventListener("click", () => set(open === +p.dataset.i ? -1 : +p.dataset.i));
+      p.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); p.dispatchEvent(new MouseEvent("click", { bubbles: true })); } });
+    });
+    onEnter(fig, () => set(-1));
+    ClickAway.add(e => { if (!e.target.closest(".hsi-spot")) set(-1); });
+  });
+}
