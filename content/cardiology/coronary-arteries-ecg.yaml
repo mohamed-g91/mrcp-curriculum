@@ -53,7 +53,7 @@ learn:
   # its own lights in its artery's colour, and the card beside it names the wall and its artery (the user, 2026-10-13).
   # Rebuilt on Codex's whole heart from the front (art/make_heart_drawings.py), beside the slice: tapping an artery
   # names it and lights the walls it feeds (the user chose B, 2026-10-16). The left main lights the LAD's and the
-  # circumflex's walls; its Arabic is a draft until the user approves it.
+  # circumflex's walls; its Arabic was approved 2026-10-16.
   - id: arteries
     pattern: heart-slice
     image: heart-front
