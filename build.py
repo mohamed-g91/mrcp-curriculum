@@ -450,6 +450,10 @@ def check_topic(t, expected_id):
                     errs.append(f"{where}: case {c['id']} has no [[clue]] in its stem")
                 if c.get("scene") and not os.path.exists(os.path.join(ROOT, "content", "figures", c["scene"] + ".svg")):
                     errs.append(f"{where}: case {c['id']} has no drawing at content/figures/{c['scene']}.svg")
+                # notes: one short line for each wrong option, none for the answer
+                notes = c.get("notes") or {}
+                if notes and (set(notes) != set(opts) - {c["answer"]} or not all(notes.values())):
+                    errs.append(f"{where}: case {c['id']} needs one note for each wrong option and none for the answer")
                 for key in ("question", "hint", "why"):
                     if not c.get(key):
                         errs.append(f"{where}: case {c['id']} has no {key}")

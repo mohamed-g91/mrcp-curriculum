@@ -2,7 +2,7 @@
 /* ---------- stem quiz: one-question cases ----------
    Each run deals the cases in a fresh random order, with the solved example first, and numbers
    them by their place in the run. Each case fixes its own order for the options. A wrong answer
-   gives a hint and lights the clue phrase; a right one shows why and lights the bar's Next. */
+   gives its option's note (or the hint) and lights the clue phrase; a right one shows why and lights the bar's Next. */
 function caseOrder(opts, id) {
   let h = 2166136261;
   for (const ch of id) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0;
@@ -60,7 +60,10 @@ function buildCaseSlide(Q, c, num) {
         first = false;
         b.classList.add("wrong"); b.disabled = true; if (!quiet) shake(b);
         fb.className = "feedback show bad";
-        fb.innerHTML = `${icon("cross")}<span><b>Not quite.</b> ${esc(c.hint)} The key phrase is highlighted in the stem.</span>`;
+        // a wrong option with its own note says, in one line, what that answer would look like
+        const note = c.notes && c.notes[key];
+        fb.innerHTML = note ? `${icon("cross")}<span><b>${esc(k.label)}:</b> ${esc(note)}</span>`
+          : `${icon("cross")}<span><b>Not quite.</b> ${esc(c.hint)} The key phrase is highlighted in the stem.</span>`;
         $$("mark", sec).forEach(m => m.classList.add("lit"));
       }
       if (!quiet) requestAnimationFrame(() => bringIntoView(fb));

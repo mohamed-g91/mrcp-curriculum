@@ -133,6 +133,10 @@ practise:
         answer: rca
         hint: Which wall do II, III and aVF face?
         why: "II, III and aVF face the inferior wall, which the RCA feeds in most hearts. The slow pulse fits: the RCA also feeds the AV node."
+        notes:
+          "lad": "ST elevation in V1–V4."
+          "lcx": "ST elevation in I, aVL, V5 and V6."
+          "Left main": "ST elevation in aVR, ST depression in six or more leads."
         tutor: "Leads, then wall, then artery: II, III, aVF, the inferior wall, the RCA."
 
       - id: c02
@@ -142,6 +146,10 @@ practise:
         answer: lad
         hint: Which walls do V1 to V4 face?
         why: "V1 and V2 face the septum and V3 and V4 the front wall: both are fed by the LAD. The inferior depression is its mirror."
+        notes:
+          "rca": "ST elevation in II, III and aVF."
+          "lcx": "ST elevation in I, aVL, V5 and V6."
+          "Left main": "ST elevation in aVR, ST depression in six or more leads."
 
       - id: c03
         options: [lad, lcx, rca, Left main]
@@ -150,6 +158,10 @@ practise:
         answer: lcx
         hint: Which wall do I, aVL, V5 and V6 face?
         why: "These four leads face the lateral wall, fed by the circumflex. III and aVF show the mirror."
+        notes:
+          "lad": "ST elevation in V1–V4."
+          "rca": "ST elevation in II, III and aVF."
+          "Left main": "ST elevation in aVR, ST depression in six or more leads."
 
       - id: c04
         options: [Proximal LAD, Distal LAD, lcx, rca]
@@ -158,6 +170,10 @@ practise:
         answer: Proximal LAD
         hint: How many walls are involved?
         why: "The septum, the front wall and the lateral wall at once: the LAD blocked high up, before its first branches."
+        notes:
+          "Distal LAD": "ST elevation in V3–V6, sparing V1, I and aVL."
+          "lcx": "ST elevation in I, aVL, V5 and V6."
+          "rca": "ST elevation in II, III and aVF."
 
       - id: c05
         options: [Posterior leads V7–V9, Right-sided leads V3R–V4R, Repeat troponin in 3 hours, Echocardiogram]
@@ -166,6 +182,10 @@ practise:
         answer: Posterior leads V7–V9
         hint: Which wall has no lead facing it on a standard ECG?
         why: "V1–V3 see the posterior wall from the front, upside down: the depression is its mirror. ST elevation in V7–V9 confirms a posterior STEMI, often the circumflex."
+        notes:
+          "Right-sided leads V3R–V4R": "for a right ventricular infarct, with an inferior STEMI."
+          "Repeat troponin in 3 hours": "delays a STEMI that needs reperfusion now."
+          "Echocardiogram": "does not replace the ECG to diagnose a STEMI."
 
       - id: c06
         options: [Glyceryl trinitrate, Aspirin, Morphine, IV fluids]
@@ -174,6 +194,10 @@ practise:
         answer: Glyceryl trinitrate
         hint: What does the right ventricle depend on when it is starved?
         why: "A right ventricular infarct: the heart depends on preload. Nitrates lower it and the pressure falls further (ESC 2023). Fluids, given with care, help."
+        notes:
+          "Aspirin": "given in every STEMI."
+          "Morphine": "for severe pain, in small doses."
+          "IV fluids": "help, given with care: they keep up the preload."
 
       - id: c07
         options: [Critical proximal LAD stenosis, Old anterior infarct, Pericarditis, Left ventricular hypertrophy]
@@ -182,6 +206,10 @@ practise:
         answer: Critical proximal LAD stenosis
         hint: The patient is pain-free now. What is about to happen?
         why: "Wellens' pattern: a critical stenosis high in the LAD, about to block. It needs angiography, not a stress test."
+        notes:
+          "Old anterior infarct": "Q waves in V1–V4."
+          "Pericarditis": "widespread ST elevation, PR depression."
+          "Left ventricular hypertrophy": "tall QRS, with lateral ST depression and T inversion (strain)."
 
       - id: c08
         options: [I and aVL, V1–V3, V5 and V6, aVR]
@@ -190,6 +218,10 @@ practise:
         answer: I and aVL
         hint: Which leads look at the heart from the opposite side?
         why: "I and aVL look from the upper left, across the heart from the inferior wall, so they see the same injury upside down."
+        notes:
+          "V1–V3": "the mirror of a posterior STEMI."
+          "V5 and V6": "elevated if the infarct spreads to the lateral wall."
+          "aVR": "elevated, with widespread depression, in left main disease."
 
       - id: c09
         options: [lad, lcx, rca, Left main]
@@ -198,6 +230,10 @@ practise:
         answer: rca
         hint: Which artery feeds the AV node in most hearts?
         why: "Inferior STEMI with heart block: the RCA, which feeds the AV node in about 9 in 10 hearts."
+        notes:
+          "lad": "ST elevation in V1–V4."
+          "lcx": "ST elevation in I, aVL, V5 and V6."
+          "Left main": "ST elevation in aVR, ST depression in six or more leads."
 
       - id: c10
         options: [lad, lcx, rca, Left main]
@@ -206,6 +242,10 @@ practise:
         answer: lcx
         hint: Which wall do V5 and V6 face?
         why: "V5 and V6 face the lateral wall, fed by the circumflex."
+        notes:
+          "lad": "changes in V1–V4."
+          "rca": "changes in II, III and aVF."
+          "Left main": "ST elevation in aVR, ST depression in six or more leads."
 
       - id: c11
         twist: true
@@ -215,6 +255,10 @@ practise:
         answer: Left main
         hint: What does widespread depression with ST elevation in aVR suggest?
         why: "ST elevation in aVR with widespread ST depression suggests left main or three-vessel disease (ESC 2023)."
+        notes:
+          "lad": "ST elevation in V1–V4."
+          "lcx": "ST elevation in I, aVL, V5 and V6."
+          "rca": "ST elevation in II, III and aVF."
 
   - id: end
     pattern: end

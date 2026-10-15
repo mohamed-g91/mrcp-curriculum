@@ -141,6 +141,10 @@ practise:
         answer: CTCA for both
         hint: Does an abnormal resting ECG change the plan for non-anginal pain?
         why: "A has typical angina; a normal ECG does not rule it out. B's pain is non-anginal, but her ST-T changes put her on the same track. With no known heart disease, both get CT coronary angiography (NICE CG95)."
+        notes:
+          "CTCA for A; no test for B": "B's abnormal resting ECG puts her on the CTCA track."
+          "Exercise ECG for both": "not used to diagnose angina without known coronary disease (NICE)."
+          "Invasive angiography for A; CTCA for B": "invasive angiography comes only after inconclusive non-invasive tests."
         tutor: "Count the features, read the resting ECG, then ask about known heart disease."
 
       - id: c02
@@ -150,6 +154,10 @@ practise:
         answer: atypical
         hint: Count the three features. Which one is missing?
         why: "Constricting and brought on by exertion, but not relieved within about 5 minutes: two features, atypical angina."
+        notes:
+          "typical": "all three features."
+          "nonanginal": "one feature or none."
+          "Unstable angina": "new, worsening or at rest."
 
       - id: c03
         options: [No cardiac test, CT coronary angiography, Exercise ECG, Stress echocardiogram]
@@ -158,6 +166,10 @@ practise:
         answer: No cardiac test
         hint: How many of the three features does her pain have?
         why: "Her pain is non-anginal and her resting ECG is normal, so angina is excluded and no cardiac test is offered (NICE CG95). Look for another cause."
+        notes:
+          "CT coronary angiography": "for typical or atypical angina, or an abnormal resting ECG."
+          "Exercise ECG": "not used to diagnose angina without known coronary disease (NICE)."
+          "Stress echocardiogram": "for known coronary disease, or an uncertain CTCA."
 
       - id: c04
         options: [Stress echocardiogram, CT coronary angiography, Invasive coronary angiography, Chest X-ray]
@@ -166,6 +178,10 @@ practise:
         answer: Stress echocardiogram
         hint: Is there known coronary disease?
         why: "With known coronary disease, the question is whether this narrowing causes the pain: a functional test such as a stress echo, not CT coronary angiography (NICE CG95)."
+        notes:
+          "CT coronary angiography": "for suspected angina without known coronary disease."
+          "Invasive coronary angiography": "when functional imaging is inconclusive."
+          "Chest X-ray": "does not show coronary disease."
 
       - id: c05
         options: [Invasive coronary angiography, Exercise ECG, Repeat CT coronary angiography, Discharge]
@@ -174,6 +190,10 @@ practise:
         answer: Invasive coronary angiography
         hint: What comes after functional imaging that does not decide it?
         why: "CTCA first, functional imaging when it is uncertain, and invasive coronary angiography when that is inconclusive (NICE CG95)."
+        notes:
+          "Exercise ECG": "not used to diagnose angina without known coronary disease (NICE)."
+          "Repeat CT coronary angiography": "adds nothing to an uncertain CTCA."
+          "Discharge": "leaves typical angina undiagnosed."
 
       - id: c06
         options: [Dobutamine, Adenosine, Dipyridamole]
@@ -182,6 +202,9 @@ practise:
         answer: Dobutamine
         hint: Which agents can tighten the airways?
         why: "Adenosine and dipyridamole can cause bronchospasm. Dobutamine stresses the heart as exercise does, and suits a stress echo."
+        notes:
+          "Adenosine": "can cause bronchospasm."
+          "Dipyridamole": "can cause bronchospasm."
 
       - id: c07
         options: [Microvascular angina, Vasospastic angina, Hypertrophic cardiomyopathy, Pericarditis]
@@ -190,6 +213,10 @@ practise:
         answer: Microvascular angina
         hint: Where can the blood flow fail if the large arteries are clear?
         why: "Exertional angina with ischaemia on stress testing and clear large arteries: the small vessels fail, cardiac syndrome X."
+        notes:
+          "Vasospastic angina": "pain at rest, transient ST elevation."
+          "Hypertrophic cardiomyopathy": "a thick septum on the echo, a murmur louder on Valsalva."
+          "Pericarditis": "sharp pain, worse lying flat; widespread ST elevation, PR depression."
 
       - id: c08
         options: [Vasospastic angina, Microvascular angina, Stable angina, Pericarditis]
@@ -198,6 +225,10 @@ practise:
         answer: Vasospastic angina
         hint: Pain at rest, at dawn, with ST elevation that comes and goes?
         why: "Prinzmetal (vasospastic) angina: the artery clamps itself shut at rest, often early in the morning, with transient ST elevation and a normal angiogram."
+        notes:
+          "Microvascular angina": "pain on exertion, ST depression, clear arteries."
+          "Stable angina": "pain on exertion, eased by rest."
+          "Pericarditis": "constant pleuritic pain; widespread ST elevation, PR depression."
 
   - id: end
     pattern: end
