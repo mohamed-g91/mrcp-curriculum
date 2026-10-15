@@ -238,3 +238,5 @@ the last two weeks ago (30 minutes of rest pain could read as ACS, CG95 1.2.1.3)
 NICE's condition ("without known heart disease"); the hook's ECGs say what they show to screen readers; the two pathway slides
 open on their question (start: 1); stress MRI wall motion lists exercise too; build.py checks the hook's patients, art stories
 and card figures. Then pushed.
+
+**Arabic terms approved by the user 2026-10-15** (listed in DESIGN.md, Arabic).
