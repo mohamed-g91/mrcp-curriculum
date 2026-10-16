@@ -263,7 +263,7 @@ practise:
         notes:
           "Aspirin": "given in every STEMI."
           "Morphine": "for severe pain, in small doses."
-          "IV fluids": "help, given with care: they keep up the preload."
+          "IV fluids": "given with care: they keep up the preload."
 
       - id: c07
         options: [Critical proximal LAD stenosis, Old anterior infarct, Pericarditis, Left ventricular hypertrophy]
