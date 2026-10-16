@@ -285,3 +285,33 @@ This is a content extension of the existing lesson surface, using CLAUDE.md/DESI
 it introduces no visual world or replacement design system.
 
 **Status: Built — awaiting the author's lesson and Arabic review, 2026-10-16.**
+
+## Review and new order (agreed with the author, 2026-10-16)
+
+Claude reviewed Codex's build. Committed: caveat lines off slides 2, 7, 8, 10 and 11; the ISMN card states the
+principle; c06's stem no longer gives the spacing away; c13's and c16's options no longer cue the answer.
+None of Codex's figures are approved: every figure is redone from a mockup sheet (three options each).
+
+New Learn order:
+
+| # | Slide | Shows |
+| --- | --- | --- |
+| 1 | Which drug next? | The hook |
+| 2 | Two goals (new) | Small overview: relieve the symptoms, protect the heart; we enter the first |
+| 3 | Relief now: GTN | The fastest relief: 0, 5, 10 minutes; side effects; never with sildenafil |
+| 4 | The first drug | Beta-blocker or CCB, chosen for the patient |
+| 5 | Up to the highest tolerated dose (new) | Titrate before adding; pulse or BP is the limit; review in 2–4 weeks |
+| 6 | The add-on | Beta-blocker + dihydropyridine; never with verapamil or diltiazem |
+| 7 | The spare drugs | Nitrate, nicorandil, ivabradine, ranolazine |
+| 8 | Still symptomatic? | Kept (the author: important): two drugs controlled → no third; not controlled → angiography → PCI or CABG |
+| 9 | Protect the heart | CG126 1.3.5–1.3.8, 1.2.6 and NG238 1.7.2–1.7.3: aspirin 75 mg (consider), atorvastatin 80 mg whatever the cholesterol, treat BP, ACE inhibitor (consider) with diabetes, lifestyle |
+| 10 | Angina with a normal angiogram | Vasospastic, microvascular |
+| 11 | Back to the hook | Solved |
+
+- After a stent: removed (stable angina pathway, not stents). Case c16 to be retired with it.
+- Pitfalls and tricks: a card added in the video edit, not a Learn slide. Contraindications, side effects,
+  titrate before adding, and each drug's maximum angina dose (doses to be checked against the BNF first).
+- Open: a "no vitamin or fish oil supplements" card (CG126 1.3.9) on Protect the heart; the CKS rule that a CCB
+  alone is rate-limiting (not confirmed: CKS is UK-only).
+
+**Status: Agreed (new order) — mockup sheet next, 2026-10-16.**
