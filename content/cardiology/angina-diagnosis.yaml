@@ -197,7 +197,7 @@ practise:
 
       - id: c06
         options: [Dobutamine, Adenosine, Dipyridamole]
-        stem: "A 70-year-old man with known coronary disease needs a functional test to find whether a narrowing causes his chest pain. He has [[severe asthma]]."
+        stem: "A 70-year-old man with known coronary disease and [[a history of asthma]] needs a functional test to find whether a narrowing causes his chest pain."
         question: Which stress agent should be used?
         answer: Dobutamine
         hint: Which agents can tighten the airways?
@@ -215,7 +215,7 @@ practise:
         why: "Exertional angina with ischaemia on stress testing and clear large arteries: the small vessels fail, cardiac syndrome X."
         notes:
           "Vasospastic angina": "pain at rest, transient ST elevation."
-          "Hypertrophic cardiomyopathy": "a thick septum on the echo, a murmur louder on Valsalva."
+          "Hypertrophic cardiomyopathy": "a thick septum on the echo, a systolic murmur louder on Valsalva."
           "Pericarditis": "sharp pain, worse lying flat; widespread ST elevation, PR depression."
 
       - id: c08
@@ -228,7 +228,7 @@ practise:
         notes:
           "Microvascular angina": "pain on exertion, ST depression, clear arteries."
           "Stable angina": "pain on exertion, eased by rest."
-          "Pericarditis": "constant pleuritic pain; widespread ST elevation, PR depression."
+          "Pericarditis": "sharp pain, worse lying flat; widespread ST elevation, PR depression."
 
   - id: end
     pattern: end
