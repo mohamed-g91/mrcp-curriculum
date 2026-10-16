@@ -177,7 +177,7 @@ LAD and its Arabic reused from lesson 1 (approved); everything else is a draft.
 
 | ID | Stem (short) | Answer | Other options |
 | --- | --- | --- | --- |
-| c01 | The hook, solved (two patients): next step in management? | CT coronary angiography for both | CTCA for A, no cardiac test for B; Exercise ECG for both; Invasive angiography for A, CTCA for B |
+| c01 | The hook, solved (two patients): next step in management? | CT coronary angiography for both | CTCA for A, no cardiac test for B; Exercise ECG for both; Angiography for A, CTCA for B |
 | c02 | Chest tightness on the hill that takes 20 minutes to settle after stopping | Atypical angina | Typical angina; Non-anginal chest pain; Unstable angina |
 | c03 | Woman of 35, no risk factors: sharp left chest pain at rest, worse on breathing in, normal ECG. Next? | No cardiac test | CT coronary angiography; Exercise ECG; Stress echocardiogram |
 | c05 | Stent three years ago, new exertional tightness. Next? | Stress echocardiogram | CT coronary angiography; Invasive coronary angiography; Chest X-ray |

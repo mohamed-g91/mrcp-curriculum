@@ -134,9 +134,10 @@ practise:
     # The first case is the solved example; the rest are dealt in a random order.
     cases:
       - id: c01
+        scene: case-two-patients
         solved: true
-        options: [CTCA for both, "CTCA for A; no test for B", Exercise ECG for both, "Invasive angiography for A; CTCA for B"]
-        stem: "Two patients with risk factors and no history of heart disease. A, a man of 61, has central chest tightness walking uphill, gone three minutes after he stops; his resting ECG is normal. B, a woman of 58, has a tight feeling in her chest while she sits watching television, fading after about ten minutes, last two weeks ago; her resting ECG shows [[T-wave inversion in V4–V6]]."
+        options: [CTCA for both, "CTCA for A; no test for B", Exercise ECG for both, "Angiography for A; CTCA for B"]
+        stem: "Two patients with risk factors and no known heart disease. A, a man of 61, has central chest tightness walking uphill, gone three minutes after he stops; resting ECG normal. B, a woman of 58, has chest tightness while watching television, fading after ten minutes, last two weeks ago; resting ECG: [[T-wave inversion in V4–V6]]."
         question: What is the next step in management?
         answer: CTCA for both
         hint: Does an abnormal resting ECG change the plan for non-anginal pain?
@@ -144,10 +145,11 @@ practise:
         notes:
           "CTCA for A; no test for B": "B's abnormal resting ECG puts her on the CTCA track."
           "Exercise ECG for both": "not used to diagnose angina without known coronary disease (NICE)."
-          "Invasive angiography for A; CTCA for B": "invasive angiography comes only after inconclusive non-invasive tests."
+          "Angiography for A; CTCA for B": "invasive angiography comes only after inconclusive non-invasive tests."
         tutor: "Count the features, read the resting ECG, then ask about known heart disease."
 
       - id: c02
+        scene: case-stairs-man
         options: [typical, atypical, nonanginal, Unstable angina]
         stem: "A 57-year-old man has had two months of central chest tightness when he climbs the stairs at work. [[It takes 20 minutes to settle]] after he stops."
         question: How is his chest pain classed?
@@ -160,6 +162,7 @@ practise:
           "Unstable angina": "new, worsening or at rest."
 
       - id: c03
+        scene: case-side-woman
         options: [No cardiac test, CT coronary angiography, Exercise ECG, Stress echocardiogram]
         stem: "A 35-year-old woman with no risk factors has a sharp pain under her left breast at rest, lasting seconds and [[worse when she breathes in]]. Her resting ECG is normal."
         question: What is the next step?
@@ -172,6 +175,7 @@ practise:
           "Stress echocardiogram": "for known coronary disease, or an uncertain CTCA."
 
       - id: c04
+        scene: case-shoe-man
         options: [Stress echocardiogram, CT coronary angiography, Invasive coronary angiography, Chest X-ray]
         stem: "A 66-year-old man [[had a coronary stent three years ago]]. He now has chest tightness when he walks fast, easing with rest."
         question: What is the next step?
@@ -184,6 +188,7 @@ practise:
           "Chest X-ray": "does not show coronary disease."
 
       - id: c05
+        scene: case-results-woman
         options: [Invasive coronary angiography, Exercise ECG, Repeat CT coronary angiography, Discharge]
         stem: "A 59-year-old woman has typical angina. CT coronary angiography shows disease of uncertain significance, and a [[stress perfusion MRI is inconclusive]]."
         question: What is the next step?
@@ -196,6 +201,7 @@ practise:
           "Discharge": "leaves typical angina undiagnosed."
 
       - id: c06
+        scene: case-request-man
         options: [Dobutamine, Adenosine, Dipyridamole]
         stem: "A 70-year-old man with known coronary disease and [[a history of asthma]] needs a functional test to find whether a narrowing causes his chest pain."
         question: Which stress agent should be used?
@@ -207,6 +213,7 @@ practise:
           "Dipyridamole": "can cause bronchospasm."
 
       - id: c07
+        scene: case-lens-woman
         options: [Microvascular angina, Vasospastic angina, Hypertrophic cardiomyopathy, Pericarditis]
         stem: "A 54-year-old woman has typical angina. A stress echocardiogram shows [[ischaemia on exertion]], but invasive angiography shows clear coronary arteries."
         question: What is the most likely diagnosis?
@@ -219,6 +226,7 @@ practise:
           "Pericarditis": "sharp pain, worse lying flat; widespread ST elevation, PR depression."
 
       - id: c08
+        scene: case-handbag-woman
         options: [Vasospastic angina, Microvascular angina, Stable angina, Pericarditis]
         stem: "A 38-year-old woman who smokes wakes at 05:00 with chest pain at rest. Her ECG during the pain shows [[transient ST elevation]]; coronary angiography is normal."
         question: What is the most likely diagnosis?

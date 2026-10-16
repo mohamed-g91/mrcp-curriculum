@@ -200,6 +200,7 @@ practise:
     # The first case is the solved example; the rest are dealt in a random order.
     cases:
       - id: c01
+        scene: case-chest-man
         options: [lad, lcx, rca, Left main]
         solved: true
         stem: "A 62-year-old man has had 40 minutes of central chest pain. His pulse is 42 and his blood pressure 88/56 mmHg. His ECG shows [[ST elevation in II, III and aVF]] with ST depression in I and aVL."
@@ -214,6 +215,7 @@ practise:
         tutor: "Leads, then wall, then artery: II, III, aVF, the inferior wall, the RCA."
 
       - id: c02
+        scene: case-chest-woman
         options: [lad, lcx, rca, Left main]
         stem: "A 55-year-old woman has crushing chest pain. Her ECG shows [[ST elevation in V1 to V4]] with ST depression in II, III and aVF."
         question: Which artery is blocked?
@@ -226,6 +228,7 @@ practise:
           "Left main": "most of the left ventricle; ST elevation in aVR, ST depression in six or more leads."
 
       - id: c03
+        scene: case-arm-man
         options: [lad, lcx, rca, Left main]
         stem: "A 68-year-old man has chest pain radiating to his left arm. His ECG shows [[ST elevation in I, aVL, V5 and V6]] with ST depression in III and aVF."
         question: Which artery is blocked?
@@ -238,6 +241,7 @@ practise:
           "Left main": "most of the left ventricle; ST elevation in aVR, ST depression in six or more leads."
 
       - id: c04
+        scene: case-breathless-man
         options: [Proximal LAD, Distal LAD, lcx, rca]
         stem: "A 49-year-old man is pale and breathless with chest pain. His ECG shows [[ST elevation from V1 to V6 and in I and aVL]]."
         question: Where is the blockage?
@@ -250,6 +254,7 @@ practise:
           "rca": "the inferior wall; ST elevation in II, III and aVF."
 
       - id: c05
+        scene: case-ecg-woman
         options: [Posterior leads V7–V9, Right-sided leads V3R–V4R, Repeat troponin in 3 hours, Echocardiogram]
         stem: "A 71-year-old woman has ongoing central chest pain. Her ECG shows [[ST depression in V1 to V3 with tall R waves and upright T waves]]."
         question: What is the next step?
@@ -262,6 +267,7 @@ practise:
           "Echocardiogram": "does not replace the ECG to diagnose a STEMI."
 
       - id: c06
+        scene: case-bp-man
         options: [Glyceryl trinitrate, Aspirin, Morphine, IV fluids]
         stem: "A 60-year-old man has an inferior STEMI. His blood pressure is 84/50 mmHg, his [[JVP is raised and his chest is clear]]. V4R shows 1 mm ST elevation."
         question: Which drug should be avoided?
@@ -274,6 +280,7 @@ practise:
           "IV fluids": "given with care: they keep up the preload."
 
       - id: c07
+        scene: case-tube-man
         options: [Critical proximal LAD stenosis, Old anterior infarct, Pericarditis, Left ventricular hypertrophy]
         stem: "A 52-year-old man had chest pain yesterday and is now pain-free. His ECG shows [[deep, symmetrical T-wave inversion in V2 and V3]]; his troponin is just above the upper limit."
         question: What does the ECG show?
@@ -286,6 +293,7 @@ practise:
           "Left ventricular hypertrophy": "tall QRS, with lateral ST depression and T inversion (strain)."
 
       - id: c08
+        scene: case-ecg-woman
         options: [I and aVL, V1–V3, V5 and V6, aVR]
         stem: "A 66-year-old woman has an [[inferior STEMI]] with ST elevation in II, III and aVF."
         question: Where is the reciprocal ST depression most likely?
@@ -298,6 +306,7 @@ practise:
           "aVR": "elevated, with widespread depression, in left main disease."
 
       - id: c09
+        scene: case-watch-man
         options: [lad, lcx, rca, Left main]
         stem: "A 74-year-old man has chest pain and a pulse of 38. His ECG shows [[complete heart block with a narrow QRS]] and ST elevation in II, III and aVF."
         question: Which artery is blocked?
@@ -310,6 +319,7 @@ practise:
           "Left main": "most of the left ventricle; ST elevation in aVR, ST depression in six or more leads."
 
       - id: c10
+        scene: case-clock-woman
         options: [lad, lcx, rca, Left main]
         stem: "A 58-year-old woman had chest pain this morning. Her troponin is raised; there is no ST elevation, but [[T-wave inversion in V5 and V6]]."
         question: Which artery is most likely narrowed?
@@ -322,6 +332,7 @@ practise:
           "Left main": "most of the left ventricle; ST elevation in aVR, ST depression in six or more leads."
 
       - id: c11
+        scene: case-oxygen-man
         twist: true
         options: [Left main, lad, lcx, rca]
         stem: "A 77-year-old man is breathless and hypotensive with chest pain. His ECG shows [[ST elevation in aVR with ST depression in six or more leads]]."

@@ -176,6 +176,7 @@ practise:
         tutor: "Check the current drug, tolerated dose and pulse."
 
       - id: c02
+        scene: case-script-man
         options: [Bisoprolol, Isosorbide mononitrate, Nicorandil, Ivabradine]
         stem: "A 58-year-old man has newly confirmed stable atherosclerotic angina. Sinus pulse 78, BP 138/80 mmHg. He has no asthma, conduction disease or other contraindication. He has GTN for episodes and appropriate prevention treatment, but [[no regular anti-anginal drug]]."
         question: Which listed drug is a first-line regular treatment?
@@ -188,6 +189,7 @@ practise:
           Ivabradine: "not routine first line just because the pulse exceeds 70."
 
       - id: c03
+        scene: case-script-woman
         options: [Verapamil, Bisoprolol, Nicorandil, Isosorbide mononitrate]
         stem: "A 55-year-old woman with new stable angina has [[active wheezy asthma despite inhalers]]. Sinus pulse 82, BP 142/84 mmHg. LV systolic function is preserved and there is no conduction disease."
         question: Which listed regular treatment is most appropriate first line?
@@ -200,6 +202,7 @@ practise:
           Isosorbide mononitrate: "not routine first line when a CCB is suitable."
 
       - id: c04
+        scene: case-blister-man
         options: [Increase atenolol, Add amlodipine, Add verapamil, Add nicorandil]
         stem: "A 62-year-old man still has stable angina on [[atenolol 25 mg daily]]. Pulse 80, BP 146/82 mmHg, renal function normal. He reports no dizziness or other adverse effects."
         question: How should his anti-anginal treatment first be optimised?
@@ -212,6 +215,7 @@ practise:
           Add nicorandil: "optimise suitable first-line treatment before moving to alternatives."
 
       - id: c05
+        scene: case-bottle-man
         options: [Nicorandil, Bisoprolol, Ivabradine, Diltiazem]
         stem: "A 67-year-old man remains symptomatic on his maximum tolerated [[verapamil]]. A beta-blocker caused recurrent bronchospasm and was stopped. BP is adequate, LV function preserved, and he takes no PDE5 inhibitor."
         question: Which listed drug is a suitable add-on?
@@ -224,6 +228,7 @@ practise:
           Diltiazem: "duplicates the rate-limiting CCB and risks excessive rate reduction."
 
       - id: c06
+        scene: case-water-man
         options: [Doses at 08:00 and 16:00, Double each dose, Add a GTN patch at night, Take doses every 12 hours]
         stem: "A man adheres to immediate-release ISMN 20 mg at [[08:00 and 20:00]]. Initial benefit has faded, but the exertional pattern is unchanged and he has no rest pain."
         question: Which schedule change best addresses possible nitrate tolerance?
@@ -236,6 +241,7 @@ practise:
           Take doses every 12 hours: "preserves the evenly spaced schedule causing the problem."
 
       - id: c07
+        scene: case-medbag-man
         options: [Nicorandil, Amlodipine, Bisoprolol, Isosorbide mononitrate]
         stem: "A 71-year-old man taking several drugs for stable angina develops a persistent [[painful perianal ulcer]]. Conventional local treatment has not helped."
         question: Which listed drug is the most likely cause?
@@ -248,6 +254,7 @@ practise:
           Isosorbide mononitrate: "typically causes headache, flushing or hypotension."
 
       - id: c08
+        scene: case-box-woman
         options: [Ivabradine, Nicorandil, Amlodipine, Ranolazine]
         stem: "A 60-year-old woman notices brief [[flashes of light when moving into dim light]] after a new anti-anginal drug was started. Her prior ECG showed sinus rhythm and a resting rate of 78."
         question: Which drug most likely explains this effect?
@@ -260,6 +267,7 @@ practise:
           Ranolazine: "QT prolongation is the key caution here."
 
       - id: c09
+        scene: case-bp-man
         options: [Nifedipine MR, Isosorbide mononitrate, Nicorandil, Verapamil]
         stem: "A 64-year-old man has persistent stable angina on maximum tolerated bisoprolol. Pulse 56, BP 134/80 mmHg. He regularly takes [[sildenafil]]."
         question: Which listed drug can be added?
@@ -272,6 +280,7 @@ practise:
           Verapamil: "with bisoprolol risks bradycardia, AV block and heart failure."
 
       - id: c10
+        scene: case-sort-man
         options: [Aspirin, GTN, Bisoprolol, Amlodipine]
         stem: "A 59-year-old man has stable atherosclerotic angina, [[no previous MI and no LV dysfunction]]. His medicines are being separated into symptom relief and cardiovascular event prevention."
         question: Which listed drug is used for event prevention?
@@ -284,6 +293,7 @@ practise:
           Amlodipine: "relieves angina; it is not the antiplatelet prevention drug."
 
       - id: c11
+        scene: case-bottle-woman
         options: [Ramipril, Nicorandil, Ivabradine, Isosorbide mononitrate]
         stem: "A 63-year-old woman has atherosclerotic stable angina and [[type 2 diabetes]]. She takes aspirin and atorvastatin. BP, creatinine and potassium are suitable, with no ACE inhibitor contraindication."
         question: Which listed drug should be considered for cardiovascular prevention?
@@ -296,6 +306,7 @@ practise:
           Isosorbide mononitrate: "a symptom drug, not the ACE inhibitor being considered."
 
       - id: c12
+        scene: case-spray-man
         options: [Call an ambulance, Take a third GTN dose and wait, Rest for another 30 minutes, Take extra bisoprolol]
         stem: "A man with established angina develops chest pain. He takes sublingual GTN, then a second dose five minutes later because pain persists. [[Five minutes after the second dose, the pain is still present]]."
         question: What should he do now?
@@ -308,6 +319,7 @@ practise:
           Take extra bisoprolol: "does not replace emergency assessment and may cause bradycardia or hypotension."
 
       - id: c13
+        scene: case-stairs-man
         options: [Coronary angiography, Add ISMN, Add ivabradine, Add nicorandil]
         stem: "A 68-year-old man takes bisoprolol and amlodipine at maximum tolerated doses with good adherence. He has [[limiting angina most days despite treatment]]. Revascularisation has not yet been assessed and is acceptable to him."
         question: What is the next step?
@@ -320,6 +332,7 @@ practise:
           Add nicorandil: "do not bypass assessment of revascularisation by routinely adding a third symptom drug."
 
       - id: c14
+        scene: case-can-man
         options: [Continue current treatment, Add ISMN, Add ivabradine, Add nicorandil]
         stem: "A 68-year-old man takes bisoprolol and amlodipine. His symptoms are [[satisfactorily controlled]], treatment is tolerated and there is no known high-risk coronary anatomy."
         question: What change is needed to his symptom drugs?
@@ -332,6 +345,7 @@ practise:
           Add nicorandil: "adds adverse-effect risk without a current symptom-treatment indication."
 
       - id: c15
+        scene: case-handbag-woman
         options: [Amlodipine, Bisoprolol, Aspirin and clopidogrel, PCI]
         stem: "A 38-year-old woman who smokes has confirmed [[isolated vasospastic angina]], with transient ST elevation during early-morning rest pain and no obstructive coronary disease."
         question: Which listed treatment is first line?
