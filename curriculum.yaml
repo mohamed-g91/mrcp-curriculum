@@ -42,7 +42,7 @@ specialties:
     # (the Part 1 blueprint gives statistics, epidemiology and EBM about 5 of 200 questions).
     topics:
       # A. Describing data
-      - { slug: data-types,               title: Types of data,                        status: reviewed, section: A,  video: null }
+      - { slug: data-types,               title: Types of data,                        status: reviewed, section: A,  video: IBimXKQrae0 }
       - { slug: centre-shape-spread,      title: "Centre, shape and spread",           status: reviewed, section: A,  video: null }
       - { slug: standard-error,           title: Standard error,                       status: reviewed, section: A,  video: null }
       # B. Testing ideas
