@@ -53,6 +53,10 @@ a.brand-sub:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .slide{display:none;position:relative}
 .slide.active{display:flex;flex-direction:column;min-height:100%;animation:slideIn .45s var(--ease)}
 @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* changing slide, the frame holds: the old slide fades out where it stood, then the new one rises in (deck.js, handover) */
+.slide.leaving{display:flex;flex-direction:column;position:absolute;z-index:1;pointer-events:none;animation:slideOut .2s ease forwards}
+@keyframes slideOut{to{opacity:0}}
+.slide.active.after-leave{animation:slideIn .45s var(--ease) .2s both}
 .slide-center .center-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--gap);padding-bottom:clamp(8px,calc(2 * var(--u)),28px)}
 
 /* ---------- buttons ---------- */

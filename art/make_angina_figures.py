@@ -116,15 +116,19 @@ def heart(cx, cy, sc, short, uid):
     out += '<path d="%s" fill="var(--gray-bg)" stroke="var(--wall)" stroke-width="4"/>' % HEART
     if short:
         out += ('<g clip-path="url(#%s)"><path d="M18 -60 C12 50 -40 190 -45 200 L200 200 L200 -60 Z" fill="var(--cat-bg)"/>%s</g>'
-                % (uid, "".join('<line x1="%d" y1="200" x2="%d" y2="-60" stroke="var(--cat-bd)" stroke-width="3"/>' % (20 + k * 26, 60 + k * 26) for k in range(8))))
+                % (uid, "".join('<line x1="%d" y1="200" x2="%d" y2="-60" stroke="var(--cat-bd)" stroke-width="3"/>' % (20 + k * 26, 60 + k * 26) for k in range(8))
+                   # the starved wall flushes red a few times as the hill comes on
+                   + '<path class="isch" d="M18 -60 C12 50 -40 190 -45 200 L200 200 L200 -60 Z" fill="var(--bad-solid)"/>'))
     out += '<path d="%s" fill="none" stroke="var(--cat-solid)" stroke-width="10" stroke-linecap="round"/>' % LAD
     out += '<ellipse cx="21" cy="-88" rx="11" ry="20" fill="var(--sol-bg)" stroke="var(--sol-solid)" stroke-width="3"/>'
     return out + "</g>"
 
 
-def flow(x, y, n, gap=24):
-    return "".join('<path d="M%d %d l14 0 m-6 -6 l6 6 l-6 6" fill="none" stroke="var(--cat-solid)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>'
-                   % (x + k * gap, y) for k in range(n))
+def flow(x, y, n, gap=24, speed=1.1, start=0.0):
+    # each arrow slides into its place a few times when its beat comes on, one after another (class fl in
+    # engine/css/patterns.css): the blood moving; a queue before the narrowing moves slower (the user chose this, 2026-10-16)
+    return "".join('<path class="fl" style="--fs:%.1fs;--fd:%.2fs" d="M%d %d l14 0 m-6 -6 l6 6 l-6 6" fill="none" stroke="var(--cat-solid)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>'
+                   % (speed, start + k * .18, x + k * gap, y) for k in range(n))
 
 
 def zoom(cx, cy, need, uid):
@@ -133,7 +137,7 @@ def zoom(cx, cy, need, uid):
     out += '<rect x="%d" y="%d" width="200" height="60" fill="var(--cat-bg)" stroke="var(--cat-solid)" stroke-width="3"/>' % (cx - 100, cy - 30)
     out += '<path d="M%d %d Q%d %d %d %d Z" fill="var(--sol-bg)" stroke="var(--sol-solid)" stroke-width="3"/>' % (cx - 22, cy - 30, cx, cy + 10, cx + 22, cy - 30)
     # what arrives before the narrowing, and what gets through it
-    out += flow(cx - 84, cy + 14, need, 14 if need > 2 else 24) + flow(cx + 34, cy + 14, 2)
+    out += flow(cx - 84, cy + 14, need, 14 if need > 2 else 24, 1.7 if need > 2 else 1.1) + flow(cx + 34, cy + 14, 2, start=.5)
     return out + "</g>"
 
 

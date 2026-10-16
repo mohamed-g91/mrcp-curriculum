@@ -84,18 +84,48 @@ def lungs(cx, cy):
 
 
 VEIN = "#6F7FB0"
+
+
+def filled(cx, cy, k, label, col, levels, uid, fill="var(--gray-bg)", bd="var(--wall)"):
+    # a ventricle with its blood level, under the label: the level stands at --l0 and moves to --lN when beat N comes on
+    # (class lvl in engine/css/patterns.css), so the chamber is seen filling or running dry (the user chose this, 2026-10-16)
+    h = half(cx, cy, k, label, fill, bd)
+    d = h.split('<path d="')[1].split('"')[0]
+    style = ";".join("--l%d:%.0fpx" % (b, (1 - v) * 142 * k) for b, v in levels)
+    lv = ('<clipPath id="%s"><path d="%s"/></clipPath><g clip-path="url(#%s)"><g class="lvl" style="%s">'
+          '<rect x="%.0f" y="%.0f" width="%.0f" height="%.0f" fill="%s" opacity=".42"/>'
+          '<line x1="%.0f" y1="%.0f" x2="%.0f" y2="%.0f" stroke="%s" stroke-width="3"/></g></g>'
+          % (uid, d, uid, style, cx - 70 * k, cy - 26 * k, 140 * k, 150 * k, col, cx - 70 * k, cy - 26 * k, cx + 70 * k, cy - 26 * k, col))
+    i = h.index("<text")
+    return h[:i] + lv + h[i:]
+
+
+def flow(w, dash, col, x1, x2, y=160, speed=1.0):
+    # the blood running along an arrow, for a few seconds when its beat comes on (class flow in engine/css/patterns.css)
+    return ('<line class="flow" x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" stroke-width="%s" stroke-dasharray="%s" stroke-linecap="round" style="--fs:%.1fs"/>'
+            % (x1, y, x2, y, col, w, dash, speed))
+
+
+ART = "var(--bad-solid)"
+both = lambda w, dash, speed: flow(w, dash, VEIN, 268, 318, speed=speed) + flow(w, dash, ART, 533, 583, speed=speed)
+# the levels, as how full each ventricle is (1 = full): the RV fills to the brim when it fails; the LV runs low (BP down),
+# and fills again with IV fluids
 rv = [DEFS,
       # the veins coming up into the right heart: thin, then swollen
       '<g data-until="2"><path d="M60 400 V250 Q60 205 110 205" fill="none" stroke="%s" stroke-width="12" stroke-linecap="round"/></g>' % VEIN,
       '<g data-beat="2"><path d="M60 400 V250 Q60 205 110 205" fill="none" stroke="%s" stroke-width="28" stroke-linecap="round"/>%s</g>'
       % (VEIN, pill(68, 150, 120, "bad", "JVP ↑")),
-      '<g data-until="1">%s</g>' % half(190, 230, 1, "RV"),
-      '<g data-beat="1">%s%s</g>' % (half(190, 230, 1, "RV", "var(--se-bg)", "var(--se-solid)"), pill(190, 384, 80, "bad", "MI")),
+      '<g data-until="1">%s</g>' % filled(190, 230, 1, "RV", VEIN, [(0, .6)], "rvl0"),
+      '<g data-beat="1">%s%s</g>' % (filled(190, 230, 1, "RV", VEIN, [(0, .6), (1, .96)], "rvl1", "var(--se-bg)", "var(--se-solid)"), pill(190, 384, 80, "bad", "MI")),
       '<g data-until="3">%s%s</g>' % (arrow(265, 160, 330, 160), arrow(530, 160, 595, 160)),
+      # the flow along the arrows: full before the MI, a trickle after it, more again with fluids
+      '<g data-until="1">%s</g>' % both(5, "9 11", 1.0),
+      '<g data-beat="1" data-until="6">%s</g>' % both(2.5, "3 17", 2.2),
+      '<g data-beat="6">%s</g>' % both(4, "7 13", 1.4),
       lungs(430, 200),
       '<g data-beat="3">%s%s%s</g>' % (arrow(265, 160, 330, 160, dash=True), arrow(530, 160, 595, 160, dash=True), pill(430, 330, 170, "ok", "Lungs clear")),
-      '<g data-until="4">%s%s</g>' % (half(680, 230, 1, "LV"), arrow(680, 352, 680, 398)),
-      '<g data-beat="4">%s%s%s</g>' % (half(680, 236, .78, "LV"), arrow(680, 335, 680, 380, col="var(--bad-solid)"), pill(780, 380, 110, "bad", "BP ↓")),
+      '<g data-until="4">%s%s</g>' % (filled(680, 230, 1, "LV", ART, [(0, .6), (1, .5)], "lvl0"), arrow(680, 352, 680, 398)),
+      '<g data-beat="4">%s%s%s</g>' % (filled(680, 236, .78, "LV", ART, [(0, .5), (4, .18), (6, .5)], "lvl1"), arrow(680, 335, 680, 380, col="var(--bad-solid)"), pill(780, 380, 110, "bad", "BP ↓")),
       '<g data-beat="5">%s</g>' % lead_card(540, 10, "V4R", .3, "se"),
       '<g data-beat="6">%s%s%s%s</g>' % (pill(150, 30, 150, "ok", "IV fluids"), pill(330, 30, 170, "ok", "Reperfusion"),
                                         pill(150, 84, 150, "bad", "Nitrates", True), pill(330, 84, 160, "bad", "Diuretics", True))]

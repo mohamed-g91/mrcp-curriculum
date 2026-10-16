@@ -392,6 +392,14 @@ def check_topic(t, expected_id):
                         errs.append(f"{where}: its slots must be exactly {sorted(want)}, the ones its drawing has")
                     if not re.search(r'data-beat="\d+"', drawing):
                         errs.append(f"{where}: its drawing has no data-beat parts to build")
+                    # a moving level starts somewhere (--l0) and moves only on beats the drawing has (engine/css/patterns.css, lvl)
+                    beats = set(re.findall(r'data-beat="(\d+)"', drawing))
+                    for style in re.findall(r'class="lvl" style="([^"]*)"', drawing):
+                        at = re.findall(r"--l(\d+):", style)
+                        if "0" not in at:
+                            errs.append(f"{where}: a level in its drawing has no --l0 to start from")
+                        if [b for b in at if b != "0" and (b not in beats or int(b) > 6)]:
+                            errs.append(f"{where}: a level in its drawing moves on a beat it does not have (1 to 6)")
                     for text in slots.values():
                         refs += re.findall(r"\{(\w+)\}", str(text))
             elif kind == "sampling":

@@ -59,10 +59,26 @@ const Deck = {
     const after = s.nextElementSibling;
     return after && after.classList.contains("case") ? `Next case${icon("right")}` : `See your score${icon("right")}`;
   },
+  // changing slide, the frame holds: the old slide stays in its place for 0.2 s while it fades out, then the new one
+  // rises in (DESIGN.md, Behaviour rules). The bars never move. Off for reduced motion.
+  handover(old, s) {
+    $$(".slide.leaving").forEach(x => { x.classList.remove("leaving"); x.style.cssText = ""; });
+    clearTimeout(this.leaveTimer);
+    if (!old || old === s || !old.classList.contains("active") || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const { offsetTop: t, offsetLeft: l, offsetWidth: w, offsetHeight: h } = old;
+    old.style.cssText = `top:${t}px;left:${l}px;width:${w}px;height:${h}px`;
+    old.classList.add("leaving");
+    s.classList.add("after-leave");
+    this.leaveTimer = setTimeout(() => {
+      old.classList.remove("leaving"); old.style.cssText = "";
+      setTimeout(() => s.classList.remove("after-leave"), 500);
+    }, 220);
+  },
   // a solved case lights the bar's Next and puts the keyboard on it
   ready() { const b = $("#nextBtn"); b.classList.add("ready"); b.focus({ preventScroll: true }); },
   render() {
     const s = this.slides[this.i];
+    this.handover(this.shown, s);
     this.slides.forEach((x, k) => x.classList.toggle("active", k === this.i));
     fitArTitle(s);
     const label = s.getAttribute("aria-label") || "";

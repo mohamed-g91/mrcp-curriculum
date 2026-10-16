@@ -839,6 +839,25 @@ html.fluid .ask{position:fixed}
 .st-art .ct-strike{fill:none;stroke:var(--sc-line);stroke-width:3.5;stroke-linecap:round}
 .scene [data-until]{transition:opacity .5s ease}
 .scene [data-until].st-off{opacity:0}
+/* art that moves with its beats (the user chose these, 2026-10-16). A level (a ventricle's blood) stands at --l0 and
+   settles at --lN when beat N comes on; blood runs along an arrow (flow) or into a zoom (fl) a few times when its beat comes
+   on, then rests where it was drawn; a starved wall (isch) flushes red three times. Reduced motion: no movement. */
+.st-art .lvl{transform:translateY(var(--l0));transition:transform 1.6s var(--ease) .35s}
+.st-art:has([data-beat="1"].st-on) .lvl{transform:translateY(var(--l1,var(--l0)))}
+.st-art:has([data-beat="2"].st-on) .lvl{transform:translateY(var(--l2,var(--l1,var(--l0))))}
+.st-art:has([data-beat="3"].st-on) .lvl{transform:translateY(var(--l3,var(--l2,var(--l1,var(--l0)))))}
+.st-art:has([data-beat="4"].st-on) .lvl{transform:translateY(var(--l4,var(--l3,var(--l2,var(--l1,var(--l0))))))}
+.st-art:has([data-beat="5"].st-on) .lvl{transform:translateY(var(--l5,var(--l4,var(--l3,var(--l2,var(--l1,var(--l0)))))))}
+.st-art:has([data-beat="6"].st-on) .lvl{transform:translateY(var(--l6,var(--l5,var(--l4,var(--l3,var(--l2,var(--l1,var(--l0))))))))}
+.st-art .flow{animation:flowRun var(--fs,1s) linear 3}
+.st-art [data-beat] .flow{animation:none}
+.st-art [data-beat].st-on .flow{animation:flowRun var(--fs,1s) linear 3}
+@keyframes flowRun{from{stroke-dashoffset:40}to{stroke-dashoffset:0}}
+.st-art [data-beat].st-on .fl{animation:flowIn var(--fs,1.1s) var(--ease) var(--fd,0s) 3 both}
+@keyframes flowIn{0%{opacity:0;transform:translateX(-16px)}35%{opacity:1}100%{opacity:1;transform:none}}
+.st-art .isch{opacity:0}
+.st-art [data-beat].st-on .isch{animation:isch 1.4s ease .9s 3}
+@keyframes isch{50%{opacity:.4}}
 .st-pt{transition:transform .8s var(--ease),opacity .35s ease}
 .st-pt .st-num{font-size:22px}
 .st-pt circle{fill:var(--ink);transition:fill .3s ease;transform-box:fill-box;transform-origin:center}
