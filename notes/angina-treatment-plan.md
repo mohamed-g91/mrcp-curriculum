@@ -1,6 +1,6 @@
 # Treating stable angina (cardiology, lesson 3): plan
 
-Planned 2026-10-14; clinically checked and revised 2026-10-16 for the user's mark-up (gate 1). Nothing built.
+Planned 2026-10-14; clinically checked, approved for build and built 2026-10-16. The lesson is draft for author review.
 
 The user split stable angina in two (2026-10-14): lesson 2 (notes/angina-diagnosis-plan.md) diagnoses it; this lesson
 treats it, with room for the details. Topic `cardio.angina-treatment`, title "Treating stable angina"
@@ -219,7 +219,7 @@ c01 is the solved example, then c02–c16 are 15 scored cases in random order. T
 original stems at build; each wrong option gets a specific explanation, revealed only after an error. c02's explanation
 must also name a CCB as a valid first-line class; c03 must not imply asthma makes every beta-blocker absolutely
 forbidden in every clinical setting. c05 retains nicorandil as the sole suitable option **among those listed**.
-No IDs for this topic are present in `content/ids.lock` as of 2026-10-16; these are proposed IDs until first build.
+At planning time no IDs existed for this topic. The first build now records c01–c16 in `content/ids.lock`; they are permanent.
 
 ## Left out on purpose
 
@@ -266,11 +266,22 @@ All implementation was completed directly here; the unavailable external delegat
 The first browser pass found title-icon overflow on phones, an overlong solved-case stem, and overfull prevention
 cards. Fixed together: four representative title icons using existing `cover: false`, shorter case/caption text,
 subject-specific card illustrations, and the shorter draft Arabic term مثبطات ACE. The final six-size candidate
-and four-size presenter checks, including screenshots, are running. The initial pass already confirmed case solving,
-score, Arabic switching, recording controls, resume and the agent tools. No new engine behaviour was needed.
+and four-size presenter checks, including screenshots, pass: no layout problems, all cases solve, scoring works,
+and Arabic switching, recording controls, resume and the agent tools pass. The site check also passes at six sizes,
+including the lesson listing and thumbnail. No new engine behaviour was needed.
 
 Thumbnail regeneration: `python art/make_angina_treatment_figures.py --thumbnail` (local Chrome and Pillow);
 ordinary SVG generation uses the Python standard library. Build and screenshot reports are local under
 `art/drafts/treatment/`. New Arabic remains draft; the built lesson remains `status: draft` for author review.
 
-**Status: Built — final verification in progress, 2026-10-16.** Next: one built lesson review.
+Independent Codex QA identified two material fixes: a shared indication for the four alternative drugs, and a
+microvascular branch crossing its label. Fixed in one review batch: the alternatives slide now starts with a shared
+"When?" card, and the vessel branches clear their heading. The ivabradine reveal uses a compact pulse illustration;
+its mechanism remains in c08's explanation. Focused checks of both changed slides pass in five presenter views
+(including recording mode), with light/dark stage captures. The candidate file is byte-for-byte unchanged by these
+presenter-only fixes. Evidence: `art/drafts/treatment/review-fix-shots/report.json` and its 36 screenshots.
+
+This is a content extension of the existing lesson surface, using CLAUDE.md/DESIGN.md as its design authority;
+it introduces no visual world or replacement design system.
+
+**Status: Built — awaiting the author's lesson and Arabic review, 2026-10-16.**

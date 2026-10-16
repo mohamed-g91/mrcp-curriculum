@@ -150,8 +150,8 @@ def main():
     save('at-stent', 'Elective coronary stent antiplatelet course and risk from unplanned interruption', b)
 
     b = beat(1, text(215, 36, 'Vasospastic', 25) + vessel(140, 95, 150, spasm=True)
-              + text(645, 36, 'Microvascular', 25) + path('M560 82 h65 l50 -30 m-50 30 l50 34 m-50 -34 v48', 'primary', 4)
-              + path('M675 52 l45 -22 m-45 22 l45 16 m-45 48 l45 -15 m-45 15 l45 25', 'primary', 3))
+              + text(645, 36, 'Microvascular', 25) + path('M560 100 h65 l50 -20 m-50 20 l50 25 m-50 -25 v40', 'primary', 4)
+              + path('M675 80 l45 -15 m-45 15 l45 15 m-45 30 l45 -12 m-45 12 l45 18', 'primary', 3))
     b += beat(2, lines(215, 186, ['CCB first', 'Add nitrate if needed'], 24, 38)
               + lines(215, 280, ['Avoid beta-blockers', 'in isolated spasm'], 21, 28, 'bad-ink'))
     b += beat(3, lines(645, 186, ['Treat the mechanism', 'Impaired flow reserve:', 'Beta-blocker / CCB', 'Spasm: CCB'], 21, 36))
@@ -171,6 +171,7 @@ def main():
     b = vessel(15, 61, 115) + '<path d="M80 8 L114 23 V47 Q112 73 80 88 Q48 73 46 47 V23 Z" fill="var(--surface)" stroke="var(--primary)" stroke-width="4"/>'
     b += path('M65 45 l11 12 l22 -25', 'primary', 4)
     save('at-prevention-mini', 'A shield protecting a coronary artery', b, '0 0 160 100')
+    save('at-rate-mini', 'A pulse trace', path('M8 12 H52 l8 -8 l12 16 l8 -8 H152', 'primary', 3), '0 0 160 24')
 
     # Small subject-specific illustrations for the five prevention cards.
     b = vessel(15, 55, 130)

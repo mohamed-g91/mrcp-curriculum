@@ -95,22 +95,27 @@ learn:
     title_ar: الأدوية البديلة
     blind: true
     cards:
+      - family: gray
+        label: When?
+        ar: متى؟
+        icon: book
+        answer: "Neither first-line class suitable: consider monotherapy. One insufficient, other unsuitable: consider add-on."
       - concept: nitrate
         ar: النترات
         icon: artery
-        answer: "ISMN: nitrate-low interval prevents tolerance. This immediate-release product: 08:00 and 16:00. No PDE5 inhibitors."
+        answer: "ISMN (immediate release): 08:00 and 16:00. Nitrate-low night. No PDE5 inhibitors."
       - concept: nico
         ar: نيكورانديل
         icon: artery
-        answer: "Potassium-channel opener with a nitrate action. Mouth, gut, skin or eye ulcers: stop treatment. No PDE5 inhibitors."
+        answer: "Potassium-channel opener + nitrate action. Ulcers: stop treatment. No PDE5 inhibitors."
       - concept: iva
         ar: إيفابرادين
-        icon: bulb
-        answer: "Sinus If blocker: sinus rhythm, resting rate ≥70. Phosphenes. No verapamil, diltiazem or strong CYP3A4 inhibitors."
+        figure: at-rate-mini
+        answer: "Sinus rhythm; resting rate ≥70. Phosphenes. No verapamil, diltiazem or strong CYP3A4 inhibitors."
       - concept: rano
         ar: رانولازين
         icon: tag
-        answer: "Late sodium-current inhibitor; QT prolongation. Alone if neither first-line class is suitable; add if one fails and the other is unsuitable."
+        answer: "Late sodium-current inhibitor. QT prolongation."
 
   - id: escalation
     pattern: story
