@@ -1181,6 +1181,8 @@ const STORIES = {
     const src = $("template.st-art", chart.closest(".story")).content.querySelector("svg");
     svg.setAttribute("viewBox", src.getAttribute("viewBox"));
     svg.classList.add("scene", "st-art");
+    // the drawing's own description says what it shows; the slide title alone does not
+    if (src.getAttribute("aria-label")) svg.setAttribute("aria-label", src.getAttribute("aria-label"));
     [...src.cloneNode(true).childNodes].forEach(n => svg.appendChild(n));
     $$("[data-slot]", svg).forEach(t => { t.textContent = String(S.slots[t.dataset.slot]).replace(/\{(\w+)\}/g, (m, k) => concept(k).label); });
     const last = Math.max(...$$("[data-beat]", svg).map(g => +g.dataset.beat));

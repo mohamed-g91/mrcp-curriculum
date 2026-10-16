@@ -234,7 +234,7 @@ def main():
              + path('M650 150 h40 l35 -26 m-35 26 l35 26 m-12 -42 l30 -14 m-30 70 l30 12', 'primary', 3)
              + text(140, 278, 'Vasospastic', 23) + text(720, 278, 'Microvascular', 23))
     b += beat(2, text(140, 316, 'CCB first', 21, 'se-ink') + text(140, 344, 'nitrate if needed', 18, 'muted') + text(140, 376, 'Avoid beta-blockers', 18, 'bad-ink'))
-    b += beat(3, text(720, 316, 'Beta-blocker or CCB', 21, 'se-ink'))
+    b += beat(3, text(720, 316, 'Beta-blocker or CCB', 21, 'se-ink') + text(720, 344, 'Spasm-led: CCB', 18, 'muted'))
     b += beat(4, text(430, 400, 'Treat risk factors', 21))
     save('at-normal', 'Zoom circles: a spastic artery and the small vessels, with the treatment for each', b)
 
