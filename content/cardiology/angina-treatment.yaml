@@ -23,7 +23,7 @@ sources:
   - "SmPC. Ranolazine: late sodium current and QT (checked 2026-10-16). https://www.medicines.org.uk/emc/product/15795/smpc"
   - "NICE NG106. Avoid verapamil/diltiazem in HFrEF (checked 2026-10-16). https://www.nice.org.uk/guidance/ng106/chapter/recommendations"
   - "Vrints C et al. 2024 ESC Guidelines for chronic coronary syndromes. Eur Heart J 2024;45:3415–3537. Sections 4.2 and 5.2: symptom drugs, PCI antiplatelets and ANOCA/INOCA. https://doi.org/10.1093/eurheartj/ehae177"
-retired: []
+retired: [c16]  # after a stent: removed with its slide (the author, 2026-10-16)
 cover: concepts
 
 # New Arabic terms/titles are draft; normal-angiogram, Back to the hook and Your score reuse approved wording.
@@ -58,13 +58,13 @@ learn:
     stem: "Patient A, 61, has diabetes, hypertension and stable angina with 70% proximal LAD stenosis. Despite bisoprolol 10 mg, he has brief hill-induced pain twice weekly, without recent worsening or rest pain. Sinus pulse 52, BP 132/80 mmHg; LV function is preserved. He also takes GTN, aspirin, atorvastatin and ramipril."
     question: Which drug next?
 
-  - id: families
+  # The order agreed with the author 2026-10-16: two goals, then symptom relief step by step, then protecting the heart.
+  - id: goals
     pattern: story
-    title: Two families
-    title_ar: عائلتان من الأدوية
+    title: Two goals
+    title_ar: هدفان
     kind: art
-    art: at-families
-    slots: { bb: "{bb}", rlccb: "{rlccb}", iva: "{iva}", dhp: "{dhp}", nitrate: "{nitrate}", nico: "{nico}", rano: "{rano}" }
+    art: at-goals
 
   - id: gtn
     pattern: story
@@ -79,19 +79,27 @@ learn:
     title_ar: الدواء الأول
     kind: art
     art: at-first
-    slots: { bb: "{bb}", rlccb: "{rlccb}", dhp: "{dhp}" }
+    slots: { bb: "{bb}" }
 
-  - id: second
+  - id: titrate
     pattern: story
-    title: The second drug
-    title_ar: الدواء الثاني
+    title: Up to the highest tolerated dose
+    title_ar: حتى أعلى جرعة محتملة
     kind: art
-    art: at-second
+    art: at-titrate
+    slots: { bb: "{bb}" }
+
+  - id: addon
+    pattern: story
+    title: The add-on
+    title_ar: الدواء الإضافي
+    kind: art
+    art: at-addon
     slots: { bb: "{bb}", dhp: "{dhp}", rlccb: "{rlccb}" }
 
   - id: alternatives
     pattern: reveal-cards
-    title: The spare keys
+    title: The spare drugs
     title_ar: الأدوية البديلة
     blind: true
     cards:
@@ -102,20 +110,20 @@ learn:
         answer: "Neither first-line class suitable: consider monotherapy. One insufficient, other unsuitable: consider add-on."
       - concept: nitrate
         ar: النترات
-        icon: artery
+        figure: at-spare-nitrate
         answer: "ISMN: asymmetric doses leave a nitrate-low night, so no tolerance."
       - concept: nico
         ar: نيكورانديل
-        icon: artery
-        answer: "Potassium-channel opener + nitrate action. Ulcers: stop treatment. No PDE5 inhibitors."
+        figure: at-spare-nico
+        answer: "Ulcers anywhere in the gut: stop it. No PDE5 inhibitors."
       - concept: iva
         ar: إيفابرادين
-        figure: at-rate-mini
-        answer: "Sinus rhythm; resting rate ≥70. Phosphenes. No verapamil, diltiazem or strong CYP3A4 inhibitors."
+        figure: at-spare-iva
+        answer: "Flashes of light. Sinus rhythm, pulse ≥70."
       - concept: rano
         ar: رانولازين
-        icon: tag
-        answer: "Late sodium-current inhibitor. QT prolongation."
+        figure: at-spare-rano
+        answer: "Long QT."
 
   - id: escalation
     pattern: story
@@ -124,29 +132,12 @@ learn:
     kind: art
     art: at-escalation
 
-  - id: stent
-    pattern: story
-    title: After a stent
-    title_ar: بعد الدعامة
-    kind: art
-    art: at-stent
-
   - id: prevention
-    pattern: reveal-cards
+    pattern: story
     title: Protect the heart
     title_ar: الوقاية الثانوية
-    cards:
-      - concept: aspirin
-        figure: at-prevention-aspirin
-        answer: "75 mg daily. Assess bleeding risk and comorbidities."
-      - concept: statin
-        figure: at-prevention-statin
-        answer: "Atorvastatin 80 mg. Lower dose if needed."
-      - { family: np, label: Blood pressure, ar: ضغط الدم, figure: at-prevention-bp, answer: "Treat hypertension." }
-      - concept: ace
-        figure: at-prevention-ace
-        answer: "Consider with diabetes. Check BP, creatinine and potassium."
-      - { family: np, label: Smoking, ar: التدخين, figure: at-prevention-smoking, answer: "Stop smoking." }
+    kind: art
+    art: at-protect
 
   - id: normal
     pattern: story
@@ -161,7 +152,6 @@ learn:
     title_ar: العودة إلى الحالة
     kind: art
     art: at-solve
-    slots: { bb: "{bb}", dhp: "{dhp}" }
 
 practise:
   - id: cases
@@ -352,18 +342,6 @@ practise:
           Bisoprolol: "beta-blockers are avoided for isolated vasospasm."
           Aspirin and clopidogrel: "DAPT is not automatic without atherosclerotic disease or a stent."
           PCI: "there is no fixed obstructive lesion to stent."
-
-      - id: c16
-        options: [Stopped clopidogrel a month ago, Stopped atorvastatin a month ago, Stopped amlodipine a month ago, Stopped omeprazole a month ago]
-        stem: "A 72-year-old man presents with a STEMI [[two months after elective drug-eluting stent implantation]]. He was prescribed aspirin and clopidogrel for six months."
-        question: Which history most strongly suggests stent thrombosis?
-        answer: Stopped clopidogrel a month ago
-        hint: Which interruption removes part of the prescribed antiplatelet protection?
-        why: "Unplanned premature interruption of prescribed DAPT raises stent thrombosis risk, which may present as STEMI. Six months is a usual elective-PCI course in low bleeding risk without an oral anticoagulation indication; selected patients have shorter planned courses."
-        notes:
-          Stopped atorvastatin a month ago: "statins matter long term, but stopping one does not remove the stent's antiplatelet cover."
-          Stopped amlodipine a month ago: "removes a symptom drug, not the stent's antiplatelet cover."
-          Stopped omeprazole a month ago: "gut protection during DAPT; stopping it raises bleeding risk, not stent thrombosis."
 
   - id: end
     pattern: end

@@ -314,4 +314,14 @@ New Learn order:
 - Open: a "no vitamin or fish oil supplements" card (CG126 1.3.9) on Protect the heart; the CKS rule that a CCB
   alone is rate-limiting (not confirmed: CKS is UK-only).
 
-**Status: Agreed (new order) — mockup sheet next, 2026-10-16.**
+Mockup choices (the author, 2026-10-16): Two goals A (two cards: the patient, the heart with a shield);
+GTN A (timeline, the patient at each stop); First drug A (two doors, his tags point the way); Titration A
+(dose dial, the needle stops at his pulse); Add-on C (the heart slows, the artery opens, C crossed between);
+Spare drugs A (one small picture each); Still symptomatic C (traffic light); Protect the heart B (his own
+medicine list lights green); Normal angiogram B (two zoom circles on the painted heart); Back to the hook C
+(the hook card, the answer filled in).
+
+Built 2026-10-16 to the chosen mockups; c16 retired with the stent slide; the ivabradine card shortened to fit
+(its verapamil interaction stays in c05). Both checks pass. New Arabic titles remain drafts.
+
+**Status: Approved (built lesson), 2026-10-16. Codex QA before the push.**
