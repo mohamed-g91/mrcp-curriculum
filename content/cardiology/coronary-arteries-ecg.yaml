@@ -96,8 +96,8 @@ learn:
       III: [738, 864]
       V4R: [571, 653]
       aVR: [560, 320]
-    title: Turn the heart
-    title_ar: أدر القلب
+    title: Leads and walls
+    title_ar: الأقطاب والجدران   # draft, awaiting the user's review (2026-10-16)
 
   # The same slice: a tapped wall shows its own leads (ST up) and its mirror leads across the heart (dashed, ST down).
   # Pairs: inferior / I, aVL; lateral / III, aVF; anterior / II, III, aVF (a sign of a proximal LAD); posterior: V7–V9

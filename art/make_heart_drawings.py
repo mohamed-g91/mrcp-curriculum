@@ -1,7 +1,7 @@
 """Codex's painted hearts for Coronary arteries and the ECG (art/drafts/cardiology, local only), each cropped to the
 heart, its light background turned transparent so the page's own background (light or dark) shows through, and
 saved small in content/figures: the whole heart from the front (Three arteries) and the heart cut across, as on an
-echo's short axis (The mirror), and that slice alone, the rest of the heart masked away (Turn the heart). The page places each back at its crop in the drawing's own 1672 x 941 grid, so the
+echo's short axis (The mirror), and that slice alone, the rest of the heart masked away (Leads and walls). The page places each back at its crop in the drawing's own 1672 x 941 grid, so the
 points in the topic's YAML stay in the drawing's coordinates."""
 import os
 import numpy as np
