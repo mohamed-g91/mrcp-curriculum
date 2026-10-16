@@ -77,7 +77,7 @@ learn:
     mode: leads
     image: heart-cut
     image_box: [660, 330, 650, 530]   # where the WebP sits in the drawing's 1672 x 941 pixels
-    view: [480, 220, 1020, 760]       # the part of that grid the slide shows
+    view: [60, 220, 1440, 760]        # the part of that grid the slide shows (the patient on its left)
     # each wall's point on the drawing
     walls: { inferior: [1020, 725], septal: [890, 580], anterior: [1040, 395], lateral: [1205, 580], posterior: [1160, 690], rv: [697, 630] }
     # where each lead stands, round the slice: anterior up, inferior down, the septum and right ventricle left
@@ -96,6 +96,16 @@ learn:
       III: [738, 864]
       V4R: [571, 653]
       aVR: [560, 320]
+    # Sol's line-drawn patient beside the slice (the user chose C, 2026-10-16), drawn bare: the page puts the
+    # electrodes on him, in the drawing's 1086 x 1448 pixels. Chest: V1, V2 the 4th space either side of the sternum,
+    # V4 the 5th space at the midclavicular line, V3 between, V5 and V6 level with V4 at the anterior and mid-axillary
+    # lines; V4R mirrors V4 and shows only when the right ventricle is lit. Limbs: right and left wrist, right and left
+    # ankle, never lit (the limb leads are each made from two or three of them)
+    patient: patient-front
+    patient_box: [180, 30, 720, 1370]   # where the WebP sits in his drawing's pixels
+    patient_at: [70, 240, 720]           # where he stands in the slice's grid: left, top, height
+    electrodes: { V1: [527, 398], V2: [557, 398], V3: [594, 421], V4: [628, 445], V5: [649, 447], V6: [667, 450], V4R: [452, 445] }
+    limbs: [[272, 690], [806, 690], [438, 1272], [630, 1272]]
     title: Leads and walls
     title_ar: الأقطاب والجدران   # draft, awaiting the user's review (2026-10-16)
 

@@ -806,10 +806,24 @@ def p_heart_leads(slide, topic):
                   '<path class="hsl-up" d="%s"/><path class="hsl-down" d="%s"/></g>'
                   % (e(n), lx - w / 2.0, ly - h / 2.0, w, h, lx, ly + 11, e(n),
                      beat(bx, ly + 12, 90, 34, st=.3, t=.35), beat(bx, ly + 4, 90, 34, st=-.3, t=.25)))
+    body = ""
+    if slide.get("patient"):
+        # the patient beside the slice, in the same drawing (so both scale as one): his chest electrodes light as
+        # their leads do; the limb electrodes never do
+        with open(os.path.join(FIGURES, slide["patient"] + ".webp"), "rb") as f:
+            pdata = base64.b64encode(f.read()).decode("ascii")
+        bx, by, bw, bh = slide["patient_box"]
+        px0, py0, ph = slide["patient_at"]
+        els = "".join('<circle class="hsl-el hsl-limb" cx="%d" cy="%d" r="22"/>' % (x, y) for x, y in slide.get("limbs", []))
+        els += "".join('<circle class="hsl-el" data-lead="%s" cx="%d" cy="%d" r="12"/>' % (e(n), x, y)
+                       for n, (x, y) in slide["electrodes"].items())
+        body = ('<svg x="%d" y="%d" width="%.0f" height="%d" viewBox="%d %d %d %d" overflow="visible">'
+                '<image href="data:image/webp;base64,%s" x="%d" y="%d" width="%d" height="%d"/>%s</svg>'
+                % (px0, py0, ph * bw / float(bh), ph, bx, by, bw, bh, pdata, bx, by, bw, bh, els))
     svg = ('<svg class="hsl-svg" viewBox="%d %d %d %d" role="img" aria-label="%s">'
-           '<image href="data:image/webp;base64,%s" x="%d" y="%d" width="%d" height="%d"/>%s%s%s</svg>'
+           '<image href="data:image/webp;base64,%s" x="%d" y="%d" width="%d" height="%d"/>%s%s%s%s</svg>'
            % (vx, vy, vw, vh, e(slide.get("alt", "A slice across both ventricles with the ECG leads round it")),
-              data, ix, iy, iw, ih, lines, dots, pills))
+              data, ix, iy, iw, ih, body, lines, dots, pills))
     return (heading(slide) + '<div class="hsl" data-hsl="%s"><figure class="hsl-fig">%s</figure>'
             '<div class="h3d-walls" role="group" aria-label="Walls">%s</div></div>'
             % (e(json.dumps(info, ensure_ascii=False)), svg, buttons))

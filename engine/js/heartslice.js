@@ -49,7 +49,7 @@ function buildHeartImages() {
 }
 
 /* the slice and its leads (p_heart_leads): a wall's button lights the wall, its own leads and the dotted lines to it,
-   and its mirror leads with the dashed lines on through the heart; the other leads fade. One wall at a time:
+   and its mirror leads with the dashed lines on through the heart, and the patient's electrodes for them; the other leads fade. One wall at a time:
    tapping its button again, or anywhere else, closes it. */
 function buildHeartLeads() {
   $$(".hsl").forEach(box => {
@@ -64,6 +64,11 @@ function buildHeartLeads() {
       $$(".hsl-lead", box).forEach(g => {
         const n = g.dataset.lead, own = !!w && w.own.includes(n), mir = !!w && w.mir.includes(n);
         g.setAttribute("class", "hsl-lead" + (own ? " own f-" + w.family : mir ? " mir" : w ? " fade" : ""));
+      });
+      // the patient's chest electrodes light as their leads do
+      $$(".hsl-el[data-lead]", box).forEach(c => {
+        const n = c.dataset.lead, own = !!w && w.own.includes(n), mir = !!w && w.mir.includes(n);
+        c.setAttribute("class", "hsl-el" + (own ? " own f-" + w.family : mir ? " mir" : w ? " fade" : ""));
       });
     };
     buttons.forEach(b => b.addEventListener("click", () => set(open === b.dataset.wall ? null : b.dataset.wall)));

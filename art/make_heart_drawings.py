@@ -1,6 +1,6 @@
 """Codex's painted hearts for Coronary arteries and the ECG (art/drafts/cardiology, local only), each cropped to the
 heart, its light background turned transparent so the page's own background (light or dark) shows through, and
-saved small in content/figures: the whole heart from the front (Three arteries) and the heart cut across, as on an
+saved small in content/figures (and Sol's line-drawn patient beside the slice, its background cleared): the whole heart from the front (Three arteries) and the heart cut across, as on an
 echo's short axis (The mirror), and that slice alone, the rest of the heart masked away (Leads and walls). The page places each back at its crop in the drawing's own 1672 x 941 grid, so the
 points in the topic's YAML stay in the drawing's coordinates."""
 import os
@@ -59,6 +59,31 @@ def make(src, name, crop, oval):
     print(path, os.path.getsize(path), "bytes")
 
 
+# Sol's line-drawn patient (Leads and walls), standing, no electrodes (the page draws them): the light background
+# round him, everything joined to the frame's edge, turns transparent; his outline stops it
+PATIENT = ("patient-leads-c.png", "patient-front", (180, 30, 900, 1400))
+
+
+def make_line(src, name, crop):
+    from scipy import ndimage
+    im = np.asarray(Image.open(os.path.join(ROOT, "art", "drafts", "cardiology", src)).convert("RGB")).astype(float)
+    bg = np.median(np.concatenate([im[:20, :20].reshape(-1, 3), im[:20, -20:].reshape(-1, 3)]), axis=0)
+    l, t, r, b = crop
+    rgb = im[t:b, l:r]
+    near = np.abs(rgb - bg).max(axis=2) < 14
+    lab, _ = ndimage.label(near)
+    edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
+    out = ~np.isin(lab, list(edge))
+    # a soft rim of a pixel or two
+    a = np.clip(ndimage.gaussian_filter(out.astype(float), .8) * 1.4, 0, 1)
+    img = Image.fromarray(np.dstack([rgb, a * 255]).astype(np.uint8), "RGBA")
+    img = img.resize((round(img.width * SCALE), round(img.height * SCALE)), Image.LANCZOS)
+    path = os.path.join(ROOT, "content", "figures", name + ".webp")
+    img.save(path, "WEBP", quality=78, method=6, alpha_quality=70)
+    print(path, os.path.getsize(path), "bytes")
+
+
 if __name__ == "__main__":
     for job in JOBS:
         make(*job)
+    make_line(*PATIENT)

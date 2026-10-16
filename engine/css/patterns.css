@@ -1228,6 +1228,12 @@ html.has-ar:not(.ar-off) .choices:has(.ar):has(> :nth-child(4)){--per:2}
 .hsl-lead.mir rect{stroke:var(--muted);stroke-dasharray:10 8}
 .hsl-lead.mir .hsl-down{opacity:1;stroke:var(--muted)}
 .hsl-lead.fade{opacity:.3}
+/* the patient beside the slice, in its drawing: his chest electrodes light with their leads */
+.hsl-el{fill:var(--surface);stroke:var(--muted);stroke-width:5;transition:fill .3s ease,stroke .3s ease,opacity .3s ease}
+.hsl-el.own{fill:var(--x-solid);stroke:var(--x-ink)}
+.hsl-el.mir{stroke-dasharray:6 5}
+.hsl-el.fade{opacity:.45}
+.hsl-el[data-lead="V4R"]:not(.own){opacity:0}
 .hsi-r{transform:translateY(-50%)}
 .hsi-l{transform:translate(-100%,-50%)}
 .hsi-b{transform:translate(-50%,-50%)}
