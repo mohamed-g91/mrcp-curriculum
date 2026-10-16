@@ -27,6 +27,7 @@ mint #5EE0C4, coral #D85A30 sparingly, warm grey. 16:9. Absolutely no text, lett
 | `thumbs/errors` | A smoke alarm ringing with no fire, and a fishing net with a fish slipping out |
 | `thumbs/power` | A doctor at a desk planning a trial, looking at a large group of adults in rows |
 | `thumbs/coronary-arteries-ecg` (`cardiology/thumb-cardio-c.png`, chosen 2026-10-14 from three) | An older man on a couch with ECG electrodes and wires to a small ECG machine; a doctor reads the printed trace; a small heart with three coloured coronary arteries above |
+| `thumbs/angina-diagnosis` (`cardiology/thumb-angina-a.png`, chosen 2026-10-16 from three) | A man in his sixties pauses on a gentle hill path, one hand flat on the centre of his chest; trees and a bench show the slope |
 | `covers/statistics` | A doctor beside a whiteboard with a bell curve and a small bar chart |
 | `covers/cardiology` | A doctor listening to a seated patient's chest; a monitor with a heart trace |
 | `covers/nephrology` | A patient in a dialysis chair while a nurse checks the lines |
