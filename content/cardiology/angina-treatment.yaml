@@ -1,0 +1,366 @@
+# Cardiology lesson 3. Approved plan: notes/angina-treatment-plan.md (2026-10-16).
+# Clinical sources checked 2026-10-16; the built lesson and new Arabic remain drafts for author review.
+# One patient: 61, diabetes/hypertension/smoking, 70% proximal LAD, bisoprolol 10 mg,
+# sinus pulse 52, BP 132/80, preserved LV function. Dose is limited by rate, not the licensed maximum.
+# ISMN example is product-specific: immediate-release product 102388, doses eight hours apart.
+id: cardio.angina-treatment
+title: Treating stable angina
+title_ar: علاج الذبحة الصدرية المستقرة
+description: Which drug now, which next, which combinations to avoid, and what protects the heart? Follow one patient from symptom relief to prevention, then practise on original exam-style cases.
+status: draft
+updated: 2026-10-16
+sources:
+  - "NICE CG126. Stable angina: management, recommendations 1.3.3–1.3.8, 1.4.5–1.4.14, 1.5.1–1.5.2, 1.8.3 (checked 2026-10-16). https://www.nice.org.uk/guidance/cg126/chapter/Recommendations"
+  - "NICE NG238. Lipid modification, recommendations 1.7.2–1.7.3 (checked 2026-10-16). https://www.nice.org.uk/guidance/ng238/chapter/recommendations"
+  - "MHRA. Ivabradine in angina: risk of cardiac side effects, 2014 (checked 2026-10-16). https://www.gov.uk/drug-safety-update/ivabradine-procoralan-in-the-symptomatic-treatment-of-angina-risk-of-cardiac-side-effects"
+  - "MHRA. Nicorandil: second-line treatment and ulcer complications, 2016 (checked 2026-10-16). https://www.gov.uk/drug-safety-update/nicorandil-ikorel-now-second-line-treatment-for-angina-risk-of-ulcer-complications"
+  - "SmPC. Isosorbide mononitrate 20 mg immediate-release tablets, 4.2 (checked 2026-10-16). https://www.medicines.org.uk/emc/product/102388/smpc"
+  - "SmPC. Bisoprolol 5 mg, angina dosing (checked 2026-10-16). https://www.medicines.org.uk/emc/product/14147/smpc"
+  - "SmPC. Atenolol 50 mg, angina dosing (checked 2026-10-16). https://www.medicines.org.uk/emc/product/14294/smpc"
+  - "SmPC. Ivabradine: sinus rhythm, rate threshold, interactions and phosphenes (checked 2026-10-16). https://www.medicines.org.uk/emc/product/15015/smpc"
+  - "SmPC. Nicorandil: PDE5 inhibitors (checked 2026-10-16). https://www.medicines.org.uk/emc/product/12663/smpc"
+  - "SmPC. GTN spray: NO/cGMP and PDE5 interaction (checked 2026-10-16). https://www.medicines.org.uk/emc/product/11759/smpc"
+  - "SmPC. Ranolazine: late sodium current and QT (checked 2026-10-16). https://www.medicines.org.uk/emc/product/15795/smpc"
+  - "NICE NG106. Avoid verapamil/diltiazem in HFrEF (checked 2026-10-16). https://www.nice.org.uk/guidance/ng106/chapter/recommendations"
+  - "Vrints C et al. 2024 ESC Guidelines for chronic coronary syndromes. Eur Heart J 2024;45:3415–3537. Sections 4.2 and 5.2: symptom drugs, PCI antiplatelets and ANOCA/INOCA. https://doi.org/10.1093/eurheartj/ehae177"
+retired: []
+cover: concepts
+
+# New Arabic terms/titles are draft; normal-angiogram, Back to the hook and Your score reuse approved wording.
+families:
+  cat: Slow the heart
+  se: Open the vessels
+  np: Prevention
+  gray: Neutral
+families_ar:
+  cat: يُبطئ القلب
+  se: يوسّع الأوعية
+  np: الوقاية
+  gray: محايد
+concepts:
+  bb:      { label: Beta-blocker,          ar: حاصرات بيتا,                    family: cat,  letter: B, icon: narrow }
+  rlccb:   { label: Rate-limiting CCB,     ar: حاصرات الكالسيوم المُبطئة,      family: cat,  letter: C, icon: narrow, cover: false }
+  iva:     { label: Ivabradine,            ar: إيفابرادين,                     family: cat,  letter: I, icon: bulb, cover: false }
+  dhp:     { label: Dihydropyridine CCB,   ar: حاصرات الكالسيوم الموسّعة,      family: se,   letter: D, icon: artery }
+  nitrate: { label: Nitrate,               ar: النترات,                        family: se,   letter: N, icon: artery, cover: false }
+  nico:    { label: Nicorandil,            ar: نيكورانديل,                     family: se,   letter: K, icon: artery, cover: false }
+  rano:    { label: Ranolazine,            ar: رانولازين,                      family: gray, letter: R, icon: tag }
+  aspirin: { label: Aspirin,               ar: الأسبرين,                       family: np,   letter: A, icon: check }
+  statin:  { label: Statin,                ar: الستاتين,                       family: np,   letter: S, icon: check, cover: false }
+  ace:     { label: ACE inhibitor,         ar: مثبطات ACE,                     family: np,   letter: E, icon: check, cover: false }
+
+learn:
+  - id: hook
+    pattern: hook
+    title: Which drug next?
+    title_ar: أي دواء بعد ذلك؟
+    scene: case-chest-man
+    stem: "Patient A, 61, has diabetes, hypertension and stable angina with 70% proximal LAD stenosis. Despite bisoprolol 10 mg, he has brief hill-induced pain twice weekly, without recent worsening or rest pain. Sinus pulse 52, BP 132/80 mmHg; LV function is preserved. He also takes GTN, aspirin, atorvastatin and ramipril."
+    question: Which drug next?
+
+  - id: families
+    pattern: story
+    title: Two families
+    title_ar: عائلتان من الأدوية
+    kind: art
+    art: at-families
+    slots: { bb: "{bb}", rlccb: "{rlccb}", iva: "{iva}", dhp: "{dhp}", nitrate: "{nitrate}", nico: "{nico}", rano: "{rano}" }
+
+  - id: gtn
+    pattern: story
+    title: "Relief now: GTN"
+    title_ar: الراحة الفورية بالنترات
+    kind: art
+    art: at-gtn
+
+  - id: first
+    pattern: story
+    title: The first drug
+    title_ar: الدواء الأول
+    kind: art
+    art: at-first
+    slots: { bb: "{bb}", rlccb: "{rlccb}", dhp: "{dhp}" }
+
+  - id: second
+    pattern: story
+    title: The second drug
+    title_ar: الدواء الثاني
+    kind: art
+    art: at-second
+    slots: { bb: "{bb}", dhp: "{dhp}", rlccb: "{rlccb}" }
+
+  - id: alternatives
+    pattern: reveal-cards
+    title: The spare keys
+    title_ar: الأدوية البديلة
+    blind: true
+    cards:
+      - concept: nitrate
+        ar: النترات
+        icon: artery
+        answer: "ISMN: nitrate-low interval prevents tolerance. This immediate-release product: 08:00 and 16:00. No PDE5 inhibitors."
+      - concept: nico
+        ar: نيكورانديل
+        icon: artery
+        answer: "Potassium-channel opener with a nitrate action. Mouth, gut, skin or eye ulcers: stop treatment. No PDE5 inhibitors."
+      - concept: iva
+        ar: إيفابرادين
+        icon: bulb
+        answer: "Sinus If blocker: sinus rhythm, resting rate ≥70. Phosphenes. No verapamil, diltiazem or strong CYP3A4 inhibitors."
+      - concept: rano
+        ar: رانولازين
+        icon: tag
+        answer: "Late sodium-current inhibitor; QT prolongation. Alone if neither first-line class is suitable; add if one fails and the other is unsuitable."
+
+  - id: escalation
+    pattern: story
+    title: Still symptomatic?
+    title_ar: هل تستمر الأعراض؟
+    kind: art
+    art: at-escalation
+
+  - id: stent
+    pattern: story
+    title: After a stent
+    title_ar: بعد الدعامة
+    kind: art
+    art: at-stent
+
+  - id: prevention
+    pattern: reveal-cards
+    title: Protect the heart
+    title_ar: الوقاية الثانوية
+    cards:
+      - concept: aspirin
+        figure: at-prevention-aspirin
+        answer: "75 mg daily. Assess bleeding risk and comorbidities."
+      - concept: statin
+        figure: at-prevention-statin
+        answer: "Atorvastatin 80 mg. Lower dose if needed."
+      - { family: np, label: Blood pressure, ar: ضغط الدم, figure: at-prevention-bp, answer: "Treat hypertension." }
+      - concept: ace
+        figure: at-prevention-ace
+        answer: "Consider with diabetes. Check BP, creatinine and potassium."
+      - { family: np, label: Smoking, ar: التدخين, figure: at-prevention-smoking, answer: "Stop smoking." }
+
+  - id: normal
+    pattern: story
+    title: Angina with a normal angiogram
+    title_ar: ذبحة مع تصوير شرايين طبيعي
+    kind: art
+    art: at-normal
+
+  - id: solve
+    pattern: story
+    title: Back to the hook
+    title_ar: العودة إلى الحالة
+    kind: art
+    art: at-solve
+    slots: { bb: "{bb}", dhp: "{dhp}" }
+
+practise:
+  - id: cases
+    pattern: stem-quiz
+    title: Which treatment?
+    title_ar: أي علاج؟
+    options: [bb, rlccb, dhp, nitrate]
+    cases:
+      - id: c01
+        solved: true
+        scene: case-chest-man
+        options: [Amlodipine, Verapamil, Increase bisoprolol, Isosorbide mononitrate]
+        stem: "Patient A, 61, has diabetes, hypertension and 70% proximal LAD stenosis. Despite bisoprolol 10 mg, he has brief hill-induced angina twice weekly, without rest pain or worsening. [[Sinus pulse 52]], BP 132/80 mmHg, preserved LV function, no CCB contraindication."
+        question: Which drug should be added?
+        answer: Amlodipine
+        hint: Can the pulse fall further? Which CCB can be combined with a beta-blocker?
+        why: "His pulse limits further bisoprolol titration. Add a dihydropyridine CCB such as amlodipine. The licensed bisoprolol maximum in angina is 20 mg/day, but his highest tolerated dose is limited by rate."
+        notes:
+          Verapamil: "with a beta-blocker risks bradycardia, AV block and worsening heart failure."
+          Increase bisoprolol: "a pulse of 52 leaves no room for further rate reduction."
+          Isosorbide mononitrate: "an alternative add-on when a CCB is contraindicated or not tolerated; neither applies here."
+        tutor: "Check the current drug, tolerated dose and pulse."
+
+      - id: c02
+        options: [Bisoprolol, Isosorbide mononitrate, Nicorandil, Ivabradine]
+        stem: "A 58-year-old man has newly confirmed stable atherosclerotic angina. Sinus pulse 78, BP 138/80 mmHg. He has no asthma, conduction disease or other contraindication. He has GTN for episodes and appropriate prevention treatment, but [[no regular anti-anginal drug]]."
+        question: Which listed drug is a first-line regular treatment?
+        answer: Bisoprolol
+        hint: Which of these belongs to a first-line class?
+        why: "NICE allows either a beta-blocker or a calcium channel blocker first line, chosen for the patient. Bisoprolol is the only first-line option listed; a suitable CCB would also be valid."
+        notes:
+          Isosorbide mononitrate: "not a routine first-line choice when a beta-blocker or CCB is suitable."
+          Nicorandil: "reserved for inadequate control, intolerance or contraindications to first-line therapy."
+          Ivabradine: "not routine first line just because the pulse exceeds 70."
+
+      - id: c03
+        options: [Verapamil, Bisoprolol, Nicorandil, Isosorbide mononitrate]
+        stem: "A 55-year-old woman with new stable angina has [[active wheezy asthma despite inhalers]]. Sinus pulse 82, BP 142/84 mmHg. LV systolic function is preserved and there is no conduction disease."
+        question: Which listed regular treatment is most appropriate first line?
+        answer: Verapamil
+        hint: Which first-line option fits her airway disease and cardiac function?
+        why: "A CCB is appropriate with active wheezy asthma. Her pulse, preserved LV function and normal conduction permit verapamil. This does not mean every beta-blocker is absolutely forbidden in every patient with asthma."
+        notes:
+          Bisoprolol: "active bronchospasm makes the suitable CCB preferable here."
+          Nicorandil: "second line; she has a suitable first-line CCB."
+          Isosorbide mononitrate: "not routine first line when a CCB is suitable."
+
+      - id: c04
+        options: [Increase atenolol, Add amlodipine, Add verapamil, Add nicorandil]
+        stem: "A 62-year-old man still has stable angina on [[atenolol 25 mg daily]]. Pulse 80, BP 146/82 mmHg, renal function normal. He reports no dizziness or other adverse effects."
+        question: How should his anti-anginal treatment first be optimised?
+        answer: Increase atenolol
+        hint: Has the first drug reached his highest tolerated dose?
+        why: "Titrate the first drug against symptoms as tolerated, then review in 2–4 weeks. His dose is low with adequate pulse and BP. Atenolol's usual angina regimen is 100 mg/day or 50 mg twice daily, subject to patient factors."
+        notes:
+          Add amlodipine: "a suitable combination if symptoms persist after optimisation of the tolerated atenolol dose."
+          Add verapamil: "avoid this combination with a beta-blocker."
+          Add nicorandil: "optimise suitable first-line treatment before moving to alternatives."
+
+      - id: c05
+        options: [Nicorandil, Bisoprolol, Ivabradine, Diltiazem]
+        stem: "A 67-year-old man remains symptomatic on his maximum tolerated [[verapamil]]. A beta-blocker caused recurrent bronchospasm and was stopped. BP is adequate, LV function preserved, and he takes no PDE5 inhibitor."
+        question: Which listed drug is a suitable add-on?
+        answer: Nicorandil
+        hint: Which option can accompany verapamil without adding unsafe rate reduction?
+        why: "Nicorandil is a suitable second-line option among these choices when CCB monotherapy is insufficient and a beta-blocker is unsuitable. Warn about ulceration and stop it if ulcers occur. Other alternatives exist but are not listed."
+        notes:
+          Bisoprolol: "previous bronchospasm and the verapamil combination both argue against it."
+          Ivabradine: "contraindicated with verapamil."
+          Diltiazem: "duplicates the rate-limiting CCB and risks excessive rate reduction."
+
+      - id: c06
+        options: [Doses at 08:00 and 16:00, Double each dose, Add a GTN patch at night, Take doses every 12 hours]
+        stem: "A man adheres to immediate-release ISMN 20 mg at [[08:00 and 20:00]]. Initial benefit has faded, but the exertional pattern is unchanged and he has no rest pain. His product information specifies two daily doses eight hours apart."
+        question: Which schedule change best addresses possible nitrate tolerance?
+        answer: Doses at 08:00 and 16:00
+        hint: Does each day include a sufficiently low nitrate exposure?
+        why: "Asymmetric dosing leaves a nitrate-low interval overnight. For this particular immediate-release product, eight-hour spacing gives 08:00 and 16:00. Other formulations have different regimens. New or worsening symptoms require reassessment rather than an assumed tolerance diagnosis."
+        notes:
+          Double each dose: "does not correct continuous nitrate exposure."
+          Add a GTN patch at night: "removes the overnight nitrate-low interval."
+          Take doses every 12 hours: "preserves the evenly spaced schedule causing the problem."
+
+      - id: c07
+        options: [Nicorandil, Amlodipine, Bisoprolol, Isosorbide mononitrate]
+        stem: "A 71-year-old man taking several drugs for stable angina develops a persistent [[painful perianal ulcer]]. Conventional local treatment has not helped."
+        question: Which listed drug is the most likely cause?
+        answer: Nicorandil
+        hint: Which anti-anginal is associated with mucosal ulceration?
+        why: "Nicorandil can cause ulcers anywhere in the gastrointestinal tract, including the perianal area, as well as skin and eye ulcers. Stop nicorandil if ulceration occurs and review alternative angina treatment."
+        notes:
+          Amlodipine: "typically causes ankle oedema, flushing or headache."
+          Bisoprolol: "typically causes bradycardia or fatigue, rather than this ulcer pattern."
+          Isosorbide mononitrate: "typically causes headache, flushing or hypotension."
+
+      - id: c08
+        options: [Ivabradine, Nicorandil, Amlodipine, Ranolazine]
+        stem: "A 60-year-old woman notices brief [[flashes of light when moving into dim light]] after a new anti-anginal drug was started. Her prior ECG showed sinus rhythm and a resting rate of 78."
+        question: Which drug most likely explains this effect?
+        answer: Ivabradine
+        hint: Which drug causes phosphenes?
+        why: "Ivabradine blocks the sinus-node If current and can cause transient luminous phenomena, or phosphenes. Its angina indication requires sinus rhythm and a resting rate of at least 70 at initiation."
+        notes:
+          Nicorandil: "the distinctive adverse effect is mucosal, skin or eye ulceration."
+          Amlodipine: "ankle swelling, flushing and headache are more typical."
+          Ranolazine: "QT prolongation is the key caution here."
+
+      - id: c09
+        options: [Nifedipine MR, Isosorbide mononitrate, Nicorandil, Verapamil]
+        stem: "A 64-year-old man has persistent stable angina on maximum tolerated bisoprolol. Pulse 56, BP 134/80 mmHg. He regularly takes [[sildenafil]]."
+        question: Which listed drug can be added?
+        answer: Nifedipine MR
+        hint: Avoid the PDE5 interaction and unsafe additional rate slowing.
+        why: "A modified-release dihydropyridine CCB can accompany a beta-blocker. Nitrates and nicorandil are contraindicated with PDE5 inhibitors because of severe hypotension; verapamil is an unsafe routine combination with bisoprolol."
+        notes:
+          Isosorbide mononitrate: "contraindicated with sildenafil."
+          Nicorandil: "its nitrate action also makes the PDE5 combination contraindicated."
+          Verapamil: "with bisoprolol risks bradycardia, AV block and heart failure."
+
+      - id: c10
+        options: [Aspirin, GTN, Bisoprolol, Amlodipine]
+        stem: "A 59-year-old man has stable atherosclerotic angina, [[no previous MI and no LV dysfunction]]. His medicines are being separated into symptom relief and cardiovascular event prevention."
+        question: Which listed drug is used for event prevention?
+        answer: Aspirin
+        hint: Which acts on thrombosis rather than simply easing angina?
+        why: "Aspirin is used for secondary prevention in atherosclerotic CAD, with bleeding risk and comorbidities considered. The other listed drugs relieve symptoms here. Beta-blockers can have separate prognostic indications after MI or in HFrEF."
+        notes:
+          GTN: "treats or prevents episodes of pain, rather than providing antiplatelet protection."
+          Bisoprolol: "relieves angina through reduced demand; this patient has no separate MI/HFrEF indication."
+          Amlodipine: "relieves angina; it is not the antiplatelet prevention drug."
+
+      - id: c11
+        options: [Ramipril, Nicorandil, Ivabradine, Isosorbide mononitrate]
+        stem: "A 63-year-old woman has atherosclerotic stable angina and [[type 2 diabetes]]. She takes aspirin and atorvastatin. BP, creatinine and potassium are suitable, with no ACE inhibitor contraindication."
+        question: Which listed drug should be considered for cardiovascular prevention?
+        answer: Ramipril
+        hint: Which option is an ACE inhibitor?
+        why: "NICE says to consider an ACE inhibitor in people with stable angina and diabetes. Ramipril is the only ACE inhibitor listed. This is a consideration after assessment, not an automatic prescription regardless of renal function or BP."
+        notes:
+          Nicorandil: "a second-line symptom drug, not the diabetes-related prevention choice."
+          Ivabradine: "a rate-lowering symptom drug for eligible patients."
+          Isosorbide mononitrate: "a symptom drug, not the ACE inhibitor being considered."
+
+      - id: c12
+        options: [Call an ambulance, Take a third GTN dose and wait, Rest for another 30 minutes, Take extra bisoprolol]
+        stem: "A man with established angina develops chest pain. He takes sublingual GTN, then a second dose five minutes later because pain persists. [[Five minutes after the second dose, the pain is still present]]."
+        question: What should he do now?
+        answer: Call an ambulance
+        hint: How long has the pain persisted after the second dose?
+        why: "NICE advises an emergency ambulance if pain persists five minutes after a second short-acting nitrate dose. Ongoing pain may be an acute coronary syndrome; do not delay the call for more self-treatment."
+        notes:
+          Take a third GTN dose and wait: "waiting would delay emergency assessment."
+          Rest for another 30 minutes: "persistent pain now requires an emergency ambulance."
+          Take extra bisoprolol: "does not replace emergency assessment and may cause bradycardia or hypotension."
+
+      - id: c13
+        options: [Coronary angiography, Add ISMN routinely, Add ivabradine routinely, Add nicorandil routinely]
+        stem: "A 68-year-old man takes bisoprolol and amlodipine at maximum tolerated doses with good adherence. He has [[limiting angina most days despite treatment]]. Revascularisation has not yet been assessed and is acceptable to him."
+        question: What is the next step?
+        answer: Coronary angiography
+        hint: What guides a revascularisation strategy after optimal drug treatment fails?
+        why: "Offer angiography to guide possible PCI or CABG when optimal medical treatment does not satisfactorily control symptoms. A third anti-anginal is reserved for waiting for revascularisation, or when it is unsuitable or declined."
+        notes:
+          Add ISMN routinely: "a third drug is not the routine substitute for assessing revascularisation."
+          Add ivabradine routinely: "a third drug is reserved for specific circumstances and also requires rate/rhythm eligibility."
+          Add nicorandil routinely: "do not bypass assessment of revascularisation by routinely adding a third symptom drug."
+
+      - id: c14
+        options: [Continue current treatment, Add ISMN, Add ivabradine, Add nicorandil]
+        stem: "A 68-year-old man takes bisoprolol and amlodipine. His symptoms are [[satisfactorily controlled]], treatment is tolerated and there is no known high-risk coronary anatomy."
+        question: What change is needed to his symptom drugs?
+        answer: Continue current treatment
+        hint: Is a third anti-anginal needed when two control symptoms?
+        why: "Do not add a third anti-anginal when two satisfactorily control stable angina. Continue prevention treatment and follow-up. Separate high-risk anatomical findings could change the revascularisation plan."
+        notes:
+          Add ISMN: "no additional symptom drug is needed when control is satisfactory."
+          Add ivabradine: "no third anti-anginal is needed."
+          Add nicorandil: "adds adverse-effect risk without a current symptom-treatment indication."
+
+      - id: c15
+        options: [Amlodipine, Bisoprolol, Aspirin and clopidogrel, PCI]
+        stem: "A 38-year-old woman who smokes has confirmed [[isolated vasospastic angina]], with transient ST elevation during early-morning rest pain and no obstructive coronary disease."
+        question: Which listed treatment is first line?
+        answer: Amlodipine
+        hint: Which drug relaxes the spastic artery?
+        why: "A CCB is first-line treatment for vasospastic angina. A long-acting nitrate may be added if needed. Avoid beta-blockers for isolated vasospasm and support smoking cessation."
+        notes:
+          Bisoprolol: "beta-blockers are avoided for isolated vasospasm."
+          Aspirin and clopidogrel: "DAPT is not automatic without atherosclerotic disease or a stent."
+          PCI: "there is no fixed obstructive lesion to stent."
+
+      - id: c16
+        options: [Stopped clopidogrel early without advice, Stopped statin yesterday, Missed one beta-blocker dose, Stopped amlodipine yesterday]
+        stem: "A 72-year-old man presents with a STEMI [[two months after elective drug-eluting stent implantation]]. He was prescribed aspirin and clopidogrel for six months."
+        question: Which history most strongly suggests stent thrombosis?
+        answer: Stopped clopidogrel early without advice
+        hint: Which interruption removes part of the prescribed antiplatelet protection?
+        why: "Unplanned premature interruption of prescribed DAPT raises stent thrombosis risk, which may present as STEMI. Six months is a usual elective-PCI course in low bleeding risk without an oral anticoagulation indication; selected patients have shorter planned courses."
+        notes:
+          Stopped statin yesterday: "statins matter long term, but this is less suggestive than premature DAPT interruption."
+          Missed one beta-blocker dose: "does not remove antiplatelet protection of the stent."
+          Stopped amlodipine yesterday: "removes a symptom drug, not the stent's antiplatelet protection."
+
+  - id: end
+    pattern: end
+    title: Your score
+    title_ar: نتيجتك
