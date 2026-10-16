@@ -42,6 +42,7 @@ concepts:
 
 learn:
   - id: hook
+    at: "0:23"
     pattern: hook
     title: Which artery is blocked?
     title_ar: أي شريان مسدود؟
@@ -55,6 +56,7 @@ learn:
   # names it and lights the walls it feeds (the user chose B, 2026-10-16). The left main lights the LAD's and the
   # circumflex's walls; its Arabic was approved 2026-10-16.
   - id: arteries
+    at: "1:18"
     pattern: heart-slice
     image: heart-front
     image_box: [400, 0, 800, 900]   # where the WebP sits in the drawing's 1672 x 941 pixels
@@ -73,6 +75,7 @@ learn:
   # round it where they look from, as an echo's short axis shows it; a wall's button lights its own leads (dotted
   # lines to it) and its mirror (dashed, on through the heart) (the user chose C, 2026-10-16; it replaced the 3D heart)
   - id: turn
+    at: "2:41"
     pattern: heart-slice
     mode: leads
     image: heart-cut
@@ -115,6 +118,7 @@ learn:
   # On Codex's drawing of the heart cut across (art/make_heart_drawings.py), seen as on an echo's short axis: each tap
   # names the next wall, in the 3D slide's order, and shows its own leads and its mirror (the user chose B, 2026-10-15).
   - id: mirror
+    at: "7:30"
     pattern: heart-slice
     mode: mirror
     image: heart-section
@@ -138,6 +142,7 @@ learn:
     title_ar: المرآة
 
   - id: table
+    at: "9:18"
     pattern: reveal-cards
     title: From ECG leads to artery
     title_ar: من رسم القلب إلى الشريان
@@ -156,6 +161,7 @@ learn:
   # little reaches the lungs, which stay clear; the LV runs dry and the BP falls (the triad); V4R shows ST elevation
   # (ESC 2023, 3.2.1); fluids and early reperfusion, never nitrates (ESC 2023, 4.2.2.2) or diuretics, which drop preload.
   - id: rv
+    at: "10:30"
     pattern: story
     title: The right ventricle
     title_ar: البطين الأيمن
@@ -166,6 +172,7 @@ learn:
   # passes; then anterior MI, a septal infarct below the node (bundle branches), a wide slow escape, unstable, paced.
   # Bank: Mobitz II after anterior MI → temporary pacing; complete heart block after inferior MI, stable → observe.
   - id: slow
+    at: "11:35"
     pattern: story
     title: MI and bradycardia
     title_ar: الاحتشاء وبطء القلب
@@ -176,6 +183,7 @@ learn:
   # in the stem; then the supporting clues point up into the artery (pulse 42: the AV node; low BP, raised JVP, clear
   # chest: the RV).
   - id: solve
+    at: "13:44"
     pattern: story
     title: Back to the hook
     title_ar: العودة إلى الحالة
