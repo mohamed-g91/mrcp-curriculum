@@ -62,16 +62,22 @@ const Deck = {
   // changing slide, the frame holds: the old slide stays in its place for 0.2 s while it fades out, then the new one
   // rises in (DESIGN.md, Behaviour rules). The bars never move. Off for reduced motion.
   handover(old, s) {
+    // a quick Back and Next again cancels any change still under way, its timers and delays included (Codex QA, 2026-10-16)
     $$(".slide.leaving").forEach(x => { x.classList.remove("leaving"); x.style.cssText = ""; });
-    clearTimeout(this.leaveTimer);
+    $$(".slide.after-leave").forEach(x => x.classList.remove("after-leave"));
+    clearTimeout(this.leaveTimer); clearTimeout(this.settleTimer); this.leaving = null;
     if (!old || old === s || !old.classList.contains("active") || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const { offsetTop: t, offsetLeft: l, offsetWidth: w, offsetHeight: h } = old;
+    // how far the slide was scrolled, read before it leaves the flow (the page then shortens and the scroll clamps):
+    // render() goes back to the top, and the old slide must fade where it was seen
+    const fluid = document.documentElement.classList.contains("fluid");
+    this.leaving = { el: old, t, scrolled: $("#deck").scrollTop + (fluid ? window.scrollY : 0) };
     old.style.cssText = `top:${t}px;left:${l}px;width:${w}px;height:${h}px`;
     old.classList.add("leaving");
     s.classList.add("after-leave");
     this.leaveTimer = setTimeout(() => {
-      old.classList.remove("leaving"); old.style.cssText = "";
-      setTimeout(() => s.classList.remove("after-leave"), 500);
+      old.classList.remove("leaving"); old.style.cssText = ""; this.leaving = null;
+      this.settleTimer = setTimeout(() => s.classList.remove("after-leave"), 500);
     }, 220);
   },
   // a solved case lights the bar's Next and puts the keyboard on it
@@ -105,6 +111,7 @@ const Deck = {
       Present.show(s);
       $("#deck").scrollTop = 0;
       if (document.documentElement.classList.contains("fluid")) window.scrollTo({ top: 0 });
+      if (this.leaving) this.leaving.el.style.top = `${this.leaving.t - this.leaving.scrolled}px`;
       record("view", { topic: TOPIC.id, slide: s.dataset.case || s.dataset.id });
     }
     Present.tray();

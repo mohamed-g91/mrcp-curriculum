@@ -60,10 +60,10 @@ html.fluid .navbar .btn:not(.primary){min-width:44px;justify-content:center;padd
 /* ---------- the candidate's page: the site's sky around the lesson ---------- */
 html.site .deck{background:var(--sky) url(img/pattern.webp) 0 0/420px repeat}
 :root[data-theme="dark"].site .deck{background-blend-mode:multiply}
-/* each slide on a quiet canvas panel (drawn behind it, so the slide's own layout and fit do not change) */
-html.site .slide.active{isolation:isolate}
-html.site .slide.active:not(.p-title)::before{content:"";position:absolute;z-index:-1;inset:-14px -24px -10px;border-radius:18px;background:var(--page);box-shadow:var(--panel-shadow)}
-html.site.fluid .slide.active:not(.p-title)::before{inset:-10px -8px -8px;border-radius:16px}
+/* each slide on a quiet canvas panel (drawn behind it, so the slide's own layout and fit do not change); a slide fading out keeps its panel */
+html.site .slide.active,html.site .slide.leaving{isolation:isolate}
+html.site .slide.active:not(.p-title)::before,html.site .slide.leaving:not(.p-title)::before{content:"";position:absolute;z-index:-1;inset:-14px -24px -10px;border-radius:18px;background:var(--page);box-shadow:var(--panel-shadow)}
+html.site.fluid .slide.active:not(.p-title)::before,html.site.fluid .slide.leaving:not(.p-title)::before{inset:-10px -8px -8px;border-radius:16px}
 
 /* the title: a cover on the sky, its Learn and Practise on a white shelf */
 html.site .p-title .title-wrap{background:radial-gradient(closest-side,var(--sky) 58%,transparent) center 30%/110% 70% no-repeat}
