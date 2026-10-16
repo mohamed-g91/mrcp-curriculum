@@ -103,7 +103,7 @@ learn:
       - concept: nitrate
         ar: النترات
         icon: artery
-        answer: "ISMN (immediate release): 08:00 and 16:00. Nitrate-low night. No PDE5 inhibitors."
+        answer: "ISMN: asymmetric doses leave a nitrate-low night, so no tolerance."
       - concept: nico
         ar: نيكورانديل
         icon: artery
@@ -235,11 +235,11 @@ practise:
 
       - id: c06
         options: [Doses at 08:00 and 16:00, Double each dose, Add a GTN patch at night, Take doses every 12 hours]
-        stem: "A man adheres to immediate-release ISMN 20 mg at [[08:00 and 20:00]]. Initial benefit has faded, but the exertional pattern is unchanged and he has no rest pain. His product information specifies two daily doses eight hours apart."
+        stem: "A man adheres to immediate-release ISMN 20 mg at [[08:00 and 20:00]]. Initial benefit has faded, but the exertional pattern is unchanged and he has no rest pain."
         question: Which schedule change best addresses possible nitrate tolerance?
         answer: Doses at 08:00 and 16:00
         hint: Does each day include a sufficiently low nitrate exposure?
-        why: "Asymmetric dosing leaves a nitrate-low interval overnight. For this particular immediate-release product, eight-hour spacing gives 08:00 and 16:00. Other formulations have different regimens. New or worsening symptoms require reassessment rather than an assumed tolerance diagnosis."
+        why: "Asymmetric dosing, the second dose eight hours after the first rather than twelve, leaves a nitrate-low interval overnight and prevents tolerance. Modified-release preparations are taken once daily instead. New or worsening symptoms need reassessment, not an assumed tolerance diagnosis."
         notes:
           Double each dose: "does not correct continuous nitrate exposure."
           Add a GTN patch at night: "removes the overnight nitrate-low interval."
@@ -318,16 +318,16 @@ practise:
           Take extra bisoprolol: "does not replace emergency assessment and may cause bradycardia or hypotension."
 
       - id: c13
-        options: [Coronary angiography, Add ISMN routinely, Add ivabradine routinely, Add nicorandil routinely]
+        options: [Coronary angiography, Add ISMN, Add ivabradine, Add nicorandil]
         stem: "A 68-year-old man takes bisoprolol and amlodipine at maximum tolerated doses with good adherence. He has [[limiting angina most days despite treatment]]. Revascularisation has not yet been assessed and is acceptable to him."
         question: What is the next step?
         answer: Coronary angiography
         hint: What guides a revascularisation strategy after optimal drug treatment fails?
         why: "Offer angiography to guide possible PCI or CABG when optimal medical treatment does not satisfactorily control symptoms. A third anti-anginal is reserved for waiting for revascularisation, or when it is unsuitable or declined."
         notes:
-          Add ISMN routinely: "a third drug is not the routine substitute for assessing revascularisation."
-          Add ivabradine routinely: "a third drug is reserved for specific circumstances and also requires rate/rhythm eligibility."
-          Add nicorandil routinely: "do not bypass assessment of revascularisation by routinely adding a third symptom drug."
+          Add ISMN: "a third drug is not the routine substitute for assessing revascularisation."
+          Add ivabradine: "a third drug is reserved for specific circumstances and also requires rate/rhythm eligibility."
+          Add nicorandil: "do not bypass assessment of revascularisation by routinely adding a third symptom drug."
 
       - id: c14
         options: [Continue current treatment, Add ISMN, Add ivabradine, Add nicorandil]
@@ -354,16 +354,16 @@ practise:
           PCI: "there is no fixed obstructive lesion to stent."
 
       - id: c16
-        options: [Stopped clopidogrel early without advice, Stopped statin yesterday, Missed one beta-blocker dose, Stopped amlodipine yesterday]
+        options: [Stopped clopidogrel a month ago, Stopped atorvastatin a month ago, Stopped amlodipine a month ago, Stopped omeprazole a month ago]
         stem: "A 72-year-old man presents with a STEMI [[two months after elective drug-eluting stent implantation]]. He was prescribed aspirin and clopidogrel for six months."
         question: Which history most strongly suggests stent thrombosis?
-        answer: Stopped clopidogrel early without advice
+        answer: Stopped clopidogrel a month ago
         hint: Which interruption removes part of the prescribed antiplatelet protection?
         why: "Unplanned premature interruption of prescribed DAPT raises stent thrombosis risk, which may present as STEMI. Six months is a usual elective-PCI course in low bleeding risk without an oral anticoagulation indication; selected patients have shorter planned courses."
         notes:
-          Stopped statin yesterday: "statins matter long term, but this is less suggestive than premature DAPT interruption."
-          Missed one beta-blocker dose: "does not remove antiplatelet protection of the stent."
-          Stopped amlodipine yesterday: "removes a symptom drug, not the stent's antiplatelet protection."
+          Stopped atorvastatin a month ago: "statins matter long term, but stopping one does not remove the stent's antiplatelet cover."
+          Stopped amlodipine a month ago: "removes a symptom drug, not the stent's antiplatelet cover."
+          Stopped omeprazole a month ago: "gut protection during DAPT; stopping it raises bleeding risk, not stent thrombosis."
 
   - id: end
     pattern: end

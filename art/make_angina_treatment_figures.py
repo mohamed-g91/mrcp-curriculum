@@ -98,8 +98,7 @@ def main():
     b += beat(3, text(530, 219, 'Open the vessels', 25, 'se-ink')
               + concept(305, 265, 'dhp', 'D', 'se', 18) + concept(628, 265, 'nitrate', 'N', 'se')
               + concept(305, 312, 'nico', 'K', 'se') + text(660, 312, 'Load ↓ / supply ↑', 20, 'se-ink'))
-    b += beat(4, concept(305, 368, 'rano', 'R', 'gray') + text(665, 368, 'Outside the two groups', 18)
-              + text(430, 412, 'The groups do not define every safe combination', 18, 'muted'))
+    b += beat(4, concept(305, 368, 'rano', 'R', 'gray') + text(665, 368, 'Outside the two groups', 18))
     save('at-families', 'Two drug groups: heart rate and vascular load or supply', b)
 
     b = ''
@@ -137,15 +136,13 @@ def main():
               + lines(205, 206, ['Continue', 'No third drug'], 23) + text(655, 206, 'Coronary angiography', 23))
     b += beat(2, down(655, 223, 252) + text(655, 282, 'Consider PCI or CABG', 24))
     b += beat(3, lines(430, 346, ['Third drug: waiting for revascularisation,', 'or intervention unsuitable or declined'], 21, 29))
-    b += beat(4, text(430, 415, 'High-risk anatomy can change the plan despite symptom control', 18, 'muted'))
     save('at-escalation', 'Two-drug symptom control and escalation to angiography or revascularisation', b)
 
     b = beat(1, vessel(35, 45, 170, stent=True) + text(535, 51, 'Elective PCI for stable disease', 25))
     b += beat(2, rect(35, 104, 430, 88, 'np') + lines(250, 139, ['Aspirin + clopidogrel', 'Usually 6 months'], 23)
               + text(250, 221, 'No oral anticoagulation; low bleeding risk', 18, 'muted'))
     b += beat(3, arrow(480, 148, 550, 148) + lines(700, 130, ['Then one antiplatelet', 'Aspirin or clopidogrel,', 'as prescribed'], 20, 27))
-    b += beat(4, text(430, 277, 'Selected patients: 1–3 months, especially high bleeding risk', 20, 'muted'))
-    b += beat(5, vessel(40, 350, 160, stent=True, blocked=True)
+    b += beat(4, vessel(40, 350, 160, stent=True, blocked=True)
               + lines(535, 345, ['Unplanned early interruption → stent thrombosis', 'May present as STEMI'], 21, 32, 'bad-ink'))
     save('at-stent', 'Elective coronary stent antiplatelet course and risk from unplanned interruption', b)
 
@@ -154,8 +151,8 @@ def main():
               + path('M675 80 l45 -15 m-45 15 l45 15 m-45 30 l45 -12 m-45 12 l45 18', 'primary', 3))
     b += beat(2, lines(215, 186, ['CCB first', 'Add nitrate if needed'], 24, 38)
               + lines(215, 280, ['Avoid beta-blockers', 'in isolated spasm'], 21, 28, 'bad-ink'))
-    b += beat(3, lines(645, 186, ['Treat the mechanism', 'Impaired flow reserve:', 'Beta-blocker / CCB', 'Spasm: CCB'], 21, 36))
-    b += beat(4, text(430, 367, 'Treat risk factors', 23) + text(430, 410, 'Antiplatelets are not automatic without atherosclerotic CAD', 19, 'muted'))
+    b += beat(3, lines(645, 186, ['Beta-blocker or CCB', 'Spasm-led: CCB'], 24, 38))
+    b += beat(4, text(430, 367, 'Treat risk factors', 23))
     save('at-normal', 'Mechanism-directed treatment for vasospastic and microvascular angina', b)
 
     b = beat(1, patient(32, 70, .65) + lines(265, 65, ['61 years · diabetes', 'Hypertension · smoking', '70% proximal LAD'], 19, 30)
@@ -165,7 +162,7 @@ def main():
               + path('M95 285 H335', 'cat-solid', 3))
     b += beat(3, down(645, 182, 218) + text(500, 258, '3', 25, 'muted') + concept(545, 258, 'dhp', 'D', 'se', 20)
               + text(660, 304, 'Add amlodipine', 27, 'se-ink'))
-    b += beat(4, text(430, 375, 'Verapamil + beta-blocker: avoid', 22, 'bad-ink') + text(430, 413, 'No CCB contraindication', 19, 'muted'))
+    b += beat(4, text(430, 375, 'Verapamil + beta-blocker: avoid', 22, 'bad-ink'))
     save('at-solve', 'The same patient: pulse-limited bisoprolol and add-on amlodipine', b)
 
     b = vessel(15, 61, 115) + '<path d="M80 8 L114 23 V47 Q112 73 80 88 Q48 73 46 47 V23 Z" fill="var(--surface)" stroke="var(--primary)" stroke-width="4"/>'
