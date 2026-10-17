@@ -227,6 +227,8 @@ def p_hook(slide, topic):
     if slide.get("scene"):  # a cartoon scene beside the card (above it on phones)
         # a long clinical stem (a full exam case) takes more of the row, the cartoon less
         long = " hook-long" if len(slide["stem"]) > 260 else ""
+        # a full exam case with its history and drugs (over about seven lines) takes smaller type to fit the stage
+        long += " hook-xl" if len(slide["stem"]) > 480 else ""
         card = f'<div class="hook-row{long}">{card}{figure(slide["scene"])}</div>'
     return heading(slide) + f'<div class="center-body">{card}</div>'
 

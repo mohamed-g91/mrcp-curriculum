@@ -88,4 +88,5 @@
 .f-se{--x-bg:var(--se-bg);--x-ink:var(--se-ink);--x-bd:var(--se-bd);--x-solid:var(--se-solid)}
 .f-test{--x-bg:var(--test-bg);--x-ink:var(--test-ink);--x-bd:var(--test-bd);--x-solid:var(--test-solid)}
 .f-sol{--x-bg:var(--sol-bg);--x-ink:var(--sol-ink);--x-bd:var(--sol-bd);--x-solid:var(--sol-solid)}
+.f-bad{--x-bg:var(--bad-bg);--x-ink:var(--bad-ink);--x-bd:var(--bad-bd);--x-solid:var(--bad-solid)}
 .f-gray{--x-bg:var(--gray-bg);--x-ink:var(--gray-ink);--x-bd:var(--gray-bd);--x-solid:var(--primary)}

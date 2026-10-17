@@ -371,7 +371,24 @@ async function layoutPass(size) {
       }
     }
     const gridTree = r.tree ? await js(`!!Deck.slides[Deck.i].querySelector(".tree-grid")`) : false;
-    if (r.tree && !path && gridTree) {
+    const levels = gridTree ? await js(`Deck.slides[Deck.i].querySelectorAll(".tree-level").length`) : 0;
+    if (r.tree && !path && gridTree && levels === 2) {
+      // a tree in rows of two steps: Yes at step 1 ends there; No goes on to step 2, whose Yes and No both end
+      const tap = (k, a) => js(`Deck.slides[Deck.i].querySelectorAll(".tree-level")[${k}].querySelector(".tree-a.${a}").click(), true`);
+      const ended = () => js(`!!Deck.slides[Deck.i].querySelector(".tg-final.shown")`);
+      await tap(0, "yes"); await sleep(900);
+      await measure(size, `slide ${i + 1} tree yes`);
+      if (!await ended()) fail(`${size.name} slide ${i + 1}: Yes at step 1 did not reach an answer`);
+      await shot(`${tag}-yes`);
+      await tap(0, "no"); await sleep(300);
+      for (const a of ["yes", "no"]) {
+        await tap(1, a); await sleep(900);
+        await measure(size, `slide ${i + 1} tree no ${a}`);
+        if (!await ended()) fail(`${size.name} slide ${i + 1}: No, then ${a} did not reach an answer`);
+        await shot(`${tag}-no-${a}`);
+      }
+    }
+    if (r.tree && !path && gridTree && levels !== 2) {
       // a tree in rows: Yes, Yes ends early; a No at step 1 skips step 2; then on to an end at step 4
       const tap = (k, a) => js(`Deck.slides[Deck.i].querySelectorAll(".tree-level")[${k}].querySelector(".tree-a.${a}").click(), true`);
       const shown = k => js(`Deck.slides[Deck.i].querySelectorAll(".tree-level")[${k}].classList.contains("shown")`);

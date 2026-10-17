@@ -1,0 +1,363 @@
+# Cardiology lesson 4. Agreed plan: notes/diagnosing-acs-plan.md (gates 1 and 2, 2026-10-17), clinically checked
+# against the Q bank guidelines and online the same day. The built lesson, its cases and all its Arabic are drafts
+# for the author's review.
+# Patient A again (lessons 2 and 3), now 62: rest pain for an hour, 1 mm ST depression in V4-V6, high-sensitivity
+# troponin T 9 then 38 ng/L at 1 hour against a 99th percentile of 14 (Elecsys: a 1 h change of 5 or more rules in).
+# One set of numbers: 99th percentile 14 ng/L; hook 9 -> 38; c03 6 -> 7 (0 h/1 h rule-out); c09 40 -> 41 at 3 h.
+# The three syndromes are one ACS family in three shades, partly to fully closed (amber, orange, red); the engine
+# colours by family, so each shade is its own family here.
+# IDs are permanent: never renumber or reuse one. To drop an item, move its ID to `retired`.
+id: cardio.diagnosing-acs
+title: Diagnosing ACS
+title_ar: تشخيص متلازمة الشريان التاجي الحادة
+description: Chest pain at rest, now. Is it an acute coronary syndrome, and which of the three? Read the ST segment first, then the troponin, then practise on original exam-style cases.
+status: draft
+updated: 2026-10-17
+sources:
+  - "Byrne RA et al. 2023 ESC Guidelines for the management of acute coronary syndromes. Eur Heart J 2023;44:3720–3826. Sections 3.2.1 (STEMI criteria, bundle branch block, extra leads), 3.2.2 (NSTE-ACS ECG) and 3.3 (high-sensitivity troponin, 0 h/1 h and 0 h/2 h). https://doi.org/10.1093/eurheartj/ehad191"
+  - "Thygesen K et al. Fourth universal definition of myocardial infarction (2018). Eur Heart J 2019;40:237–269. Myocardial injury, the 99th percentile, types 1 and 2, reinfarction. https://doi.org/10.1093/eurheartj/ehy462"
+  - "NICE CG95. Recent-onset chest pain of suspected cardiac origin, recommendation 1.2.1.3 (checked 2026-10-17). https://www.nice.org.uk/guidance/cg95"
+  - "Amsterdam EA et al. 2014 AHA/ACC guideline for non-ST-elevation acute coronary syndromes: serial ECGs at 15 to 30 minute intervals in the first hour. Circulation 2014;130:e344–e426."
+  - "Roche Diagnostics. Elecsys hs-cTnT and the ESC 0 h/1 h algorithm: rule-in and rule-out cut-offs (checked 2026-10-17)."
+  - "2025 ESC Guidelines for the management of myocarditis and pericarditis: the pericarditis ECG and pain."
+  - "Mazzolai L et al. 2024 ESC Guidelines for peripheral arterial and aortic diseases, section 9.3.1 (aortic dissection). Eur Heart J 2024;45:3538–3700."
+  - "Arbelo E et al. 2023 ESC Guidelines for the management of cardiomyopathies, section on Takotsubo syndrome. Eur Heart J 2023;44:3503–3626."
+  - "Troponin subunits: C binds calcium, I inhibits actin–myosin, T binds tropomyosin (PMC5367448; PMC2693027)."
+retired: []
+cover: concepts
+
+# All Arabic here is draft until the author reviews it.
+families:
+  sol: Unstable angina
+  cat: NSTEMI
+  bad: STEMI
+  gray: Neutral
+families_ar:
+  sol: الذبحة الصدرية غير المستقرة
+  cat: احتشاء القلب بدون ارتفاع ST
+  bad: احتشاء القلب مع ارتفاع ST
+  gray: محايد
+concepts:
+  ua:        { label: Unstable angina, ar: الذبحة الصدرية غير المستقرة, family: sol,  letter: U, icon: artery }
+  nstemi:    { label: NSTEMI,          ar: احتشاء القلب بدون ارتفاع ST,  family: cat,  letter: N, icon: artery }
+  stemi:     { label: STEMI,           ar: احتشاء القلب مع ارتفاع ST,    family: bad,  letter: S, icon: artery }
+  troponin:  { label: Troponin,        ar: التروبونين,                    family: gray, letter: T, icon: tag, cover: false }
+  myoglobin: { label: Myoglobin,       ar: الميوجلوبين,                   family: gray, letter: M, icon: tag, cover: false }
+  ckmb:      { label: CK-MB,           ar: CK-MB,                         family: gray, letter: K, icon: tag, cover: false }
+  type2:     { label: Type 2 MI,       ar: احتشاء القلب من النوع الثاني,  family: gray, letter: 2, icon: tag, cover: false }
+
+learn:
+  # Patient A, in the house style (DESIGN.md, Explanations, Stems; the author's round 2, 2026-10-17)
+  - id: hook
+    pattern: hook
+    title: What is the diagnosis?
+    title_ar: ما التشخيص؟
+    scene: case-chest-man
+    figure: acs-hook
+    stem: "A 62-year-old man presents with central crushing chest pain that began at rest an hour ago and is still present. He has a past medical history of stable angina, type 2 diabetes and hypertension. He is an ex-smoker. His medications are bisoprolol 10 mg, amlodipine 5 mg, aspirin 75 mg, atorvastatin 80 mg, ramipril 10 mg and sublingual GTN. On examination, he is sweating, his heart rate is 92 and regular, and his BP is 148/88 mmHg. His ECG shows 1 mm horizontal ST depression in V4–V6. His high-sensitivity troponin T is 9 ng/L on arrival and 38 ng/L at 1 hour (99th percentile 14 ng/L)."
+    question: What is the diagnosis?
+
+  # 1B, the table (the author's pick): the row names stand from the start; NICE CG95 1.2.1.3 for the ACS side.
+  # No GTN row: the response to GTN is not used to diagnose ACS (CG95 1.2.1.4).
+  - id: compare
+    pattern: story
+    title: Stable angina or ACS?
+    title_ar: ذبحة مستقرة أم متلازمة حادة؟
+    kind: art
+    art: acs-compare
+
+  # 2A: one plaque cracks; the clot closes the artery partly (unstable angina, NSTEMI) or fully (STEMI)
+  - id: plaque
+    pattern: story
+    title: One plaque, three outcomes
+    title_ar: لويحة واحدة وثلاث نتائج
+    kind: art
+    art: acs-plaque
+    slots: { ua: "{ua}", nstemi: "{nstemi}", stemi: "{stemi}" }
+
+  # The two questions in the order their answers arrive: the ECG in minutes, the troponin in an hour or more
+  - id: tree
+    pattern: decision-tree
+    title: Two questions
+    title_ar: سؤالان
+    steps:
+      - { q: "ST raised?", q_ar: هل ST مرتفع؟, at: [1, 1], yes: stemi }
+      - { q: "Troponin rising above the line?", q_ar: هل يرتفع التروبونين فوق الحد؟, at: [1, 2], no: ua }
+    end: nstemi
+
+  # 3A: ESC 2023 3.2.1, at the J point in two contiguous leads
+  - id: st
+    pattern: story
+    title: What counts as ST elevation
+    title_ar: متى نعتبر ST مرتفعًا
+    kind: art
+    art: acs-st
+
+  # ESC 2023 3.2.1: bundle branch block or a paced rhythm with ongoing ischaemic pain is managed as STEMI whether or
+  # not it is old; posterior and aVR recap lesson 1; not diagnostic yet -> repeat the ECG (ESC 2023: an additional
+  # ECG, no interval; AHA/ACC 2014: every 15 to 30 minutes in the first hour)
+  - id: hidden-stemi
+    pattern: reveal-cards
+    title: STEMI without the elevation
+    title_ar: احتشاء بدون ارتفاع واضح
+    blind: true
+    cards:
+      - { family: bad, label: LBBB, ar: إحصار الحزمة اليسرى, figure: acs-card-lbbb, answer: "Or paced: the ST cannot be read. With ongoing pain, manage as STEMI, even if old" }
+      - { family: bad, label: Posterior, ar: احتشاء خلفي, figure: acs-card-posterior, answer: "ST depression and tall R in V1–V3: a reciprocal change. Record V7–V9" }
+      - { family: bad, label: aVR up, ar: ارتفاع ST في aVR, figure: acs-card-avr, answer: "With ST depression in six or more leads: left main or three vessels. Immediate angiography" }
+      - { family: gray, icon: refresh, pitfall: true, label: Not diagnostic yet, ar: غير تشخيصي بعد, answer: "Ongoing pain: repeat the ECG every 15–30 minutes and compare" }
+
+  # 4A, corrected after the online check: two actin strands, tropomyosin over the binding sites, a troponin every
+  # seven actins; calcium on C moves tropomyosin aside and myosin binds
+  - id: troponin
+    pattern: story
+    title: What troponin is
+    title_ar: ما هو التروبونين
+    kind: art
+    art: acs-troponin
+
+  # 5A: the order and shapes, not hours (timings vary between sources); CK-MB named only (the author)
+  - id: markers
+    pattern: story
+    title: Markers over time
+    title_ar: المؤشرات عبر الوقت
+    kind: art
+    art: acs-markers
+    slots: { myoglobin: "{myoglobin}", ckmb: "{ckmb}", troponin: "{troponin}" }
+
+  # 6A: UDMI 2018: above the 99th percentile and rising or falling is acute injury; flat and high, chronic
+  - id: pair
+    pattern: story
+    title: One number is not enough
+    title_ar: رقم واحد لا يكفي
+    kind: art
+    art: acs-pair
+
+  - id: troponin-up
+    pattern: reveal-cards
+    title: Troponin up, artery open
+    title_ar: تروبونين مرتفع وشريان مفتوح
+    blind: true
+    cards:
+      - { concept: type2, figure: acs-card-af, answer: "Supply cannot meet demand, with no new clot: fast AF, anaemia, low BP" }
+      - { family: gray, label: PE, ar: الانصمام الرئوي, figure: acs-card-pe, answer: "The right ventricle strains and leaks troponin" }
+      - { family: gray, label: Myocarditis, ar: التهاب عضلة القلب, figure: acs-card-virus, answer: "Inflamed muscle after a virus; open coronaries" }
+      - { family: gray, label: Sepsis, ar: الإنتان, figure: acs-card-sepsis, answer: "Low BP and a fast heart starve the muscle" }
+      - { family: gray, label: CKD, ar: مرض الكلى المزمن, figure: acs-card-ckd, answer: "Raised but flat: chronic injury" }
+
+  # ESC 2025 pericarditis; ESC 2023 cardiomyopathies (Takotsubo); ESC 2024 aorta and PMC3174121 (the RCA, uncommon);
+  # cocaine: a true STEMI, treated as one (AHA 2008; its treatment is lesson 5)
+  - id: st-up
+    pattern: reveal-cards
+    title: ST up, not a blocked artery
+    title_ar: ارتفاع ST دون انسداد
+    blind: true
+    cards:
+      - { family: gray, label: Pericarditis, ar: التهاب التامور, figure: acs-card-peri, answer: "Widespread saddle ST elevation and PR depression; sharp pain, better sitting forward" }
+      - { family: gray, label: Takotsubo, ar: تاكوتسوبو, figure: acs-card-tako, answer: "After stress: ST up and troponin up, open coronaries, a ballooned apex" }
+      - { family: gray, label: Aortic dissection, ar: تسلخ الأبهر, figure: acs-card-aorta, answer: "Tearing pain to the back, unequal arm BPs; can involve the RCA. Exclude it first" }
+      - { family: bad, icon: bulb, pitfall: true, label: Cocaine, ar: الكوكايين, answer: "Spasm and clot: a true STEMI, treated as one" }
+
+  - id: solve
+    pattern: story
+    title: Back to the hook
+    title_ar: العودة إلى الحالة
+    kind: art
+    art: acs-solve
+    slots: { stemi: "{stemi}", nstemi: "{nstemi}", ua: "{ua}" }
+
+practise:
+  - id: cases
+    pattern: stem-quiz
+    title: Which syndrome?
+    title_ar: أي متلازمة؟
+    options: [ua, nstemi, stemi]
+    cases:
+      - id: c01
+        solved: true
+        scene: case-chest-man
+        options: [NSTEMI, Unstable angina, STEMI, Stable angina]
+        stem: "A 62-year-old man presents with central crushing chest pain that began at rest an hour ago and is still present. On examination, he is sweating, his heart rate is 92 and regular, and his BP is 148/88 mmHg. His ECG shows 1 mm horizontal ST depression in V4–V6. His high-sensitivity troponin T is [[9 ng/L on arrival and 38 ng/L at 1 hour]] (99th percentile 14 ng/L)."
+        question: What is the diagnosis?
+        answer: NSTEMI
+        hint: Is the ST raised? If not, what did the troponin do?
+        why: "There is no ST elevation, so this is not a STEMI. His troponin rose from 9 to 38 ng/L, above the 99th percentile of 14 ng/L, so heart muscle has died and this is an NSTEMI rather than unstable angina (UDMI 2018)."
+        notes:
+          "Unstable angina": "Unstable angina is ischaemic pain at rest without muscle death, so the troponin would stay below the 99th percentile."
+          "STEMI": "A STEMI causes persistent ST elevation in two contiguous leads and needs immediate reperfusion."
+          "Stable angina": "Stable angina comes on with exertion and settles within minutes of rest or GTN, not after an hour of pain at rest."
+        tutor: "Read the ST segment first, then the troponin: here the ST is not raised, and the troponin rose across the line."
+
+      - id: c02
+        scene: case-watch-man
+        options: [STEMI, NSTEMI, Unstable angina, Acute pericarditis]
+        stem: "A 72-year-old man presents with central crushing chest pain that began 30 minutes ago and is still present. He has a past medical history of hypertension. He smokes. On examination, he is sweating, his heart rate is 64 and regular, and his BP is 132/78 mmHg. His ECG shows [[2 mm ST elevation in II, III and aVF]], with ST depression in I and aVL. His troponin result is awaited."
+        question: What is the diagnosis?
+        answer: STEMI
+        hint: Which leads are raised, and by how much?
+        why: "Leads II, III and aVF face the inferior wall, and 2 mm of ST elevation in these contiguous leads meets the criteria for a STEMI (ESC 2023). The ST depression in I and aVL is a reciprocal change. The diagnosis is made from the ECG, so reperfusion does not wait for the troponin result."
+        notes:
+          "NSTEMI": "An NSTEMI causes no ST elevation; it is diagnosed by a troponin above the 99th percentile that rises or falls."
+          "Unstable angina": "Unstable angina causes no ST elevation, and the troponin stays below the 99th percentile."
+          "Acute pericarditis": "Acute pericarditis causes widespread concave ST elevation with PR depression, with no reciprocal changes except in aVR and V1."
+
+      - id: c03
+        scene: case-results-woman
+        options: [Unstable angina, NSTEMI, STEMI, Stable angina]
+        stem: "A 56-year-old woman presents with central chest tightness that came on at rest and lasted 25 minutes; it has now settled. She has a past medical history of type 2 diabetes and hypertension. On examination, her heart rate is 78 and regular, and her BP is 142/84 mmHg. Her ECG shows T-wave inversion in V4–V6. Her high-sensitivity troponin T is [[6 ng/L on arrival and 7 ng/L at 1 hour]] (99th percentile 14 ng/L)."
+        question: What is the diagnosis?
+        answer: Unstable angina
+        hint: Is the troponin above the line, and has it changed?
+        why: "Chest pain at rest lasting 25 minutes is an acute coronary syndrome, and there is no ST elevation, so this is not a STEMI. Her troponin stays below the 99th percentile of 14 ng/L and barely changes between 0 and 1 hour, so no heart muscle has died and this is unstable angina (ESC 2023). The T-wave inversion in V4–V6 shows ischaemia but does not decide between unstable angina and an NSTEMI."
+        notes:
+          "NSTEMI": "An NSTEMI needs a troponin above the 99th percentile that rises or falls, showing that heart muscle has died."
+          "STEMI": "A STEMI causes persistent ST elevation in two contiguous leads."
+          "Stable angina": "Stable angina comes on with exertion and settles within minutes, not after 25 minutes of pain at rest."
+
+      - id: c04
+        scene: case-tube-man
+        options: [1 mm ST elevation in II and aVF, 1 mm ST elevation in V2 and V3, 1 mm ST elevation in III alone, "0.5 mm ST elevation in II, III and aVF"]
+        stem: "A [[52-year-old man]] presents with central chest pain that began 40 minutes ago and is still present. He has no significant past medical history. On examination, his heart rate is 84 and regular, and his BP is 136/82 mmHg. An ECG is recorded."
+        question: Which ECG finding meets the criteria for a STEMI?
+        answer: 1 mm ST elevation in II and aVF
+        hint: How many leads, which leads, and how much for a man of his age?
+        why: "Leads II and aVF both face the inferior wall, so they are contiguous, and outside V2–V3 ST elevation of 1 mm in two contiguous leads meets the criteria for a STEMI (ESC 2023). In V2–V3 a man aged 40 or over needs 2 mm."
+        notes:
+          "1 mm ST elevation in V2 and V3": "ST elevation of 1 mm in V2 and V3 is below the threshold for these leads, which is 2 mm in a man aged 40 or over (ESC 2023)."
+          "1 mm ST elevation in III alone": "ST elevation of 1 mm in lead III alone is in one lead only, and the criteria need two contiguous leads."
+          "0.5 mm ST elevation in II, III and aVF": "ST elevation of 0.5 mm in II, III and aVF is below the 1 mm threshold, so the ECG is repeated while the pain continues."
+
+      - id: c05
+        scene: case-ecg-woman
+        options: [Manage as STEMI, Wait for the troponin, Treat as stable angina, Exercise ECG]
+        stem: "A 71-year-old woman presents with central crushing chest pain that began 40 minutes ago and is still present. She has a past medical history of hypertension. On examination, she is sweating, her heart rate is 88 and regular, and her BP is 128/76 mmHg. Her ECG shows [[left bundle branch block]]; no previous ECG is available."
+        question: What is the most appropriate management?
+        answer: Manage as STEMI
+        hint: Can the ST segment be read in left bundle branch block?
+        why: "Left bundle branch block makes the ST segment impossible to read, so with ongoing ischaemic pain it is managed as a STEMI, with immediate reperfusion, whether the block is new or old (ESC 2023). Older teaching and many exam questions ask whether the block is new; the guideline no longer does."
+        notes:
+          "Wait for the troponin": "Waiting for the troponin would delay reperfusion, which is decided by the ECG and the symptoms (ESC 2023)."
+          "Treat as stable angina": "Stable angina comes on with exertion and settles within minutes, not after 40 minutes of pain at rest."
+          "Exercise ECG": "An exercise ECG is not used in ongoing chest pain at rest, and its ST segment cannot be read in left bundle branch block."
+
+      - id: c06
+        scene: case-medbag-man
+        options: [Repeat the ECG in 15 minutes, Repeat the troponin at 1 hour, Exercise ECG tomorrow, Discharge with GTN]
+        stem: "A 71-year-old man presents with central chest pain that began 30 minutes ago and is still present. He has a past medical history of type 2 diabetes. On examination, his heart rate is 90 and regular, and his BP is 140/86 mmHg. His ECG shows [[0.5 mm ST elevation in V2–V4]], which does not meet the criteria for a STEMI."
+        question: Which test decides now whether he needs immediate reperfusion?
+        answer: Repeat the ECG in 15 minutes
+        hint: Which test shows an occlusion as it evolves?
+        why: "An occluded artery can show only small ST changes or hyperacute T waves on the first ECG, so while the pain continues the ECG is repeated and compared, as a STEMI may appear on the next one (ESC 2023). Serial ECGs are recorded every 15 to 30 minutes in the first hour (AHA/ACC 2014). A troponin is also taken, but reperfusion is decided by the ECG, never by the troponin."
+        notes:
+          "Repeat the troponin at 1 hour": "A repeat troponin at 1 hour separates an NSTEMI from unstable angina, but it does not decide reperfusion, which never waits for a blood test (ESC 2023)."
+          "Exercise ECG tomorrow": "An exercise ECG is not used in ongoing chest pain at rest, which may be an acute coronary syndrome."
+          "Discharge with GTN": "Discharge with GTN would send home ongoing rest pain that may be an evolving STEMI."
+
+      - id: c07
+        scene: case-kidney
+        options: [Myoglobin, Troponin T, CK-MB, LDH]
+        stem: "A 64-year-old man presents with central crushing chest pain that began 40 minutes ago. He has a past medical history of hypertension. Blood is taken for cardiac markers [[soon after the pain began]] and at intervals over the following days."
+        question: Which marker rises first after a myocardial infarction?
+        answer: Myoglobin
+        hint: Which is the smallest molecule, released first?
+        why: "Myoglobin is a small protein that leaks out of damaged muscle first, so it is the first marker to rise after a myocardial infarction. It is also found in skeletal muscle, so it is not specific to the heart, and troponin is the marker used to diagnose a myocardial infarction (ESC 2023)."
+        notes:
+          "Troponin T": "Troponin T is the most specific marker of heart muscle death, but it rises after myoglobin."
+          "CK-MB": "CK-MB rises after myoglobin and falls back within 2 to 3 days, which was once used to detect reinfarction."
+          "LDH": "LDH rises late, over days, and is no longer used to diagnose a myocardial infarction."
+
+      - id: c08
+        scene: case-lens-woman
+        options: [Tropomyosin, Calcium, Actin, Myosin]
+        stem: "A 55-year-old woman has a raised high-sensitivity troponin T after an NSTEMI. [[Troponin T]] is one of the three troponins on the thin filament of cardiac muscle."
+        question: What does troponin T bind on the thin filament?
+        answer: Tropomyosin
+        hint: Each troponin is named for what it binds or does.
+        why: "Troponin T binds tropomyosin, anchoring the troponin complex to it on the thin filament. Troponin C binds calcium, and troponin I binds actin, holding back the actin–myosin interaction until calcium arrives. The cardiac forms of troponin I and T differ from the skeletal forms, which is why the test is specific to heart muscle."
+        notes:
+          "Calcium": "Calcium is bound by troponin C, which then lets tropomyosin move aside so that myosin can bind actin."
+          "Actin": "Actin is bound by troponin I, which holds back the actin–myosin interaction at rest."
+          "Myosin": "Myosin binds actin once tropomyosin moves aside; troponin does not bind it."
+
+      - id: c09
+        scene: case-request-man
+        options: [Chronic myocardial injury, NSTEMI, Unstable angina, Type 2 MI]
+        stem: "A 74-year-old man presents with chest pain at rest that lasted 10 minutes and settled before he arrived. He has a past medical history of chronic kidney disease on haemodialysis and hypertension. On examination, his heart rate is 76 and regular, and his BP is 150/90 mmHg. His ECG is unchanged from previous recordings. His high-sensitivity troponin T is [[40 ng/L on arrival and 41 ng/L at 3 hours]] (99th percentile 14 ng/L)."
+        question: What is the most likely explanation for the troponin result?
+        answer: Chronic myocardial injury
+        hint: Is the troponin rising or falling, or flat?
+        why: "His troponin is above the 99th percentile but flat, changing by only 1 ng/L over 3 hours, so this is chronic myocardial injury, which is common in chronic kidney disease (UDMI 2018). An acute injury, and so a myocardial infarction, needs a rise or fall."
+        notes:
+          "NSTEMI": "An NSTEMI needs a troponin above the 99th percentile that rises or falls, showing acute muscle death."
+          "Unstable angina": "Unstable angina causes no muscle death, so the troponin stays below the 99th percentile."
+          "Type 2 MI": "A type 2 MI is acute muscle death from a mismatch of supply and demand, such as fast AF or anaemia, so the troponin rises or falls."
+
+      - id: c10
+        scene: case-handbag-woman
+        options: [Acute pericarditis, Anterior STEMI, Takotsubo cardiomyopathy, Pulmonary embolism]
+        stem: "A 25-year-old woman presents with sharp central chest pain that began 2 days ago. It is worse lying flat and better sitting forward. She had a cold last week. She has no significant past medical history. On examination, her heart rate is 96 and regular, and her BP is 118/72 mmHg. Her ECG shows [[widespread concave ST elevation with PR depression]]."
+        question: What is the diagnosis?
+        answer: Acute pericarditis
+        hint: Does the ST elevation follow one coronary territory?
+        why: "Widespread concave ST elevation that follows no single coronary territory, with PR depression, is acute pericarditis, and sharp pain that is worse lying flat and better sitting forward fits it (ESC 2025). The cold last week suggests a viral cause, the commonest in young adults."
+        notes:
+          "Anterior STEMI": "An anterior STEMI causes ST elevation in V1–V4 (septal and anterior walls), with reciprocal ST depression in the inferior leads."
+          "Takotsubo cardiomyopathy": "Takotsubo cardiomyopathy typically affects older women after emotional or physical stress, and causes ST elevation with ballooning of the apex."
+          "Pulmonary embolism": "Pulmonary embolism typically causes pleuritic pain with breathlessness, a fast heart rate and low oxygen saturation, and the ECG most often shows only a sinus tachycardia."
+
+      - id: c11
+        scene: case-box-woman
+        options: [Takotsubo cardiomyopathy, Anterior STEMI, Myocarditis, Acute pericarditis]
+        stem: "A 68-year-old woman presents with central chest pain that began this morning, [[the day after her husband's funeral]]. She has a past medical history of hypertension. On examination, her heart rate is 98 and regular, and her BP is 118/74 mmHg. Her ECG shows ST elevation in V2–V5, and her troponin is raised. Coronary angiography shows unobstructed coronary arteries, and the left ventriculogram shows ballooning of the apex."
+        question: What is the diagnosis?
+        answer: Takotsubo cardiomyopathy
+        hint: What came just before the pain, and what did angiography show?
+        why: "ST elevation and a raised troponin with unobstructed coronary arteries and ballooning of the apex, the day after a bereavement, is Takotsubo cardiomyopathy (ESC 2023). It mostly affects postmenopausal women after emotional or physical stress, and the wall motion usually recovers within weeks."
+        notes:
+          "Anterior STEMI": "An anterior STEMI is caused by an occluded LAD artery, which angiography would show."
+          "Myocarditis": "Myocarditis typically follows a viral illness and causes patchy inflammation of the muscle, not ballooning of the apex after a stressful event."
+          "Acute pericarditis": "Acute pericarditis causes widespread concave ST elevation with PR depression, and the heart muscle moves normally."
+
+      - id: c12
+        scene: case-script-man
+        options: [Aortic dissection, Inferior STEMI from plaque rupture, Acute pericarditis, Pulmonary embolism]
+        stem: "A 58-year-old man presents with sudden [[tearing chest pain going through to his back]]. He has a past medical history of hypertension. On examination, his heart rate is 104 and regular, and his BP is 165/90 mmHg in the right arm and 125/70 mmHg in the left. His ECG shows ST elevation in II, III and aVF."
+        question: What is the most likely diagnosis?
+        answer: Aortic dissection
+        hint: What do the pain and the two arm pressures point to?
+        why: "Tearing pain through to the back with a 40 mmHg difference in systolic BP between the arms points to aortic dissection (ESC 2024). An uncommon type A dissection can involve the RCA, which supplies the inferior wall in most hearts, and so cause inferior ST elevation. Dissection must be excluded before antithrombotic or thrombolytic treatment, which could be fatal."
+        notes:
+          "Inferior STEMI from plaque rupture": "An inferior STEMI from plaque rupture would cause the same ECG, but not tearing pain to the back or a difference in BP between the arms."
+          "Acute pericarditis": "Acute pericarditis causes widespread concave ST elevation with PR depression, not ST elevation confined to the inferior leads."
+          "Pulmonary embolism": "Pulmonary embolism typically causes pleuritic pain, breathlessness and low oxygen saturation, not a difference in BP between the arms."
+
+      - id: c13
+        scene: case-bottle-woman
+        options: [Type 2 MI, Type 1 MI, Unstable angina, Chronic myocardial injury]
+        stem: "A 66-year-old woman presents with palpitations and chest tightness that began 3 hours ago. She has a past medical history of hypertension. On examination, [[her heart rate is 170 and irregularly irregular]], and her BP is 108/70 mmHg. Her ECG shows atrial fibrillation with ST depression in V4–V6. Her high-sensitivity troponin T rises from 30 to 62 ng/L (99th percentile 14 ng/L). Her symptoms settle with rate control, and coronary angiography shows unobstructed coronary arteries."
+        question: What is the diagnosis?
+        answer: Type 2 MI
+        hint: Was there a new clot, or did demand outrun supply?
+        why: "Her troponin rose above the 99th percentile with chest tightness and ST depression, so this is a myocardial infarction. Fast AF raised the heart's oxygen demand beyond what its supply could meet, without a new clot, and the coronary arteries are unobstructed, so it is a type 2 MI (UDMI 2018). It is treated by treating its cause, here with rate control."
+        notes:
+          "Type 1 MI": "A type 1 MI is caused by a plaque rupturing and a clot forming on it, which angiography would show."
+          "Unstable angina": "Unstable angina causes no muscle death, so the troponin stays below the 99th percentile."
+          "Chronic myocardial injury": "Chronic myocardial injury causes a raised troponin that stays flat, rather than one that rises."
+
+      - id: c14
+        scene: case-water-man
+        options: [Pulmonary embolism, NSTEMI, Acute pericarditis, Takotsubo cardiomyopathy]
+        stem: "A 66-year-old man develops [[sudden pleuritic chest pain and breathlessness three days after a hip replacement]]. He has a past medical history of hypertension. On examination, his heart rate is 118 and regular, his BP is 112/70 mmHg and his oxygen saturation is 89% on air. His ECG shows sinus tachycardia, and his troponin is raised."
+        question: What is the most likely diagnosis?
+        answer: Pulmonary embolism
+        hint: What does the timing after surgery suggest?
+        why: "Sudden pleuritic pain and breathlessness with hypoxia and a tachycardia three days after a hip replacement is a pulmonary embolism. The raised troponin comes from strain on the right ventricle, not from a blocked coronary artery."
+        notes:
+          "NSTEMI": "An NSTEMI causes central ischaemic chest pain from a coronary plaque, not pleuritic pain with hypoxia after surgery."
+          "Acute pericarditis": "Acute pericarditis causes widespread concave ST elevation with PR depression, and the oxygen saturation is normal."
+          "Takotsubo cardiomyopathy": "Takotsubo cardiomyopathy causes ST elevation and ballooning of the apex after emotional or physical stress, not hypoxia."
+
+  - id: end
+    pattern: end
+    title: Your score
+    title_ar: نتيجتك

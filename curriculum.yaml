@@ -83,7 +83,7 @@ specialties:
       # stable angina split in two (the user, 2026-10-14): notes/angina-diagnosis-plan.md, notes/angina-treatment-plan.md
       - { slug: angina-diagnosis,         title: "Is it angina?",                      status: reviewed,  section: A, video: null }
       - { slug: angina-treatment,         title: Treating stable angina,               status: draft, section: A, video: null }
-      - { slug: diagnosing-acs,           title: Diagnosing ACS,                       status: planned, section: A, video: null }
+      - { slug: diagnosing-acs,           title: Diagnosing ACS,                       status: draft,   section: A, video: null }
       - { slug: reperfusion,              title: Reperfusion,                          status: planned, section: A, video: null }
       - { slug: acs-antithrombotics,      title: Antiplatelets and anticoagulants in ACS, status: planned, section: A, video: null }
       - { slug: mi-complications,         title: Complications of MI,                  status: planned, section: A, video: null }

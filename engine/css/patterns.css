@@ -617,6 +617,11 @@ html.fluid .ask{position:fixed}
 .hook-row{display:grid;grid-template-columns:minmax(0,1fr) clamp(220px,calc(30 * var(--u)),400px);gap:clamp(16px,calc(2.4 * var(--u)),32px);align-items:center;width:100%;max-width:1320px;margin-inline:auto}
 .hook-row>.stem-card.hook{max-width:none}
 .hook-row.hook-long{grid-template-columns:minmax(0,1fr) clamp(180px,calc(19 * var(--u)),260px)}
+.hook-row.hook-xl{grid-template-columns:minmax(0,1fr) clamp(150px,calc(15 * var(--u)),210px)}
+.hook-xl .hook .stem-text{font-size:clamp(15px,calc(1.7 * var(--u)),21px);line-height:1.42}
+.hook-xl .hook .stem-q{font-size:clamp(18px,calc(2 * var(--u)),25px);margin-top:clamp(6px,calc(.8 * var(--u)),10px)}
+.hook-xl .stem-card.hook>.fig{margin-top:clamp(6px,calc(.8 * var(--u)),10px)}
+.hook-xl .stem-card.hook>.fig svg{width:auto;max-width:100%;max-height:clamp(52px,calc(6.6 * var(--u)),82px)}
 .hook-row>.fig{margin:0}
 /* a tall cartoon (a portrait scene) keeps the hook on the stage */
 .hook-row>.fig svg{max-height:clamp(200px,calc(27 * var(--u)),345px)}
