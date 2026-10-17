@@ -51,6 +51,8 @@ A new slide pattern means: a function in `engine/patterns.py` (added to `PATTERN
 
 Agree on paper, build once. Lessons 5–8 went in 1–5 commits each because their slide list, numbers and figures were settled before the build; lessons 2–4 took 14–19 because figures and even the lesson's scope changed after it was built.
 
+**Everything the user reviews goes to them as an interactive Artifact**, never as chat text or a local file. This covers a plan note, a mockup sheet, case wording, a built lesson's review list and a transcript review. The page has one row per item, showing the current version beside the proposed one, with a verdict (Take new, Keep now, Change, with a box for their own words) and a Comment button on each row. It keeps verdicts in its database (`db`, `user` and `comments` with `composer_only`). Read the user's answers back with `ArtifactData` and `ArtifactComments`, then apply them; when the user's edit to one item shows a pattern, generalise it to the rest and say which calls are still open. Mockups are PNGs placed on that page.
+
 ### A new lesson: three gates
 
 The user decides at three gates; everything between them is batched.
@@ -90,7 +92,7 @@ The sound stays natural (no noise filter, compressor or limiter); a zoom follows
 
 Draw a mockup on the real slide, so it looks like the page: crop the page's own screenshot (the check's `--shots`) into the SVG, reuse the drawings in `content/figures` and the embedded fonts (`engine/fonts`), and redraw only what changes. A change to a pattern's look or behaviour is shown as three mockups first, each in its two or three states (first, then after a tap), and built only once one is chosen.
 
-Mockups go to the user as a picture: write a static SVG (no scripts), render it to PNG with headless Chrome (`chrome --headless=new --screenshot=<png> --window-size=W,H file:///<svg>`) and send the PNG. Inline widgets and HTML pages with scripts do not show for them.
+Mockups go to the user as a picture: write a static SVG (no scripts), render it to PNG with headless Chrome (`chrome --headless=new --screenshot=<png> --window-size=W,H file:///<svg>`) and put the PNG on the review Artifact (above). Inline chat widgets do not show for them.
 
 ## Agent tools
 
