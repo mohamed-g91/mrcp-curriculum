@@ -141,38 +141,38 @@ practise:
         question: What is the next step in management?
         answer: CTCA for both
         hint: Does an abnormal resting ECG change the plan for non-anginal pain?
-        why: "A has typical angina; a normal ECG does not rule it out. B's pain is non-anginal, but her ST-T changes put her on the same track. With no known heart disease, both get CT coronary angiography (NICE CG95)."
+        why: "Patient A's pain is constricting, brought on by exertion and relieved by rest within 5 minutes, so it has all three features of typical angina; a normal resting ECG does not rule angina out. Patient B's pain has only one feature, so it is non-anginal, but her T-wave inversion in V4–V6 means coronary disease cannot be excluded. With no known coronary disease, both need CT coronary angiography (NICE CG95)."
         notes:
-          "CTCA for A; no test for B": "B's abnormal resting ECG puts her on the CTCA track."
-          "Exercise ECG for both": "not used to diagnose angina without known coronary disease (NICE)."
-          "Angiography for A; CTCA for B": "invasive angiography comes only after inconclusive non-invasive tests."
-        tutor: "Count the features, read the resting ECG, then ask about known heart disease."
+          "CTCA for A; no test for B": "No test is offered only for non-anginal pain with a normal resting ECG; patient B has T-wave inversion in V4–V6, which means she needs CT coronary angiography too."
+          "Exercise ECG for both": "An exercise ECG is not used to diagnose angina in people without known coronary disease and is not the first-line investigation (NICE CG95)."
+          "Angiography for A; CTCA for B": "Invasive coronary angiography comes only after non-invasive tests are inconclusive, so patient A starts with CT coronary angiography too."
+        tutor: "Look for three points: anginal or non-anginal pain, ECG changes if non-anginal, and known coronary disease."
 
       - id: c02
         scene: case-stairs-man
         options: [typical, atypical, nonanginal, Unstable angina]
-        stem: "A 57-year-old man has had two months of central chest tightness when he climbs the stairs at work. [[It takes 20 minutes to settle]] after he stops."
+        stem: "A 57-year-old man has had two months of central chest tightness when he climbs the stairs at work. [[It takes 10 minutes to settle]] after he stops."
         question: How is his chest pain classed?
         answer: atypical
         hint: Count the three features. Which one is missing?
-        why: "Constricting and brought on by exertion, but not relieved within about 5 minutes: two features, atypical angina."
+        why: "His pain is constricting and brought on by exertion, but it takes more than 5 minutes to settle with rest. This patient has two of the three features of typical anginal pain, so it is atypical angina (NICE CG95)."
         notes:
-          "typical": "all three features."
-          "nonanginal": "one feature or none."
-          "Unstable angina": "new, worsening or at rest."
+          "typical": "Typical angina has all three features: constricting pain, brought on by exertion, and relieved by rest or GTN within about 5 minutes."
+          "nonanginal": "Non-anginal pain has one or none of the three features."
+          "Unstable angina": "Unstable angina is chest pain that is new, getting worse or comes on at rest."
 
       - id: c03
         scene: case-side-woman
         options: [No cardiac test, CT coronary angiography, Exercise ECG, Stress echocardiogram]
-        stem: "A 35-year-old woman with no risk factors has a sharp pain under her left breast at rest, lasting seconds and [[worse when she breathes in]]. Her resting ECG is normal."
+        stem: "A 35-year-old woman with no cardiovascular risk factors has a sharp pain under her left breast at rest, lasting seconds and [[worse when she breathes in]]. Her resting ECG is normal."
         question: What is the next step?
         answer: No cardiac test
         hint: How many of the three features does her pain have?
-        why: "Her pain is non-anginal and her resting ECG is normal, so angina is excluded and no cardiac test is offered (NICE CG95). Look for another cause."
+        why: "Her pain is sharp, comes at rest and is worse when she breathes in, so it is non-anginal. With a normal resting ECG, no further testing is needed (NICE CG95), and another cause should be looked for."
         notes:
-          "CT coronary angiography": "for typical or atypical angina, or an abnormal resting ECG."
-          "Exercise ECG": "not used to diagnose angina without known coronary disease (NICE)."
-          "Stress echocardiogram": "for known coronary disease, or an uncertain CTCA."
+          "CT coronary angiography": "CT coronary angiography is for typical or atypical angina, or for non-anginal pain with an abnormal resting ECG."
+          "Exercise ECG": "An exercise ECG is not the first-line investigation and is not used to diagnose angina in people without known coronary disease (NICE CG95)."
+          "Stress echocardiogram": "A stress echocardiogram is correct if the patient has a history of coronary disease, or if CT coronary angiography is inconclusive."
 
       - id: c04
         scene: case-shoe-man
@@ -181,24 +181,24 @@ practise:
         question: What is the next step?
         answer: Stress echocardiogram
         hint: Is there known coronary disease?
-        why: "With known coronary disease, the question is whether this narrowing causes the pain: a functional test such as a stress echo, not CT coronary angiography (NICE CG95)."
+        why: "His stent means he has known coronary disease (narrowed vessels), so the question is whether this narrowing is causing ischaemic pain or not. A functional test such as a stress echocardiogram determines whether the symptoms are due to ischaemia (NICE CG95)."
         notes:
-          "CT coronary angiography": "for suspected angina without known coronary disease."
-          "Invasive coronary angiography": "when functional imaging is inconclusive."
-          "Chest X-ray": "does not show coronary disease."
+          "CT coronary angiography": "CT coronary angiography is for suspected angina in people without known coronary disease, as it detects arterial narrowing."
+          "Invasive coronary angiography": "Invasive coronary angiography comes after functional imaging that is inconclusive."
+          "Chest X-ray": "A chest X-ray does not show coronary disease or ischaemia."
 
       - id: c05
         scene: case-results-woman
         options: [Invasive coronary angiography, Exercise ECG, Repeat CT coronary angiography, Discharge]
-        stem: "A 59-year-old woman has typical angina. CT coronary angiography shows disease of uncertain significance, and a [[stress perfusion MRI is inconclusive]]."
+        stem: "A 59-year-old woman has typical angina. CT coronary angiography shows narrowing of uncertain significance, and a [[stress perfusion MRI is inconclusive]]."
         question: What is the next step?
         answer: Invasive coronary angiography
         hint: What comes after functional imaging that does not decide it?
-        why: "CTCA first, functional imaging when it is uncertain, and invasive coronary angiography when that is inconclusive (NICE CG95)."
+        why: "CT coronary angiography showed narrowing of uncertain significance, so she had functional imaging, which was inconclusive. The next step is invasive coronary angiography (NICE CG95)."
         notes:
-          "Exercise ECG": "not used to diagnose angina without known coronary disease (NICE)."
-          "Repeat CT coronary angiography": "adds nothing to an uncertain CTCA."
-          "Discharge": "leaves typical angina undiagnosed."
+          "Exercise ECG": "An exercise ECG is not used to diagnose angina in people without known coronary disease and is not the first-line investigation (NICE CG95)."
+          "Repeat CT coronary angiography": "Repeat CT coronary angiography would show the same uncertain narrowing and add nothing."
+          "Discharge": "Discharge would leave her typical angina undiagnosed and untreated."
 
       - id: c06
         scene: case-request-man
@@ -207,10 +207,10 @@ practise:
         question: Which stress agent should be used?
         answer: Dobutamine
         hint: Which agents can tighten the airways?
-        why: "Adenosine and dipyridamole can cause bronchospasm. Dobutamine stresses the heart as exercise does, and suits a stress echo."
+        why: "His asthma rules out adenosine and dipyridamole, as both can cause bronchospasm. Dobutamine raises the heart rate and the force of contraction, as exercise does, so it is the agent to use, usually with a stress echocardiogram."
         notes:
-          "Adenosine": "can cause bronchospasm."
-          "Dipyridamole": "can cause bronchospasm."
+          "Adenosine": "Adenosine dilates the coronary arteries but can cause bronchospasm, so it is avoided in asthma."
+          "Dipyridamole": "Dipyridamole works by raising adenosine levels and can cause bronchospasm, so it is avoided in asthma."
 
       - id: c07
         scene: case-lens-woman
@@ -219,11 +219,11 @@ practise:
         question: What is the most likely diagnosis?
         answer: Microvascular angina
         hint: Where can the blood flow fail if the large arteries are clear?
-        why: "Exertional angina with ischaemia on stress testing and clear large arteries: the small vessels fail, cardiac syndrome X."
+        why: "Ischaemia on exertion with clear coronary arteries on angiography means the blood flow fails in the small vessels of the heart. This is microvascular angina, also called cardiac syndrome X (ESC 2024)."
         notes:
-          "Vasospastic angina": "pain at rest, transient ST elevation."
-          "Hypertrophic cardiomyopathy": "a thick septum on the echo, a systolic murmur louder on Valsalva."
-          "Pericarditis": "sharp pain, worse lying flat; widespread ST elevation, PR depression."
+          "Vasospastic angina": "Vasospastic angina causes pain at rest, often early in the morning, with transient ST elevation."
+          "Hypertrophic cardiomyopathy": "Hypertrophic cardiomyopathy would show a thick septum on the echocardiogram, with an ejection systolic murmur that gets louder with Valsalva."
+          "Pericarditis": "Pericarditis would cause sharp pain that is worse lying flat, with widespread ST elevation and PR depression."
 
       - id: c08
         scene: case-handbag-woman
@@ -232,12 +232,11 @@ practise:
         question: What is the most likely diagnosis?
         answer: Vasospastic angina
         hint: Pain at rest, at dawn, with ST elevation that comes and goes?
-        why: "Prinzmetal (vasospastic) angina: the artery clamps itself shut at rest, often early in the morning, with transient ST elevation and a normal angiogram."
+        why: "Chest pain at rest in the early morning, with transient ST elevation and a normal angiogram, is vasospastic (Prinzmetal) angina. The coronary artery goes into spasm and briefly closes, then opens again; smoking is a known trigger (ESC 2024)."
         notes:
-          "Microvascular angina": "pain on exertion, ST depression, clear arteries."
-          "Stable angina": "pain on exertion, eased by rest."
-          "Pericarditis": "sharp pain, worse lying flat; widespread ST elevation, PR depression."
-
+          "Microvascular angina": "Microvascular angina causes pain on exertion, with ST depression and clear coronary arteries."
+          "Stable angina": "Stable angina comes on with exertion, eases with rest and shows arterial narrowing on coronary angiography."
+          "Pericarditis": "Pericarditis would cause sharp pain that is worse lying flat, with widespread ST elevation and PR depression."
   - id: end
     pattern: end
     title: Your score

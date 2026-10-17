@@ -241,6 +241,11 @@ How a case's words are written: agreed on *Coronary arteries and the ECG*, 17 Oc
 - Put a lead group's wall in brackets where a note lists several (V3–V4 (anterior wall)).
 - Each number with the guideline and year in brackets where a guideline decides the answer (ESC 2023); give no cut-off number the case does not ask for.
 - Say "in most hearts" where anatomy varies, and "uncommon" rather than "rare" for about 1 in 10.
+- Call two patients in one case "patient A" and "patient B" in the explanations.
+- Say "narrowing of uncertain significance" (what CTCA shows), not "disease of uncertain significance".
+- Where a test is wrong because it is not where NICE starts, say so: "not the first-line investigation".
+- A test's wrong-answer note says what it is for (CT coronary angiography is for suspected angina in people without known coronary disease, as it detects arterial narrowing).
+- Choice labels stay short enough to fit two lines in a quarter-width button: the explanation carries the detail ("CTCA for A; no test for B").
 
 **Tutor note** (solved example only). The method as one sentence, then the case worked through with it: *Read the leads first, then identify the wall they face, then the artery that supplies it: leads II, III and aVF face the inferior wall, which is supplied by the RCA.*
 
