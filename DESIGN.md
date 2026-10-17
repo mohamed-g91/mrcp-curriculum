@@ -247,6 +247,16 @@ How a case's words are written: agreed on *Coronary arteries and the ECG*, 17 Oc
 - A test's wrong-answer note says what it is for (CT coronary angiography is for suspected angina in people without known coronary disease, as it detects arterial narrowing).
 - Choice labels stay short enough to fit two lines in a quarter-width button: the explanation carries the detail ("CTCA for A; no test for B").
 
+**Stems** (from the user's review of *Treating stable angina*, 17 October 2026):
+- Always state the disease being treated, even when the question is about a drug (A 68-year-old man with stable angina takes…).
+- Write the past history as "past medical history" (no significant past medical history; a past medical history of asthma on regular inhalers).
+- Write the examination as "On examination, his heart rate is 78 and regular, and his BP is 138/80 mmHg."
+- List current drugs plainly ("His medications are atenolol 25 mg daily, aspirin 75 mg, sublingual GTN and atorvastatin").
+- Anything not stated is taken as absent, so a stem never lists what the patient does not have (no PDE5 inhibitor, no ACE inhibitor contraindication, no conduction disease).
+- No line points at the answer or sorts the drugs for the candidate ("His medicines are being separated into…" is out).
+- A stem never names the diagnosis the case tests: give the findings (early-morning rest pain, transient ST elevation, no obstructive disease), not "vasospastic angina".
+- A wrong option is a real alternative, never what the patient is already doing.
+
 **Tutor note** (solved example only). The method as one sentence, then the case worked through with it: *Read the leads first, then identify the wall they face, then the artery that supplies it: leads II, III and aVF face the inferior wall, which is supplied by the RCA.*
 
 Length is checked on the stage: every case must still fit 1280 × 720 with its answers open.

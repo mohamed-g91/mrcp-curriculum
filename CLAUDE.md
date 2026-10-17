@@ -41,6 +41,7 @@ Follow [DESIGN.md](DESIGN.md) for every page. When the user changes a design rul
 | `engine/js/` | `core` (helpers, theme, score, `record()`, click-away), one file per pattern, `deck` (stage, navigation, start-up), `agent` (the agent tools, below) |
 | `build.py` | Checks every topic, then builds the candidate's `dist/<specialty>/<slug>.html`, the site around them (`dist/index.html`, the Start page `dist/start.html` where every Start learning goes, each specialty's `dist/<specialty>/index.html`, with How it works a pop-up on every page; `dist/how-it-works.html` only forwards there), and the presenter's copies in `presenter/` (git-ignored, never published) |
 | `checks/check.mjs` | Drives headless Chrome through a built page: layout at six sizes, every case solved, the recording view, and, where a topic has them, the Arabic titles and ع switch and a drill spectrum's cards, kinds and zoom circles, and the agent tools |
+| `notes/review/` | The review page for case explanations (`template.html`, `make_review.py`): now beside new wording, a verdict and comment on each row |
 | `checks/check-site.mjs` | The same for the site around the lessons (home, the Start page, lessons pages): overflow at six sizes, the home page on one phone screen, the menu, the How it works pop-up, old addresses, missing files |
 
 Keep `build.py` and `engine/patterns.py` to syntax older Pythons accept (Cloudflare's Python may be older than the one on the author's machine): no f-string with the same quote inside its braces, no `match`.
@@ -71,6 +72,21 @@ The same holds for an engine or site change: plan in a few lines, mockups if it 
    Run the two checks one after the other, or together only while the machine copes: a check that dies leaves headless Chrome behind (its profile folder starts `mrcp-check-`), and enough of them exhaust the process limit and break the shell; close them before running again.
 4. Commit at each gate, not each tweak (about three or four commits a lesson), with a short message. Cloudflare builds and publishes from `main` (the Worker `mrcp-curriculum`, serving the built pages as static assets; its build is set in the Cloudflare dashboard, not in this repo).
 5. After recording: put the YouTube ID in the topic's `video:` in `curriculum.yaml`, and each Learn slide's start time as `at: "m:ss"`.
+6. Other sessions share this checkout and may have uncommitted edits, or unpushed commits, in the same files.
+   - **Committing:** commit only your own lines. Apply your edit both to `git show HEAD:<file>` and to the working file. Stage the HEAD-based copy with `git hash-object -w --path=<file>` and `git update-index --cacheinfo`, and check `git diff --cached` before you commit.
+   - **Before pushing:** run `git log origin/main..HEAD` as its own step and read it. Never chain it into the push command.
+   - **If another session's commit is ahead:** cherry-pick yours onto `origin/main` in a temporary `git worktree` and push from there. Then rebuild their commit on top with `git commit-tree <your local tip's tree> -p <pushed commit>`, keeping its author, date and message, and `git update-ref refs/heads/main`. Nothing in the checkout changes.
+
+### Case explanations
+
+The house style is in DESIGN.md, Explanations. The user's edits on lessons 1 and 2 (17 October 2026) settled it; follow it on every lesson.
+
+1. Draft every case's Why, wrong-answer notes and tutor note in that style, keeping each case's clinical content and checking it against the topic's sources.
+2. Send the draft as a review page: write the cases as `const CASES = [...]` (now and new wording per row), build it with `python notes/review/make_review.py`, and publish it as an Artifact with `db`, `user` and `comments` (`composer_only`).
+3. Read the verdicts back with `ArtifactData` (collection `reviews`) and the comments with `ArtifactComments`. A row with no verdict is accepted as drafted. Generalise an edit the user makes on one case to the rest. Fix typos, but keep their wording. Flag anything clinically doubtful (with the source's exact words) instead of applying it silently.
+4. Write the result into the topic YAML; check that every case still fits the stage with its answers open (`checks/check.mjs`); commit and push as in step 6 above.
+
+Status (17 October 2026): lessons 1 (`coronary-arteries-ecg`, c10 retired), 2 (`angina-diagnosis`) and 3 (`angina-treatment`, stems rewritten too) are done. Lesson 3's review also set the rules for writing stems: DESIGN.md, Explanations, Stems. Next: lessons 4 onward, from their plan notes.
 
 ### Editing a lesson video: three gates
 

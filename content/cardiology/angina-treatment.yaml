@@ -182,77 +182,77 @@ practise:
         question: What is the best next step in management?
         answer: Amlodipine
         hint: Can the pulse fall further? Which CCB can be combined with a beta-blocker?
-        why: "His pulse limits further bisoprolol titration. Add a dihydropyridine CCB such as amlodipine. The licensed bisoprolol maximum in angina is 20 mg/day, but his highest tolerated dose is limited by rate."
+        why: "His heart rate of 52 means bisoprolol cannot be increased further, even though the licensed maximum in angina is 20 mg a day. The next step is to add a dihydropyridine calcium channel blocker such as amlodipine, which can be safely combined with a beta-blocker (NICE CG126)."
         notes:
-          Verapamil: "with a beta-blocker risks bradycardia, AV block and worsening heart failure."
-          Increase bisoprolol: "a pulse of 52 leaves no room for further rate reduction."
-          Isosorbide mononitrate: "an alternative add-on when a CCB is contraindicated or not tolerated; neither applies here."
-        tutor: "Check the current drug, tolerated dose and pulse."
+          "Verapamil": "Verapamil is a rate-limiting calcium channel blocker, so with a beta-blocker it would risk bradycardia, AV block or worsening of pre-existing heart failure."
+          "Increase bisoprolol": "A higher dose of bisoprolol would slow a pulse that is already 52 beats per minute."
+          "Isosorbide mononitrate": "Isosorbide mononitrate is an add-on for when a calcium channel blocker cannot be used."
+        tutor: "Titrate the current drug to the maximum tolerated dose first, then add a second drug."
 
       - id: c02
         scene: case-script-man
         options: [Bisoprolol, Isosorbide mononitrate, Nicorandil, Ivabradine]
-        stem: "A 58-year-old man has newly confirmed stable atherosclerotic angina. Sinus pulse 78, BP 138/80 mmHg. He has no asthma, conduction disease or other contraindication. He has GTN for episodes and appropriate prevention treatment, but [[no regular anti-anginal drug]]."
+        stem: "A 58-year-old man has newly confirmed stable angina. He has no significant past medical history. On examination, his heart rate is 78 and regular, and his BP is 138/80 mmHg. He takes sublingual GTN for acute relief of attacks, aspirin and atorvastatin, but [[no regular anti-anginal drug]]."
         question: Which listed drug is a first-line regular treatment?
         answer: Bisoprolol
         hint: Which of these belongs to a first-line class?
-        why: "NICE allows either a beta-blocker or a calcium channel blocker first line, chosen for the patient. Bisoprolol is the only first-line option listed; a suitable CCB would also be valid."
+        why: "He has newly confirmed stable angina and no regular anti-anginal drug, so he needs a first-line drug. NICE offers either a beta-blocker or a calcium channel blocker first line (NICE CG126)."
         notes:
-          Isosorbide mononitrate: "not a routine first-line choice when a beta-blocker or CCB is suitable."
-          Nicorandil: "reserved for inadequate control, intolerance or contraindications to first-line therapy."
-          Ivabradine: "not routine first line just because the pulse exceeds 70."
+          "Isosorbide mononitrate": "Isosorbide mononitrate is not a routine first-line drug when a beta-blocker or calcium channel blocker is suitable."
+          "Nicorandil": "Nicorandil is kept for when first-line drugs do not control symptoms, are not tolerated or are contraindicated."
+          "Ivabradine": "Ivabradine is not a first-line drug, even when the pulse is above 70."
 
       - id: c03
         scene: case-script-woman
         options: [Verapamil, Bisoprolol, Nicorandil, Isosorbide mononitrate]
-        stem: "A 55-year-old woman with new stable angina has [[active wheezy asthma despite inhalers]]. Sinus pulse 82, BP 142/84 mmHg. LV systolic function is preserved and there is no conduction disease."
+        stem: "A 55-year-old woman has newly confirmed stable angina. She has [[a past medical history of asthma on regular inhalers]]. On examination, her heart rate is 82 and regular, and her BP is 142/84 mmHg."
         question: Which listed regular treatment is most appropriate first line?
         answer: Verapamil
         hint: Which first-line option fits her airway disease and cardiac function?
-        why: "A CCB is appropriate with active wheezy asthma. Her pulse, preserved LV function and normal conduction permit verapamil. This does not mean every beta-blocker is absolutely forbidden in every patient with asthma."
+        why: "Her history of asthma makes a calcium channel blocker a better first-line choice than a beta-blocker (NICE CG126)."
         notes:
-          Bisoprolol: "active bronchospasm makes the suitable CCB preferable here."
-          Nicorandil: "second line; she has a suitable first-line CCB."
-          Isosorbide mononitrate: "not routine first line when a CCB is suitable."
+          "Bisoprolol": "Bisoprolol is a first-line drug, but her history of asthma makes a calcium channel blocker the right choice."
+          "Nicorandil": "Nicorandil is a second-line drug, kept for when first-line drugs cannot be used."
+          "Isosorbide mononitrate": "Isosorbide mononitrate is used when routine first-line drugs are unsuitable."
 
       - id: c04
         scene: case-blister-man
         options: [Increase atenolol, Add amlodipine, Add verapamil, Add nicorandil]
-        stem: "A 62-year-old man still has stable angina on [[atenolol 25 mg daily]]. Pulse 80, BP 146/82 mmHg, renal function normal. He reports no dizziness or other adverse effects."
+        stem: "A 62-year-old man with a history of ischaemic heart disease has recurrent attacks of exertional chest pain, relieved by GTN within a couple of minutes. On examination, his heart rate is 80 and regular, and his BP is 146/82 mmHg. His medications are [[atenolol 25 mg daily]], aspirin 75 mg, sublingual GTN and atorvastatin."
         question: How should his anti-anginal treatment first be optimised?
         answer: Increase atenolol
         hint: Has the first drug reached his highest tolerated dose?
-        why: "Titrate the first drug against symptoms as tolerated, then review in 2–4 weeks. His dose is low with adequate pulse and BP. Atenolol's usual angina regimen is 100 mg/day or 50 mg twice daily, subject to patient factors."
+        why: "Atenolol 25 mg is not his maximum tolerated dose. The first drug should be increased to the maximum tolerated dose before another is added, with a review in 2 to 4 weeks (NICE CG126); the usual atenolol dose in angina is 100 mg a day."
         notes:
-          Add amlodipine: "a suitable combination if symptoms persist after optimisation of the tolerated atenolol dose."
-          Add verapamil: "avoid this combination with a beta-blocker."
-          Add nicorandil: "optimise suitable first-line treatment before moving to alternatives."
+          "Add amlodipine": "Amlodipine is a suitable add-on, but only once atenolol is at the highest tolerated dose."
+          "Add verapamil": "Verapamil should not be combined with a beta-blocker, as it risks bradycardia, AV block and heart failure."
+          "Add nicorandil": "Nicorandil is a second-line drug, used only after first-line treatment has been optimised and another first-line drug cannot be added."
 
       - id: c05
         scene: case-bottle-man
         options: [Nicorandil, Bisoprolol, Ivabradine, Diltiazem]
-        stem: "A 67-year-old man remains symptomatic on his maximum tolerated [[verapamil]]. A beta-blocker caused recurrent bronchospasm and was stopped. BP is adequate, LV function preserved, and he takes no PDE5 inhibitor."
+        stem: "A 67-year-old man with stable angina remains symptomatic on the maximum tolerated dose of [[verapamil]]. A beta-blocker was stopped before because of recurrent bronchospasm."
         question: Which listed drug is a suitable add-on?
         answer: Nicorandil
         hint: Which option can accompany verapamil without adding unsafe rate reduction?
-        why: "Nicorandil is a suitable second-line option among these choices when CCB monotherapy is insufficient and a beta-blocker is unsuitable. Warn about ulceration and stop it if ulcers occur. Other alternatives exist but are not listed."
+        why: "He is still symptomatic on the highest tolerated dose of verapamil, and a beta-blocker caused bronchospasm. Nicorandil can be added to verapamil without slowing the heart further (NICE CG126); warn him about ulcers and stop it if they occur."
         notes:
-          Bisoprolol: "previous bronchospasm and the verapamil combination both argue against it."
-          Ivabradine: "contraindicated with verapamil."
-          Diltiazem: "duplicates the rate-limiting CCB and risks excessive rate reduction."
+          "Bisoprolol": "Bisoprolol caused bronchospasm before, and with verapamil it would risk bradycardia and AV block."
+          "Ivabradine": "Ivabradine is contraindicated with verapamil."
+          "Diltiazem": "Diltiazem is another rate-limiting calcium channel blocker, like verapamil, and the two should not be combined."
 
       - id: c06
         scene: case-water-man
-        options: [Doses at 08:00 and 16:00, Double each dose, Add a GTN patch at night, Take doses every 12 hours]
-        stem: "A man adheres to immediate-release ISMN 20 mg at [[08:00 and 20:00]]. Initial benefit has faded, but the exertional pattern is unchanged and he has no rest pain."
+        options: [Doses at 08:00 and 16:00, Double each dose, Add a GTN patch at night, Add a third dose at 14:00]
+        stem: "A man with ischaemic heart disease takes bisoprolol 10 mg daily and immediate-release ISMN 20 mg at [[08:00 and 20:00]]. His chest pain improved markedly when ISMN was started, but over the past 3 months the same effort brings it on again, and he has needed his sublingual GTN more than once. The pain responds rapidly to GTN, and there is no pain at rest."
         question: Which schedule change best addresses possible nitrate tolerance?
         answer: Doses at 08:00 and 16:00
         hint: Does each day include a sufficiently low nitrate exposure?
-        why: "Asymmetric dosing, the second dose eight hours after the first rather than twelve, leaves a nitrate-low interval overnight and prevents tolerance. Modified-release preparations are taken once daily instead. New or worsening symptoms need reassessment, not an assumed tolerance diagnosis."
+        why: "Taking immediate-release ISMN every 12 hours keeps nitrate levels up day and night, which causes tolerance. Taking the second dose 6 to 8 hours after the first leaves a nitrate-free interval overnight, which prevents tolerance (SmPC). A modified-release tablet can be taken once a day instead."
         notes:
-          Double each dose: "does not correct continuous nitrate exposure."
-          Add a GTN patch at night: "removes the overnight nitrate-low interval."
-          Take doses every 12 hours: "preserves the evenly spaced schedule causing the problem."
+          "Double each dose": "Doubling each dose would not solve the tolerance problem."
+          "Add a GTN patch at night": "A GTN patch at night would remove the nitrate-low interval overnight."
+          "Add a third dose at 14:00": "A third dose at 14:00 would shorten the nitrate-low interval and make tolerance worse."
 
       - id: c07
         scene: case-medbag-man
@@ -261,116 +261,115 @@ practise:
         question: Which listed drug is the most likely cause?
         answer: Nicorandil
         hint: Which anti-anginal is associated with mucosal ulceration?
-        why: "Nicorandil can cause ulcers anywhere in the gastrointestinal tract, including the perianal area, as well as skin and eye ulcers. Stop nicorandil if ulceration occurs and review alternative angina treatment."
+        why: "A persistent painful perianal ulcer in a patient on angina drugs points to nicorandil, which can cause ulcers anywhere in the gut, as well as on the skin and in the eye (MHRA 2016). Nicorandil should be stopped and his angina treatment reviewed."
         notes:
-          Amlodipine: "typically causes ankle oedema, flushing or headache."
-          Bisoprolol: "typically causes bradycardia or fatigue, rather than this ulcer pattern."
-          Isosorbide mononitrate: "typically causes headache, flushing or hypotension."
+          "Amlodipine": "Amlodipine typically causes ankle swelling, flushing or headache."
+          "Bisoprolol": "Bisoprolol typically causes bradycardia or tiredness."
+          "Isosorbide mononitrate": "Isosorbide mononitrate typically causes headache, flushing or low blood pressure."
 
       - id: c08
         scene: case-box-woman
         options: [Ivabradine, Nicorandil, Amlodipine, Ranolazine]
-        stem: "A 60-year-old woman notices brief [[flashes of light when moving into dim light]] after a new anti-anginal drug was started. Her prior ECG showed sinus rhythm and a resting rate of 78."
+        stem: "A 60-year-old woman with stable angina notices brief [[flashes of light when moving into dim light]] after a new anti-anginal drug was started."
         question: Which drug most likely explains this effect?
         answer: Ivabradine
         hint: Which drug causes phosphenes?
-        why: "Ivabradine blocks the sinus-node If current and can cause transient luminous phenomena, or phosphenes. Its angina indication requires sinus rhythm and a resting rate of at least 70 at initiation."
+        why: "Brief flashes of light in dim light are phosphenes, a known side effect of ivabradine, which blocks the If current in the sinus node. Ivabradine is used in angina only in sinus rhythm with a resting rate of at least 70 when it is started (SmPC)."
         notes:
-          Nicorandil: "the distinctive adverse effect is mucosal, skin or eye ulceration."
-          Amlodipine: "ankle swelling, flushing and headache are more typical."
-          Ranolazine: "QT prolongation is the key caution here."
+          "Nicorandil": "Nicorandil typically causes ulcers in the gut, on the skin or in the eye."
+          "Amlodipine": "Amlodipine typically causes ankle swelling, flushing or headache."
+          "Ranolazine": "Ranolazine's main caution is QT prolongation."
 
       - id: c09
         scene: case-bp-man
         options: [Nifedipine MR, Isosorbide mononitrate, Nicorandil, Verapamil]
-        stem: "A 64-year-old man has persistent stable angina on maximum tolerated bisoprolol. Pulse 56, BP 134/80 mmHg. He regularly takes [[sildenafil]]."
+        stem: "A 64-year-old man has persistent stable angina symptoms on the maximum tolerated dose of bisoprolol. On examination, his heart rate is 56 and his BP is 134/80 mmHg. He regularly takes [[sildenafil]]."
         question: Which listed drug can be added?
         answer: Nifedipine MR
         hint: Avoid the PDE5 interaction and unsafe additional rate slowing.
-        why: "A modified-release dihydropyridine CCB can accompany a beta-blocker. Nitrates and nicorandil are contraindicated with PDE5 inhibitors because of severe hypotension; verapamil is an unsafe routine combination with bisoprolol."
+        why: "Sildenafil rules out nitrates and nicorandil, as the combination can cause severe hypotension (SmPC). A modified-release dihydropyridine calcium channel blocker such as nifedipine MR can be safely added to bisoprolol (NICE CG126)."
         notes:
-          Isosorbide mononitrate: "contraindicated with sildenafil."
-          Nicorandil: "its nitrate action also makes the PDE5 combination contraindicated."
-          Verapamil: "with bisoprolol risks bradycardia, AV block and heart failure."
+          "Isosorbide mononitrate": "Isosorbide mononitrate is contraindicated with sildenafil, as together they can cause severe hypotension."
+          "Nicorandil": "Nicorandil has a nitrate action, so it is also contraindicated with sildenafil."
+          "Verapamil": "Verapamil with bisoprolol risks bradycardia, AV block and heart failure."
 
       - id: c10
         scene: case-sort-man
         options: [Aspirin, GTN, Bisoprolol, Amlodipine]
-        stem: "A 59-year-old man has stable atherosclerotic angina, [[no previous MI and no LV dysfunction]]. His medicines are being separated into symptom relief and cardiovascular event prevention."
+        stem: "A 59-year-old man with [[no past medical history]] has stable angina due to coronary atherosclerosis."
         question: Which listed drug is used for event prevention?
         answer: Aspirin
         hint: Which acts on thrombosis rather than simply easing angina?
-        why: "Aspirin is used for secondary prevention in atherosclerotic CAD, with bleeding risk and comorbidities considered. The other listed drugs relieve symptoms here. Beta-blockers can have separate prognostic indications after MI or in HFrEF."
+        why: "Aspirin prevents cardiovascular events in atherosclerotic coronary disease, with bleeding risk taken into account (NICE CG126). GTN, bisoprolol and amlodipine relieve his symptoms; a beta-blocker also prevents events only after an MI or in heart failure with reduced ejection fraction."
         notes:
-          GTN: "treats or prevents episodes of pain, rather than providing antiplatelet protection."
-          Bisoprolol: "relieves angina through reduced demand; this patient has no separate MI/HFrEF indication."
-          Amlodipine: "relieves angina; it is not the antiplatelet prevention drug."
+          "GTN": "GTN treats or prevents episodes of pain but does not reduce the rate of cardiovascular events."
+          "Bisoprolol": "Bisoprolol relieves angina by lowering the heart's oxygen demand; it prevents events only after an MI or in heart failure with reduced ejection fraction."
+          "Amlodipine": "Amlodipine relieves angina but does not prevent cardiovascular events such as MI."
 
       - id: c11
         scene: case-bottle-woman
         options: [Ramipril, Nicorandil, Ivabradine, Isosorbide mononitrate]
-        stem: "A 63-year-old woman has atherosclerotic stable angina and [[type 2 diabetes]]. She takes aspirin and atorvastatin. BP, creatinine and potassium are suitable, with no ACE inhibitor contraindication."
+        stem: "A 63-year-old woman has stable angina and [[type 2 diabetes]]. She takes aspirin and atorvastatin. Her BP, creatinine and potassium are within the normal range."
         question: Which listed drug should be considered for cardiovascular prevention?
         answer: Ramipril
         hint: Which option is an ACE inhibitor?
-        why: "NICE says to consider an ACE inhibitor in people with stable angina and diabetes. Ramipril is the only ACE inhibitor listed. This is a consideration after assessment, not an automatic prescription regardless of renal function or BP."
+        why: "In stable angina with diabetes, NICE says to consider an ACE inhibitor for prevention, and ramipril is the only ACE inhibitor listed (NICE CG126). It is started after checking the blood pressure, creatinine and potassium."
         notes:
-          Nicorandil: "a second-line symptom drug, not the diabetes-related prevention choice."
-          Ivabradine: "a rate-lowering symptom drug for eligible patients."
-          Isosorbide mononitrate: "a symptom drug, not the ACE inhibitor being considered."
+          "Nicorandil": "Nicorandil is a second-line drug for symptoms, not for prevention."
+          "Ivabradine": "Ivabradine lowers the heart rate to relieve symptoms in eligible patients; it does not prevent events."
+          "Isosorbide mononitrate": "Isosorbide mononitrate relieves symptoms; it does not prevent events."
 
       - id: c12
         scene: case-spray-man
-        options: [Call an ambulance, Take a third GTN dose and wait, Rest for another 30 minutes, Take extra bisoprolol]
+        options: [Call an ambulance, Take a third GTN dose and wait, Rest for another 30 minutes, Double the GTN dose]
         stem: "A man with established angina develops chest pain. He takes sublingual GTN, then a second dose five minutes later because pain persists. [[Five minutes after the second dose, the pain is still present]]."
         question: What should he do now?
         answer: Call an ambulance
         hint: How long has the pain persisted after the second dose?
-        why: "NICE advises an emergency ambulance if pain persists five minutes after a second short-acting nitrate dose. Ongoing pain may be an acute coronary syndrome; do not delay the call for more self-treatment."
+        why: "Pain that is still present 5 minutes after a second dose of GTN needs an emergency ambulance (NICE CG126). It may be an acute coronary syndrome, so more self-treatment would only delay care."
         notes:
-          Take a third GTN dose and wait: "waiting would delay emergency assessment."
-          Rest for another 30 minutes: "persistent pain now requires an emergency ambulance."
-          Take extra bisoprolol: "does not replace emergency assessment and may cause bradycardia or hypotension."
+          "Take a third GTN dose and wait": "A third dose of GTN would delay emergency assessment of a possible acute coronary syndrome."
+          "Rest for another 30 minutes": "Resting for another 30 minutes would delay emergency assessment."
+          "Double the GTN dose": "Doubling the GTN dose would delay emergency assessment and may cause hypotension."
 
       - id: c13
         scene: case-stairs-man
         options: [Coronary angiography, Add ISMN, Add ivabradine, Add nicorandil]
-        stem: "A 68-year-old man takes bisoprolol and amlodipine at maximum tolerated doses with good adherence. He has [[limiting angina most days despite treatment]]. Revascularisation has not yet been assessed and is acceptable to him."
+        stem: "A 68-year-old man with stable angina takes bisoprolol and amlodipine at maximum tolerated doses with good adherence. He has [[limiting angina most days despite treatment]]."
         question: What is the next step?
         answer: Coronary angiography
         hint: What guides a revascularisation strategy after optimal drug treatment fails?
-        why: "Offer angiography to guide possible PCI or CABG when optimal medical treatment does not satisfactorily control symptoms. A third anti-anginal is reserved for waiting for revascularisation, or when it is unsuitable or declined."
+        why: "His angina still limits him despite the highest tolerated doses of two drugs, so optimal medical treatment has failed. Coronary angiography is offered to guide revascularisation by PCI or CABG (NICE CG126). A third drug is for patients waiting for revascularisation, or for whom it is unsuitable or declined."
         notes:
-          Add ISMN: "a third drug is not the routine substitute for assessing revascularisation."
-          Add ivabradine: "a third drug is reserved for specific circumstances and also requires rate/rhythm eligibility."
-          Add nicorandil: "do not bypass assessment of revascularisation by routinely adding a third symptom drug."
+          "Add ISMN": "Isosorbide mononitrate as a third drug is considered while waiting for coronary angiography or revascularisation, or when revascularisation is unsuitable."
+          "Add ivabradine": "Ivabradine as a third drug is considered while waiting for coronary angiography or revascularisation, or when revascularisation is unsuitable, and it needs sinus rhythm with a resting rate of at least 70."
+          "Add nicorandil": "Nicorandil as a third drug is considered while waiting for coronary angiography or revascularisation, or when revascularisation is unsuitable."
 
       - id: c14
         scene: case-can-man
         options: [Continue current treatment, Add ISMN, Add ivabradine, Add nicorandil]
-        stem: "A 68-year-old man takes bisoprolol and amlodipine. His symptoms are [[satisfactorily controlled]], treatment is tolerated and there is no known high-risk coronary anatomy."
+        stem: "A 68-year-old man with stable angina takes bisoprolol and amlodipine. His [[symptoms are well controlled]], and the treatment is tolerated."
         question: What change is needed to his symptom drugs?
         answer: Continue current treatment
         hint: Is a third anti-anginal needed when two control symptoms?
-        why: "Do not add a third anti-anginal when two satisfactorily control stable angina. Continue prevention treatment and follow-up. Separate high-risk anatomical findings could change the revascularisation plan."
+        why: "Two drugs control his symptoms well, so no third anti-anginal drug is added (NICE CG126), and his prevention treatment and follow-up continue. High-risk coronary anatomy, if found, could change the plan for revascularisation."
         notes:
-          Add ISMN: "no additional symptom drug is needed when control is satisfactory."
-          Add ivabradine: "no third anti-anginal is needed."
-          Add nicorandil: "adds adverse-effect risk without a current symptom-treatment indication."
+          "Add ISMN": "Isosorbide mononitrate is not needed when two drugs control the symptoms well."
+          "Add ivabradine": "Ivabradine as a third anti-anginal drug is not needed when two control the symptoms."
+          "Add nicorandil": "Nicorandil would add the risk of side effects, such as ulcers, with no benefit."
 
       - id: c15
         scene: case-handbag-woman
         options: [Amlodipine, Bisoprolol, Aspirin and clopidogrel, PCI]
-        stem: "A 38-year-old woman who smokes has confirmed [[isolated vasospastic angina]], with transient ST elevation during early-morning rest pain and no obstructive coronary disease."
-        question: Which listed treatment is first line?
+        stem: "A 38-year-old woman who smokes wakes at 05:00 with chest pain at rest. Her ECG during the pain shows [[transient ST elevation]], and coronary angiography shows no obstructive coronary disease."
+        question: "What is the best first-line treatment?"
         answer: Amlodipine
         hint: Which drug relaxes the spastic artery?
-        why: "A CCB is first-line treatment for vasospastic angina. A long-acting nitrate may be added if needed. Avoid beta-blockers for isolated vasospasm and support smoking cessation."
+        why: "Early-morning chest pain at rest with transient ST elevation and no obstructive coronary disease is vasospastic angina. A calcium channel blocker such as amlodipine relaxes the spastic artery and is first line, with a long-acting nitrate added if needed (ESC 2024). Stopping smoking is part of her treatment."
         notes:
-          Bisoprolol: "beta-blockers are avoided for isolated vasospasm."
-          Aspirin and clopidogrel: "DAPT is not automatic without atherosclerotic disease or a stent."
-          PCI: "there is no fixed obstructive lesion to stent."
-
+          "Bisoprolol": "Bisoprolol, like other beta-blockers, is avoided in vasospastic angina, as it can make the spasm worse."
+          "Aspirin and clopidogrel": "Aspirin and clopidogrel are not needed without atherosclerotic disease or a stent."
+          "PCI": "PCI treats a fixed narrowing, and in vasospastic angina there is none to stent."
   - id: end
     pattern: end
     title: Your score

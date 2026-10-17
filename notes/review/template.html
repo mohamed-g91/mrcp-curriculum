@@ -1,0 +1,220 @@
+<title>{{TITLE}}</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap">
+<style>
+/* Layout: a navy bar like the lesson's frame, then one card per case; each field is a row of Now, Proposed and your verdict. */
+:root{
+  --bg:#F3F7FB;--panel:#FFFFFF;--ink:#14263A;--muted:#5B6B7D;--line:#D9E3EE;
+  --bar:#12304F;--bar-ink:#FFFFFF;--bar-soft:#CFE0F2;--sky:#E3EEF9;
+  --ok-bg:#E6F4EA;--ok-ink:#1E6B37;--ok-bd:#9ED3AE;
+  --bad-bg:#FCEBEB;--bad-ink:#9B2C2C;--bad-bd:#F0A8A8;
+  --mark:#FFE9A8;--warn-bg:#FFF4DC;--warn-ink:#7A5200;--warn-bd:#EBC779;
+  --pick:#12304F;--pick-ink:#FFFFFF;
+  --display:"Outfit",system-ui,sans-serif;--body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1622;--panel:#122233;--ink:#E4EDF6;--muted:#9AABBD;--line:#24384D;
+  --bar:#08101B;--bar-ink:#FFFFFF;--bar-soft:#9DB4CC;--sky:#13283E;
+  --ok-bg:#0F3320;--ok-ink:#8FDDA8;--ok-bd:#2A7A48;
+  --bad-bg:#3A1616;--bad-ink:#FFA9A9;--bad-bd:#8A3434;
+  --mark:#5A4A10;--warn-bg:#3A2C0C;--warn-ink:#F5D48A;--warn-bd:#7A5E1E;
+  --pick:#9CCBF0;--pick-ink:#08101B;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1622;--panel:#122233;--ink:#E4EDF6;--muted:#9AABBD;--line:#24384D;
+  --bar:#08101B;--bar-ink:#FFFFFF;--bar-soft:#9DB4CC;--sky:#13283E;
+  --ok-bg:#0F3320;--ok-ink:#8FDDA8;--ok-bd:#2A7A48;
+  --bad-bg:#3A1616;--bad-ink:#FFA9A9;--bad-bd:#8A3434;
+  --mark:#5A4A10;--warn-bg:#3A2C0C;--warn-ink:#F5D48A;--warn-bd:#7A5E1E;
+  --pick:#9CCBF0;--pick-ink:#08101B;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);margin:0}
+header.bar{background:var(--bar);color:var(--bar-ink);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;
+  padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar-in{max-width:980px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px}
+.bar h1{font:600 18px/1.2 var(--display);margin:0;flex:1 1 auto;min-width:0}
+.tally{display:flex;gap:12px;font-size:13px;color:var(--bar-soft);font-variant-numeric:tabular-nums}
+.tally b{color:var(--bar-ink);font-weight:600}
+#save{font-size:12px;color:var(--bar-soft)}
+main{max-width:980px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:20px}
+.intro{display:grid;gap:10px;color:var(--muted);font-size:14px;max-width:70ch}
+.intro p{margin:0}
+.decided{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid var(--ok-bd);background:var(--ok-bg);color:var(--ok-ink)}
+nav.jump{display:flex;flex-wrap:wrap;gap:6px}
+nav.jump a{font:500 13px var(--body);color:var(--ink);text-decoration:none;padding:4px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);font-variant-numeric:tabular-nums}
+nav.jump a.done{border-color:var(--ok-bd);background:var(--ok-bg);color:var(--ok-ink)}
+section.case{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.case-head{padding:16px 18px;background:var(--sky);display:grid;gap:6px}
+.case-head h2{font:600 17px/1.3 var(--display);margin:0;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
+.case-head .id{font-variant-numeric:tabular-nums;color:var(--muted);font:500 13px var(--body)}
+.stem{margin:0;font-size:14px}
+.stem mark{background:var(--mark);color:inherit;padding:0 2px;border-radius:3px}
+.q{margin:0;font-size:14px;font-weight:600}
+.flag{font-size:13px;padding:6px 10px;border-radius:6px;background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-bd)}
+.flag.ok{background:var(--ok-bg);color:var(--ok-ink);border-color:var(--ok-bd)}
+.row{display:grid;grid-template-columns:120px minmax(0,1fr) minmax(0,1fr);gap:10px 16px;padding:14px 18px;border-top:1px solid var(--line)}
+.row .field{font:600 13px var(--body);color:var(--muted);padding-top:2px}
+.row .field small{display:block;font-weight:400}
+.col{min-width:0;display:grid;gap:6px;align-content:start}
+.col h3{margin:0;font:600 11px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.now{font-size:14px;color:var(--muted)}
+.fb{font-size:14px;padding:8px 10px;border-radius:8px;border:1px solid}
+.fb.ok{background:var(--ok-bg);color:var(--ok-ink);border-color:var(--ok-bd)}
+.fb.bad{background:var(--bad-bg);color:var(--bad-ink);border-color:var(--bad-bd)}
+.fb b{font-weight:600}
+.same{font-size:13px;color:var(--muted);font-style:italic}
+.wc{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.act{grid-column:2 / -1;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{font:500 13px var(--body);border:0;background:var(--panel);color:var(--ink);padding:6px 12px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--pick);color:var(--pick-ink)}
+.seg button:focus-visible,.cbtn:focus-visible,textarea:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
+.cbtn{font:500 13px var(--body);border:1px solid var(--line);background:transparent;color:var(--muted);padding:6px 10px;border-radius:7px;cursor:pointer}
+.cbtn[hidden]{display:none}
+textarea{flex:1 1 260px;min-width:0;font:14px/1.4 var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 9px;resize:vertical;min-height:34px}
+.ro{font-size:12px;color:var(--muted)}
+@media (max-width:720px){
+  .row{grid-template-columns:minmax(0,1fr)}
+  .act{grid-column:1}
+}
+</style>
+
+<header class="bar"><div class="bar-in">
+  <h1>{{HEADING}}</h1>
+  <div class="tally" aria-live="polite"><span><b id="t-new">0</b> take new</span><span><b id="t-keep">0</b> keep now</span><span><b id="t-chg">0</b> change</span><span><b id="t-left">0</b> left</span></div>
+  <span id="save">Your choices save here once loaded</span>
+</div></header>
+
+<main>
+  <div class="intro">
+{{INTRO}}
+  </div>
+  <nav class="jump" id="jump" aria-label="Cases"></nav>
+  <div id="cases"></div>
+</main>
+
+<script>
+const LBL = {lad:"LAD", lcx:"Circumflex", rca:"RCA"};
+/*DATA*/
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const words = s => (s.match(/\S+/g) || []).length;
+const VERDICTS = [["new","Take new"],["keep","Keep now"],["change","Change"]];
+const state = {};      // rowKey -> {verdict, note}
+const rowKeys = [];
+let db = null, comments = null, canWrite = true;
+
+function feedback(kind, field, label, text){
+  if (field === "tutor") return `<div class="fb ok"><b>Tutor note:</b> ${esc(text)}</div>`;
+  // a stem, question or options row is plain text; [[the clue]] shows marked
+  if (/^(stem|question|options)$/.test(field)) return `<div class="now">${esc(text).replace(/\[\[(.*?)\]\]/g, "<mark>$1</mark>")}</div>`;
+  if (kind === "why") return `<div class="fb ok"><b>Correct.</b> ${esc(text)}</div>`;
+  // a note that opens with its option's name shows that name in bold, with no "Label:" before it
+  const safe = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const m = text.match(new RegExp("^((?:The |A |An )?)(" + safe + ")", "i"));
+  return m ? `<div class="fb bad">${esc(m[1])}<b>${esc(m[2])}</b>${esc(text.slice(m[0].length))}</div>`
+           : `<div class="fb bad"><b>${esc(label)}:</b> ${esc(text)}</div>`;
+}
+
+function render(){
+  const host = document.getElementById("cases"), jump = document.getElementById("jump");
+  CASES.forEach((c, i) => {
+    const sec = document.createElement("section");
+    sec.className = "case"; sec.id = c.id;
+    let html = `<div class="case-head"><h2><span class="id">${c.id}</span>${esc(c.title || "Case")}<span class="id">Answer: ${esc(c.answer)}</span></h2>
+      <p class="stem">${c.stem}</p><p class="q">${esc(c.q)}</p>
+      ${c.resolved ? `<div class="flag ok">${esc(c.resolved)}</div>` : ""}${c.flag ? `<div class="flag">${esc(c.flag)}</div>` : ""}</div>`;
+    c.rows.forEach(([field, label, now, prop]) => {
+      const key = c.id + "-" + field; rowKeys.push(key);
+      const kind = field === "why" ? "why" : "note";
+      const fieldName = field === "why" ? "Why<small>after a right answer</small>" : field === "tutor" ? "Tutor note<small>solved example</small>"
+        : /^(stem|question|options)$/.test(field) ? esc(label) : `${esc(label)}<small>after this wrong option</small>`;
+      html += `<div class="row" data-key="${key}" data-comment-target>
+        <div class="field">${fieldName}</div>
+        <div class="col"><h3>Now</h3><div class="now">${esc(now).replace(/\[\[(.*?)\]\]/g, "<mark>$1</mark>")}</div></div>
+        <div class="col"><h3>New</h3>${prop === null ? `<div class="same">Unchanged</div>` : feedback(kind, field, label, prop) + `<span class="wc">${words(prop)} words (now ${words(now)})</span>`}</div>
+        <div class="act">
+          <div class="seg" role="group" aria-label="Verdict for ${c.id} ${esc(label)}">
+            ${VERDICTS.filter(v => prop !== null || v[0] !== "new").map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="false">${prop === null && v === "keep" ? "Fine as is" : t}</button>`).join("")}
+          </div>
+          <textarea id="note-${key}" rows="1" placeholder="What should it say instead?" hidden></textarea>
+          <button type="button" class="cbtn" data-comment hidden>Comment</button>
+        </div></div>`;
+    });
+    sec.innerHTML = html; host.appendChild(sec);
+    const a = document.createElement("a"); a.href = "#" + c.id; a.textContent = c.id; a.dataset.case = c.id; jump.appendChild(a);
+  });
+}
+
+function paint(){
+  let n = {new:0, keep:0, change:0};
+  document.querySelectorAll(".row").forEach(r => {
+    const s = state[r.dataset.key] || {};
+    r.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === s.verdict)));
+    const ta = r.querySelector("textarea");
+    ta.hidden = s.verdict !== "change" && !s.note;
+    if (document.activeElement !== ta) ta.value = s.note || "";
+    if (s.verdict) n[s.verdict]++;
+  });
+  document.getElementById("t-new").textContent = n.new;
+  document.getElementById("t-keep").textContent = n.keep;
+  document.getElementById("t-chg").textContent = n.change;
+  document.getElementById("t-left").textContent = rowKeys.length - n.new - n.keep - n.change;
+  document.querySelectorAll("#jump a").forEach(a => {
+    const keys = rowKeys.filter(k => k.startsWith(a.dataset.case + "-"));
+    a.classList.toggle("done", keys.every(k => state[k] && state[k].verdict));
+  });
+}
+
+const status = t => { document.getElementById("save").textContent = t; };
+async function save(key){
+  if (!db || !canWrite) return;
+  status("Saving…");
+  try { await db.doc("reviews/" + key).set({verdict: state[key].verdict || null, note: state[key].note || ""}); status("Saved"); }
+  catch (e) { status(e && e.code === "not_granted" ? "You can read this page but not save choices" : "Not saved: " + ((e && e.message) || "try again")); }
+}
+
+function wire(){
+  document.addEventListener("click", e => {
+    const b = e.target.closest(".seg button");
+    if (b) {
+      const key = b.closest(".row").dataset.key;
+      const s = state[key] = state[key] || {};
+      s.verdict = s.verdict === b.dataset.v ? null : b.dataset.v;
+      paint(); save(key);
+      if (s.verdict === "change") b.closest(".row").querySelector("textarea").focus();
+      return;
+    }
+    const cb = e.target.closest("[data-comment]");
+    if (cb && comments) comments.openComposer({element: cb.closest(".row")}).catch(() => {});
+  });
+  const timers = {};
+  document.addEventListener("input", e => {
+    if (e.target.tagName !== "TEXTAREA") return;
+    const key = e.target.closest(".row").dataset.key;
+    (state[key] = state[key] || {}).note = e.target.value;
+    clearTimeout(timers[key]); timers[key] = setTimeout(() => save(key), 700);
+  });
+}
+
+render(); paint(); wire();
+
+(async () => {
+  if (!window.claude || !window.claude.use) { status("Open on claude.ai to save your choices"); return; }
+  const [d, c, u] = await Promise.all([claude.use("db"), claude.use("comments"), claude.use("user")]);
+  comments = c;
+  if (comments) document.querySelectorAll("[data-comment]").forEach(b => b.hidden = false);
+  if (!d) { status("Sign in to save your choices"); return; }
+  db = d;
+  if (u && u.can && u.can("data.write") === false) { canWrite = false; status("Read-only for you"); }
+  db.collection("reviews").onSnapshot(snap => {
+    (snap.docs || []).forEach(doc => {
+      const k = doc.id, v = doc.data ? doc.data() : doc;
+      if (rowKeys.includes(k)) state[k] = {verdict: v.verdict || null, note: v.note || ""};
+    });
+    paint(); if (canWrite) status("Your choices save as you go");
+  }, () => status("Live updates stopped; reload to see the latest"));
+})();
+</script>
