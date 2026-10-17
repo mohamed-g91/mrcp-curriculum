@@ -249,7 +249,7 @@ practise:
         hint: How many walls are involved?
         why: "ST elevation from V1 to V6 and in I and aVL means the septal, anterior and lateral walls are all injured. A blockage in the proximal LAD artery, before its septal and first diagonal branches, affects all three walls. A left main artery blockage can also cause this pattern."
         notes:
-          "Distal LAD": "A distal LAD blockage spares the septal and first diagonal branches, so it would cause ST elevation in V3–V4 (anterior wall) and V5–V6 (the low lateral wall near the apex), but not in V1 (septal wall, supplied by the septal branches) or I and aVL (high lateral wall, supplied by the first diagonal branch)."
+          "Distal LAD": "A distal LAD blockage spares the septal and first diagonal branches, so it would cause ST elevation in V3–V4 (anterior wall) and V5–V6 (the low lateral wall near the apex), but not in V1 (septal wall, supplied by the septal branches) or I and aVL (high lateral wall, supplied mainly by the circumflex artery, with part supplied by the first diagonal branch of the LAD artery)."
           "lcx": "The circumflex artery supplies the lateral wall, so it would cause ST elevation in I, aVL, V5 and V6 without V1–V4."
           "rca": "The RCA supplies the inferior wall, so it would cause ST elevation in II, III and aVF."
 
