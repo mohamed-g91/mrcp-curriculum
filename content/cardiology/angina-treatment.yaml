@@ -175,6 +175,7 @@ practise:
     options: [bb, rlccb, dhp, nitrate]
     cases:
       - id: c01
+        compact: true  # its answered state overflows the stage otherwise (DESIGN.md, Explanations)
         solved: true
         scene: case-chest-man
         options: [Amlodipine, Verapamil, Increase bisoprolol, Isosorbide mononitrate]
@@ -192,7 +193,7 @@ practise:
       - id: c02
         scene: case-script-man
         options: [Bisoprolol, Isosorbide mononitrate, Nicorandil, Ivabradine]
-        stem: "A 58-year-old man has newly confirmed stable angina. He has no significant past medical history. On examination, his heart rate is 78 and regular, and his BP is 138/80 mmHg. He takes sublingual GTN for acute relief of attacks, aspirin and atorvastatin, but [[no regular anti-anginal drug]]."
+        stem: "A 58-year-old man has newly confirmed stable angina. On examination, his heart rate is 78 and regular, and his BP is 138/80 mmHg. He takes sublingual GTN for acute relief of attacks, aspirin and atorvastatin, but [[no regular anti-anginal drug]]."
         question: Which listed drug is a first-line regular treatment?
         answer: Bisoprolol
         hint: Which of these belongs to a first-line class?

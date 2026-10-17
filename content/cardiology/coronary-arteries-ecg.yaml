@@ -200,6 +200,7 @@ practise:
     # The first case is the solved example; the rest are dealt in a random order.
     cases:
       - id: c01
+        compact: true  # its answered state overflows the stage otherwise (DESIGN.md, Explanations)
         scene: case-chest-man
         options: [lad, lcx, rca, Left main]
         solved: true

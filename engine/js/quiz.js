@@ -36,7 +36,8 @@ function buildCaseSlide(Q, c, num) {
   // Practise carries no Arabic and no concept letters: plain options leave the stem and answers the room
   const title = c.solved ? "Solved example" : `Case ${num}`;
   // a full exam stem (history, examination, ECG and bloods) takes smaller type, so it fits the stage with its answer open
-  const long = c.stem.replace(/<[^>]*>/g, "").length > 300 ? " case-long" : "";
+  // a case flagged compact (a solved example whose tutor note leaves no room) also takes a smaller cartoon and tighter padding
+  const long = c.compact ? " case-long case-compact" : c.stem.replace(/<[^>]*>/g, "").length > 300 ? " case-long" : "";
   const sec = el("section", { class: `slide case p-stem-quiz${c.solved ? " solved" : ""}${long}`, "data-id": c.solved ? "case-solved" : `case-${num}`,
     "data-case": c.id, "data-part": "Practise", "aria-label": title });
   sec.innerHTML = `<div class="case-head"><h2>${title}</h2>${c.solved ? '<span class="solved-badge">Not scored</span>' : ""}</div>

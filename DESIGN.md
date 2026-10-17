@@ -273,7 +273,7 @@ How a case's words are written: agreed on *Coronary arteries and the ECG*, 17 Oc
 
 **Tutor note** (solved example only). The method as one sentence, then the case worked through with it: *Read the leads first, then identify the wall they face, then the artery that supplies it: leads II, III and aVF face the inferior wall, which is supplied by the RCA.*
 
-Length is checked on the stage: every case must still fit 1280 × 720 with its answers open. `checks/check.mjs` measures each case after its right answer, with the explanation open. A stem over 300 characters (a full exam case with history, examination and results) takes smaller type and tighter spacing (`case-long`, set in `engine/js/quiz.js`) so it fits (*Diagnosing ACS*, 18 October 2026).
+Length is checked on the stage: every case must still fit 1280 × 720 with its answers open. `checks/check.mjs` measures each case after its right answer, with the explanation open. A stem over 300 characters (a full exam case with history, examination and results) takes smaller type and tighter spacing (`case-long`, set in `engine/js/quiz.js`) so it fits (*Diagnosing ACS*, 18 October 2026). A case that still overflows, usually a solved example whose cartoon and tutor note leave no room, takes `compact: true` in its YAML: the same smaller type, a smaller cartoon (112 px wide on the stage, not 160) and tighter padding in its answers and boxes, chosen from three mockups (cardiology lessons 1–3, 18 October 2026). Trim the wording first; the flag is for what trimming cannot fix.
 
 ## Layout and responsiveness
 

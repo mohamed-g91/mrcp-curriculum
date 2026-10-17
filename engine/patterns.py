@@ -1000,7 +1000,7 @@ def topic_data(topic):
         elif s["pattern"] == "stem-quiz":
             data["quizzes"][s["id"]] = {
                 "title": s["title"], "options": s["options"],
-                "cases": [{"id": f'{topic["id"]}.{c["id"]}', "solved": bool(c.get("solved")), "twist": bool(c.get("twist")),
+                "cases": [{"id": f'{topic["id"]}.{c["id"]}', "solved": bool(c.get("solved")), "twist": bool(c.get("twist")), "compact": bool(c.get("compact")),
                            "stem": stem_html(c["stem"]), "question": c["question"], "answer": c["answer"],
                            "options": c.get("options"),
                            "hint": c["hint"], "why": c["why"], "tutor": c.get("tutor", ""),

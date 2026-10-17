@@ -134,6 +134,7 @@ practise:
     # The first case is the solved example; the rest are dealt in a random order.
     cases:
       - id: c01
+        compact: true  # its answered state overflows the stage otherwise (DESIGN.md, Explanations)
         scene: case-two-patients
         solved: true
         options: [CTCA for both, "CTCA for A; no test for B", Exercise ECG for both, "Angiography for A; CTCA for B"]
