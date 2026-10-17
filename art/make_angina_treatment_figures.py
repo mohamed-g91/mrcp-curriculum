@@ -8,7 +8,6 @@ No imports from the other figure generators: they write files at import time.
 from html import escape
 from pathlib import Path
 import re
-import sys
 
 OUT = Path(__file__).resolve().parents[1] / 'content' / 'figures'
 
@@ -273,36 +272,5 @@ def main():
     save('at-cover', 'The patient with coronary disease, symptom treatment and prevention', b, '0 0 860 484')
 
 
-def thumbnail():
-    """Optional local render: python art/make_angina_treatment_figures.py --thumbnail.
-
-    Needs Chrome and Pillow; normal SVG generation and the site build do not.
-    """
-    import subprocess
-    import tempfile
-    from PIL import Image
-    root = OUT.parents[1]
-    chrome = Path('C:/Program Files/Google/Chrome/Application/chrome.exe')
-    with tempfile.TemporaryDirectory(prefix='mrcp-treatment-thumb-') as folder:
-        scratch = Path(folder)
-        html, png = scratch / 'thumbnail.html', scratch / 'thumbnail.png'
-        css = (root / 'engine/css/tokens.css').read_text(encoding='utf-8')
-        css += 'body{margin:0;background:#F7F9FC}svg{display:block;width:860px;height:484px}.sc-o{stroke:var(--sc-line);stroke-width:2.5;stroke-linejoin:round}'
-        html.write_text('<!doctype html><meta charset="utf-8"><style>' + css + '</style>' +
-                        (OUT / 'at-cover.svg').read_text(encoding='utf-8'), encoding='utf-8')
-        subprocess.run([str(chrome), '--headless=new', '--no-first-run', '--hide-scrollbars',
-                        '--user-data-dir=' + str(scratch / 'profile'), '--window-size=860,484',
-                        '--screenshot=' + str(png), html.as_uri()], check=True,
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        with Image.open(png) as source:
-            im = source.convert('RGB').resize((640, 360), Image.Resampling.LANCZOS)
-            exif = Image.Exif()
-            exif[37510] = b'ASCII\x00\x00\x00Origin: local vector composite from art/make_angina_treatment_figures.py, using the established patient and heart artwork. No image generation.'
-            im.save(root / 'art/site/thumbs/angina-treatment.webp', quality=90, exif=exif)
-    print('art/site/thumbs/angina-treatment.webp')
-
-
 if __name__ == '__main__':
     main()
-    if '--thumbnail' in sys.argv:
-        thumbnail()

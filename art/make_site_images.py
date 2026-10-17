@@ -35,6 +35,8 @@ IMAGES = {
     "thumbs/power.webp": ("line-8.png", 640),
     "thumbs/coronary-arteries-ecg.webp": ("cardiology/thumb-cardio-c.png", 640),
     "thumbs/angina-diagnosis.webp": ("cardiology/thumb-angina-a.png", 640),
+    "thumbs/angina-treatment.webp": ("cardiology/thumb-treat-a.png", 640),
+    "thumbs/diagnosing-acs.webp": ("cardiology/thumb-acs-b.png", 640),
 }
 
 
