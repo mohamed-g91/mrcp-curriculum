@@ -176,16 +176,16 @@ practise:
 
       - id: c04
         scene: case-shoe-man
-        options: [Stress echocardiogram, CT coronary angiography, Invasive coronary angiography, Chest X-ray]
+        options: [Stress echocardiogram, CT coronary angiography, Invasive coronary angiography, Exercise ECG]
         stem: "A 66-year-old man [[had a coronary stent three years ago]]. He now has chest tightness when he walks fast, easing with rest."
-        question: What is the next step?
+        question: Which test best shows whether a narrowing is causing his pain?
         answer: Stress echocardiogram
         hint: Is there known coronary disease?
-        why: "His stent means he has known coronary disease (narrowed vessels), so the question is whether this narrowing is causing ischaemic pain or not. A functional test such as a stress echocardiogram determines whether the symptoms are due to ischaemia (NICE CG95)."
+        why: "His stent means he has known coronary disease (narrowed vessels), so the question is whether this narrowing is causing ischaemic pain or not. A functional test such as a stress echocardiogram determines whether the symptoms are due to ischaemia (NICE CG95), and imaging is more accurate than an exercise ECG."
         notes:
           "CT coronary angiography": "CT coronary angiography is for suspected angina in people without known coronary disease, as it detects arterial narrowing."
           "Invasive coronary angiography": "Invasive coronary angiography comes after functional imaging that is inconclusive."
-          "Chest X-ray": "A chest X-ray does not show coronary disease or ischaemia."
+          "Exercise ECG": "An exercise ECG may be used in known coronary disease (NICE CG95), but it is less accurate than functional imaging such as a stress echocardiogram."
 
       - id: c05
         scene: case-results-woman
