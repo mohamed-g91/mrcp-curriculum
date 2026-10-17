@@ -181,11 +181,11 @@ practise:
         question: Which test best shows whether a narrowing is causing his pain?
         answer: Stress echocardiogram
         hint: Is there known coronary disease?
-        why: "His stent means he has known coronary disease (narrowed vessels), so the question is whether this narrowing is causing ischaemic pain or not. A functional test such as a stress echocardiogram determines whether the symptoms are due to ischaemia (NICE CG95), and imaging is more accurate than an exercise ECG."
+        why: "His stent means he has known coronary disease (narrowed vessels), so the question is whether this narrowing is causing ischaemic pain or not. A functional test such as a stress echocardiogram determines whether the symptoms are due to ischaemia (NICE CG95)."
         notes:
           "CT coronary angiography": "CT coronary angiography is for suspected angina in people without known coronary disease, as it detects arterial narrowing."
           "Invasive coronary angiography": "Invasive coronary angiography comes after functional imaging that is inconclusive."
-          "Exercise ECG": "An exercise ECG may be used in known coronary disease (NICE CG95), but it is less accurate than functional imaging such as a stress echocardiogram."
+          "Exercise ECG": "An exercise ECG may be used instead of functional imaging in known coronary disease (NICE CG95, 1.3.4.4), but functional imaging such as a stress echocardiogram is the standard choice."
 
       - id: c05
         scene: case-results-woman
