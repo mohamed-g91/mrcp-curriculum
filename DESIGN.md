@@ -13,6 +13,7 @@ Contents (read only the section a task needs; `grep -n "^## " DESIGN.md` gives w
 | Arabic | Arabic titles and terms, and the approved wording |
 | Interaction patterns | The slide patterns and what each is for; the Story row is long (every story kind), so grep for the kind needed, e.g. `**gap**` |
 | Behaviour rules | Taps, click-away, entrance timing, reading order, one control per job |
+| Explanations | Writing a case's Why, its wrong-answer notes and the tutor note |
 | Layout and responsiveness | The stage, tablets and phones |
 | Presenter's deck | The presenter's build |
 | Recording view | The tablet recording view, pen and tray |
@@ -210,7 +211,7 @@ Every interactive element behaves the same way, so learners never have to relear
 - **Choices sit under the question.** A case's choices are centred under its stem card, not under the cartoon, each a quarter of the card's width (a half when the page reflows, or while Arabic shows), so a short last row sits in the middle.
 - **Answer positions are shuffled.** Each case fixes its own option order from its ID, so the answer is not always first and the order is the same every time that case is opened.
 - **A case gives nothing away.** The stem, question and choices carry no hints; the clue phrase is highlighted only after a wrong answer (and in the solved example).
-- **Wrong answers teach.** A wrong choice shakes, lights the clue phrase and says in one line what that answer would look like, after its label (Pericarditis: widespread ST elevation, PR depression), from the case's `notes` (one per wrong option); a case without notes gives a one-line hint instead. Scoring counts the first attempt only, once per case.
+- **Wrong answers teach.** A wrong choice shakes, lights the clue phrase and says what that answer would look like, from the case's `notes` (one per wrong option). A note written as a full sentence that opens with the option's name shows that name in bold in place (**The LAD artery** supplies the anterior and septal walls, so it would cause ST elevation in V1–V4); any other note follows its label (**Pericarditis:** widespread ST elevation, PR depression). How to write them: Explanations, below; a case without notes gives a one-line hint instead. Scoring counts the first attempt only, once per case.
 - **A case has a cartoon.** One cast member with one prop for the case's subject (a painkiller, a cigarette, a walking stick), never its type and never its clue (no inhaler where asthma is the clue), sits beside the stem card, and above it on phones. A case about two patients shows both, small, side by side (*Is it angina?*'s solved example). The cardiology cast is made by `art/make_case_figures.py`.
 - **A right answer explains.** It shows why, and lights the bar's Next with a soft pulse. On a case the bar's Next reads "Next case" (or "See your score" after the last case); there is no second Next inside the case. In a multi-step case, a correct step moves on by itself after about 0.75 s.
 - **Learn and Practise are separate paths.** Next, Back and the arrow keys never cross from one into the other: each part's first slide has no Back and its last slide has no Next, and the slide count and progress bar count within the part. Start returns to the title.
@@ -219,6 +220,31 @@ Every interactive element behaves the same way, so learners never have to relear
 - **Hidden slides.** A slide with `hidden: true` stays in the YAML and is still checked, but is left out of the page.
 - **Keyboard and screen readers.** Every clickable element is a button or has a button role, is reachable with Tab, and opens with Enter or Space.
 - **Every event goes through `record()`.** Views and answers are reported with permanent IDs through one function in the engine, so analytics and a results database can plug in later.
+
+## Explanations
+
+How a case's words are written: agreed on *Coronary arteries and the ECG*, 17 October 2026, from the user's own edits. They are written like a clinician talking a colleague through the case: full, grammatical sentences, never fragments or colon headlines ("Inferior STEMI: the RCA." is out).
+
+**Why** (after a right answer; the page puts **Correct.** before it). Two to three sentences, in this order:
+
+1. The deciding finding, then what it means, then the answer: *Leads II, III and aVF face the inferior wall, which is supplied by the RCA in most hearts.* The leads come first, then the wall they face, then the artery that supplies it.
+2. The other findings in the stem, each with its cause: *The bradycardia is also due to AV node damage, as the AV node is also supplied by the RCA.* Give the mechanism where it decides the answer (nitrates lower the preload through venodilation), and what it means for management (a narrow-QRS junctional escape is usually benign and settles with reperfusion).
+3. Reciprocal changes as a plain sentence: *The ST depression in I and aVL is a reciprocal change.* No "not a second infarct" after it.
+4. A trap, only when it is real and the case is about it (a pain-free Wellens' patient is not safe; a posterior STEMI read as an NSTEMI misses reperfusion), in one sentence. Cut anything a candidate would not get wrong (where the pain spreads).
+
+**Wrong-answer notes** (after that option; see Behaviour rules). One sentence in one shape: the option, what it supplies or is, then what it would cause. *The LAD artery supplies the anterior and septal walls, so it would cause ST elevation in V1–V4.* Then, only where it teaches, what else it would bring (*…with a wide-QRS bradycardia due to a ventricular escape rhythm, which usually needs pacing*). The sentence opens with the option's own name, so the page bolds it in place. A note never compares itself with this stem ("Here those leads are depressed" is out) and never points at the right answer.
+
+**Words.**
+- Name every artery with "artery": the LAD artery, the circumflex artery, the left main artery. The RCA already says it.
+- Name the walls as clinicians do (anterior, septal, inferior, lateral, posterior), never "front wall".
+- Say "reciprocal change", never "mirror".
+- Put a lead group's wall in brackets where a note lists several (V3–V4 (anterior wall)).
+- Each number with the guideline and year in brackets where a guideline decides the answer (ESC 2023); give no cut-off number the case does not ask for.
+- Say "in most hearts" where anatomy varies, and "uncommon" rather than "rare" for about 1 in 10.
+
+**Tutor note** (solved example only). The method as one sentence, then the case worked through with it: *Read the leads first, then identify the wall they face, then the artery that supplies it: leads II, III and aVF face the inferior wall, which is supplied by the RCA.*
+
+Length is checked on the stage: every case must still fit 1280 × 720 with its answers open.
 
 ## Layout and responsiveness
 

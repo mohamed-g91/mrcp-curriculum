@@ -24,6 +24,14 @@ function bringIntoView(node) {
   (fluid ? window : $("#deck")).scrollBy({ top: over, behavior });
 }
 
+function noteHtml(label, note) {
+  const m = note.match(/^((?:The |An? )?)(.*)$/s);
+  const rest = m[2];
+  if (rest.slice(0, label.length).toLowerCase() === label.toLowerCase())
+    return `${esc(m[1])}<b>${esc(rest.slice(0, label.length))}</b>${esc(rest.slice(label.length))}`;
+  return `<b>${esc(label)}:</b> ${esc(note)}`;
+}
+
 function buildCaseSlide(Q, c, num) {
   // Practise carries no Arabic and no concept letters: plain options leave the stem and answers the room
   const title = c.solved ? "Solved example" : `Case ${num}`;
@@ -60,9 +68,10 @@ function buildCaseSlide(Q, c, num) {
         first = false;
         b.classList.add("wrong"); b.disabled = true; if (!quiet) shake(b);
         fb.className = "feedback show bad";
-        // a wrong option with its own note says, in one line, what that answer would look like
+        // a wrong option with its own note says what that answer would look like; a note written as a
+        // sentence that opens with the option's name (The LAD artery supplies…) bolds that name in place
         const note = c.notes && c.notes[key];
-        fb.innerHTML = note ? `${icon("cross")}<span><b>${esc(k.label)}:</b> ${esc(note)}</span>`
+        fb.innerHTML = note ? `${icon("cross")}<span>${noteHtml(k.label, note)}</span>`
           : `${icon("cross")}<span><b>Not quite.</b> ${esc(c.hint)} The key phrase is highlighted in the stem.</span>`;
         $$("mark", sec).forEach(m => m.classList.add("lit"));
       }

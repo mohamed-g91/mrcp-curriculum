@@ -20,7 +20,7 @@ sources:
   - NICE NG185. Acute coronary syndromes, 2020.
   - Haji SA, Movahed A. Right ventricular infarction: diagnosis and treatment. Clin Cardiol 2000;23:473–82 (volume loading to keep the RV's preload).
   - Ibanez B, James S, Agewall S, et al. 2017 ESC Guidelines for the management of acute myocardial infarction in patients presenting with ST-segment elevation. Eur Heart J 2018;39:119–77 (8.2.2.1: in RV infarction, avoid volume overload).
-retired: []
+retired: [c10]   # c10 (NSTEMI, T inversion in V5 and V6) removed by the user, 2026-10-17
 cover: concepts
 
 # One colour per artery; a wall takes its artery's colour on the 2D figures (the 3D heart lights every wall in one teal).
@@ -207,12 +207,12 @@ practise:
         question: Which artery is blocked?
         answer: rca
         hint: Which wall do II, III and aVF face?
-        why: "II, III and aVF face the inferior wall, which the RCA feeds in most hearts. The slow pulse fits: the RCA also feeds the AV node."
+        why: "Leads II, III and aVF face the inferior wall, which is supplied by the RCA in most hearts. The bradycardia is also due to AV node damage, as the AV node is also supplied by the RCA. The ST depression in I and aVL is a reciprocal change."
         notes:
-          "lad": "the septum and front wall; ST elevation in V1–V4."
-          "lcx": "the lateral wall; ST elevation in I, aVL, V5 and V6."
-          "Left main": "most of the left ventricle; ST elevation in aVR, ST depression in six or more leads."
-        tutor: "Leads, then wall, then artery: II, III, aVF, the inferior wall, the RCA."
+          "lad": "The LAD artery supplies the anterior and septal walls, so it would cause ST elevation in V1–V4."
+          "lcx": "The circumflex artery supplies the lateral wall, so it would cause ST elevation in I, aVL, V5 and V6."
+          "Left main": "The left main artery supplies most of the left ventricle, so it would cause ST elevation in aVR with ST depression in six or more leads."
+        tutor: "Read the leads first, then identify the wall they face, then the artery that supplies it: leads II, III and aVF face the inferior wall, which is supplied by the RCA."
 
       - id: c02
         scene: case-chest-woman
@@ -221,11 +221,11 @@ practise:
         question: Which artery is blocked?
         answer: lad
         hint: Which walls do V1 to V4 face?
-        why: "V1 and V2 face the septum and V3 and V4 the front wall: both are fed by the LAD. The inferior depression is its mirror."
+        why: "Leads V1–V4 face the septal and anterior walls, which are supplied by the LAD artery. The ST depression in II, III and aVF is a reciprocal change."
         notes:
-          "rca": "the inferior wall; ST elevation in II, III and aVF."
-          "lcx": "the lateral wall; ST elevation in I, aVL, V5 and V6."
-          "Left main": "most of the left ventricle; ST elevation in aVR, ST depression in six or more leads."
+          "rca": "The RCA supplies the inferior wall, so it would cause ST elevation in II, III and aVF."
+          "lcx": "The circumflex artery supplies the lateral wall, so it would cause ST elevation in I, aVL, V5 and V6."
+          "Left main": "The left main artery supplies most of the left ventricle, so it would cause ST elevation in aVR with ST depression in six or more leads."
 
       - id: c03
         scene: case-arm-man
@@ -234,11 +234,11 @@ practise:
         question: Which artery is blocked?
         answer: lcx
         hint: Which wall do I, aVL, V5 and V6 face?
-        why: "These four leads face the lateral wall, fed by the circumflex. III and aVF show the mirror."
+        why: "Leads I, aVL, V5 and V6 face the lateral wall, which is supplied by the circumflex artery. The ST depression in III and aVF is a reciprocal change."
         notes:
-          "lad": "the septum and front wall; ST elevation in V1–V4."
-          "rca": "the inferior wall; ST elevation in II, III and aVF."
-          "Left main": "most of the left ventricle; ST elevation in aVR, ST depression in six or more leads."
+          "lad": "The LAD artery supplies the anterior and septal walls, so it would cause ST elevation in V1–V4."
+          "rca": "The RCA supplies the inferior wall, so it would cause ST elevation in II, III and aVF."
+          "Left main": "The left main artery supplies most of the left ventricle, so it would cause ST elevation in aVR with ST depression in six or more leads."
 
       - id: c04
         scene: case-breathless-man
@@ -247,11 +247,11 @@ practise:
         question: Where is the blockage?
         answer: Proximal LAD
         hint: How many walls are involved?
-        why: "The septum, the front wall and the lateral wall at once: the LAD blocked high up, before its first branches."
+        why: "ST elevation from V1 to V6 and in I and aVL means the septal, anterior and lateral walls are all injured. A blockage in the proximal LAD artery, before its septal and first diagonal branches, affects all three walls. A left main artery blockage can also cause this pattern."
         notes:
-          "Distal LAD": "the front wall and apex; ST elevation in V3–V6, sparing V1, I and aVL."
-          "lcx": "the lateral wall; ST elevation in I, aVL, V5 and V6."
-          "rca": "the inferior wall; ST elevation in II, III and aVF."
+          "Distal LAD": "A distal LAD blockage spares the septal and first diagonal branches, so it would cause ST elevation in V3–V4 (anterior wall) and V5–V6 (the low lateral wall near the apex), but not in V1 (septal wall, supplied by the septal branches) or I and aVL (high lateral wall, supplied by the first diagonal branch)."
+          "lcx": "The circumflex artery supplies the lateral wall, so it would cause ST elevation in I, aVL, V5 and V6 without V1–V4."
+          "rca": "The RCA supplies the inferior wall, so it would cause ST elevation in II, III and aVF."
 
       - id: c05
         scene: case-ecg-woman
@@ -260,11 +260,11 @@ practise:
         question: What is the next step?
         answer: Posterior leads V7–V9
         hint: Which wall has no lead facing it on a standard ECG?
-        why: "V1–V3 see the posterior wall from the front, upside down: the depression is its mirror. ST elevation in V7–V9 confirms a posterior STEMI, often the circumflex."
+        why: "ST depression in V1–V3 with tall R waves and upright T waves is the reciprocal of a posterior STEMI, because no standard lead faces the posterior wall. Posterior leads V7–V9 confirm it by showing ST elevation; it is usually caused by a circumflex artery blockage (ESC 2023). Reading this as an NSTEMI would delay reperfusion."
         notes:
-          "Right-sided leads V3R–V4R": "for a right ventricular infarct, with an inferior STEMI."
-          "Repeat troponin in 3 hours": "delays a STEMI that needs reperfusion now."
-          "Echocardiogram": "does not replace the ECG to diagnose a STEMI."
+          "Right-sided leads V3R–V4R": "Right-sided leads V3R–V4R look for right ventricular infarction, which comes with an inferior STEMI, not with changes in V1–V3."
+          "Repeat troponin in 3 hours": "A repeat troponin in 3 hours would delay reperfusion of a possible STEMI."
+          "Echocardiogram": "An echocardiogram may show a wall that is not moving, but it cannot diagnose a STEMI or replace the posterior leads."
 
       - id: c06
         scene: case-bp-man
@@ -273,11 +273,11 @@ practise:
         question: Which drug should be avoided?
         answer: Glyceryl trinitrate
         hint: What does the right ventricle depend on when it is starved?
-        why: "A right ventricular infarct: the heart depends on preload. Nitrates lower it and the pressure falls further (ESC 2023). Fluids, given with care, help."
+        why: "Hypotension, a raised JVP and a clear chest with an inferior STEMI point to right ventricular infarction, which the ST elevation in V4R confirms. The injured right ventricle depends on its filling pressure (preload). Nitrates lower the preload through venodilation, so the blood pressure falls further (ESC 2023)."
         notes:
-          "Aspirin": "given in every STEMI."
-          "Morphine": "for severe pain, in small doses."
-          "IV fluids": "given with care: they keep up the preload."
+          "Aspirin": "Aspirin is given in every STEMI and does not lower the blood pressure."
+          "Morphine": "Morphine can be given in small doses for severe pain."
+          "IV fluids": "IV fluids are given with care to raise the preload."
 
       - id: c07
         scene: case-tube-man
@@ -286,11 +286,11 @@ practise:
         question: What does the ECG show?
         answer: Critical proximal LAD stenosis
         hint: The patient is pain-free now. What is about to happen?
-        why: "Wellens' pattern: a critical stenosis high in the LAD, about to block. It needs angiography, not a stress test."
+        why: "Deep, symmetrical T-wave inversion in V2 and V3 after chest pain is Wellens' pattern, caused by a critical stenosis in the proximal LAD artery (ESC 2023). Being pain-free does not mean he is safe, as the artery may occlude at any moment. He needs angiography, as a stress test could cause a myocardial infarction."
         notes:
-          "Old anterior infarct": "Q waves in V1–V4."
-          "Pericarditis": "widespread ST elevation, PR depression."
-          "Left ventricular hypertrophy": "tall QRS, with lateral ST depression and T inversion (strain)."
+          "Old anterior infarct": "An old anterior infarct would show Q waves in V1–V4, without recent chest pain."
+          "Pericarditis": "Pericarditis would cause widespread ST elevation with PR depression."
+          "Left ventricular hypertrophy": "Left ventricular hypertrophy would cause tall QRS complexes, with ST depression and T-wave inversion in the lateral leads (strain)."
 
       - id: c08
         scene: case-ecg-woman
@@ -299,11 +299,11 @@ practise:
         question: Where is the reciprocal ST depression most likely?
         answer: I and aVL
         hint: Which leads look at the heart from the opposite side?
-        why: "I and aVL look from the upper left, across the heart from the inferior wall, so they see the same injury upside down."
+        why: "Leads I and aVL look at the heart from the upper left, opposite the inferior wall, so they show its injury as ST depression. These reciprocal changes support a true inferior STEMI."
         notes:
-          "V1–V3": "the mirror of a posterior STEMI."
-          "V5 and V6": "elevated if the infarct spreads to the lateral wall."
-          "aVR": "elevated, with widespread depression, in left main disease."
+          "V1–V3": "V1–V3 show ST depression as the reciprocal of a posterior STEMI."
+          "V5 and V6": "V5 and V6 would show ST elevation, not depression, if the infarct spread to the lateral wall."
+          "aVR": "aVR shows ST elevation, with widespread ST depression, in left main disease."
 
       - id: c09
         scene: case-watch-man
@@ -312,24 +312,11 @@ practise:
         question: Which artery is blocked?
         answer: rca
         hint: Which artery feeds the AV node in most hearts?
-        why: "Inferior STEMI with heart block: the RCA, which feeds the AV node in about 9 in 10 hearts."
+        why: "Leads II, III and aVF face the inferior wall, which is supplied by the RCA in most hearts. The heart block is also due to AV node damage, as the AV node is also supplied by the RCA. The narrow QRS means a junctional escape rhythm, which is usually benign and managed by treating the cause (reperfusion)."
         notes:
-          "lad": "the septum and front wall; ST elevation in V1–V4."
-          "lcx": "the lateral wall; ST elevation in I, aVL, V5 and V6."
-          "Left main": "most of the left ventricle; ST elevation in aVR, ST depression in six or more leads."
-
-      - id: c10
-        scene: case-clock-woman
-        options: [lad, lcx, rca, Left main]
-        stem: "A 58-year-old woman had chest pain this morning. Her troponin is raised; there is no ST elevation, but [[T-wave inversion in V5 and V6]]."
-        question: Which artery is most likely narrowed?
-        answer: lcx
-        hint: Which wall do V5 and V6 face?
-        why: "V5 and V6 face the lateral wall, fed by the circumflex."
-        notes:
-          "lad": "the septum and front wall; changes in V1–V4."
-          "rca": "the inferior wall; changes in II, III and aVF."
-          "Left main": "most of the left ventricle; ST elevation in aVR, ST depression in six or more leads."
+          "lad": "The LAD artery supplies the anterior and septal walls, so it would cause ST elevation in V1–V4, with a wide-QRS bradycardia due to a ventricular escape rhythm, which usually needs pacing."
+          "lcx": "The circumflex artery supplies the lateral wall, so it would cause ST elevation in I, aVL, V5 and V6; it supplies the AV node only in left-dominant hearts, which are uncommon."
+          "Left main": "The left main artery supplies most of the left ventricle, so it would cause ST elevation in aVR with ST depression in six or more leads."
 
       - id: c11
         scene: case-oxygen-man
@@ -339,12 +326,11 @@ practise:
         question: Which artery is most likely blocked?
         answer: Left main
         hint: What does widespread depression with ST elevation in aVR suggest?
-        why: "ST elevation in aVR with widespread ST depression suggests left main or three-vessel disease (ESC 2023)."
+        why: "ST elevation in aVR with ST depression in six or more leads suggests left main or three-vessel disease, especially with hypotension, as in our case. The depression reflects widespread ischaemia, so it does not point to a single wall. He needs urgent angiography."
         notes:
-          "lad": "the septum and front wall; ST elevation in V1–V4."
-          "lcx": "the lateral wall; ST elevation in I, aVL, V5 and V6."
-          "rca": "the inferior wall; ST elevation in II, III and aVF."
-
+          "lad": "The LAD artery supplies the anterior and septal walls, so it would cause ST elevation in V1–V4."
+          "lcx": "The circumflex artery supplies the lateral wall, so it would cause ST elevation in I, aVL, V5 and V6."
+          "rca": "The RCA supplies the inferior wall, so it would cause ST elevation in II, III and aVF."
   - id: end
     pattern: end
     title: Your score
