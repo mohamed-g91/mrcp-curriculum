@@ -179,13 +179,13 @@ def pair_axes(x0, y0, w, h, vmax=50, ticks=(0, 10, 20, 30, 40, 50), label_x=None
     return s
 
 
-def pair_dots(x0, y0, h, xa, xb, a, b, col, ink, vmax=50, which='both'):
+def pair_dots(x0, y0, h, xa, xb, a, b, col, ink, vmax=50, which='both', later='1 h'):
     """Two troponins joined: the value over each dot, or under it when the dot sits below the 99th percentile."""
     ya, yb = y0 - a / vmax * h, y0 - b / vmax * h
     s = ''
     if which in ('both', 'line'):
         s += P('M%s %.1f L%s %.1f' % (xa, ya, xb, yb), col, 4)
-    for xx, yy, v, lab, part in [(xa, ya, a, '0 h', 'a'), (xb, yb, b, '1 h', 'b')]:
+    for xx, yy, v, lab, part in [(xa, ya, a, '0 h', 'a'), (xb, yb, b, later, 'b')]:
         if which == 'both' or which == part or (which == 'line' and part == 'b'):
             ty = yy + 36 if v < 14 else yy - 22
             s += C(xx, yy, 13, col) + T(xx, ty, v, 24, 700, ink, 'middle') + T(xx, y0 + 30, lab, 20, 500, 'muted', 'middle')
@@ -310,8 +310,8 @@ def main():
         ly = y0 - h + 40 + k * 40
         b += beat(k + 1, curve(kind, col) + P('M%s %s h40' % (x0 + w - 210, ly), col, 6) + T(x0 + w - 158, ly + 8, '', 22, 650, col, slot=key))
     b += beat(4, curve('ck', 'test-solid', True) + T(x0 + 5.1 / days * w, y0 - h * .8 - 24, 'Reinfarction (old test)', 20, 650, 'test-ink', 'middle'))
-    b += beat(5, R(x0 + w - 250, y0 - h + 160, 250, 76, 'se-bg', 'se-bd', 2, 14) + T(x0 + w - 125, y0 - h + 192, 'Now: troponin', 20, 650, 'se-ink', 'middle')
-              + T(x0 + w - 125, y0 - h + 220, 'up 20% or more', 20, 650, 'se-ink', 'middle'))
+    b += beat(5, R(x0 + w - 250, y0 - h + 160, 250, 76, 'se-bg', 'se-bd', 2, 14) + T(x0 + w - 125, y0 - h + 192, 'Now: a new troponin', 20, 650, 'se-ink', 'middle')
+              + T(x0 + w - 125, y0 - h + 220, 'rise of more than 20%', 20, 650, 'se-ink', 'middle'))
     save('acs-markers', 'Markers over days: myoglobin first, then CK-MB, then troponin for longest; a second CK-MB rise was the old sign of reinfarction', b, '0 30 860 410')
 
     # 6. One number is not enough (6A): two samples against the 99th percentile, one pattern per tap
@@ -320,7 +320,8 @@ def main():
     pats = [(9, 38, 'bad-solid', 'bad-ink', 'Acute injury', 'bad'), (40, 41, 'muted', 'gray-ink', 'Chronic injury', 'gray'),
             (6, 7, 'se-solid', 'se-ink', 'Ruled out', 'se')]
     for k, (a, c, col, ink, verdict, fam) in enumerate(pats):
-        body = pair_dots(x0, y0, h, 220, 500, a, c, col, ink)
+        # high and flat at 0 h/1 h is the observe zone, so its second sample is the one at 3 h (ESC 2023; c09)
+        body = pair_dots(x0, y0, h, 220, 500, a, c, col, ink, later='3 h' if k == 1 else '1 h')
         yv = y0 - c / 50 * h + 8
         body += (R(570, yv - 30, 200, 44, ('%s-solid' % fam) if fam != 'gray' else 'muted', 'none', 0, 22)
                  + T(670, yv, verdict, 21, 650, 'on-solid', 'middle'))
@@ -360,7 +361,7 @@ def main():
     ecg_card('acs-card-lbbb', 'A broad QRS with its T wave turned down: left bundle branch block', wide=True, t_inv=True)
     ecg_card('acs-card-posterior', 'A tall R wave with ST depression, as in V1 to V3', st=-1.5, tall_r=True)
     ecg_card('acs-card-avr', 'A beat with its ST raised, as in aVR', st=1.5)
-    ecg_card('acs-card-peri', 'A beat with concave ST elevation and PR depression', saddle=True, pr_dep=True)
+    ecg_card('acs-card-peri', 'A beat with concave ST elevation and PR depression', st=1.2, saddle=True, pr_dep=True)
     cx, cy, col = 100, 70, 'primary'
     zig = ' '.join('L%s %s' % (cx + dx, cy + dy) for dx, dy in [(-50, 0), (-40, -40), (-28, 30), (-18, 0), (0, 0), (10, -40), (22, 30), (32, 0), (50, 0), (60, -40), (72, 30), (80, 0)])
     save('acs-card-af', 'A fast, irregular heart rhythm', P('M%s %s %s' % (cx - 80, cy, zig), col, 4), '-60 0 320 140')

@@ -489,6 +489,11 @@ a.next-topic:hover{border-color:var(--primary)}
 .solved-badge{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-label);font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--sol-ink);background:var(--sol-bg);border:1px solid var(--sol-bd);border-radius:999px;padding:4px 12px}
 .case.solved .stem-card{border-top-color:var(--sol-solid)}
 .case .stem-card{max-width:none}
+.case-long .stem-card{padding:clamp(14px,calc(1.7 * var(--u)),22px) clamp(16px,calc(2.4 * var(--u)),30px)}
+.case-long .stem-text{font-size:clamp(15px,calc(1.55 * var(--u)),20px);line-height:1.45}
+.case-long .feedback{margin-top:clamp(8px,calc(1 * var(--u)),12px)}
+.case-long .stem-q{margin-top:clamp(8px,calc(1 * var(--u)),12px)}
+.case-long .choices{margin-top:clamp(10px,calc(1.3 * var(--u)),16px)}
 /* a case's cartoon beside its stem card (above it, small, when the slide reflows) */
 .case{--case-fig:clamp(110px,calc(13 * var(--u)),160px);--case-gap:clamp(12px,calc(2 * var(--u)),24px)}
 .case-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--case-gap);align-items:end}

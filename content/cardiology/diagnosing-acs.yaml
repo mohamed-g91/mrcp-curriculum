@@ -82,7 +82,7 @@ learn:
     title_ar: سؤالان
     steps:
       - { q: "ST raised?", q_ar: هل ST مرتفع؟, at: [1, 1], yes: stemi }
-      - { q: "Troponin rising above the line?", q_ar: هل يرتفع التروبونين فوق الحد؟, at: [1, 2], no: ua }
+      - { q: "Troponin above the line, rising or falling?", q_ar: هل التروبونين فوق الحد ويتغير؟, at: [1, 2], no: ua }
     end: nstemi
 
   # 3A: ESC 2023 3.2.1, at the J point in two contiguous leads
@@ -185,8 +185,8 @@ practise:
         notes:
           "Unstable angina": "Unstable angina is ischaemic pain at rest without muscle death, so the troponin would stay below the 99th percentile."
           "STEMI": "A STEMI causes persistent ST elevation in two contiguous leads and needs immediate reperfusion."
-          "Stable angina": "Stable angina comes on with exertion and settles within minutes of rest or GTN, not after an hour of pain at rest."
-        tutor: "Read the ST segment first, then the troponin: here the ST is not raised, and the troponin rose across the line."
+          "Stable angina": "Stable angina comes on with exertion and settles within minutes of rest or GTN, not after an hour of pain at rest, and it does not raise the troponin."
+        tutor: "Read the ST segment first, then the troponin: here the ST is not raised, and the troponin is rising above the 99th percentile."
 
       - id: c02
         scene: case-watch-man
@@ -221,7 +221,7 @@ practise:
         question: Which ECG finding meets the criteria for a STEMI?
         answer: 1 mm ST elevation in II and aVF
         hint: How many leads, which leads, and how much for a man of his age?
-        why: "Leads II and aVF both face the inferior wall, so they are contiguous, and outside V2–V3 ST elevation of 1 mm in two contiguous leads meets the criteria for a STEMI (ESC 2023). In V2–V3 a man aged 40 or over needs 2 mm."
+        why: "Leads II and aVF both face the inferior wall, so they are contiguous, and an elevation of 1 mm in two contiguous leads (except V2–V3) meets the criteria for a STEMI (ESC 2023). In V2–V3 a man aged 40 or over needs 2 mm."
         notes:
           "1 mm ST elevation in V2 and V3": "ST elevation of 1 mm in V2 and V3 is below the threshold for these leads, which is 2 mm in a man aged 40 or over (ESC 2023)."
           "1 mm ST elevation in III alone": "ST elevation of 1 mm in lead III alone is in one lead only, and the criteria need two contiguous leads."
@@ -229,22 +229,22 @@ practise:
 
       - id: c05
         scene: case-ecg-woman
-        options: [Manage as STEMI, Wait for the troponin, Treat as stable angina, Exercise ECG]
+        options: [Manage as STEMI, Wait for the troponin, Treat as unstable angina, Exercise ECG]
         stem: "A 71-year-old woman presents with central crushing chest pain that began 40 minutes ago and is still present. She has a past medical history of hypertension. On examination, she is sweating, her heart rate is 88 and regular, and her BP is 128/76 mmHg. Her ECG shows [[left bundle branch block]]; no previous ECG is available."
         question: What is the most appropriate management?
         answer: Manage as STEMI
         hint: Can the ST segment be read in left bundle branch block?
-        why: "Left bundle branch block makes the ST segment impossible to read, so with ongoing ischaemic pain it is managed as a STEMI, with immediate reperfusion, whether the block is new or old (ESC 2023). Older teaching and many exam questions ask whether the block is new; the guideline no longer does."
+        why: "Left bundle branch block makes the ST segment impossible to read, so with ongoing ischaemic pain it is managed as a STEMI, with immediate reperfusion, whether the BBB is new or old (ESC 2023). Older teaching and many exam questions ask whether the block is new; the guideline no longer does."
         notes:
           "Wait for the troponin": "Waiting for the troponin would delay reperfusion, which is decided by the ECG and the symptoms (ESC 2023)."
-          "Treat as stable angina": "Stable angina comes on with exertion and settles within minutes, not after 40 minutes of pain at rest."
+          "Treat as unstable angina": "Treating it as unstable angina would miss a possible STEMI, as left bundle branch block hides the ST segment."
           "Exercise ECG": "An exercise ECG is not used in ongoing chest pain at rest, and its ST segment cannot be read in left bundle branch block."
 
       - id: c06
         scene: case-medbag-man
         options: [Repeat the ECG in 15 minutes, Repeat the troponin at 1 hour, Exercise ECG tomorrow, Discharge with GTN]
         stem: "A 71-year-old man presents with central chest pain that began 30 minutes ago and is still present. He has a past medical history of type 2 diabetes. On examination, his heart rate is 90 and regular, and his BP is 140/86 mmHg. His ECG shows [[0.5 mm ST elevation in V2–V4]], which does not meet the criteria for a STEMI."
-        question: Which test decides now whether he needs immediate reperfusion?
+        question: What is the best next step?
         answer: Repeat the ECG in 15 minutes
         hint: Which test shows an occlusion as it evolves?
         why: "An occluded artery can show only small ST changes or hyperacute T waves on the first ECG, so while the pain continues the ECG is repeated and compared, as a STEMI may appear on the next one (ESC 2023). Serial ECGs are recorded every 15 to 30 minutes in the first hour (AHA/ACC 2014). A troponin is also taken, but reperfusion is decided by the ECG, never by the troponin."
@@ -256,14 +256,14 @@ practise:
       - id: c07
         scene: case-kidney
         options: [Myoglobin, Troponin T, CK-MB, LDH]
-        stem: "A 64-year-old man presents with central crushing chest pain that began 40 minutes ago. He has a past medical history of hypertension. Blood is taken for cardiac markers [[soon after the pain began]] and at intervals over the following days."
+        stem: "A 64-year-old man presents with central crushing chest pain that began 40 minutes ago. He has a past medical history of hypertension. Blood is taken for cardiac markers [[soon after the pain began]]."
         question: Which marker rises first after a myocardial infarction?
         answer: Myoglobin
         hint: Which is the smallest molecule, released first?
         why: "Myoglobin is a small protein that leaks out of damaged muscle first, so it is the first marker to rise after a myocardial infarction. It is also found in skeletal muscle, so it is not specific to the heart, and troponin is the marker used to diagnose a myocardial infarction (ESC 2023)."
         notes:
           "Troponin T": "Troponin T is the most specific marker of heart muscle death, but it rises after myoglobin."
-          "CK-MB": "CK-MB rises after myoglobin and falls back within 2 to 3 days, which was once used to detect reinfarction."
+          "CK-MB": "CK-MB rises after myoglobin and falls back within 2 to 3 days, which was historically used to detect re-infarction."
           "LDH": "LDH rises late, over days, and is no longer used to diagnose a myocardial infarction."
 
       - id: c08
@@ -273,10 +273,10 @@ practise:
         question: What does troponin T bind on the thin filament?
         answer: Tropomyosin
         hint: Each troponin is named for what it binds or does.
-        why: "Troponin T binds tropomyosin, anchoring the troponin complex to it on the thin filament. Troponin C binds calcium, and troponin I binds actin, holding back the actin–myosin interaction until calcium arrives. The cardiac forms of troponin I and T differ from the skeletal forms, which is why the test is specific to heart muscle."
+        why: "Troponin T binds tropomyosin, anchoring the troponin complex to it on the thin filament. Troponin C binds calcium, and troponin I binds tropomyosin to actin, holding back the actin–myosin interaction until calcium arrives. The cardiac forms of troponin I and T differ from the skeletal forms, which is why the test is specific to heart muscle."
         notes:
-          "Calcium": "Calcium is bound by troponin C, which then lets tropomyosin move aside so that myosin can bind actin."
-          "Actin": "Actin is bound by troponin I, which holds back the actin–myosin interaction at rest."
+          "Calcium": "Calcium binds to troponin C, which then lets tropomyosin move aside so that myosin can bind actin."
+          "Actin": "Actin is bound to tropomyosin by troponin I, which holds back the actin–myosin interaction at rest."
           "Myosin": "Myosin binds actin once tropomyosin moves aside; troponin does not bind it."
 
       - id: c09
@@ -289,7 +289,7 @@ practise:
         why: "His troponin is above the 99th percentile but flat, changing by only 1 ng/L over 3 hours, so this is chronic myocardial injury, which is common in chronic kidney disease (UDMI 2018). An acute injury, and so a myocardial infarction, needs a rise or fall."
         notes:
           "NSTEMI": "An NSTEMI needs a troponin above the 99th percentile that rises or falls, showing acute muscle death."
-          "Unstable angina": "Unstable angina causes no muscle death, so the troponin stays below the 99th percentile."
+          "Unstable angina": "Unstable angina causes no muscle death, so it would not explain a raised troponin, although it cannot be ruled out in end-stage kidney disease, where the troponin is often raised at baseline."
           "Type 2 MI": "A type 2 MI is acute muscle death from a mismatch of supply and demand, such as fast AF or anaemia, so the troponin rises or falls."
 
       - id: c10
@@ -308,13 +308,13 @@ practise:
       - id: c11
         scene: case-box-woman
         options: [Takotsubo cardiomyopathy, Anterior STEMI, Myocarditis, Acute pericarditis]
-        stem: "A 68-year-old woman presents with central chest pain that began this morning, [[the day after her husband's funeral]]. She has a past medical history of hypertension. On examination, her heart rate is 98 and regular, and her BP is 118/74 mmHg. Her ECG shows ST elevation in V2–V5, and her troponin is raised. Coronary angiography shows unobstructed coronary arteries, and the left ventriculogram shows ballooning of the apex."
+        stem: "A 68-year-old woman presents with central chest pain that began this morning, [[the day after her husband's funeral]]. She has a past medical history of hypertension. On examination, her heart rate is 98 and regular, and her BP is 118/74 mmHg. Her ECG shows ST elevation in V2–V5, and her troponin is raised above the 99th percentile. Coronary angiography shows unobstructed coronary arteries, and the left ventriculogram shows ballooning of the apex."
         question: What is the diagnosis?
         answer: Takotsubo cardiomyopathy
         hint: What came just before the pain, and what did angiography show?
         why: "ST elevation and a raised troponin with unobstructed coronary arteries and ballooning of the apex, the day after a bereavement, is Takotsubo cardiomyopathy (ESC 2023). It mostly affects postmenopausal women after emotional or physical stress, and the wall motion usually recovers within weeks."
         notes:
-          "Anterior STEMI": "An anterior STEMI is caused by an occluded LAD artery, which angiography would show."
+          "Anterior STEMI": "An anterior STEMI is caused by an occluded LAD artery, which angiography would usually show."
           "Myocarditis": "Myocarditis typically follows a viral illness and causes patchy inflammation of the muscle, not ballooning of the apex after a stressful event."
           "Acute pericarditis": "Acute pericarditis causes widespread concave ST elevation with PR depression, and the heart muscle moves normally."
 
@@ -325,7 +325,7 @@ practise:
         question: What is the most likely diagnosis?
         answer: Aortic dissection
         hint: What do the pain and the two arm pressures point to?
-        why: "Tearing pain through to the back with a 40 mmHg difference in systolic BP between the arms points to aortic dissection (ESC 2024). An uncommon type A dissection can involve the RCA, which supplies the inferior wall in most hearts, and so cause inferior ST elevation. Dissection must be excluded before antithrombotic or thrombolytic treatment, which could be fatal."
+        why: "Tearing pain through to the back with a 40 mmHg difference in systolic BP between the arms points to aortic dissection (ESC 2024). A type A dissection can involve the RCA, which supplies the inferior wall in most hearts, and so cause inferior ST elevation (uncommon). It must be excluded before any antithrombotic is given."
         notes:
           "Inferior STEMI from plaque rupture": "An inferior STEMI from plaque rupture would cause the same ECG, but not tearing pain to the back or a difference in BP between the arms."
           "Acute pericarditis": "Acute pericarditis causes widespread concave ST elevation with PR depression, not ST elevation confined to the inferior leads."
@@ -340,14 +340,14 @@ practise:
         hint: Was there a new clot, or did demand outrun supply?
         why: "Her troponin rose above the 99th percentile with chest tightness and ST depression, so this is a myocardial infarction. Fast AF raised the heart's oxygen demand beyond what its supply could meet, without a new clot, and the coronary arteries are unobstructed, so it is a type 2 MI (UDMI 2018). It is treated by treating its cause, here with rate control."
         notes:
-          "Type 1 MI": "A type 1 MI is caused by a plaque rupturing and a clot forming on it, which angiography would show."
+          "Type 1 MI": "A type 1 MI is caused by a plaque rupturing or eroding and a clot forming on it, rather than by a mismatch of supply and demand."
           "Unstable angina": "Unstable angina causes no muscle death, so the troponin stays below the 99th percentile."
           "Chronic myocardial injury": "Chronic myocardial injury causes a raised troponin that stays flat, rather than one that rises."
 
       - id: c14
         scene: case-water-man
         options: [Pulmonary embolism, NSTEMI, Acute pericarditis, Takotsubo cardiomyopathy]
-        stem: "A 66-year-old man develops [[sudden pleuritic chest pain and breathlessness three days after a hip replacement]]. He has a past medical history of hypertension. On examination, his heart rate is 118 and regular, his BP is 112/70 mmHg and his oxygen saturation is 89% on air. His ECG shows sinus tachycardia, and his troponin is raised."
+        stem: "A 66-year-old man develops [[sudden pleuritic chest pain and breathlessness three days after a hip replacement]]. He has a past medical history of hypertension. On examination, his heart rate is 118 and regular, his BP is 112/70 mmHg and his oxygen saturation is 89% on air. His ECG shows sinus tachycardia, and his troponin is raised above the 99th percentile."
         question: What is the most likely diagnosis?
         answer: Pulmonary embolism
         hint: What does the timing after surgery suggest?

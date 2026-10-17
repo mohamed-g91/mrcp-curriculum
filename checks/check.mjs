@@ -496,8 +496,10 @@ async function solvePass() {
       }
       const right = sec.querySelector('.choice[data-key="' + c.answer + '"]');
       if (!right) { out.push({ id: c.id, missing: true }); continue; }
-      right.click(); await wait(80);
-      out.push({ id: c.id, ok: right.classList.contains("correct"), next: document.getElementById("nextBtn").classList.contains("ready") && /Next case|See your score/.test(document.getElementById("nextBtn").textContent), title: sec.querySelector("h2").textContent,
+      right.click(); await wait(450);
+      // the case must still fit the stage with its answer and explanation open (DESIGN.md, Explanations)
+      const lay = MRCP_TOOLS["layout-report"].execute({ width: ${SIZES[0].width} });
+      out.push({ id: c.id, over: lay.vscroll ? lay.over : 0, ok: right.classList.contains("correct"), next: document.getElementById("nextBtn").classList.contains("ready") && /Next case|See your score/.test(document.getElementById("nextBtn").textContent), title: sec.querySelector("h2").textContent,
                  order: [...sec.querySelectorAll(".choice")].map(b => b.dataset.key).join(",") });
     }
     return { out, score: document.getElementById("scorePill").textContent, n: cases.length, total: all.length };
@@ -507,6 +509,7 @@ async function solvePass() {
     if (r.missing) fail(`${r.id}: the answer is not among the options`);
     else if ("wrongLit" in r) { if (!r.wrongLit || !r.wrongFb) fail(`${r.id}: a wrong answer did not hint and light the clue`); }
     else if (!r.ok || !r.next) fail(`${r.id}: did not solve cleanly`);
+    else if (r.over) fail(`${r.id}: answered, the case scrolls by ${r.over}px on the stage`);
     else console.log(`  ok   ${r.title.padEnd(15)} ${r.id}  options ${r.order}`);
   }
   const want = `Score ${res.total - 2} / ${res.total - 1}`;  // solved example unscored, one wrong on purpose
