@@ -61,6 +61,9 @@ const Present = {
     const k = [""], card = s && $(".spec-card.on", s), parent = s && $(".spec-parent.open", s);
     if (card) k.push("family:" + card.dataset.group);
     if (card && parent) k.push(`family:${card.dataset.group}/kinds:${parent.dataset.id}`);
+    // a tray slide: each drug's tray, and the strip's points, keep their own ink
+    const rt = s && $(".rtray .reveal-item.on", s);
+    if (rt) k.push("tray:" + $$(".reveal-item", rt.closest(".rtray")).indexOf(rt));
     return k;
   },
   layer(key, s = this.slide) {

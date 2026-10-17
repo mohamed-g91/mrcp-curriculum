@@ -12,10 +12,17 @@ function buildRevealCards() {
     if (!card) return;
     tray.classList.add("on", `f-${card.dataset.fam}`);
     tray.appendChild($("template.rt-body", card).content.cloneNode(true));
+    point(rt);
+  };
+  // the pointer stands under the open card's centre, measured again whenever the layout changes size
+  const point = rt => {
+    const tray = $(".rt-tray", rt), card = $(".rt-card.on", rt);
+    if (!card || !tray.offsetWidth) return;
     // the stage may be scaled: measure in its own pixels
     const a = card.getBoundingClientRect(), b = tray.getBoundingClientRect(), k = b.width / tray.offsetWidth || 1;
     tray.style.setProperty("--px", `${(a.left + a.width / 2 - b.left) / k}px`);
   };
+  if (window.ResizeObserver) $$(".rtray").forEach(rt => new ResizeObserver(() => point(rt)).observe(rt));
   const set = (it, on) => {
     it.classList.toggle("on", on); it.setAttribute("aria-expanded", String(on));
     const rt = it.closest(".rtray");
@@ -30,5 +37,6 @@ function buildRevealCards() {
     it.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); it.click(); } });
     onEnter(it, () => set(it, false));
   });
-  ClickAway.add(e => { if (!e.target.closest(".reveal-item")) items.forEach(it => { if (it.classList.contains("on")) set(it, false); }); });
+  // a click inside the open tray keeps it open
+  ClickAway.add(e => { if (!e.target.closest(".reveal-item, .rt-tray.on")) items.forEach(it => { if (it.classList.contains("on")) set(it, false); }); });
 }
