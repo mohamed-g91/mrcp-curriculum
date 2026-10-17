@@ -73,6 +73,7 @@ learn:
     pattern: story
     title: Where do we start?
     kind: plan
+    start: 1   # opens on the timeline, so the slide never lands empty
     labels: [Before, The trial, After]
     power: power
     rows:

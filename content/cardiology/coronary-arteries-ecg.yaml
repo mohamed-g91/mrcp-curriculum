@@ -46,7 +46,7 @@ learn:
     pattern: hook
     title: Which artery is blocked?
     title_ar: أي شريان مسدود؟
-    stem: "A 62-year-old man has 40 minutes of central chest pain. Pulse 42, blood pressure 88/56 mmHg, JVP raised, chest clear. His ECG:"
+    stem: "A 62-year-old patient presented to the emergency department with 40 minutes of central chest pain. On examination his pulse is 42, BP 88/56 mmHg, JVP raised and chest clear. His ECG:"
     question: Which artery is blocked?
     figure: ecg-inferior
 
@@ -203,7 +203,7 @@ practise:
         scene: case-chest-man
         options: [lad, lcx, rca, Left main]
         solved: true
-        stem: "A 62-year-old man has had 40 minutes of central chest pain. His pulse is 42 and his blood pressure 88/56 mmHg. His ECG shows [[ST elevation in II, III and aVF]] with ST depression in I and aVL."
+        stem: "A 62-year-old patient presented to the emergency department with 40 minutes of central chest pain. On examination his pulse is 42 and BP 88/56 mmHg. His ECG shows [[ST elevation in II, III and aVF]] with ST depression in I and aVL."
         question: Which artery is blocked?
         answer: rca
         hint: Which wall do II, III and aVF face?

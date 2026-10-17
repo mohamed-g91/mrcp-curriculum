@@ -1,7 +1,7 @@
 # Cardiology lesson 3. Approved plan: notes/angina-treatment-plan.md (2026-10-16).
 # Clinical sources checked 2026-10-16; the built lesson and new Arabic remain drafts for author review.
-# One patient: 61, diabetes/hypertension/smoking, 70% proximal LAD, bisoprolol 10 mg,
-# sinus pulse 52, BP 132/80, preserved LV function. Dose is limited by rate, not the licensed maximum.
+# One patient: 61, diabetes, hypertension, IHD, on bisoprolol 10 mg and ramipril 2.5 mg,
+# heart rate 52, BP 132/80, preserved LV function. Dose is limited by rate, not the licensed maximum.
 # ISMN example is product-specific: immediate-release product 102388, doses eight hours apart.
 id: cardio.angina-treatment
 title: Treating stable angina
@@ -55,8 +55,9 @@ learn:
     title: Which drug next?
     title_ar: أي دواء بعد ذلك؟
     scene: case-chest-man
-    stem: "Patient A, 61, has diabetes, hypertension and stable angina with 70% proximal LAD stenosis. Despite bisoprolol 10 mg, he has brief hill-induced pain twice weekly, without recent worsening or rest pain. Sinus pulse 52, BP 132/80 mmHg; LV function is preserved. He also takes GTN, aspirin, atorvastatin and ramipril."
-    question: Which drug next?
+    # Worded as the author set it (2026-10-17): the history, not the diagnosis; the drugs he is on, not "despite".
+    stem: "A 61-year-old patient with diabetes, hypertension and IHD presented to the clinic with chest pain twice a week on climbing a hill, relieved by sublingual GTN within 5 minutes. On examination his heart rate is 52 and BP 132/80 mmHg, with preserved LV function. He is currently on GTN, aspirin, atorvastatin, bisoprolol 10 mg and ramipril 2.5 mg."
+    question: What is the best next step in management?
 
   # The order agreed with the author 2026-10-16: two goals, then symptom relief step by step, then protecting the heart.
   - id: goals
@@ -97,32 +98,45 @@ learn:
     art: at-addon
     slots: { bb: "{bb}", dhp: "{dhp}", rlccb: "{rlccb}" }
 
+  # Layout B, chosen 2026-10-17: When? a strip whose two points open on a tap; four drug cards; the tapped drug's
+  # mechanism (one short line, the author's wording) and its catch open in the tray under the row.
   - id: alternatives
     pattern: reveal-cards
     title: The spare drugs
     title_ar: الأدوية البديلة
     blind: true
+    tray: true
+    strip:
+      label: When?
+      ar: متى؟
+      icon: book
+      points:
+        - "**Monotherapy**: neither a beta-blocker nor a CCB is suitable"
+        - "**Add-on**: one is not enough and the other is unsuitable"
     cards:
-      - family: gray
-        label: When?
-        ar: متى؟
-        icon: book
-        answer: "Neither first-line class suitable: consider monotherapy. One insufficient, other unsuitable: consider add-on."
       - concept: nitrate
         ar: النترات
         figure: at-spare-nitrate
-        answer: "ISMN: asymmetric doses leave a nitrate-low night, so no tolerance."
+        mech: "NO"
+        how: "Releases nitric oxide → ↑cGMP → venodilation → ↓preload"
+        answer: "Nitrate-low night, so no tolerance. No PDE5 inhibitors."
       - concept: nico
         ar: نيكورانديل
         figure: at-spare-nico
+        mech: "K_{ATP} + NO"
+        how: "Opens K_{ATP} channels and releases nitric oxide → arterial and venous dilation"
         answer: "Ulcers anywhere in the gut: stop it. No PDE5 inhibitors."
       - concept: iva
         ar: إيفابرادين
         figure: at-spare-iva
-        answer: "Flashes of light. Sinus rhythm, pulse ≥70."
+        mech: "I*f*"
+        how: "Blocks I*f* (funny current) in the SA node → ↓heart rate only"
+        answer: "Phosphenes (flashes of light). Sinus rhythm, pulse ≥70."
       - concept: rano
         ar: رانولازين
         figure: at-spare-rano
+        mech: "Late Na⁺"
+        how: "Blocks late Na⁺ current → less Ca²⁺ overload → better relaxation, ↓O₂ demand"
         answer: "Long QT."
 
   - id: escalation
@@ -164,8 +178,8 @@ practise:
         solved: true
         scene: case-chest-man
         options: [Amlodipine, Verapamil, Increase bisoprolol, Isosorbide mononitrate]
-        stem: "Patient A, 61, has diabetes, hypertension and 70% proximal LAD stenosis. Despite bisoprolol 10 mg, he has brief hill-induced angina twice weekly, without rest pain or worsening. [[Sinus pulse 52]], BP 132/80 mmHg, preserved LV function, no CCB contraindication."
-        question: Which drug should be added?
+        stem: "A 61-year-old patient with diabetes, hypertension and IHD has chest pain twice a week on climbing a hill, relieved by sublingual GTN within 5 minutes. [[Heart rate 52]], BP 132/80 mmHg, preserved LV function. He is on GTN, aspirin, atorvastatin, bisoprolol 10 mg and ramipril 2.5 mg."
+        question: What is the best next step in management?
         answer: Amlodipine
         hint: Can the pulse fall further? Which CCB can be combined with a beta-blocker?
         why: "His pulse limits further bisoprolol titration. Add a dihydropyridine CCB such as amlodipine. The licensed bisoprolol maximum in angina is 20 mg/day, but his highest tolerated dose is limited by rate."

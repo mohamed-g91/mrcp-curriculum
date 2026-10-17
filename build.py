@@ -431,6 +431,12 @@ def check_topic(t, expected_id):
             for c in s["cards"]:
                 if not c.get("concept") and c.get("family") not in fams:
                     errs.append(f"{where}: a card with no concept needs one of the topic's families")
+            if s.get("tray"):
+                if not (s.get("strip") or {}).get("points"):
+                    errs.append(f"{where}: a tray slide needs a strip with its points")
+                for c in s["cards"]:
+                    if not (c.get("mech") and c.get("how") and c.get("answer")):
+                        errs.append(f"{where}: each card on a tray slide needs mech, how and answer")
         if p == "working":
             if "[[" not in s.get("stem", "") or not s.get("answer") or not s.get("lines"):
                 errs.append(f"{where}: a working slide needs a stem with a [[clue]], its lines and the answer")

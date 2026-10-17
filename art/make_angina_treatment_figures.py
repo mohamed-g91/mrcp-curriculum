@@ -241,9 +241,9 @@ def main():
     # Back to the hook (mockup C): the hook card, the answer filled in
     b = beat(1, '<rect x="20" y="20" width="620" height="380" rx="16" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/>'
              + '<rect x="20" y="20" width="620" height="6" rx="3" fill="var(--primary)"/>'
-             + left(50, 80, 'Patient A, 61 · diabetes · hypertension', 21, 'text') + left(50, 120, '70% proximal LAD', 21, 'text')
+             + left(50, 80, '61 · diabetes · hypertension · IHD', 21, 'text') + left(50, 120, 'Chest pain on a hill, twice a week', 21, 'text')
              + left(50, 160, 'Bisoprolol 10 mg · pulse 52 · BP 132/80', 21, 'text')
-             + left(50, 222, 'Which drug next?', 25, 'primary') + patient(680, 140, .95))
+             + left(50, 222, 'Best next step in management?', 25, 'primary') + patient(680, 140, .95))
     b += beat(2, path('M232 170 H316', 'bad-solid', 4) + left(50, 262, 'Pulse 52: no room to raise bisoprolol', 19, 'bad-ink'))
     b += beat(3, rect(50, 296, 260, 56, 'np', 28) + text(180, 332, 'Amlodipine', 23, 'np-ink') + tick(345, 324))
     b += beat(4, '<rect x="380" y="296" width="230" height="56" rx="28" fill="var(--gray-bg)" stroke="var(--gray-bd)" stroke-width="2" opacity=".7"/>'

@@ -225,7 +225,9 @@ def p_hook(slide, topic):
     card = (f'<div class="stem-card hook"><p class="stem-text">{stem_html(slide["stem"], lit=True)}</p>{fig}'
             f'<p class="stem-q">{e(slide["question"])}</p></div>')
     if slide.get("scene"):  # a cartoon scene beside the card (above it on phones)
-        card = f'<div class="hook-row">{card}{figure(slide["scene"])}</div>'
+        # a long clinical stem (a full exam case) takes more of the row, the cartoon less
+        long = " hook-long" if len(slide["stem"]) > 260 else ""
+        card = f'<div class="hook-row{long}">{card}{figure(slide["scene"])}</div>'
     return heading(slide) + f'<div class="center-body">{card}</div>'
 
 
@@ -459,6 +461,25 @@ def p_curve(slide, topic):
     return heading(slide) + f'<div class="curve cv-panels{one}">{"".join(panels)}</div>'
 
 
+DRAWN = {"path", "rect", "circle", "ellipse", "line", "polyline", "polygon", "text", "image", "use"}
+
+
+def art_lands_empty(text):
+    """True when nothing in a drawing shows before its first beat (every drawn part sits under a data-beat)."""
+    import xml.etree.ElementTree as ET
+    try:
+        root = ET.fromstring(text)
+    except ET.ParseError:
+        return False
+
+    def drawn(el):
+        tag = el.tag.split("}")[-1]
+        if tag in ("defs", "template", "title", "desc", "clipPath", "mask", "pattern", "symbol") or "data-beat" in el.attrib:
+            return False
+        return tag in DRAWN or any(drawn(c) for c in el)
+    return not any(drawn(c) for c in root)
+
+
 def p_story(slide, topic):
     """A scene beside one figure that builds a beat per tap (the story is told in the video).
     The figure is drawn in the browser from the slide's numbers (engine/js/story.js)."""
@@ -478,6 +499,9 @@ def p_story(slide, topic):
                  f'<div class="cv-sum"><b>{e(sm["label"])}</b><span>{e(sm["note"])}</span></div></div>')
     # an art story's drawing waits in a template; engine/js/story.js copies it into the figure
     art = f'<template class="st-art">{svg(slide["art"])}</template>' if slide.get("art") else ""
+    # a slide never lands empty: a drawing whose every part waits for a beat opens on its first beat
+    if slide.get("art") and "start" not in slide and art_lands_empty(svg(slide["art"])):
+        data["start"] = 1
     solo = "" if scene else " st-solo"
     return (heading(slide) + f'<div class="story{solo}" data-story="{e(json.dumps(data, ensure_ascii=False))}">'
             f'{scene}<div class="st-chart"></div>{panel}{art}</div>')
@@ -543,6 +567,14 @@ def p_clue_stem(slide, topic):
             f'<div class="spec clue-spec" style="--n:{len(stops)}"><div class="spec-line">{"".join(stops)}</div></div>')
 
 
+def rich(text):
+    """Escaped text with a little markup: **bold**, *italic* and _{subscript} (I*f*, K_{ATP})."""
+    t = e(text)
+    t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+    t = re.sub(r"\*(.+?)\*", r"<i>\1</i>", t)
+    return re.sub(r"_\{(.+?)\}", r"<sub>\1</sub>", t)
+
+
 def p_reveal_cards(slide, topic):
     cards = []
     for cd in slide["cards"]:
@@ -561,6 +593,14 @@ def p_reveal_cards(slide, topic):
         own = blind and cd.get("ar")
         name = e(label) if blind and not own else named(label, label_ar)
         answer = e(cd["answer"]) + (ar(label_ar) if blind and not own else "")
+        if slide.get("tray"):
+            # tray mode: the card holds its mechanism and catch for the tray under the row (engine/js/reveal.js)
+            body = (f'<div class="rt-half"><span class="rt-mech">{rich(cd["mech"])}</span><span>{rich(cd["how"])}</span></div>'
+                    f'<div class="rt-half rt-watch">{rich(cd["answer"])}</div>')
+            cards.append(
+                f'<div class="rcard rt-card f-{fam} reveal-item{" blind" if blind else ""}" role="button" tabindex="0" aria-expanded="false" data-fam="{fam}">'
+                f'{top}<b class="rcard-label">{name}</b><template class="rt-body">{body}</template></div>')
+            continue
         cards.append(
             f'<div class="rcard f-{fam} reveal-item{" blind" if blind else ""}{" pitfall" if cd.get("pitfall") else ""}" role="button" tabindex="0" aria-expanded="false">'
             f'{top}<b class="rcard-label">{name}</b>'
@@ -572,6 +612,15 @@ def p_reveal_cards(slide, topic):
         inner = f'<span class="next-k">Next topic</span><b>{e(n["label"])}</b>'
         nxt = (f'<a class="next-topic" href="{e(href)}">{inner}{icon("right")}</a>' if href
                else f'<div class="next-topic soon">{inner}<span class="soon-tag">Coming soon</span></div>')
+    if slide.get("tray"):
+        # a strip above the cards (its points open on a tap), the cards, and the tray whose room is always kept
+        st = slide["strip"]
+        points = "".join(f"<li>{rich(pt)}</li>" for pt in st["points"])
+        strip = (f'<div class="rt-strip reveal-item" role="button" tabindex="0" aria-expanded="false"><div class="rt-head">'
+                 f'<span class="rt-ico">{icon(st.get("icon", "book"))}</span><b class="rt-label">{named(st["label"], st.get("ar"))}</b>'
+                 f'<span class="rt-chev">{icon("right")}</span></div><ul class="rt-points">{points}</ul></div>')
+        return (heading(slide) + f'<div class="center-body"><div class="rtray">{strip}<div class="reveal-grid rt-grid">{"".join(cards)}</div>'
+                f'<div class="rt-tray" aria-live="polite"></div></div>{nxt}</div>')
     return heading(slide) + f'<div class="center-body"><div class="reveal-grid">{"".join(cards)}</div>{nxt}</div>'
 
 

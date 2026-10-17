@@ -289,6 +289,35 @@ mark.clue{cursor:pointer;background:var(--x-bg);color:var(--x-ink);border-bottom
 .rfig .rf-arrow{fill:none;stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .rcard.on .rcard-answer{display:block}
 .rcard.on .rcard-ico{background:var(--x-solid);color:var(--on-solid)}
+/* tray mode: a strip whose points open in place, the cards, and one tray under the row for the tapped card */
+.rtray{display:flex;flex-direction:column;gap:clamp(10px,calc(1.4 * var(--u)),18px);width:100%}
+.rt-strip{background:var(--surface);border:1px solid var(--border);border-left:6px solid var(--gray-bd);border-radius:var(--radius-lg);box-shadow:var(--edge),var(--shadow);padding:clamp(8px,calc(1 * var(--u)),14px) clamp(14px,calc(2 * var(--u)),24px);cursor:pointer}
+.rt-head{display:flex;align-items:center;gap:12px}
+.rt-ico{display:inline-flex;color:var(--muted)}.rt-ico .ico{width:clamp(22px,calc(2.4 * var(--u)),30px);height:clamp(22px,calc(2.4 * var(--u)),30px)}
+.rt-label{font-family:var(--serif);font-weight:600;font-size:clamp(18px,calc(2 * var(--u)),26px);color:var(--ink)}
+.rt-chev{margin-left:auto;display:inline-flex;color:var(--muted);transform:rotate(90deg);transition:transform .25s var(--ease)}.rt-chev .ico{width:22px;height:22px}
+.rt-strip.on{border-left-color:var(--muted)}
+.rt-strip.on .rt-chev{transform:rotate(-90deg)}
+.rt-points{display:none;margin:6px 0 2px;padding-left:calc(clamp(22px,calc(2.4 * var(--u)),30px) + 12px + 1.1em);font-size:var(--fs-body);line-height:1.45;color:var(--text)}
+.rt-points b{color:var(--ink)}
+.rt-strip.on .rt-points{display:block;animation:specIn .35s var(--ease)}
+.rt-card{align-items:center;text-align:center;gap:8px;padding:clamp(12px,calc(1.4 * var(--u)),18px)}
+.rt-card .rcard-fig svg{max-height:clamp(56px,calc(7 * var(--u)),90px)}
+.rt-card .rcard-label{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;font-size:clamp(17px,calc(1.8 * var(--u)),23px)}
+.rt-card .rcard-label .ar{white-space:nowrap}
+.rt-grid{align-items:stretch}
+.rcard.rt-card.on{background:var(--surface);box-shadow:0 0 0 3px var(--x-solid),var(--shadow)}
+.rt-tray{position:relative;min-height:clamp(80px,calc(9 * var(--u)),116px);border-radius:var(--radius-lg);border:2px solid transparent;display:flex;align-items:center;gap:clamp(12px,calc(2 * var(--u)),24px);padding:12px clamp(16px,calc(2.4 * var(--u)),28px)}
+/* the strip and a card never open together, so the empty tray gives its room to the strip's points */
+.rtray:has(.rt-strip.on) .rt-tray{min-height:0;padding-block:0}
+.rt-tray.on{background:var(--x-bg);border-color:var(--x-bd);animation:specIn .35s var(--ease)}
+.rt-tray.on::before{content:"";position:absolute;top:-11px;left:calc(var(--px,50%) - 10px);width:18px;height:18px;background:var(--x-bg);border-left:2px solid var(--x-bd);border-top:2px solid var(--x-bd);transform:rotate(45deg)}
+.rt-half{flex:1;min-width:0;display:flex;align-items:center;gap:clamp(10px,calc(1.4 * var(--u)),16px);font-size:var(--fs-body);line-height:1.4;color:var(--ink)}
+.rt-half:first-child{flex:1.5}
+.rt-half+.rt-half{border-left:1px solid var(--x-bd);padding-left:clamp(12px,calc(2 * var(--u)),22px)}
+.rt-mech{flex:none;font-weight:700;padding:4px 14px;border-radius:999px;border:2px solid var(--x-bd);background:var(--surface);color:var(--x-ink);white-space:nowrap}
+.rt-watch{font-weight:600;color:var(--bad-ink)}
+@container (max-width:700px){.rt-tray{flex-direction:column;align-items:flex-start}.rt-half+.rt-half{border-left:0;padding-left:0;border-top:1px solid var(--x-bd);padding-top:10px}}
 .next-topic{align-self:flex-start;display:inline-flex;align-items:center;gap:12px;margin-top:clamp(8px,calc(1.6 * var(--u)),20px);padding:12px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border-strong);color:var(--ink);text-decoration:none;box-shadow:var(--edge),var(--shadow);font-size:var(--fs-body)}
 a.next-topic:hover{border-color:var(--primary)}
 .next-topic .ico{color:var(--primary)}
@@ -587,6 +616,7 @@ html.fluid .ask{position:fixed}
 /* ---------- cartoon scenes: flat characters beside a card ---------- */
 .hook-row{display:grid;grid-template-columns:minmax(0,1fr) clamp(220px,calc(30 * var(--u)),400px);gap:clamp(16px,calc(2.4 * var(--u)),32px);align-items:center;width:100%;max-width:1320px;margin-inline:auto}
 .hook-row>.stem-card.hook{max-width:none}
+.hook-row.hook-long{grid-template-columns:minmax(0,1fr) clamp(180px,calc(19 * var(--u)),260px)}
 .hook-row>.fig{margin:0}
 /* a tall cartoon (a portrait scene) keeps the hook on the stage */
 .hook-row>.fig svg{max-height:clamp(200px,calc(27 * var(--u)),345px)}

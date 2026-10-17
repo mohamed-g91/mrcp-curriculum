@@ -44,15 +44,15 @@ learn:
     pattern: hook
     title: Two patients
     title_ar: مريضان
-    question: What is the next step in management?
+    question: What is the best next step in management?
     patients:
       - name: Patient A
         person: case-chest-man
-        stem: "A 61-year-old man with type 2 diabetes and hypertension, who smokes, has no history of heart disease. For four months he has had central chest tightness walking uphill, spreading to his left arm and gone three minutes after he stops. Examination is normal. His resting ECG:"
+        stem: "A 61-year-old patient with diabetes, hypertension and no known heart disease, who smokes, presented to the clinic with four months of central chest tightness walking uphill, spreading to the left arm and gone three minutes after stopping. Examination is normal. His resting ECG:"
         figure: ecg-v4v6-normal
       - name: Patient B
         person: case-chest-woman
-        stem: "A 58-year-old woman with hypertension, who smokes, has no history of heart disease. For six weeks she has had a tight central chest feeling while watching television, fading after about ten minutes; the last was two weeks ago. Examination is normal. Her resting ECG:"
+        stem: "A 58-year-old patient with hypertension and no known heart disease, who smokes, presented to the clinic with six weeks of a tight central chest feeling while watching television, fading after about ten minutes; the last was two weeks ago. Examination is normal. Her resting ECG:"
         figure: ecg-v4v6-tinv
 
   # Why the pain comes on exertion and goes with rest (kept short, the user): the narrowing lets through what rest needs,
@@ -138,7 +138,7 @@ practise:
         solved: true
         options: [CTCA for both, "CTCA for A; no test for B", Exercise ECG for both, "Angiography for A; CTCA for B"]
         stem: "Two patients with risk factors and no known heart disease. A, a man of 61, has central chest tightness walking uphill, gone three minutes after he stops; resting ECG normal. B, a woman of 58, has chest tightness while watching television, fading after ten minutes, last two weeks ago; resting ECG: [[T-wave inversion in V4–V6]]."
-        question: What is the next step in management?
+        question: What is the best next step in management?
         answer: CTCA for both
         hint: Does an abnormal resting ECG change the plan for non-anginal pain?
         why: "Patient A's pain is constricting, brought on by exertion and relieved by rest within 5 minutes, so it has all three features of typical angina; a normal resting ECG does not rule angina out. Patient B's pain has only one feature, so it is non-anginal, but her T-wave inversion in V4–V6 means coronary disease cannot be excluded. With no known coronary disease, both need CT coronary angiography (NICE CG95)."
