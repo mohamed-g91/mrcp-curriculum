@@ -250,7 +250,8 @@ How a case's words are written: agreed on *Coronary arteries and the ECG*, 17 Oc
 **Stems** (from the user's review of *Treating stable angina*, 17 October 2026):
 - Always state the disease being treated, even when the question is about a drug (A 68-year-old man with stable angina takes…).
 - Write the past history as "past medical history" (no significant past medical history; a past medical history of asthma on regular inhalers).
-- Write the examination as "On examination, his heart rate is 78 and regular, and his BP is 138/80 mmHg."
+- Write the examination as "On examination, his heart rate is 78 and regular, and his BP is 138/80 mmHg." Signs seen on examination, such as sweating, go in that sentence, not in the history (*Diagnosing ACS*, 17 October 2026).
+- Leave out past investigations the question does not need (a CT coronary angiogram from last year), even when they link the case to an earlier lesson.
 - List current drugs plainly ("His medications are atenolol 25 mg daily, aspirin 75 mg, sublingual GTN and atorvastatin").
 - Anything not stated is taken as absent, so a stem never lists what the patient does not have (no PDE5 inhibitor, no ACE inhibitor contraindication, no conduction disease).
 - No line points at the answer or sorts the drugs for the candidate ("His medicines are being separated into…" is out).
